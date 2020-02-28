@@ -1,0 +1,30 @@
+{
+  "name": "proxy-capital-real-estate-transparency-smart-contracts",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://gitlab.com/smontero1/proxy-capital-real-estate-transparency-smart-contracts.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://gitlab.com/smontero1/proxy-capital-real-estate-transparency-smart-contracts/issues"
+  },
+  "homepage": "https://gitlab.com/smontero1/proxy-capital-real-estate-transparency-smart-contracts#readme",
+  "dependencies": {
+    "@types/node": "^13.7.6",
+    "dotenv": "^8.2.0",
+    "eosjs": "^20.0.3",
+    "promisify": "0.0.3",
+    "ramda": "^0.27.0",
+    "util": "^0.12.2"
+  }
+}

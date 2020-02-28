@@ -1,6 +1,7 @@
+#include <eosio/eosio.hpp>
+#include <eosio/system.hpp>
 #include <eosio/asset.hpp>
 #include <eosio/symbol.hpp>
-#include <eosio/eosio.hpp>
 #include <vector>
 #include <string>
 
@@ -26,16 +27,28 @@ CONTRACT transactions : public contract {
 						   string description, 
 						   asset amount, 
 						   bool increase,
-						   string supporting_urls
+						   vector<string> supporting_urls
 						);
 
-		ACTION addaccount ();
+		ACTION addproject ( name actor,
+							string project_name,
+							string description,
+							asset initial_goal 
+						  );
+
+		ACTION addaccount ( name actor,
+						  	uint64_t project_id, 
+						  	string account_name, 
+						  	uint64_t parent, 
+						  	uint8_t type, 
+						  	symbol account_currency
+						  );
 
 
 	private:
 		const symbol currency = symbol("USD", 4); // array of currencies?
 		const name contract_name = "proxycap"_n;
-		const name app_permission = "app"_n;
+		const name app_permission = "active"_n;
 
 		enum AccountType : uint8_t { debit = 0, credit = 1 };
 
@@ -61,7 +74,6 @@ CONTRACT transactions : public contract {
 
 			uint64_t primary_key() const { return account_id; }
 			uint64_t by_parent() const { return parent_id; }
-			uint8_t by_type() const { return type; }
 		};
 
 		// scoped by project_id
@@ -84,9 +96,7 @@ CONTRACT transactions : public contract {
 
 		typedef eosio::multi_index <"accounts"_n, account_table,
 			indexed_by<"byparent"_n,
-			const_mem_fun<account_table, uint64_t, &account_table::by_parent>>,
-			indexed_by<"bytype"_n,
-			const_mem_fun<account_table, uint8_t, &account_table::by_type>>
+			const_mem_fun<account_table, uint64_t, &account_table::by_parent>>
 		> account_tables;
 
 		typedef eosio::multi_index <"transactions"_n, transaction_table> transaction_tables;
@@ -95,5 +105,6 @@ CONTRACT transactions : public contract {
 		project_tables projects;
 
 
-}
+		void check_asset(asset amount);
+};
 

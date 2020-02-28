@@ -1,0 +1,6 @@
+node_modules
+artifacts
+
+.vscode/settings.json
+
+package-lock.json

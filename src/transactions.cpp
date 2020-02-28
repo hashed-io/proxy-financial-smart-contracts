@@ -1,11 +1,35 @@
 #include <transactions.hpp>
 
 
-void check_asset(asset amount) {
+void transactions::check_asset(asset amount) {
 	check(amount.symbol == currency, contract_name.to_string() + ": the symbols must be the same.");
-	check(amount > 0, contract_name.to_string() + ": the amount must be greater than zero.");
+	check(amount > asset(0, currency), contract_name.to_string() + ": the amount must be greater than zero.");
 }
 
+ACTION transactions::reset () {
+	require_auth(_self);
+
+	auto itr_p = projects.begin();
+	while (itr_p != projects.end()) {
+		itr_p = projects.erase(itr_p);
+	}
+
+	for (int i = 0; i < 100; i++) {
+		account_tables accounts(_self, i);
+		auto itr_a = accounts.begin();
+		while (itr_a != accounts.end()) {
+			itr_a = accounts.erase(itr_a);
+		}
+	}
+
+	for (int i = 0; i < 100; i++) {
+		transaction_tables transactions(_self, i);
+		auto itr_t = transactions.begin();
+		while (itr_t != transactions.end()) {
+			itr_t = transactions.erase(itr_t);
+		}
+	}
+}
 
 ACTION transactions::transact ( name actor, 
 								uint64_t project_id, 
@@ -95,11 +119,35 @@ ACTION transactions::transact ( name actor,
 
 // ACTION transactions::invest() {}
 
+ACTION transactions::addproject ( name actor,
+								  string project_name,
+								  string description,
+								  asset initial_goal ) {
+
+	require_auth(permission_level(actor, app_permission));
+
+	check_asset(initial_goal);
+
+	auto itr_p = projects.begin();
+	while (itr_p != projects.end()) {
+		check(project_name != itr_p -> project_name, contract_name.to_string() + ": there is a project with that name.");
+	}
+
+	projects.emplace(_self, [&](auto & new_project) {
+		new_project.project_id = projects.available_primary_key();
+		new_project.owner = actor;
+		new_project.project_name = project_name;
+		new_project.description = description;
+		new_project.initial_goal = initial_goal;
+	});
+
+}
+
 
 ACTION transactions::addaccount ( name actor,
 								  uint64_t project_id, 
 								  string account_name, 
-								  uint64_t parent, 
+								  uint64_t parent_id, 
 								  uint8_t type, 
 								  symbol account_currency ) {
 	require_auth(permission_level(actor, app_permission));
@@ -115,8 +163,10 @@ ACTION transactions::addaccount ( name actor,
 	check(account_currency == currency, contract_name.to_string() + ": the currency must be the same.");
 	check(type == AccountType::debit || type == AccountType::credit, contract_name.to_string() + ": the type must be debit or credit.");
 
+	uint64_t new_id = accounts.available_primary_key();
+
 	accounts.emplace(_self, [&](auto & new_account){
-		new_account.account_id = accounts.available_primary_key();
+		new_account.account_id = ((new_id == 0) ? 1 : new_id); 
 		new_account.parent_id = parent_id;
 		new_account.account_name = account_name;
 		new_account.type = type;
@@ -127,11 +177,11 @@ ACTION transactions::addaccount ( name actor,
 }
 
 
-ACTION transactions::removeaccnt (name actor) {
-	require_auth(permission_level(actor, app_permission));
-
+// ACTION transactions::removeaccnt (name actor) {
+// 	require_auth(permission_level(actor, app_permission));
+// 	return;
 	
-}
+// }
 
 
-EOSIO_DISPATCH(transactions, (transact)(addaccount));
+EOSIO_DISPATCH(transactions, (reset)(transact)(addaccount)(addproject));
