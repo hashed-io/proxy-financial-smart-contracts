@@ -66,14 +66,18 @@ const deleteIfExists = async (file) => {
 	}
 }
 
-contracts.forEach(async contract => {
-	try {
-		await compile({
-			contract: contract,
-      source: `./src/${contract}.cpp`
-		})
-		console.log(`${contract} compiled`)
-	} catch(err) {
-		console.log('compile failed for ' + contract + ' error: ' + err)
+async function compileAll() {
+	for(const contract of contracts){
+		try {
+			await compile({
+				contract: contract,
+		source: `./src/${contract}.cpp`
+			})
+			console.log(`${contract} compiled`)
+		} catch(err) {
+			console.log('compile failed for ' + contract + ' error: ' + err)
+		}
 	}
-})
+}
+
+compileAll()
