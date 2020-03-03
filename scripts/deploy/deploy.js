@@ -1,12 +1,33 @@
 require('dotenv').config()
 
-const { names, accounts, keyProvider } = require('../helper')
+const { names, accounts, permissions } = require('../helper')
 const fs = require('fs')
 
 let existing_accounts = require('../accounts.json')
 
 function ownerNotExistError (err) {
     return (JSON.parse(err).error.code === 3040000)
+}
+
+function createPermissions (eoslime) {
+    permissions.forEach(async permission => {
+        try {
+            if (permission.actor) {
+                const at_pos = permission.actor.indexOf('@')
+                const account_name = permission.actor.substring(0, at_pos)
+                const account_permission = permission.actor.substring(at_pos + 1, permission.actor.length)
+
+                const at_pos_target = permission.target.indexOf('@')
+                const account_target = permission.target.substring(0, at_pos_target)
+                const account = eoslime.Account.load(account_target, existing_accounts[account_target].privateKey)
+
+                await account.addOnBehalfAccount(account_name, account_permission)
+                console.log('authority', permission.actor, 'added to', account_target)
+            }
+        } catch (err) {
+            console.log('there was an error while giving permission:', permission, err)
+        }
+    })
 }
 
 let deploy = async function (eoslime, deployer) {
@@ -48,6 +69,9 @@ let deploy = async function (eoslime, deployer) {
     fs.writeFile('./scripts/accounts.json', JSON.stringify(existing_accounts), (err) => {
         if(err) throw err
     })
+
+    console.log('\n\nAdding permissions...')
+    createPermissions(eoslime)
 
 }
 

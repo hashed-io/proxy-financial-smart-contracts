@@ -10,9 +10,7 @@ const R = require('ramda')
 const ecc = require('eosjs-ecc')
 const Eos = require('eosjs')
 
-const DEBIT = 0
-const CREDIT = 1
-const CURRENCY = '4,USD'
+const currency = '4,USD'
 
 const networks = {
 	local: 'cf057bbfb72640471fd910bcb67639c22df9f92470936cddc1ade0e2f2e7dc4f',
@@ -91,7 +89,8 @@ const accountsMetadata = (network) => {
       	seconduser: account('prxycapusrbb', '10000000.0000 USD'),
       	thirduser: account('prxycapusrcc', '5000000.0000 USD'),
         transactions: contract('proxycaptrxn', 'transactions'),
-        projects: contract('proxycapprjt', 'projects')
+        projects: contract('proxycapprjt', 'projects'),
+        accounts: contract('proxycapaccn', 'accounts')
     }
   } else if (network == networks.telosMainnet) {
     return {
@@ -100,7 +99,8 @@ const accountsMetadata = (network) => {
         seconduser: account('prxycapusrbb', '10000000.0000 USD'),
         thirduser: account('prxycapusrcc', '5000000.0000 USD'),
         transactions: contract('proxycaptrxn', 'transactions'),
-        projects: contract('proxycapprjt', 'projects')
+        projects: contract('proxycapprjt', 'projects'),
+        accounts: contract('proxycapaccn', 'accounts')
     }
   } else if (network == networks.telosTestnet) {
     return {
@@ -109,12 +109,15 @@ const accountsMetadata = (network) => {
         seconduser: account('prxycapusrbb', '10000000.0000 USD'),
         thirduser: account('prxycapusrcc', '5000000.0000 USD'),
         transactions: contract('proxycaptrxn', 'transactions'),
-        projects: contract('proxycapprjt', 'projects')
+        projects: contract('proxycapprjt', 'projects'),
+        accounts: contract('proxycapaccn', 'accounts')
     }
   } else {
     throw new Error(`${network} deployment not supported`)
   }
 }
+
+
 
 const accounts = accountsMetadata(chainId)
 const names = R.mapObjIndexed((item) => item.account, accounts)
@@ -123,7 +126,15 @@ const permissions = [
 	{
 		target: `${accounts.transactions.account}@active`,
 		actor: `${accounts.transactions.account}@eosio.code`
-	}
+  },
+  {
+		target: `${accounts.projects.account}@active`,
+		actor: `${accounts.projects.account}@eosio.code`
+  },
+  {
+		target: `${accounts.accounts.account}@active`,
+		actor: `${accounts.projects.account}@active`
+  }
 ]
 
 const keyProviders = {
@@ -166,6 +177,6 @@ const initContracts = (accounts) =>
   )
 
 module.exports = {
-	accounts, names, permissions, isLocal, createKeypair, activePublicKey, DEBIT, CREDIT, CURRENCY, keyProvider
+	accounts, names, permissions, isLocal, createKeypair, activePublicKey, currency, keyProvider, permissions
 }
 

@@ -1,8 +1,5 @@
 #include <transactions.hpp>
 
-
-
-
 bool transactions::check_permissions(name actor, uint64_t project_id, name function) {
 	user_permission_table permissions(_self, project_id);
 	
@@ -25,20 +22,6 @@ bool transactions::check_permissions(name actor, uint64_t project_id, name funct
 
 ACTION transactions::reset () {
 	require_auth(_self);
-
-	
-	auto itr_types = account_types.begin();
-	while (itr_types != account_types.end()) {
-		itr_types = account_types.erase(itr_types);
-	}
-
-	for (int i = 0; i < account_types_v.size(); i++) {
-		account_types.emplace(_self, [&](auto & naccount){
-			naccount.type_id = account_types.available_primary_key();
-			naccount.type_name = account_types_v[i].first;
-			naccount.account_class = account_types_v[i].second;
-		});
-	}
 
 	auto itr_roles = roles.begin();
 	while (itr_roles != roles.end()) {
@@ -75,14 +58,6 @@ ACTION transactions::reset () {
 		auto itr_u_p = permissions.begin();
 		while (itr_u_p != permissions.end()) {
 			itr_u_p = permissions.erase(itr_u_p);
-		}
-	}
-
-	for (int i = 0; i < 100; i++) {
-		account_tables accounts(_self, i);
-		auto itr_a = accounts.begin();
-		while (itr_a != accounts.end()) {
-			itr_a = accounts.erase(itr_a);
 		}
 	}
 
@@ -193,38 +168,7 @@ ACTION transactions::addaccount ( name actor,
 	require_auth(permission_level(actor, app_permission));
 	check(check_permissions(actor, project_id, "addaccount"_n), contract_name.to_string() + ": the user " + actor.to_string() + " does not have permissions to do this.");
 
-	auto project_exists = projects.find(project_id);
-	check(project_exists != projects.end(), contract_name.to_string() + ": the project where the account is trying to be placed does not exist.");
-
-	account_tables accounts(_self, project_id);
 	
-	auto itr_accounts = accounts.begin();
-
-	while (itr_accounts != accounts.end()) {
-		check(itr_accounts -> account_name != account_name, contract_name.to_string() + ": the name of the account already exists.");
-		itr_accounts++;
-	}
-
-	check(account_currency == currency, contract_name.to_string() + ": the currency must be the same.");
-	check(type == AccountType::debit || type == AccountType::credit, contract_name.to_string() + ": the type must be debit or credit.");
-
-	if (parent_id != 0) {
-		auto parent_exists = accounts.find(parent_id);
-		check(parent_exists != accounts.end(), contract_name.to_string() + ": the parent does not exist.");
-		check(type == parent_exists -> type, contract_name.to_string() + ": the child account must have the same type as its parent's.");
-	}
-
-	uint64_t new_id = accounts.available_primary_key();
-
-	accounts.emplace(_self, [&](auto & new_account){
-		new_account.account_id = ((new_id == 0) ? 1 : new_id); 
-		new_account.parent_id = parent_id;
-		new_account.account_name = account_name;
-		new_account.type = type;
-		new_account.increase_balance = asset(0, currency);
-		new_account.decrease_balance = asset(0, currency);
-		new_account.account_symbol = currency;
-	});
 
 	print("HERE I AM");
 }

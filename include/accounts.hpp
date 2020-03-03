@@ -14,13 +14,22 @@ CONTRACT accounts : public contract {
         using contract::contract;
         accounts(name receiver, name code, datastream<const char*> ds)
             : contract(receiver, code, ds),
-              account_types(receiver, receiver.value)
+              account_types(receiver, receiver.value),
+              projects_table(contract_names::projects, contract_names::projects.value)
               {}
         
-        ACTION reset();
+        ACTION reset ();
 
-        ACTION addaccount();
+        ACTION initaccounts (uint64_t project_id);
+
+        ACTION addaccount ( name actor,
+                            uint64_t project_id, 
+                            string account_name, 
+                            uint64_t parent_id, 
+                            uint8_t type, 
+                            symbol account_currency );
     
+
     private:
 
         enum AccountClass : uint8_t { DEBIT = 1, CREDIT = 0 };
@@ -55,6 +64,16 @@ CONTRACT accounts : public contract {
 			uint64_t primary_key() const { return type_id; }
 		};
 
+        TABLE project_table {
+			uint64_t project_id;
+			name owner;
+			string project_name;
+			string description;
+			asset initial_goal;
+
+			uint64_t primary_key() const { return project_id; }
+		};
+
         typedef eosio::multi_index <"accounts"_n, account_table,
 			indexed_by<"byparent"_n,
 			const_mem_fun<account_table, uint64_t, &account_table::by_parent>>
@@ -62,7 +81,10 @@ CONTRACT accounts : public contract {
 
         typedef eosio::multi_index <"accnttypes"_n, type_table> type_tables;
 
+        typedef eosio::multi_index <"projects"_n, project_table> project_tables;
+
         type_tables account_types;
+        project_tables projects_table;
 
 };
 

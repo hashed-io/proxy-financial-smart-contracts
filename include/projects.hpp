@@ -17,13 +17,12 @@ CONTRACT projects : public contract {
               projects_table(receiver, receiver.value)
               {}
 
-        ACTION reset();
+        ACTION reset ();
 
         ACTION addproject ( name actor,
 							string project_name,
 							string description,
-							asset initial_goal 
-						  );
+							asset initial_goal );
         
         // ACTION removeprojct ();
 

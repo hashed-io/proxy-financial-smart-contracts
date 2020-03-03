@@ -32,17 +32,6 @@ CONTRACT transactions : public contract {
 		// 				   vector<string> supporting_urls
 		// 				);
 
-		
-
-		// ACTION addaccount ( name actor,
-		// 				  	uint64_t project_id, 
-		// 				  	string account_name, 
-		// 				  	uint64_t parent, 
-		// 				  	uint8_t type, 
-		// 				  	symbol account_currency
-		// 				  );
-
-
 	private:
 		
 
@@ -54,10 +43,6 @@ CONTRACT transactions : public contract {
 			make_pair(MANAGER, "manager"),
 			make_pair(ACCOUNTANT, "accountant")
 		};
-
-		
-
-		
 
 		// scoped by project_id
 		TABLE transaction_table {
