@@ -16,11 +16,11 @@ ACTION projects::addproject ( name actor,
 							  asset initial_goal ) {
 
     require_auth(actor);
-    check_asset(initial_goal, contracts::projects);
+    check_asset(initial_goal, contract_names::projects);
 
 	auto itr_p = projects_table.begin();
 	while (itr_p != projects_table.end()) {
-		check(project_name != itr_p -> project_name, contracts::projects.to_string() + ": there is already a project with that name.");
+		check(project_name != itr_p -> project_name, contract_names::projects.to_string() + ": there is already a project with that name.");
 	}
 
 	projects_table.emplace(_self, [&](auto & new_project) {
