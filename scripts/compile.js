@@ -17,8 +17,8 @@ const unlinkAsync = promisify(fs.unlink)
 const existsAsync = promisify(fs.exists)
 
 const contracts = [
-	'transactions'
-]
+	'projects'
+].sort()
 
 const command = ({ contract, source, dir }) => {
 	const volume = dir

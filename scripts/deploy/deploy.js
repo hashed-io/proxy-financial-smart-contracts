@@ -1,12 +1,13 @@
 require('dotenv').config()
 
-const { names, accounts } = require('../helper')
+const { names, accounts, keyProvider } = require('../helper')
 const fs = require('fs')
 
-const TOKEN_WASM_PATH = './artifacts/transactions.wasm';
-const TOKEN_ABI_PATH = './artifacts/transactions.abi';
-
 let existing_accounts = require('../accounts.json')
+
+function ownerNotExistError (err) {
+    return (JSON.parse(err).error.code === 3040000)
+}
 
 let deploy = async function (eoslime, deployer) {
 
@@ -16,30 +17,35 @@ let deploy = async function (eoslime, deployer) {
     for (let i = 0; i < accounts_names.length; i++) {
         if (accounts_names[i] !== 'owner') {
             try {
-                deployer = await eoslime.Account.createFromName(accounts_names[i], owner)
-                existing_accounts[accounts_names[i]] = {
+                console.log('creating:', accounts[accounts_names[i]].account)
+                deployer = await eoslime.Account.createFromName(accounts[accounts_names[i]].account, owner)
+                existing_accounts[accounts[accounts_names[i]].account] = {
                     privateKey: deployer.privateKey,
                     publicKey: deployer.publicKey
                 }
-                console.log(existing_accounts[accounts_names[i]])
+                console.log('successfully created', existing_accounts[accounts[accounts_names[i]].account])
             } catch (err) {
-                console.log(accounts_names[i], 'already exists.')
-                console.log(existing_accounts[accounts_names[i]])
+                if (ownerNotExistError(err)) {
+                    console.log('the owner account shold exist to deploy the rest of accounts')
+                    return process.exit(-1)
+                }
+                console.log(accounts[accounts_names[i]].account, 'already exists')
             }
 
             try {
                 if (accounts[accounts_names[i]].type === 'contract') {
-                    deployer = eoslime.Account.load(accounts_names[i], existing_accounts[accounts_names[i]].privateKey)
+                    console.log('deploying:', accounts[accounts_names[i]].account)
+                    deployer = eoslime.Account.load(accounts[accounts_names[i]].account, existing_accounts[accounts[accounts_names[i]].account].privateKey)
                     await eoslime.Contract.deployOnAccount('./artifacts/'+accounts_names[i]+'.wasm', './artifacts/'+accounts_names[i]+'.abi', deployer)
+                    console.log(accounts[accounts_names[i]].account, 'successfully deployed')
                 }
-            }
-            catch (err) {
-                console.log('could not deploy contract: ', err)
+            } catch (err) {
+                console.log('could not deploy ' + accounts[accounts_names[i]].account + ': ', err)
             }
         }
     }
 
-    fs.writeFile('./scripts/account.json', JSON.stringify(existing_accounts), (err) => {
+    fs.writeFile('./scripts/accounts.json', JSON.stringify(existing_accounts), (err) => {
         if(err) throw err
     })
 

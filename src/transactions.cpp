@@ -1,17 +1,81 @@
 #include <transactions.hpp>
 
 
-void transactions::check_asset(asset amount) {
-	check(amount.symbol == currency, contract_name.to_string() + ": the symbols must be the same.");
-	check(amount > asset(0, currency), contract_name.to_string() + ": the amount must be greater than zero.");
+
+
+bool transactions::check_permissions(name actor, uint64_t project_id, name function) {
+	user_permission_table permissions(_self, project_id);
+	
+	auto it_p = permissions.find(actor.value);
+	check(it_p != permissions.end(), contract_name.to_string() + ": the actor " + actor.to_string() + " does not have an entry in the permissions of this project.");
+	
+	auto it_a = action_permissions.find(function.value);
+	check(it_a != action_permissions.end(), contract_name.to_string() + ": the action " + function.to_string() + " does not exist.");
+
+	for (int i = 0; i < it_p -> roles.size(); i++) {
+		for (int j = 0; j < it_a -> roles.size(); j++) {
+			if (it_p -> roles[i] == it_a -> roles[j]) {
+				return true;
+			}
+		}
+	}
+
+	return false;
 }
 
 ACTION transactions::reset () {
 	require_auth(_self);
 
-	auto itr_p = projects.begin();
-	while (itr_p != projects.end()) {
-		itr_p = projects.erase(itr_p);
+	
+	auto itr_types = account_types.begin();
+	while (itr_types != account_types.end()) {
+		itr_types = account_types.erase(itr_types);
+	}
+
+	for (int i = 0; i < account_types_v.size(); i++) {
+		account_types.emplace(_self, [&](auto & naccount){
+			naccount.type_id = account_types.available_primary_key();
+			naccount.type_name = account_types_v[i].first;
+			naccount.account_class = account_types_v[i].second;
+		});
+	}
+
+	auto itr_roles = roles.begin();
+	while (itr_roles != roles.end()) {
+		itr_roles = roles.erase(itr_roles);
+	}
+
+	for (int i = 0; i < roles_v.size(); i++) {
+		roles.emplace(_self, [&](auto & nrole){
+			nrole.role_id = roles_v[i].first;
+			nrole.role_name = roles_v[i].second;
+		});
+	}
+
+	auto itr_a_p = action_permissions.begin();
+	while (itr_a_p != action_permissions.end()) {
+		itr_a_p = action_permissions.erase(itr_a_p);
+	}
+
+	action_permissions.emplace(_self, [&](auto & new_action){
+		new_action.action_p = "transact"_n;
+		new_action.roles.emplace_back(Permissions::OWNER);
+		new_action.roles.emplace_back(Permissions::MANAGER);
+		new_action.roles.emplace_back(Permissions::ACCOUNTANT);
+	});
+
+	action_permissions.emplace(_self, [&](auto & new_action){
+		new_action.action_p = "addaccount"_n;
+		new_action.roles.emplace_back(Permissions::OWNER);
+		new_action.roles.emplace_back(Permissions::MANAGER);
+	});
+
+	for (int i = 0; i < 100; i++) {
+		user_permission_tables permissions(_self, i);
+		auto itr_u_p = permissions.begin();
+		while (itr_u_p != permissions.end()) {
+			itr_u_p = permissions.erase(itr_u_p);
+		}
 	}
 
 	for (int i = 0; i < 100; i++) {
@@ -31,7 +95,7 @@ ACTION transactions::reset () {
 	}
 }
 
-ACTION transactions::transact ( name actor, 
+/* ACTION transactions::transact ( name actor, 
 								uint64_t project_id, 
 								uint64_t from, 
 								uint64_t to, 
@@ -114,11 +178,12 @@ ACTION transactions::transact ( name actor,
 			}
 		}
 	});
-}
+} */
 
 
 // ACTION transactions::invest() {}
 
+// Who can do this?
 ACTION transactions::addproject ( name actor,
 								  string project_name,
 								  string description,
@@ -126,23 +191,9 @@ ACTION transactions::addproject ( name actor,
 
 	require_auth(permission_level(actor, app_permission));
 
-	check_asset(initial_goal);
-
-	auto itr_p = projects.begin();
-	while (itr_p != projects.end()) {
-		check(project_name != itr_p -> project_name, contract_name.to_string() + ": there is a project with that name.");
-	}
-
-	projects.emplace(_self, [&](auto & new_project) {
-		new_project.project_id = projects.available_primary_key();
-		new_project.owner = actor;
-		new_project.project_name = project_name;
-		new_project.description = description;
-		new_project.initial_goal = initial_goal;
-	});
+	
 
 }
-
 
 ACTION transactions::addaccount ( name actor,
 								  uint64_t project_id, 
@@ -150,7 +201,12 @@ ACTION transactions::addaccount ( name actor,
 								  uint64_t parent_id, 
 								  uint8_t type, 
 								  symbol account_currency ) {
+
 	require_auth(permission_level(actor, app_permission));
+	check(check_permissions(actor, project_id, "addaccount"_n), contract_name.to_string() + ": the user " + actor.to_string() + " does not have permissions to do this.");
+
+	auto project_exists = projects.find(project_id);
+	check(project_exists != projects.end(), contract_name.to_string() + ": the project where the account is trying to be placed does not exist.");
 
 	account_tables accounts(_self, project_id);
 	
@@ -158,10 +214,17 @@ ACTION transactions::addaccount ( name actor,
 
 	while (itr_accounts != accounts.end()) {
 		check(itr_accounts -> account_name != account_name, contract_name.to_string() + ": the name of the account already exists.");
+		itr_accounts++;
 	}
 
 	check(account_currency == currency, contract_name.to_string() + ": the currency must be the same.");
 	check(type == AccountType::debit || type == AccountType::credit, contract_name.to_string() + ": the type must be debit or credit.");
+
+	if (parent_id != 0) {
+		auto parent_exists = accounts.find(parent_id);
+		check(parent_exists != accounts.end(), contract_name.to_string() + ": the parent does not exist.");
+		check(type == parent_exists -> type, contract_name.to_string() + ": the child account must have the same type as its parent's.");
+	}
 
 	uint64_t new_id = accounts.available_primary_key();
 
@@ -174,6 +237,8 @@ ACTION transactions::addaccount ( name actor,
 		new_account.decrease_balance = asset(0, currency);
 		new_account.account_symbol = currency;
 	});
+
+	print("HERE I AM");
 }
 
 
@@ -184,4 +249,4 @@ ACTION transactions::addaccount ( name actor,
 // }
 
 
-EOSIO_DISPATCH(transactions, (reset)(transact)(addaccount)(addproject));
+EOSIO_DISPATCH(transactions, (reset)/*(transact)*/(addaccount)(addproject));

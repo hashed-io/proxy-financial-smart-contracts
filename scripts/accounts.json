@@ -1,18 +1,1 @@
-{
-    "firstuser": {
-        "privateKey": "5JskY19vw64Uc4rV6thrcQFwyFDRk3Cg5YFpEQVtrRzDuAhCbeb",
-        "publicKey": "EOS8KJg8thfSveeHKQVjfscSYnPBnfSyR2fTF71exbuJskG6jT6K8"
-    },
-    "seconduser": {
-        "privateKey": "5Kk4Ha2SLZsaFmi9EXKsvnDH1krmREL5uSxLvD4DZ5D8a23UbwK",
-        "publicKey": "EOS6bFCcmi3j47At6xBAbsmLoVSMA5kA1Hu4zNp9honPa7pSsm2UH"
-    },
-    "thirduser": {
-        "privateKey": "5Jeh5itGmPpWrBo1EdXcWzHGpB1JXTaNr5o1Z7bzqPKAoa31zUZ",
-        "publicKey": "EOS5YkquxoxRRcA12DK2UsSfLc5yzqgQ47oVixRGyXiu7prYBsjuU"
-    },
-    "transactions": {
-        "privateKey": "5KGkXzUDD2Ak9Mtp8jQNvwrA8FyWsdjixXxNerxbaqe1xEL13Qx",
-        "publicKey": "EOS7Rj3Xt5TqZCPHdT87oJctQqEg3NYBwBzByfqmW3h1qAvo83gEh"
-    }
-}
+{"prxycapusraa":{"privateKey":"5KPEW4dBJ331dFkBpq4GnczbVG3zgivpQ4ihiV7ivUh7CySABjb","publicKey":"EOS8iZPtmCLY8b5b8wQrvhdj39wehjguModcneeF1V86PS5q7RNMX"},"prxycapusrbb":{"privateKey":"5KiPz3eof85X1HYLR5Hp3CWLRoMCmgGg61yrAkwN1w2NkYzp4CK","publicKey":"EOS7ywTH6yZr95Mnqc3K7tgyGS8TyZ88vzJSpLqSNiW8w6bwRfQtW"},"prxycapusrcc":{"privateKey":"5KQZiKSVGULkydkybokRwJYu3rxNJ3WeowmyfuSMsHBCqb3sM8Y","publicKey":"EOS7F5sijs4hMUKiMwTHKvzthNpgHm71yU2mVytWqyCqnxv3VxEUL"},"proxycaptrxn":{"privateKey":"5KFx8CXJ64ekfnNk4hCLw46yjBKCyXULXv69SR2oGrPm7w9eLTe","publicKey":"EOS5x7oW5H59oRG9uBKtWANzdg1PKWKzJP1yj4t79a3A82vwuH571"},"proxycapprjt":{"privateKey":"5KZBUdnzFMReiYCVorEoPseWVrr5miNSfFWvm2PZvkMsZxG86tz","publicKey":"EOS8NjQvd1cmrC8DiscmBW2wZbZSHZ5t1PCAWXSi9pjUfWVQ8fpQ5"}}

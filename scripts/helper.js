@@ -10,6 +10,10 @@ const R = require('ramda')
 const ecc = require('eosjs-ecc')
 const Eos = require('eosjs')
 
+const DEBIT = 0
+const CREDIT = 1
+const CURRENCY = '4,USD'
+
 const networks = {
 	local: 'cf057bbfb72640471fd910bcb67639c22df9f92470936cddc1ade0e2f2e7dc4f',
 	telosTestnet: '1eaa0824707c8c16bd25145493bf062aecddfeb56c736f6ba6397f3195f33c9f',
@@ -83,26 +87,29 @@ const accountsMetadata = (network) => {
   if (network == networks.local) {
     return {
       	owner: account(owner),
-      	firstuser: account('prxycpusraaa', '10000000.0000 USD'),
-      	seconduser: account('prxycpusraaa', '10000000.0000 USD'),
-      	thirduser: account('prxycpusraaa', '5000000.0000 USD'),
-		transactions: contract('proxycaptrxn', 'transactions'),
+      	firstuser: account('prxycapusraa', '10000000.0000 USD'),
+      	seconduser: account('prxycapusrbb', '10000000.0000 USD'),
+      	thirduser: account('prxycapusrcc', '5000000.0000 USD'),
+        transactions: contract('proxycaptrxn', 'transactions'),
+        projects: contract('proxycapprjt', 'projects')
     }
   } else if (network == networks.telosMainnet) {
     return {
-      	owner: account(owner),
-      	firstuser: account('prxycpusraaa', '10000000.0000 USD'),
-      	seconduser: account('prxycpusraaa', '10000000.0000 USD'),
-      	thirduser: account('prxycpusraaa', '5000000.0000 USD'),
-      	transactions: contract('proxycaptrxn', 'transactions'),
+        owner: account(owner),
+        firstuser: account('prxycapusraa', '10000000.0000 USD'),
+        seconduser: account('prxycapusrbb', '10000000.0000 USD'),
+        thirduser: account('prxycapusrcc', '5000000.0000 USD'),
+        transactions: contract('proxycaptrxn', 'transactions'),
+        projects: contract('proxycapprjt', 'projects')
     }
   } else if (network == networks.telosTestnet) {
     return {
-		owner: account(owner),
-      	firstuser: account('prxycpusraaa', '10000000.0000 USD'),
-      	seconduser: account('prxycpusraaa', '10000000.0000 USD'),
-      	thirduser: account('prxycpusraaa', '5000000.0000 USD'),
-      	transactions: contract('proxycaptrxn', 'transactions'),
+        owner: account(owner),
+        firstuser: account('prxycapusraa', '10000000.0000 USD'),
+        seconduser: account('prxycapusrbb', '10000000.0000 USD'),
+        thirduser: account('prxycapusrcc', '5000000.0000 USD'),
+        transactions: contract('proxycaptrxn', 'transactions'),
+        projects: contract('proxycapprjt', 'projects')
     }
   } else {
     throw new Error(`${network} deployment not supported`)
@@ -159,6 +166,6 @@ const initContracts = (accounts) =>
   )
 
 module.exports = {
-	accounts, names, permissions, isLocal, createKeypair, activePublicKey
+	accounts, names, permissions, isLocal, createKeypair, activePublicKey, DEBIT, CREDIT, CURRENCY, keyProvider
 }
 

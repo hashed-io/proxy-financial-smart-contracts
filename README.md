@@ -22,8 +22,8 @@ Use the compile.js script to
  * deploy and test the contracts respectively
 
 ```
-eoslime deploy --path="./scripts/deploy/"
-eoslime test --path="./test"
+npm run deploy
+npm run test
 ```
 
 
