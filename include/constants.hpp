@@ -7,11 +7,12 @@ using namespace eosio;
 
 const symbol CURRENCY = symbol("USD", 4);
 
-namespace contracts {
+namespace contract_names {
     name projects = "proxycapprjt"_n;
     name accounts = "proxycapaccn"_n;
     name transactions = "proxycaptrxn"_n;
     name permissions = "proxycapprms"_n;
+    name contracts = "proxycapcont"_n;
 }
 
 void check_asset(asset amount, name contract_name) {
