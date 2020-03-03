@@ -16,7 +16,6 @@ CONTRACT transactions : public contract {
 		using contract::contract;
 		transactions(name receiver, name code, datastream<const char*> ds)
 			: contract(receiver, code, ds),
-			  account_types(receiver, receiver.value),
 			  roles(receiver, receiver.value),
 			  action_permissions(receiver, receiver.value)
 			  {}
@@ -47,16 +46,8 @@ CONTRACT transactions : public contract {
 	private:
 		
 
-		enum AccountClass : uint8_t { DEBIT = 1, CREDIT = 0 };
+		
 		enum Permissions  : uint8_t { OWNER = 0, MANAGER = 1, ACCOUNTANT = 2 };
-
-		const vector< pair<string, uint8_t> > account_types_v = {
-			make_pair("Assets", AccountClass::DEBIT),
-			make_pair("Equity", AccountClass::CREDIT),
-			make_pair("Expenses", AccountClass::DEBIT),
-			make_pair("Income", AccountClass::CREDIT),
-			make_pair("Liabilities", AccountClass::CREDIT)
-		};
 
 		const vector< pair<uint8_t, string> > roles_v = {
 			make_pair(OWNER, "owner"),
@@ -66,19 +57,7 @@ CONTRACT transactions : public contract {
 
 		
 
-		// scoped by project_id
-		TABLE account_table {
-			uint64_t account_id;
-			uint64_t parent_id;
-			string account_name;
-			uint8_t type;
-			asset increase_balance;
-			asset decrease_balance;
-			symbol account_symbol;
-
-			uint64_t primary_key() const { return account_id; }
-			uint64_t by_parent() const { return parent_id; }
-		};
+		
 
 		// scoped by project_id
 		TABLE transaction_table {
@@ -111,14 +90,6 @@ CONTRACT transactions : public contract {
 			uint64_t primary_key() const { return action_p.value; }
 		};
 
-		TABLE type_table {
-			uint64_t type_id;
-			string type_name;
-			uint8_t account_class;
-
-			uint64_t primary_key() const { return type_id; }
-		};
-
 		TABLE role_table {
 			uint64_t role_id;
 			string role_name;
@@ -126,16 +97,7 @@ CONTRACT transactions : public contract {
 			uint64_t primary_key() const { return role_id; }
 		};
 
-		
-
-		typedef eosio::multi_index <"accounts"_n, account_table,
-			indexed_by<"byparent"_n,
-			const_mem_fun<account_table, uint64_t, &account_table::by_parent>>
-		> account_tables;
-
 		typedef eosio::multi_index <"transactions"_n, transaction_table> transaction_tables;
-
-		typedef eosio::multi_index <"accnttypes"_n, type_table> type_tables;
 
 		typedef eosio::multi_index <"userprmssion"_n, user_permission_table> user_permission_tables;
 
@@ -144,7 +106,7 @@ CONTRACT transactions : public contract {
 		typedef eosio::multi_index <"roles"_n, role_table> role_tables;
 
 		project_tables projects;
-		type_tables account_types;
+		
 		role_tables roles;
 		action_permission_tables action_permissions;
 

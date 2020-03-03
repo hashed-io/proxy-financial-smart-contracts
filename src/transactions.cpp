@@ -183,18 +183,6 @@ ACTION transactions::reset () {
 
 // ACTION transactions::invest() {}
 
-// Who can do this?
-ACTION transactions::addproject ( name actor,
-								  string project_name,
-								  string description,
-								  asset initial_goal ) {
-
-	require_auth(permission_level(actor, app_permission));
-
-	
-
-}
-
 ACTION transactions::addaccount ( name actor,
 								  uint64_t project_id, 
 								  string account_name, 
