@@ -28,8 +28,6 @@ ACTION accounts::reset () {
 ACTION accounts::initaccounts (uint64_t project_id) {
     require_auth(_self);
 
-    print("I AM HEEEEEEEEEEEEEEEERE");
-
     auto project = projects_table.find(project_id);
     check(project != projects_table.end(), contract_names::accounts.to_string() + ": project does not exist.");
     
@@ -44,7 +42,7 @@ ACTION accounts::initaccounts (uint64_t project_id) {
             new_account.account_id = new_account_id; 
             new_account.parent_id = 0;
             new_account.account_name = itr_types -> type_name;
-            new_account.type = itr_types -> type_id;
+            new_account.account_subtype = itr_types -> type_name;
             new_account.increase_balance = asset(0, CURRENCY);
             new_account.decrease_balance = asset(0, CURRENCY);
             new_account.account_symbol = CURRENCY;
@@ -57,7 +55,7 @@ ACTION accounts::addaccount ( name actor,
                               uint64_t project_id, 
                               string account_name, 
                               uint64_t parent_id, 
-                              uint8_t type, 
+                              string account_subtype, 
                               symbol account_currency ) {
 
     require_auth(actor);
@@ -82,7 +80,7 @@ ACTION accounts::addaccount ( name actor,
 	if (parent_id != 0) {
 		auto parent = accounts.find(parent_id);
 		check(parent != accounts.end(), contract_names::accounts.to_string() + ": the parent account does not exist.");
-		check(type == parent -> type, contract_names::accounts.to_string() + ": the child account must have the same type as its parent's.");
+		check(account_subtype == parent -> account_subtype, contract_names::accounts.to_string() + ": the child account must have the same type as its parent's.");
 	}
 
     //=========================================================//
@@ -96,7 +94,7 @@ ACTION accounts::addaccount ( name actor,
 		new_account.account_id = new_account_id; 
 		new_account.parent_id = parent_id;
 		new_account.account_name = account_name;
-		new_account.type = type;
+		new_account.account_subtype = account_subtype;
 		new_account.increase_balance = asset(0, CURRENCY);
 		new_account.decrease_balance = asset(0, CURRENCY);
 		new_account.account_symbol = CURRENCY;

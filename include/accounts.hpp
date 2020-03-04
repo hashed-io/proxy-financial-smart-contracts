@@ -2,7 +2,9 @@
 #include <eosio/system.hpp>
 #include <eosio/asset.hpp>
 #include <eosio/symbol.hpp>
-#include <constants.hpp>
+#include <common.hpp>
+#include <account_types.hpp>
+#include <account_subtypes.hpp>
 
 using namespace eosio;
 using namespace std;
@@ -26,20 +28,18 @@ CONTRACT accounts : public contract {
                             uint64_t project_id, 
                             string account_name, 
                             uint64_t parent_id, 
-                            uint8_t type, 
+                            string subtype, 
                             symbol account_currency );
     
 
     private:
 
-        enum AccountClass : uint8_t { DEBIT = 1, CREDIT = 0 };
-
-        const vector< pair<string, uint8_t> > account_types_v = {
-			make_pair("Assets", AccountClass::DEBIT),
-			make_pair("Equity", AccountClass::CREDIT),
-			make_pair("Expenses", AccountClass::DEBIT),
-			make_pair("Income", AccountClass::CREDIT),
-			make_pair("Liabilities", AccountClass::CREDIT)
+        const vector< pair<string, string> > account_types_v = {
+			make_pair(ACCOUNT_SUBTYPES.ASSETS, ACCOUNT_TYPES.DEBIT),
+			make_pair(ACCOUNT_SUBTYPES.EQUITY, ACCOUNT_TYPES.CREDIT),
+			make_pair(ACCOUNT_SUBTYPES.EXPENSES, ACCOUNT_TYPES.DEBIT),
+			make_pair(ACCOUNT_SUBTYPES.INCOME, ACCOUNT_TYPES.CREDIT),
+			make_pair(ACCOUNT_SUBTYPES.LIABILITIES, ACCOUNT_TYPES.CREDIT)
 		};
 
         // scoped by project_id
@@ -47,7 +47,7 @@ CONTRACT accounts : public contract {
 			uint64_t account_id;
 			uint64_t parent_id;
 			string account_name;
-			uint8_t type;
+			string account_subtype;
 			asset increase_balance;
 			asset decrease_balance;
 			symbol account_symbol;
@@ -56,14 +56,17 @@ CONTRACT accounts : public contract {
 			uint64_t by_parent() const { return parent_id; }
 		};
 
+
+        // do I really need this?
         TABLE type_table {
 			uint64_t type_id;
 			string type_name;
-			uint8_t account_class;
+			string account_class;
 
 			uint64_t primary_key() const { return type_id; }
 		};
 
+        // table from projects contract
         TABLE project_table {
 			uint64_t project_id;
 			name owner;

@@ -2,7 +2,9 @@
 #include <eosio/system.hpp>
 #include <eosio/asset.hpp>
 #include <eosio/symbol.hpp>
-#include <constants.hpp>
+#include <common.hpp>
+#include <account_types.hpp>
+#include <account_subtypes.hpp>
 
 using namespace eosio;
 using namespace std;
