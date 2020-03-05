@@ -9,8 +9,9 @@ function ownerNotExistError (err) {
     return (JSON.parse(err).error.code === 3040000)
 }
 
-function createPermissions (eoslime) {
-    permissions.forEach(async permission => {
+async function createPermissions (eoslime) {
+    
+    for (const permission of permissions) {
         try {
             if (permission.actor) {
                 const at_pos = permission.actor.indexOf('@')
@@ -26,8 +27,8 @@ function createPermissions (eoslime) {
             }
         } catch (err) {
             console.log('there was an error while giving permission:', permission, err)
-        }
-    })
+        }   
+    }
 }
 
 let deploy = async function (eoslime, deployer) {

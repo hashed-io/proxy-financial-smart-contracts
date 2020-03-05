@@ -21,6 +21,7 @@ ACTION projects::addproject ( name actor,
 	auto itr_p = projects_table.begin();
 	while (itr_p != projects_table.end()) {
 		check(project_name != itr_p -> project_name, contract_names::projects.to_string() + ": there is already a project with that name.");
+        itr_p++;
 	}
 
     uint64_t new_project_id = projects_table.available_primary_key();

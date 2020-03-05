@@ -41,6 +41,7 @@ ACTION accounts::initaccounts (uint64_t project_id) {
         accounts.emplace(_self, [&](auto & new_account){
             new_account.account_id = new_account_id; 
             new_account.parent_id = 0;
+            new_account.num_children = 0;
             new_account.account_name = itr_types -> type_name;
             new_account.account_subtype = itr_types -> type_name;
             new_account.increase_balance = asset(0, CURRENCY);
@@ -48,6 +49,49 @@ ACTION accounts::initaccounts (uint64_t project_id) {
             new_account.account_symbol = CURRENCY;
         });
         itr_types++;
+    }
+}
+
+ACTION accounts::addbalance (uint64_t project_id, uint64_t account_id, asset amount) {
+    require_auth(_self);
+    check_asset(amount, contract_names::accounts);
+
+    account_tables accounts(_self, project_id);
+
+    auto itr_account = accounts.find(account_id);
+    check(itr_account != accounts.end(), contract_names::accounts.to_string() + ": the account does not exist.");
+    check(itr_account -> num_children == 0, contract_names::accounts.to_string() + ": can not add balance to a parent account.");
+
+    uint64_t parent_id = 0;
+    while (itr_account != accounts.end()) {
+        parent_id = itr_account -> parent_id;
+        print("PROCESSED:", itr_account -> account_name, "\n");
+        accounts.modify(itr_account, _self, [&](auto & modified_account){
+            modified_account.increase_balance += amount;
+        });
+        itr_account = accounts.find(parent_id);
+    }
+
+}
+
+ACTION accounts::subbalance (uint64_t project_id, uint64_t account_id, asset amount) {
+    require_auth(_self);
+    check_asset(amount, contract_names::accounts);
+
+    account_tables accounts(_self, project_id);
+
+    auto itr_account = accounts.find(account_id);
+    check(itr_account != accounts.end(), contract_names::accounts.to_string() + ": the account does not exist.");
+    check(itr_account -> num_children == 0, contract_names::accounts.to_string() + ": can not add balance to a parent account.");
+
+    uint64_t parent_id = 0;
+    while (itr_account != accounts.end()) {
+        parent_id = itr_account -> parent_id;
+        print("PROCESSED:", itr_account -> account_name, "\n");
+        accounts.modify(itr_account, _self, [&](auto & modified_account){
+            modified_account.decrease_balance += amount;
+        });
+        itr_account = accounts.find(parent_id);
     }
 }
 
@@ -76,16 +120,12 @@ ACTION accounts::addaccount ( name actor,
 	}
 
 	check(account_currency == CURRENCY, contract_names::accounts.to_string() + ": the currency must be the same.");
+    check(parent_id != 0, contract_names::accounts.to_string() + ": the parent id must be grater than zero.");
 
-	if (parent_id != 0) {
-		auto parent = accounts.find(parent_id);
-		check(parent != accounts.end(), contract_names::accounts.to_string() + ": the parent account does not exist.");
-		check(account_subtype == parent -> account_subtype, contract_names::accounts.to_string() + ": the child account must have the same type as its parent's.");
-	}
-
-    //=========================================================//
-    //== if it is not 0 then another permission is required? ==//
-    //=========================================================//
+    auto parent = accounts.find(parent_id);
+    check(parent != accounts.end(), contract_names::accounts.to_string() + ": the parent account does not exist.");
+    check(parent -> increase_balance == asset(0, CURRENCY) && parent -> decrease_balance == asset(0, CURRENCY), contract_names::accounts.to_string() + ": the parent's balance is not zero.");
+    check(account_subtype == parent -> account_subtype, contract_names::accounts.to_string() + ": the child account must have the same type as its parent's.");
 
     uint64_t new_account_id = accounts.available_primary_key();
     new_account_id = (new_account_id > 0) ? new_account_id : 1;
@@ -99,9 +139,13 @@ ACTION accounts::addaccount ( name actor,
 		new_account.decrease_balance = asset(0, CURRENCY);
 		new_account.account_symbol = CURRENCY;
 	});
+
+    accounts.modify(parent, _self, [&](auto & modified_account){
+        modified_account.num_children += 1;
+    });
     
 }
 
 
-EOSIO_DISPATCH(accounts, (reset)(addaccount)(initaccounts));
+EOSIO_DISPATCH(accounts, (reset)(addaccount)(initaccounts)(addbalance)(subbalance));
 

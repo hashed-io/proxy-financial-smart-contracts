@@ -126,14 +126,15 @@ const permissions = [
 	{
 		target: `${accounts.transactions.account}@active`,
 		actor: `${accounts.transactions.account}@eosio.code`
-  },
-  {
+  }, {
 		target: `${accounts.projects.account}@active`,
 		actor: `${accounts.projects.account}@eosio.code`
-  },
-  {
+  }, {
 		target: `${accounts.accounts.account}@active`,
 		actor: `${accounts.projects.account}@active`
+  }, {
+		target: `${accounts.accounts.account}@active`,
+		actor: `${accounts.transactions.account}@active`
   }
 ]
 

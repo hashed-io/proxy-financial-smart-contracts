@@ -1,6 +1,6 @@
 const assert = require('assert');
 const accounts = require('../scripts/accounts.json')
-const { names, DEBIT, CREDIT, CURRENCY } = require('../scripts/helper')
+const { names, currency } = require('../scripts/helper')
 
 function getError (err) {
     return JSON.parse(err).error.details[0].message.replace('assertion failure with message: ', '')
@@ -14,69 +14,94 @@ describe("EOSIO Token", function (eoslime) {
     let firstuser = eoslime.Account.load(names.firstuser, accounts[names.firstuser].privateKey, 'active')
     let seconduser = eoslime.Account.load(names.seconduser, accounts[names.seconduser].privateKey, 'active')
     let transactions = eoslime.Account.load(names.transactions, accounts[names.transactions].privateKey, 'active')
+    let accountss = eoslime.Account.load(names.accounts, accounts[names.accounts].privateKey, 'active')
+    let projects = eoslime.Account.load(names.projects, accounts[names.projects].privateKey, 'active') 
 
-    let transactionsContract;
     let firstuserContract;
     let seconduserContract;
+    let transactionsContract;
+    let accountssContract;
+    let projectsContract; 
 
     before(async () => {
 
-        transactionsContract = await eoslime.Contract.at(names.transactions, transactions)
         firstuserContract = await eoslime.Contract.at(names.transactions, firstuser)
         seconduserContract = await eoslime.Contract.at(names.transactions, seconduser)
+        transactionsContract = await eoslime.Contract.at(names.transactions, transactions)
+        accountssContract = await eoslime.Contract.at(names.accounts, accountss)
+        projectsContract = await eoslime.Contract.at(names.projects, projects)
 
         console.log('reset transactions contract')
         await transactionsContract.reset();
 
+        console.log('reset accounts contract')
+        await accountssContract.reset()
+
+        console.log('reset projects contract')
+        await projectsContract.reset()
+
     })
 
-    // it('Should create accounts properly', async () => {
+    it('Should create transactions properly', async () => {
 
-    //     await seconduserContract.addaccount(seconduser.name, 0, 'Assets', 0, DEBIT, CURRENCY)
+        let firstuserContractProjects = await eoslime.Contract.at(names.projects, firstuser)
+        await firstuserContractProjects.addproject(firstuser.name, 'test project', 'this is a test', '10.0000 USD')
 
-    //     try {
-    //         await firstuserContract.addaccount(firstuser.name, 0, 'Assets', 0, DEBIT, CURRENCY)
-    //     } catch (err) {
-    //         assert.deepEqual(transactions.name + ': the name of the account already exists.', getError(err))
-    //     }
+        let firstuserContractAccounts = await eoslime.Contract.at(names.accounts, firstuser)
 
-    //     await seconduserContract.addaccount(seconduser.name, 0, 'Liquid Primary', 1, DEBIT, CURRENCY)
-    //     await seconduserContract.addaccount(seconduser.name, 0, 'Reserve Account', 1, DEBIT, CURRENCY)
+        // Assets children
+        await firstuserContractAccounts.addaccount(firstuser.name, 0, 'Liquid Primary', 1, 'Assets', currency) // id = 6
+        await firstuserContractAccounts.addaccount(firstuser.name, 0, 'Reserve Account', 1, 'Assets', currency) // id = 7
 
-    //     try {
-    //         await firstuserContract.addaccount(firstuser.name, 0, 'Distinct account type', 1, CREDIT, CURRENCY)
-    //     } catch (err) {
-    //         assert.deepEqual(transactions.name + ': the child account must have the same type as its parent\'s.', getError(err))
-    //     }
+        // Equity children
+        await firstuserContractAccounts.addaccount(firstuser.name, 0, 'Investments', 2, 'Equity', currency) // id = 8
+        await firstuserContractAccounts.addaccount(firstuser.name, 0, 'Franklin Johnson', 8, 'Equity', currency) // id = 9
+        await firstuserContractAccounts.addaccount(firstuser.name, 0, 'Michelle Wu', 8, 'Equity', currency) // id = 10
 
-    //     try {
-    //         await firstuserContract.addaccount(firstuser.name, 0, 'Not existing parent account', 10, CREDIT, CURRENCY)
-    //     } catch (err) {
-    //         assert.deepEqual(transactions.name + ': the parent does not exist.', getError(err))
-    //     }
+        // Expenses children
+        await firstuserContractAccounts.addaccount(firstuser.name, 0, 'Development', 3, 'Expenses', currency) // id = 11
+        await firstuserContractAccounts.addaccount(firstuser.name, 0, 'Marketing', 3, 'Expenses', currency) // id = 12
+        await firstuserContractAccounts.addaccount(firstuser.name, 0, 'Tech Infrastructure', 3, 'Expenses', currency) // id = 13
+        await firstuserContractAccounts.addaccount(firstuser.name, 0, 'Travel', 3, 'Expenses', currency) // id = 14
 
-    //     try {
-    //         await firstuserContract.addaccount(firstuser.name, 10, 'Not existing project', 0, CREDIT, CURRENCY)
-    //     } catch (err) {
-    //         assert.deepEqual(transactions.name + ': the project where the account is trying to be placed does not exist.', getError(err))
-    //     }
+        await firstuserContract.transact(firstuser.name, 0, 10, 6, 1023020302, "Invest into project", "100000.0000 USD", 1, 
+                                        ['https://docs.telos.kitchen/tO6eoye_Td-76wBz7J3EZQ#','https://docs.telos.kitchen/jJq8d7dwSlCSvj42yZyBGg#'])
 
-    //     await seconduserContract.addaccount(seconduser.name, 0, 'Equity', 0, CREDIT, CURRENCY)
-    //     await seconduserContract.addaccount(seconduser.name, 0, 'Investments', 4, CREDIT, CURRENCY)
-    //     await seconduserContract.addaccount(seconduser.name, 0, 'Franklin Johnson', 5, CREDIT, CURRENCY)
-    //     await seconduserContract.addaccount(seconduser.name, 0, 'Michelle Wu', 5, CREDIT, CURRENCY)
+        await firstuserContract.transact(firstuser.name, 0, 13, 6, 1023020302, "AWS Server Expenses", "100.0000 USD", 1, 
+                                        ['https://docs.telos.kitchen/tO6eoye_Td-76wBz7J3EZQ#'])
 
-    // })
+        await firstuserContract.transact(firstuser.name, 0, 13, 6, 1023020302, "AWS Server Expenses", "200.0000 USD", 1, 
+                                        ['https://docs.telos.kitchen/tO6eoye_Td-76wBz7J3EZQ#'])
 
-    // it('Should create transactions properly', async () => {
 
-    //     await firstuserContract.transact(firstuser.name, '')
 
-    // })
+        let seconduserContractProjects = await eoslime.Contract.at(names.projects, seconduser)
+        await seconduserContractProjects.addproject(seconduser.name, 'test project 2', 'this is a test 2', '10.0000 USD')
+
+        let seconduserContractAccounts = await eoslime.Contract.at(names.accounts, seconduser)
+
+         // Assets children
+        await seconduserContractAccounts.addaccount(seconduser.name, 1, 'Liquid Primary', 1, 'Assets', currency) // id = 6
+        await seconduserContractAccounts.addaccount(seconduser.name, 1, 'Reserve Account', 1, 'Assets', currency) // id = 7
+
+        // Equity children
+        await seconduserContractAccounts.addaccount(seconduser.name, 1, 'Investments', 2, 'Equity', currency) // id = 8
+        await seconduserContractAccounts.addaccount(seconduser.name, 1, 'Franklin Johnson', 8, 'Equity', currency) // id = 9
+        await seconduserContractAccounts.addaccount(seconduser.name, 1, 'Michelle Wu', 8, 'Equity', currency) // id = 10
+
+        // Expenses children
+        await seconduserContractAccounts.addaccount(seconduser.name, 1, 'Development', 3, 'Expenses', currency) // id = 11
+        await seconduserContractAccounts.addaccount(seconduser.name, 1, 'Marketing', 3, 'Expenses', currency) // id = 12
+        await seconduserContractAccounts.addaccount(seconduser.name, 1, 'Tech Infrastructure', 3, 'Expenses', currency) // id = 13
+        await seconduserContractAccounts.addaccount(seconduser.name, 1, 'Travel', 3, 'Expenses', currency) // id = 14
+
+        await seconduserContract.transact(seconduser.name, 1, 6, 13, 1023020302, "Test 2", "100.0000 USD", 0, 
+                                    ['https://docs.telos.kitchen/tO6eoye_Td-76wBz7J3EZQ#'])
+
+        await seconduserContract.transact(seconduser.name, 1, 9, 5, 1023020302, "Test 3", "200.0000 USD", 0, 
+                                        ['https://docs.telos.kitchen/tO6eoye_Td-76wBz7J3EZQ#'])
+
+    })
    
 });
-
-
-
-
 

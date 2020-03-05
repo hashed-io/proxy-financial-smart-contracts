@@ -30,6 +30,10 @@ CONTRACT accounts : public contract {
                             uint64_t parent_id, 
                             string subtype, 
                             symbol account_currency );
+
+		ACTION addbalance (uint64_t project_id, uint64_t account_id, asset amount);
+
+		ACTION subbalance (uint64_t project_id, uint64_t account_id, asset amount);
     
 
     private:
@@ -46,6 +50,7 @@ CONTRACT accounts : public contract {
 		TABLE account_table {
 			uint64_t account_id;
 			uint64_t parent_id;
+			uint16_t num_children;
 			string account_name;
 			string account_subtype;
 			asset increase_balance;

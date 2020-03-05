@@ -18,7 +18,8 @@ const existsAsync = promisify(fs.exists)
 
 const contracts = [
 	'projects',
-	'accounts'
+	'accounts',
+	'transactions'
 ].sort()
 
 const command = ({ contract, source, dir }) => {

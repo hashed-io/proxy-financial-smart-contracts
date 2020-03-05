@@ -2,6 +2,9 @@
 #include <eosio/system.hpp>
 #include <eosio/asset.hpp>
 #include <eosio/symbol.hpp>
+#include <common.hpp>
+#include <account_types.hpp>
+#include <account_subtypes.hpp>
 #include <utility>
 #include <vector>
 #include <string>
@@ -16,7 +19,8 @@ CONTRACT transactions : public contract {
 		using contract::contract;
 		transactions(name receiver, name code, datastream<const char*> ds)
 			: contract(receiver, code, ds),
-			  projects(contract_names::projects, contract_names::projects.value)
+			  projects(contract_names::projects, contract_names::projects.value),
+			  account_types(contract_names::accounts, contract_names::accounts.value)
 			  {}
 
 		ACTION reset ();
@@ -24,7 +28,8 @@ CONTRACT transactions : public contract {
 		ACTION transact ( name actor, 
 						  uint64_t project_id, 
 						  uint64_t from, 
-						  uint64_t to, 
+						  uint64_t to,
+						  uint64_t date,
 						  string description, 
 						  asset amount, 
 						  bool increase,
@@ -51,8 +56,9 @@ CONTRACT transactions : public contract {
 		TABLE account_table {
 			uint64_t account_id;
 			uint64_t parent_id;
+			uint16_t num_children;
 			string account_name;
-			uint8_t type;
+			string account_subtype;
 			asset increase_balance;
 			asset decrease_balance;
 			symbol account_symbol;
@@ -72,6 +78,14 @@ CONTRACT transactions : public contract {
 			uint64_t primary_key() const { return project_id; }
 		};
 
+		TABLE type_table {
+			uint64_t type_id;
+			string type_name;
+			string account_class;
+
+			uint64_t primary_key() const { return type_id; }
+		};
+
 		typedef eosio::multi_index <"transactions"_n, transaction_table> transaction_tables;
 
 		typedef eosio::multi_index <"accounts"_n, account_table,
@@ -80,8 +94,11 @@ CONTRACT transactions : public contract {
 		> account_tables;
 
 		typedef eosio::multi_index <"projects"_n, project_table> project_tables;
+
+		typedef eosio::multi_index <"accnttypes"_n, type_table> type_tables;
 		
 		project_tables projects;
+		type_tables account_types;
 
 };
 

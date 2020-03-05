@@ -58,6 +58,7 @@ describe("Proxy Capital Accounts Contract", function (eoslime) {
               account_subtype: 'Assets',
               increase_balance: '0.0000 USD',
               decrease_balance: '0.0000 USD',
+              num_children: 2,
               account_symbol: '4,USD'
             },
             {
@@ -67,6 +68,7 @@ describe("Proxy Capital Accounts Contract", function (eoslime) {
               account_subtype: 'Equity',
               increase_balance: '0.0000 USD',
               decrease_balance: '0.0000 USD',
+              num_children: 1,
               account_symbol: '4,USD'
             },
             {
@@ -76,6 +78,7 @@ describe("Proxy Capital Accounts Contract", function (eoslime) {
               account_subtype: 'Expenses',
               increase_balance: '0.0000 USD',
               decrease_balance: '0.0000 USD',
+              num_children: 4,
               account_symbol: '4,USD'
             },
             {
@@ -85,6 +88,7 @@ describe("Proxy Capital Accounts Contract", function (eoslime) {
               account_subtype: 'Income',
               increase_balance: '0.0000 USD',
               decrease_balance: '0.0000 USD',
+              num_children: 0,
               account_symbol: '4,USD'
             },
             {
@@ -94,6 +98,7 @@ describe("Proxy Capital Accounts Contract", function (eoslime) {
               account_subtype: 'Liabilities',
               increase_balance: '0.0000 USD',
               decrease_balance: '0.0000 USD',
+              num_children: 0,
               account_symbol: '4,USD'
             },
             {
@@ -103,6 +108,7 @@ describe("Proxy Capital Accounts Contract", function (eoslime) {
               account_subtype: 'Assets',
               increase_balance: '0.0000 USD',
               decrease_balance: '0.0000 USD',
+              num_children: 0,
               account_symbol: '4,USD'
             },
             {
@@ -112,6 +118,7 @@ describe("Proxy Capital Accounts Contract", function (eoslime) {
               account_subtype: 'Assets',
               increase_balance: '0.0000 USD',
               decrease_balance: '0.0000 USD',
+              num_children: 0,
               account_symbol: '4,USD'
             },
             {
@@ -121,6 +128,7 @@ describe("Proxy Capital Accounts Contract", function (eoslime) {
               account_subtype: 'Equity',
               increase_balance: '0.0000 USD',
               decrease_balance: '0.0000 USD',
+              num_children: 2,
               account_symbol: '4,USD'
             },
             {
@@ -130,6 +138,7 @@ describe("Proxy Capital Accounts Contract", function (eoslime) {
               account_subtype: 'Equity',
               increase_balance: '0.0000 USD',
               decrease_balance: '0.0000 USD',
+              num_children: 0,
               account_symbol: '4,USD'
             },
             {
@@ -139,6 +148,7 @@ describe("Proxy Capital Accounts Contract", function (eoslime) {
               account_subtype: 'Equity',
               increase_balance: '0.0000 USD',
               decrease_balance: '0.0000 USD',
+              num_children: 0,
               account_symbol: '4,USD'
             },
             {
@@ -148,6 +158,7 @@ describe("Proxy Capital Accounts Contract", function (eoslime) {
               account_subtype: 'Expenses',
               increase_balance: '0.0000 USD',
               decrease_balance: '0.0000 USD',
+              num_children: 0,
               account_symbol: '4,USD'
             },
             {
@@ -157,6 +168,7 @@ describe("Proxy Capital Accounts Contract", function (eoslime) {
               account_subtype: 'Expenses',
               increase_balance: '0.0000 USD',
               decrease_balance: '0.0000 USD',
+              num_children: 0,
               account_symbol: '4,USD'
             },
             {
@@ -166,6 +178,7 @@ describe("Proxy Capital Accounts Contract", function (eoslime) {
               account_subtype: 'Expenses',
               increase_balance: '0.0000 USD',
               decrease_balance: '0.0000 USD',
+              num_children: 0,
               account_symbol: '4,USD'
             },
             {
@@ -175,6 +188,7 @@ describe("Proxy Capital Accounts Contract", function (eoslime) {
               account_subtype: 'Expenses',
               increase_balance: '0.0000 USD',
               decrease_balance: '0.0000 USD',
+              num_children: 0,
               account_symbol: '4,USD'
             }
           ]          
