@@ -35,25 +35,32 @@ const command = ({ contract, source, dir }) => {
 }
 
 const compile = async ({ contract, source }) => {
-	const contractFound = await existsAsync(source)
-	if (!contractFound) {
-		throw new Error('contract not found: ' + contract + ' No source file: ' + source)
+	try {
+
+		const contractFound = await existsAsync(source)
+		if (!contractFound) {
+			throw new Error('contract not found: ' + contract + ' No source file: ' + source)
+		}
+
+		const dir = process.cwd() + '/'
+		const artifacts = dir + 'artifacts'
+
+		const artifactsFound = await existsAsync(artifacts)
+		if (!artifactsFound) {
+			console.log('creating artifacts directory...')
+			await mkdirAsync(artifacts)
+		}
+
+		await deleteIfExists(artifacts + '/' + contract + '.wasm')
+		await deleteIfExists(artifacts + '/' + contract + '.abi')
+
+		const execCommand = command({ contract, source, dir })
+		await execAsync(execCommand)
+		console.log(`${contract} compiled`)
+	} catch (error) {
+		console.error(`Error compiling ${contract}`, error)
+		throw error
 	}
-
-	const dir = process.cwd() + '/'
-	const artifacts = dir + 'artifacts'
-
-	const artifactsFound = await existsAsync(artifacts)
-	if (!artifactsFound) {
-		console.log('creating artifacts directory...')
-		await mkdirAsync(artifacts)
-	}
-
-	await deleteIfExists(artifacts + '/' + contract + '.wasm')
-	await deleteIfExists(artifacts + '/' + contract + '.abi')
-
-	const execCommand = command({ contract, source, dir })
-	await execAsync(execCommand)
 }
 
 const deleteIfExists = async (file) => {
@@ -61,24 +68,27 @@ const deleteIfExists = async (file) => {
 	if (fileExists) {
 		try {
 			await unlinkAsync(file)
-		} catch(err) {
+		} catch (err) {
 			console.log('delete file error: ' + err)
 		}
 	}
 }
 
 async function compileAll() {
-	for(const contract of contracts){
+	for (const contract of contracts) {
 		try {
-			await compile({
+			const promise = compile({
 				contract: contract,
-		source: `./src/${contract}.cpp`
+				source: `./src/${contract}.cpp`
 			})
-			console.log(`${contract} compiled`)
-		} catch(err) {
+			if (process.env.COMPILER === 'docker') {
+				await promise
+			}
+		} catch (err) {
 			console.log('compile failed for ' + contract + ' error: ' + err)
 		}
 	}
 }
+
 
 compileAll()

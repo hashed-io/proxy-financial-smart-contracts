@@ -1,7 +1,7 @@
 node_modules
 artifacts
 .eosproj
+scripts/accounts.json
 
 .vscode/settings.json
-
 package-lock.json
