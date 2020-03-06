@@ -1,3 +1,5 @@
+#pragma once
+
 #include <eosio/eosio.hpp>
 #include <eosio/system.hpp>
 #include <eosio/asset.hpp>
@@ -16,6 +18,7 @@ using namespace std;
 CONTRACT transactions : public contract {
 
 	public:
+
 		using contract::contract;
 		transactions(name receiver, name code, datastream<const char*> ds)
 			: contract(receiver, code, ds),
@@ -34,6 +37,18 @@ CONTRACT transactions : public contract {
 						  asset amount, 
 						  bool increase,
 						  vector<string> supporting_urls );
+
+		ACTION deletetrxn ( name actor, uint64_t project_id, uint64_t transaction_id );
+
+		ACTION edittrxn ( name actor,
+						  uint64_t project_id, 
+						  uint64_t transaction_id,
+						  uint64_t date,
+						  string description,
+						  asset amount,
+						  bool increase,
+						  vector<string> supporting_urls );
+
 
 	private:
 
@@ -99,6 +114,17 @@ CONTRACT transactions : public contract {
 		
 		project_tables projects;
 		type_tables account_types;
+
+
+		name get_action_from (string type_from, bool increase);
+		name get_action_to (string type_from, string type_to, bool increase);
+		string get_account_type (uint64_t project_id, uint64_t account_id);
+		name get_cancel_action (name action_to_be_canceled);
+		void delete_transaction (uint64_t project_id, uint64_t transaction_id);
+		
+		void make_transaction ( name actor, uint64_t project_id, uint64_t from, uint64_t to,
+								uint64_t date, string description, asset amount, bool increase,
+								vector<string> supporting_urls );
 
 };
 

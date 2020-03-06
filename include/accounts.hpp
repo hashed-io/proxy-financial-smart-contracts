@@ -1,3 +1,5 @@
+#pragma once
+
 #include <eosio/eosio.hpp>
 #include <eosio/system.hpp>
 #include <eosio/asset.hpp>
@@ -31,9 +33,17 @@ CONTRACT accounts : public contract {
                             string subtype, 
                             symbol account_currency );
 
+		ACTION editaccount (name actor, uint64_t project_id, uint64_t account_id, string new_name);
+
+		ACTION deleteaccnt (name actor, uint64_t project_id, uint64_t account_id);
+
 		ACTION addbalance (uint64_t project_id, uint64_t account_id, asset amount);
 
 		ACTION subbalance (uint64_t project_id, uint64_t account_id, asset amount);
+
+		ACTION canceladd (uint64_t project_id, uint64_t account_id, asset amount);
+
+		ACTION cancelsub (uint64_t project_id, uint64_t account_id, asset amount);
     
 
     private:
@@ -94,6 +104,8 @@ CONTRACT accounts : public contract {
         type_tables account_types;
         project_tables projects_table;
 
+
+		void change_balance (uint64_t project_id, uint64_t account_id, asset amount, bool increase, bool cancel);
 };
 
 

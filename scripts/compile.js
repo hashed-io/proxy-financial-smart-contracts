@@ -1,10 +1,3 @@
-/* import dotenv from 'dotenv'
-dotenv.config()
-
-import { exec } from 'child_process'
-import { promisify } from 'util'
-import fs from 'fs' */
-
 require('dotenv').config()
 
 const { exec } = require('child_process')
@@ -19,7 +12,8 @@ const existsAsync = promisify(fs.exists)
 const contracts = [
 	'projects',
 	'accounts',
-	'transactions'
+	'transactions',
+	'permissions'
 ].sort()
 
 const command = ({ contract, source, dir }) => {

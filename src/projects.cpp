@@ -1,6 +1,5 @@
 #include <projects.hpp>
 
-
 ACTION projects::reset () {
     require_auth(_self);
 

@@ -1,5 +1,36 @@
 #include <accounts.hpp>
 
+
+void accounts::change_balance (uint64_t project_id, uint64_t account_id, asset amount, bool increase, bool cancel) {
+    account_tables accounts(_self, project_id);
+
+    auto itr_account = accounts.find(account_id);
+    check(itr_account != accounts.end(), contract_names::accounts.to_string() + ": the account does not exist.");
+    check(itr_account -> num_children == 0, contract_names::accounts.to_string() + ": can not add balance to a parent account.");
+
+    uint64_t parent_id = 0;
+    while (itr_account != accounts.end()) {
+        parent_id = itr_account -> parent_id;
+        print("PROCESSED:", itr_account -> account_name, "\n");
+        accounts.modify(itr_account, _self, [&](auto & modified_account){
+            if (increase) {
+                if (cancel) {
+                    modified_account.increase_balance -= amount;
+                } else {
+                    modified_account.increase_balance += amount;
+                }
+            } else {
+                if (cancel) {
+                    modified_account.decrease_balance -= amount;
+                } else {
+                    modified_account.decrease_balance += amount;
+                }
+            } 
+        });
+        itr_account = accounts.find(parent_id);
+    }
+}
+
 ACTION accounts::reset () {
     require_auth(_self);
 
@@ -56,43 +87,83 @@ ACTION accounts::addbalance (uint64_t project_id, uint64_t account_id, asset amo
     require_auth(_self);
     check_asset(amount, contract_names::accounts);
 
-    account_tables accounts(_self, project_id);
-
-    auto itr_account = accounts.find(account_id);
-    check(itr_account != accounts.end(), contract_names::accounts.to_string() + ": the account does not exist.");
-    check(itr_account -> num_children == 0, contract_names::accounts.to_string() + ": can not add balance to a parent account.");
-
-    uint64_t parent_id = 0;
-    while (itr_account != accounts.end()) {
-        parent_id = itr_account -> parent_id;
-        print("PROCESSED:", itr_account -> account_name, "\n");
-        accounts.modify(itr_account, _self, [&](auto & modified_account){
-            modified_account.increase_balance += amount;
-        });
-        itr_account = accounts.find(parent_id);
-    }
-
+    change_balance(project_id, account_id, amount, true, false);
 }
 
 ACTION accounts::subbalance (uint64_t project_id, uint64_t account_id, asset amount) {
     require_auth(_self);
     check_asset(amount, contract_names::accounts);
 
+    change_balance(project_id, account_id, amount, false, false); 
+}
+
+ACTION accounts::canceladd (uint64_t project_id, uint64_t account_id, asset amount) {
+    require_auth(_self);
+    check_asset(amount, contract_names::accounts);
+
+    change_balance(project_id, account_id, amount, true, true);
+}
+
+ACTION accounts::cancelsub (uint64_t project_id, uint64_t account_id, asset amount) {
+    require_auth(_self);
+    check_asset(amount, contract_names::accounts);
+
+    change_balance(project_id, account_id, amount, false, true);
+}
+
+ACTION accounts::editaccount (name actor, uint64_t project_id, uint64_t account_id, string new_name) {
+    require_auth(actor);
+
+    //================================//
+    //== check for permissions here ==//
+    //================================//
+
+    auto itr_project = projects_table.find(project_id);
+    check(itr_project != projects_table.end(), contract_names::accounts.to_string() + ": the project does not exist.");
+
     account_tables accounts(_self, project_id);
 
     auto itr_account = accounts.find(account_id);
     check(itr_account != accounts.end(), contract_names::accounts.to_string() + ": the account does not exist.");
-    check(itr_account -> num_children == 0, contract_names::accounts.to_string() + ": can not add balance to a parent account.");
 
-    uint64_t parent_id = 0;
-    while (itr_account != accounts.end()) {
-        parent_id = itr_account -> parent_id;
-        print("PROCESSED:", itr_account -> account_name, "\n");
-        accounts.modify(itr_account, _self, [&](auto & modified_account){
-            modified_account.decrease_balance += amount;
-        });
-        itr_account = accounts.find(parent_id);
+    auto itr_accounts = accounts.begin();
+    while (itr_accounts != accounts.end()) {
+        check(itr_accounts -> account_name != new_name, contract_names::accounts.to_string() + ": that name has been already taken.");
+        itr_accounts++;
     }
+
+    accounts.modify(itr_account, _self, [&](auto & modified_account){
+        modified_account.account_name = new_name;
+    });
+}
+
+ACTION accounts::deleteaccnt (name actor, uint64_t project_id, uint64_t account_id) {
+    require_auth(actor);
+
+    //================================//
+    //== check for permissions here ==//
+    //================================//
+
+    auto project = projects_table.find(project_id);
+	check(project != projects_table.end(), contract_names::accounts.to_string() + ": the project where the account is trying to be placed does not exist.");
+
+	account_tables accounts(_self, project_id);
+
+    auto account = accounts.find(account_id);
+    check(account != accounts.end(), contract_names::accounts.to_string() + ": the account does not exist.");
+
+    check(account -> num_children == 0, contract_names::accounts.to_string() + ": the account has subaccounts and can not be deleted.");
+    check(account -> increase_balance == asset(0, CURRENCY), contract_names::accounts.to_string() + ": the account has an increase balance grater than 0 and can not be deleted.");
+    check(account -> decrease_balance == asset(0, CURRENCY), contract_names::accounts.to_string() + ": the account has a decrease balance grater than 0 and can not be deleted.");
+
+    auto parent = accounts.find(account -> parent_id);
+    check(parent != accounts.end(), contract_names::accounts.to_string() + ": the parent account does not exist.");
+
+    accounts.modify(parent, _self, [&](auto & modified_account){
+        modified_account.num_children -= 1;
+    });
+
+    accounts.erase(account);
 }
 
 ACTION accounts::addaccount ( name actor,
@@ -147,5 +218,5 @@ ACTION accounts::addaccount ( name actor,
 }
 
 
-EOSIO_DISPATCH(accounts, (reset)(addaccount)(initaccounts)(addbalance)(subbalance));
+EOSIO_DISPATCH(accounts, (reset)(addaccount)(initaccounts)(addbalance)(subbalance)(canceladd)(cancelsub));
 

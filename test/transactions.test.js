@@ -101,6 +101,19 @@ describe("EOSIO Token", function (eoslime) {
         await seconduserContract.transact(seconduser.name, 1, 9, 5, 1023020302, "Test 3", "200.0000 USD", 0, 
                                         ['https://docs.telos.kitchen/tO6eoye_Td-76wBz7J3EZQ#'])
 
+
+        const provider = eoslime.Provider
+        const secondProjectTableBefore = await provider.select('transactions').from(names.transactions).scope('1').limit(20).find()
+        const accountsTable = await provider.select('accounts').from(names.accounts).scope('1').limit(20).find()
+        
+        console.log(accountsTable)
+        console.log(secondProjectTableBefore)
+
+        await seconduserContract.deletetrxn(seconduser.name, 1, 1)
+
+        await seconduserContract.edittrxn(seconduser.name, 1, 0, 22222222, "Changed transaction", "500.0000 USD", 1, 
+                                        ['https://docs.telos.kitchen#', 'https://docs.telos.kitchen/sajiojoas#'])
+
     })
    
 });
