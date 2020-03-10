@@ -7,6 +7,7 @@
 #include <common.hpp>
 #include <account_types.hpp>
 #include <account_subtypes.hpp>
+#include <action_names.hpp>
 #include <utility>
 #include <vector>
 #include <string>

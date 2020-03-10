@@ -183,9 +183,12 @@ ACTION transactions::transact ( name actor,
 	check_asset(amount, contract_names::transactions);
 	check(from != to, contract_names::transactions.to_string() + ": from must be different than to");
 
-	//================================//
-    //== check for permissions here ==//
-    //================================//
+	action (
+        permission_level(contract_names::permissions, "active"_n),
+        contract_names::permissions,
+        "checkprmissn"_n,
+        std::make_tuple(actor, project_id, ACTION_NAMES.TRANSACTIONS_ADD)
+    ).send();
 
 	auto itr_project = projects.find(project_id);
 	check(itr_project != projects.end(), contract_names::transactions.to_string() + ": the project with the id = " + to_string(project_id) + " does not exist.");
@@ -196,9 +199,12 @@ ACTION transactions::transact ( name actor,
 ACTION transactions::deletetrxn (name actor, uint64_t project_id, uint64_t transaction_id) {
 	require_auth(actor);
 
-	//================================//
-    //== check for permissions here ==//
-    //================================//
+	action (
+        permission_level(contract_names::permissions, "active"_n),
+        contract_names::permissions,
+        "checkprmissn"_n,
+        std::make_tuple(actor, project_id, ACTION_NAMES.TRANSACTIONS_REMOVE)
+    ).send();
 
 	delete_transaction(project_id, transaction_id);
 }
@@ -215,9 +221,12 @@ ACTION transactions::edittrxn ( name actor,
 	require_auth(actor);
 	check_asset(amount, contract_names::transactions);
 
-	//================================//
-    //== check for permissions here ==//
-    //================================//
+	action (
+        permission_level(contract_names::permissions, "active"_n),
+        contract_names::permissions,
+        "checkprmissn"_n,
+        std::make_tuple(actor, project_id, ACTION_NAMES.TRANSACTIONS_EDIT)
+    ).send();
 
 	auto itr_project = projects.find(project_id);
 	check(itr_project != projects.end(), contract_names::transactions.to_string() + ": the project with the id = " + to_string(project_id) + " does not exist.");

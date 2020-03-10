@@ -90,7 +90,8 @@ const accountsMetadata = (network) => {
       	thirduser: account('prxycapusrcc', '5000000.0000 USD'),
         transactions: contract('proxycaptrxn', 'transactions'),
         projects: contract('proxycapprjt', 'projects'),
-        accounts: contract('proxycapaccn', 'accounts')
+        accounts: contract('proxycapaccn', 'accounts'),
+        permissions: contract('proxycapprms', 'permissions')
     }
   } else if (network == networks.telosMainnet) {
     return {
@@ -100,7 +101,8 @@ const accountsMetadata = (network) => {
         thirduser: account('prxycapusrcc', '5000000.0000 USD'),
         transactions: contract('proxycaptrxn', 'transactions'),
         projects: contract('proxycapprjt', 'projects'),
-        accounts: contract('proxycapaccn', 'accounts')
+        accounts: contract('proxycapaccn', 'accounts'),
+        permissions: contract('proxycapprms', 'permissions')
     }
   } else if (network == networks.telosTestnet) {
     return {
@@ -110,7 +112,8 @@ const accountsMetadata = (network) => {
         thirduser: account('prxycapusrcc', '5000000.0000 USD'),
         transactions: contract('proxycaptrxn', 'transactions'),
         projects: contract('proxycapprjt', 'projects'),
-        accounts: contract('proxycapaccn', 'accounts')
+        accounts: contract('proxycapaccn', 'accounts'),
+        permissions: contract('proxycapprms', 'permissions')
     }
   } else {
     throw new Error(`${network} deployment not supported`)
@@ -131,11 +134,24 @@ const permissions = [
 		actor: `${accounts.projects.account}@eosio.code`
   }, {
 		target: `${accounts.accounts.account}@active`,
+		actor: `${accounts.accounts.account}@eosio.code`
+  }, {
+		target: `${accounts.accounts.account}@active`,
 		actor: `${accounts.projects.account}@active`
   }, {
 		target: `${accounts.accounts.account}@active`,
 		actor: `${accounts.transactions.account}@active`
+  }, {
+		target: `${accounts.permissions.account}@active`,
+		actor: `${accounts.transactions.account}@active`
+  }, {
+		target: `${accounts.permissions.account}@active`,
+		actor: `${accounts.accounts.account}@active`
+  }, {
+		target: `${accounts.permissions.account}@active`,
+		actor: `${accounts.projects.account}@active`
   }
+  
 ]
 
 const keyProviders = {

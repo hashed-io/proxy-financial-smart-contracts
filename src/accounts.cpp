@@ -114,9 +114,12 @@ ACTION accounts::cancelsub (uint64_t project_id, uint64_t account_id, asset amou
 ACTION accounts::editaccount (name actor, uint64_t project_id, uint64_t account_id, string new_name) {
     require_auth(actor);
 
-    //================================//
-    //== check for permissions here ==//
-    //================================//
+    action (
+        permission_level(contract_names::permissions, "active"_n),
+        contract_names::permissions,
+        "checkprmissn"_n,
+        std::make_tuple(actor, project_id, ACTION_NAMES.ACCOUNTS_EDIT)
+    ).send();
 
     auto itr_project = projects_table.find(project_id);
     check(itr_project != projects_table.end(), contract_names::accounts.to_string() + ": the project does not exist.");
@@ -140,9 +143,12 @@ ACTION accounts::editaccount (name actor, uint64_t project_id, uint64_t account_
 ACTION accounts::deleteaccnt (name actor, uint64_t project_id, uint64_t account_id) {
     require_auth(actor);
 
-    //================================//
-    //== check for permissions here ==//
-    //================================//
+    action (
+        permission_level(contract_names::permissions, "active"_n),
+        contract_names::permissions,
+        "checkprmissn"_n,
+        std::make_tuple(actor, project_id, ACTION_NAMES.ACCOUNTS_REMOVE)
+    ).send();
 
     auto project = projects_table.find(project_id);
 	check(project != projects_table.end(), contract_names::accounts.to_string() + ": the project where the account is trying to be placed does not exist.");
@@ -175,9 +181,12 @@ ACTION accounts::addaccount ( name actor,
 
     require_auth(actor);
 
-    //================================//
-    //== check for permissions here ==//
-    //================================//
+    action (
+        permission_level(contract_names::permissions, "active"_n),
+        contract_names::permissions,
+        "checkprmissn"_n,
+        std::make_tuple(actor, project_id, ACTION_NAMES.ACCOUNTS_ADD)
+    ).send();
 
     auto project_exists = projects_table.find(project_id);
 	check(project_exists != projects_table.end(), contract_names::accounts.to_string() + ": the project where the account is trying to be placed does not exist.");
@@ -195,7 +204,12 @@ ACTION accounts::addaccount ( name actor,
 
     auto parent = accounts.find(parent_id);
     check(parent != accounts.end(), contract_names::accounts.to_string() + ": the parent account does not exist.");
-    check(parent -> increase_balance == asset(0, CURRENCY) && parent -> decrease_balance == asset(0, CURRENCY), contract_names::accounts.to_string() + ": the parent's balance is not zero.");
+    
+    if (parent -> num_children == 0) {
+        check(parent -> increase_balance == asset(0, CURRENCY) && parent -> decrease_balance == asset(0, CURRENCY), 
+                contract_names::accounts.to_string() + ": the parent's balance is not zero.");
+    }
+    
     check(account_subtype == parent -> account_subtype, contract_names::accounts.to_string() + ": the child account must have the same type as its parent's.");
 
     uint64_t new_account_id = accounts.available_primary_key();
