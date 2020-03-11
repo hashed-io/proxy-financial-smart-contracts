@@ -6,7 +6,7 @@
 
 using namespace eosio;
 
-const symbol CURRENCY = symbol("USD", 4);
+const symbol CURRENCY = symbol("USD", 2);
 const uint32_t RESET_IDS = 100;
 
 namespace contract_names {

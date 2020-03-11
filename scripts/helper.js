@@ -10,7 +10,7 @@ const R = require('ramda')
 const ecc = require('eosjs-ecc')
 const Eos = require('eosjs')
 
-const currency = '4,USD'
+const currency = '2,USD'
 
 const networks = {
 	local: 'cf057bbfb72640471fd910bcb67639c22df9f92470936cddc1ade0e2f2e7dc4f',

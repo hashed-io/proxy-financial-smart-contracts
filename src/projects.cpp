@@ -278,6 +278,8 @@ ACTION projects::maketransfer (name actor, asset amount, uint64_t investment_id,
 		itr++;
 	}
 
+	print("investment_id:", investment_id, " total_amount: ", total_amount, " amount: ", amount);
+
 	total_amount += amount;
 
 	check(total_amount <= itr_investment -> total_investment_amount, contract_names::projects.to_string() + ": the payments can not exceed the total investment amount.");
