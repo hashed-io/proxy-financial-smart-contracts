@@ -21,11 +21,6 @@ ACTION projects::reset () {
 		itr_users = users.erase(itr_users);
 	}
 
-	// hardcoding some users
-	addtestuser("prxycapusraa"_n, "firstuser", USER_TYPES.INVESTOR);
-	addtestuser("prxycapusrbb"_n, "seconduser", USER_TYPES.DEVELOPER);
-	addtestuser("prxycapusrcc"_n, "thirduser", USER_TYPES.FUND);
-
 	auto itr_investor = investors.begin();
 	while (itr_investor != investors.end()) {
 		itr_investor = investors.erase(itr_investor);
@@ -34,6 +29,11 @@ ACTION projects::reset () {
 	auto itr_developer = developers.begin();
 	while (itr_developer != developers.end()) {
 		itr_developer = developers.erase(itr_developer);
+	}
+
+	auto itr_fund = funds.begin();
+	while (itr_fund != funds.end()) {
+		itr_fund = funds.erase(itr_fund);
 	}
 
 	auto itr_investment = investments.begin();
@@ -45,6 +45,12 @@ ACTION projects::reset () {
 	while (itr_transfer != transfers.end()) {
 		itr_transfer = transfers.erase(itr_transfer);
 	}
+
+	// hardcoding some users
+	addtestuser("prxycapusraa"_n, "firstuser", USER_TYPES.INVESTOR);
+	addtestuser("prxycapusrdd"_n, "fourthuser", USER_TYPES.INVESTOR);
+	addtestuser("prxycapusrbb"_n, "seconduser", USER_TYPES.DEVELOPER);
+	addtestuser("prxycapusrcc"_n, "thirduser", USER_TYPES.FUND);
 }
 
 ACTION projects::addtestuser (name user, string user_name, string type) {
@@ -252,34 +258,51 @@ ACTION projects::approveinvst (name actor, uint64_t investment_id) {
 	});
 }
 
-// ACTION projects::maketransfer (name actor, asset amount, uint64_t investment_id, string file, uint64_t date) {
-// 	require_auth(actor);
+ACTION projects::maketransfer (name actor, asset amount, uint64_t investment_id, string file, uint64_t date) {
+	require_auth(actor);
 
-// 	checkusrtype(actor, USER_TYPES.INVESTOR);
-// 	check_asset(amount);
+	checkusrtype(actor, USER_TYPES.INVESTOR);
+	check_asset(amount, contract_names::projects);
 
-// 	auto itr_investment = investments.find(investment_id);
-// 	check(itr_investment != investments.end(), contract_names::projects.to_string() + ": the investment does not exist.");
-// 	check(itr_investment -> user == actor, contract_names::projects.to_string() + ": the user can only make a transfer in an investment created by itself.");
+	auto itr_investment = investments.find(investment_id);
+	check(itr_investment != investments.end(), contract_names::projects.to_string() + ": the investment does not exist.");
+	check(itr_investment -> user == actor, contract_names::projects.to_string() + ": the user can only make a transfer in an investment created by itself.");
+	check(itr_investment -> status == INVESTMENT_STATUS.FUNDING, contract_names::projects.to_string() + ": the investment has not been approved yet or it could have been closed.");
 
-// 	transfers.emplace(_self, [&](auto & new_transfer){
-// 		new_transfer.fund_transfer_id = transfers.available_primary_key();
-// 		new_transfer.amount = amount;
-// 		new_transfer.investment_id = investment_id;
-// 		new_transfer.user = actor;
-// 		new_transfer.date = date;
-// 		new_transfer.file = file;
-// 	});
+	auto transfers_by_investment = transfers.get_index<"byinvestment"_n>();
+	auto itr = transfers_by_investment.find(investment_id);
+	asset total_amount = asset(0, CURRENCY);
 
-// 	if (itr_investment -> total_investment_amount + amount ) {}
+	while ( (itr != transfers_by_investment.end()) && (itr -> investment_id == investment_id) ) {
+		total_amount += itr -> amount;
+		itr++;
+	}
 
-// }
+	total_amount += amount;
+
+	check(total_amount <= itr_investment -> total_investment_amount, contract_names::projects.to_string() + ": the payments can not exceed the total investment amount.");
+
+	transfers.emplace(_self, [&](auto & new_transfer){
+		new_transfer.fund_transfer_id = transfers.available_primary_key();
+		new_transfer.amount = amount;
+		new_transfer.investment_id = investment_id;
+		new_transfer.user = actor;
+		new_transfer.date = date;
+		new_transfer.file = file;
+	});
+
+	if (total_amount == itr_investment -> total_investment_amount) {
+		investments.modify(itr_investment, _self, [&](auto & modified_investment){
+			modified_investment.status = INVESTMENT_STATUS.FUNDED;
+		});
+	}
+}
 
 
 
 
 
-EOSIO_DISPATCH(projects, (reset)(addproject)(approveprjct)(addtestuser)(invest)(approveinvst));
+EOSIO_DISPATCH(projects, (reset)(addproject)(approveprjct)(addtestuser)(invest)(approveinvst)(maketransfer));
 
 
 

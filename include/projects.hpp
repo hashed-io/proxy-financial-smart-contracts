@@ -71,6 +71,8 @@ CONTRACT projects : public contract {
 
         ACTION approveinvst (name actor, uint64_t investment_id);
 
+        ACTION maketransfer (name actor, asset amount, uint64_t investment_id, string file, uint64_t date);
+
         
         // ACTION removeprojct ();
 
@@ -183,6 +185,7 @@ CONTRACT projects : public contract {
             uint64_t date;
 
             uint64_t primary_key() const { return fund_transfer_id; }
+            uint64_t by_investment() const { return investment_id; }
         };
 
 
@@ -202,7 +205,10 @@ CONTRACT projects : public contract {
             const_mem_fun<investment_table, uint64_t, &investment_table::by_user>>
         > investment_tables;
 
-        typedef eosio::multi_index <"transfers"_n, fund_transfer_table> fund_transfer_tables;
+        typedef eosio::multi_index <"transfers"_n, fund_transfer_table,
+            indexed_by<"byinvestment"_n,
+            const_mem_fun<fund_transfer_table, uint64_t, &fund_transfer_table::by_investment>>
+        > fund_transfer_tables;
 
 
         project_tables projects_table;
