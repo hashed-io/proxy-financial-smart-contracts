@@ -422,7 +422,9 @@ ACTION projects::maketransfer (name actor, asset amount, uint64_t investment_id,
 	asset total_amount = asset(0, CURRENCY);
 
 	while ( (itr != transfers_by_investment.end()) && (itr -> investment_id == investment_id) ) {
-		total_amount += itr -> amount;
+		if (itr -> status == TRANSFER_STATUS.CONFIRMED){
+			total_amount += itr -> amount;
+		}
 		itr++;
 	}
 
@@ -438,20 +440,98 @@ ACTION projects::maketransfer (name actor, asset amount, uint64_t investment_id,
 		new_transfer.user = actor;
 		new_transfer.date = date;
 		new_transfer.file = file;
+		new_transfer.status = TRANSFER_STATUS.AWAITING_CONFIRMATION;
 	});
+}
+
+ACTION projects::edittransfer ( name actor, 
+								uint64_t transfer_id,
+								asset amount, 
+								string file, 
+								uint64_t date ) {
+	
+	require_auth(actor);
+
+	check_asset(amount, contract_names::projects);
+
+	auto itr_transfer = transfers.find(transfer_id);
+	check(itr_transfer != transfers.end(), contract_names::projects.to_string() + ": the transfer does not exist.");
+	check(itr_transfer -> status == TRANSFER_STATUS.AWAITING_CONFIRMATION, contract_names::projects.to_string() + ": the transfer can not be edited anymore.");
+	check(itr_transfer -> user == actor, contract_names::projects.to_string() + ": only the transfer issuer can do this.");
+
+	uint64_t investment_id = itr_transfer -> investment_id;
+
+	auto transfers_by_investment = transfers.get_index<"byinvestment"_n>();
+	auto itr = transfers_by_investment.find(investment_id);
+	asset total_amount = asset(0, CURRENCY);
+
+	while ( (itr != transfers_by_investment.end()) && (itr -> investment_id == investment_id) ) {
+		if (itr -> status == TRANSFER_STATUS.CONFIRMED){
+			total_amount += itr -> amount;
+		}
+		itr++;
+	}
+
+	total_amount += amount;
+
+	auto itr_investment = investments.find(investment_id);
+
+	check(total_amount <= itr_investment -> total_investment_amount,
+			contract_names::projects.to_string() + ": the payments can not exceed the total investment amount.");
+
+	transfers.modify(itr_transfer, _self, [&](auto & modified_transfer){
+		modified_transfer.amount = amount;
+		modified_transfer.date = date;
+		modified_transfer.file = file;
+	});
+
+}
+
+ACTION projects::confrmtrnsfr (name actor, uint64_t transfer_id, string file) {
+	require_auth(actor);
+
+	checkusrtype(actor, USER_TYPES.FUND);
+
+	auto itr_transfer = transfers.find(transfer_id);
+	check(itr_transfer != transfers.end(), contract_names::projects.to_string() + ": the transfer does not exist.");
+	check(itr_transfer -> status == TRANSFER_STATUS.AWAITING_CONFIRMATION, contract_names::projects.to_string() + ": the transfer has been already confirmed.");
+
+	uint64_t investment_id = itr_transfer -> investment_id;
+	asset amount = itr_transfer -> amount;
+
+	auto transfers_by_investment = transfers.get_index<"byinvestment"_n>();
+	auto itr = transfers_by_investment.find(investment_id);
+	asset total_amount = asset(0, CURRENCY);
+
+	while ( (itr != transfers_by_investment.end()) && (itr -> investment_id == investment_id) ) {
+		if (itr -> status == TRANSFER_STATUS.CONFIRMED){
+			total_amount += itr -> amount;
+		}
+		itr++;
+	}
+
+	total_amount += amount;
+
+	auto itr_investment = investments.find(investment_id);
 
 	if (total_amount == itr_investment -> total_investment_amount) {
 		investments.modify(itr_investment, _self, [&](auto & modified_investment){
 			modified_investment.status = INVESTMENT_STATUS.FUNDED;
 		});
 	}
+
+	transfers.modify(itr_transfer, _self, [&](auto & modified_transfer){
+		modified_transfer.status = TRANSFER_STATUS.CONFIRMED;
+		if (file.length() > 0) {
+			modified_transfer.file = file;
+		}
+	});
 }
 
 
 
 
-
-EOSIO_DISPATCH(projects, (reset)(addproject)(approveprjct)(addtestuser)(invest)(approveinvst)(maketransfer)(editproject)(deleteprojct)(deleteinvest)(editinvest));
+EOSIO_DISPATCH(projects, (reset)(addproject)(approveprjct)(addtestuser)(invest)(approveinvst)(maketransfer)(editproject)(deleteprojct)(deleteinvest)(editinvest)(confrmtrnsfr)(edittransfer));
 
 
 

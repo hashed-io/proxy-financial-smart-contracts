@@ -11,6 +11,7 @@
 #include <user_types.hpp>
 #include <investment_status.hpp>
 #include <project_class.hpp>
+#include <transfer_status.hpp>
 
 using namespace eosio;
 using namespace std;
@@ -106,6 +107,14 @@ CONTRACT projects : public contract {
         ACTION approveinvst (name actor, uint64_t investment_id);
 
         ACTION maketransfer (name actor, asset amount, uint64_t investment_id, string file, uint64_t date);
+
+        ACTION edittransfer ( name actor, 
+						      uint64_t transfer_id,
+                              asset amount, 
+                              string file, 
+                              uint64_t date );
+
+        ACTION confrmtrnsfr (name actor, uint64_t transfer_id, string file);
 
 
     private:
@@ -209,10 +218,12 @@ CONTRACT projects : public contract {
             asset amount;
             uint64_t investment_id;
             name user;
+            uint64_t status;
             uint64_t date;
 
             uint64_t primary_key() const { return fund_transfer_id; }
             uint64_t by_investment() const { return investment_id; }
+            uint64_t by_status() const { return status; }
         };
 
 
@@ -245,7 +256,9 @@ CONTRACT projects : public contract {
 
         typedef eosio::multi_index <"transfers"_n, fund_transfer_table,
             indexed_by<"byinvestment"_n,
-            const_mem_fun<fund_transfer_table, uint64_t, &fund_transfer_table::by_investment>>
+            const_mem_fun<fund_transfer_table, uint64_t, &fund_transfer_table::by_investment>>,
+            indexed_by<"bystatus"_n,
+            const_mem_fun<fund_transfer_table, uint64_t, &fund_transfer_table::by_status>>
         > fund_transfer_tables;
 
 

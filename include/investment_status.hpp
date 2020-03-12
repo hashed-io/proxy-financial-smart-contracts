@@ -5,9 +5,9 @@ using namespace std;
 
 class InvestmentStatus {
     public:
-        const uint8_t PENDING = 0; // "Pending"
-        const uint8_t FUNDING = 1; // "Funding"
-        const uint8_t FUNDED = 2; // "Funded"
+        const uint8_t PENDING = 1; // "Pending"
+        const uint8_t FUNDING = 2; // "Funding"
+        const uint8_t FUNDED = 3; // "Funded"
 
         InvestmentStatus () {
             constants.insert(PENDING);
