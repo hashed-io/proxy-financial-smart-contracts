@@ -200,6 +200,7 @@ CONTRACT projects : public contract {
             uint64_t primary_key() const { return investment_id; }
             uint64_t by_user() const { return user.value; }
             uint64_t by_status() const { return status; }
+            uint64_t by_projectid() const { return project_id; }
         };
 
         TABLE fund_transfer_table {
@@ -237,7 +238,9 @@ CONTRACT projects : public contract {
             indexed_by<"byuser"_n,
             const_mem_fun<investment_table, uint64_t, &investment_table::by_user>>,
             indexed_by<"bystatus"_n,
-            const_mem_fun<investment_table, uint64_t, &investment_table::by_status>>
+            const_mem_fun<investment_table, uint64_t, &investment_table::by_status>>,
+            indexed_by<"byprojectid"_n,
+            const_mem_fun<investment_table, uint64_t, &investment_table::by_projectid>>
         > investment_tables;
 
         typedef eosio::multi_index <"transfers"_n, fund_transfer_table,
