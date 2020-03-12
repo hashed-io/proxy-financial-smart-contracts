@@ -45,6 +45,8 @@ CONTRACT accounts : public contract {
 		ACTION canceladd (uint64_t project_id, uint64_t account_id, asset amount);
 
 		ACTION cancelsub (uint64_t project_id, uint64_t account_id, asset amount);
+
+		ACTION deleteaccnts (uint64_t project_id);
     
 
     private:

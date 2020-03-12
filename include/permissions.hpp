@@ -39,6 +39,8 @@ CONTRACT permissions : public contract {
 
         ACTION removerole (name actor, uint64_t project_id, uint64_t role_id);
 
+        ACTION deletepmssns (uint64_t project_id);
+
     private:
 
         const vector< pair<name, uint64_t> > default_permissions = {

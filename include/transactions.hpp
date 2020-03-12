@@ -50,6 +50,7 @@ CONTRACT transactions : public contract {
 						  bool increase,
 						  vector<string> supporting_urls );
 
+		ACTION deletetrxns (uint64_t project_id);
 
 	private:
 

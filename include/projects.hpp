@@ -10,6 +10,7 @@
 #include <project_status.hpp>
 #include <user_types.hpp>
 #include <investment_status.hpp>
+#include <project_class.hpp>
 
 using namespace eosio;
 using namespace std;
@@ -33,6 +34,7 @@ CONTRACT projects : public contract {
         ACTION reset ();
 
         ACTION addproject ( name actor,
+                            string project_class,
                             string project_name,
                             string description,
                             asset total_project_cost,
@@ -49,6 +51,28 @@ CONTRACT projects : public contract {
                             uint64_t projected_completion_date,
                             uint64_t projected_stabilization_date,
                             uint64_t anticipated_year_sale_refinance );
+
+        ACTION editproject ( name actor,
+                             uint64_t project_id,
+                             string project_class,
+                             string project_name,
+                             string description,
+                             asset total_project_cost,
+                             asset debt_financing,
+                             uint8_t term,
+                             uint16_t interest_rate,
+                             string loan_agreement, // url
+                             asset total_equity_financing,
+                             asset total_gp_equity,
+                             asset private_equity,
+                             uint16_t annual_return,
+                             string project_co_lp, // url
+                             uint64_t project_co_lp_date,
+                             uint64_t projected_completion_date,
+                             uint64_t projected_stabilization_date,
+                             uint64_t anticipated_year_sale );
+
+        ACTION deleteprojct (name actor, uint64_t project_id);
 
         ACTION checkuserdev (name user);
 
@@ -69,23 +93,19 @@ CONTRACT projects : public contract {
                         uint64_t signed_agreement_date,
                         string file );
 
+        ACTION editinvest ( name actor, 
+							uint64_t investment_id,
+                            asset total_investment_amount,
+                            uint64_t quantity_units_purchased,
+                            uint16_t annual_preferred_return,
+                            uint64_t signed_agreement_date,
+                            string file );
+
+        ACTION deleteinvest (name actor, uint64_t investment_id);
+
         ACTION approveinvst (name actor, uint64_t investment_id);
 
         ACTION maketransfer (name actor, asset amount, uint64_t investment_id, string file, uint64_t date);
-
-        
-        // ACTION removeprojct ();
-
-        // ACTION editproject ();
-
-        // actions:
-
-        //  adduser? (done)
-        //  addproject (done)
-        //  invest (done)
-        //  make_investment_transfer (doing)
-        //  approve_investment (done)
-        //  approve_project (done)
 
 
     private:
@@ -93,6 +113,7 @@ CONTRACT projects : public contract {
         TABLE project_table {
 			uint64_t project_id;
 			name owner; // who is a project owner?
+            string project_class;
             string project_name;
 			string description;
             uint64_t created_date;
@@ -223,45 +244,3 @@ CONTRACT projects : public contract {
 
 };
 
-
-// users:
-// account
-// name
-// entity_id
-// type (investor, developer, fund)
-
-
-// investors
-// id
-// 
-
-
-// devepoler:
-// id
-// name
-
-
-// investments:
-// user
-// project_id
-// file
-// status (pendding, funding, funded)
-// approved_by
-// approved_date
-// investment_date
-
-
-// fund_transfers
-// file
-// amount
-// investment_id
-// user
-// timestamp
-
-
-// actions:
-//  addproject
-//  invest
-//  make_investment_transfer
-//  approve_investment
-//  approve_project

@@ -244,4 +244,16 @@ ACTION transactions::edittrxn ( name actor,
 }
 
 
-EOSIO_DISPATCH(transactions, (reset)(transact)(deletetrxn)(edittrxn));
+ACTION transactions::deletetrxns (uint64_t project_id) {
+	require_auth(_self);
+
+	transaction_tables transactions(_self, project_id);
+
+	auto itr_transaction = transactions.begin();
+	while (itr_transaction != transactions.end()) {
+		itr_transaction = transactions.erase(itr_transaction);
+	}
+}
+
+
+EOSIO_DISPATCH(transactions, (reset)(transact)(deletetrxn)(edittrxn)(deletetrxns));

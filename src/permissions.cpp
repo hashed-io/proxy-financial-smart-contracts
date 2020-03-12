@@ -202,6 +202,23 @@ ACTION permissions::removerole (name actor, uint64_t project_id, uint64_t role_i
     roles.erase(itr_roles);
 }
 
+ACTION permissions::deletepmssns (uint64_t project_id) {
+    require_auth(_self);
 
-EOSIO_DISPATCH(permissions, (reset)(assignrole)(checkprmissn)(givepermissn)(removeprmssn)(initroles)(addrole)(removerole));
+    user_role_tables userroles(_self, project_id);
+    role_tables roles(_self, project_id);
+
+    auto itr_userroles = userroles.begin();
+    while (itr_userroles != userroles.end()) {
+        itr_userroles = userroles.erase(itr_userroles);
+    }
+
+    auto itr_roles = roles.begin();
+    while (itr_roles != roles.end()) {
+        itr_roles = roles.erase(itr_roles);
+    }
+}
+
+
+EOSIO_DISPATCH(permissions, (reset)(assignrole)(checkprmissn)(givepermissn)(removeprmssn)(initroles)(addrole)(removerole)(deletepmssns));
 

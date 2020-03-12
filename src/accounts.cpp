@@ -232,5 +232,18 @@ ACTION accounts::addaccount ( name actor,
 }
 
 
-EOSIO_DISPATCH(accounts, (reset)(addaccount)(initaccounts)(addbalance)(subbalance)(canceladd)(cancelsub));
+ACTION accounts::deleteaccnts(uint64_t project_id) {
+    require_auth(_self);
+
+    account_tables accounts(_self, project_id);
+
+    auto itr_account = accounts.begin();
+    while (itr_account != accounts.end()) {
+        itr_account = accounts.erase(itr_account);
+    }
+
+}
+
+
+EOSIO_DISPATCH(accounts, (reset)(addaccount)(initaccounts)(addbalance)(subbalance)(canceladd)(cancelsub)(deleteaccnts));
 
