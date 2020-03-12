@@ -5,10 +5,10 @@ using namespace std;
 
 class ProjectStatus {
     public:
-        const string AWAITING_FUND_APPROVAL = "Awaiting Fund Approval";
-        const string READY_FOR_INVESTMENT = "Ready for Investment";
-        const string INVESTMENT_GOAL_REACHED = "Investment Goal Reached";
-        const string COMPLETED = "Completed";
+        const uint8_t AWAITING_FUND_APPROVAL = 0; // "Awaiting Fund Approval"
+        const uint8_t READY_FOR_INVESTMENT = 1; // "Ready for Investment"
+        const uint8_t INVESTMENT_GOAL_REACHED = 2; // "Investment Goal Reached"
+        const uint8_t COMPLETED = 3; // "Completed"
 
         ProjectStatus () {
             constants.insert(AWAITING_FUND_APPROVAL);
@@ -17,10 +17,10 @@ class ProjectStatus {
             constants.insert(COMPLETED);
         }
 
-        bool is_valid_constant (string constant) {
+        bool is_valid_constant (uint8_t constant) {
             auto itr = constants.find(constant);
             return (itr != constants.end()) ? true : false;
         }
     private:
-        set<string> constants;
+        set<uint8_t> constants;
 } PROJECT_STATUS;

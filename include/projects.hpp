@@ -112,12 +112,13 @@ CONTRACT projects : public contract {
 
         TABLE project_table {
 			uint64_t project_id;
+            uint64_t developer_id;
 			name owner; // who is a project owner?
             string project_class;
             string project_name;
 			string description;
             uint64_t created_date;
-            string status;
+            uint64_t status;
 
             asset total_project_cost;
             asset debt_financing;
@@ -144,6 +145,9 @@ CONTRACT projects : public contract {
             name approved_by;
 
 			uint64_t primary_key() const { return project_id; }
+            uint64_t by_owner() const { return owner.value; }
+            uint64_t by_developer() const { return developer_id; }
+            uint64_t by_status() const { return status; }
 		};
 
         TABLE user_table {
@@ -188,13 +192,14 @@ CONTRACT projects : public contract {
             uint64_t signed_agreement_date;
 
             string file;
-            string status;
+            uint64_t status;
             name approved_by;
             uint64_t approved_date;
             uint64_t investment_date;
 
             uint64_t primary_key() const { return investment_id; }
             uint64_t by_user() const { return user.value; }
+            uint64_t by_status() const { return status; }
         };
 
         TABLE fund_transfer_table {
@@ -211,7 +216,14 @@ CONTRACT projects : public contract {
 
 
 
-        typedef eosio::multi_index <"projects"_n, project_table> project_tables;
+        typedef eosio::multi_index <"projects"_n, project_table,
+            indexed_by<"byowner"_n,
+            const_mem_fun<project_table, uint64_t, &project_table::by_owner>>,
+            indexed_by<"bydeveloper"_n,
+            const_mem_fun<project_table, uint64_t, &project_table::by_developer>>,
+            indexed_by<"bystatus"_n,
+            const_mem_fun<project_table, uint64_t, &project_table::by_status>>
+        > project_tables;
 
         typedef eosio::multi_index <"users"_n, user_table> user_tables;
 
@@ -223,7 +235,9 @@ CONTRACT projects : public contract {
 
         typedef eosio::multi_index <"investments"_n, investment_table,
             indexed_by<"byuser"_n,
-            const_mem_fun<investment_table, uint64_t, &investment_table::by_user>>
+            const_mem_fun<investment_table, uint64_t, &investment_table::by_user>>,
+            indexed_by<"bystatus"_n,
+            const_mem_fun<investment_table, uint64_t, &investment_table::by_status>>
         > investment_tables;
 
         typedef eosio::multi_index <"transfers"_n, fund_transfer_table,

@@ -1,5 +1,6 @@
 {
     "project_name": "Test Project",
+    "project_class": "NNN",
     "description": "This is a test project.",
     "total_project_cost": "435000.00 USD",
     "debt_financing": "2000.00 USD",

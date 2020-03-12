@@ -5,9 +5,9 @@ using namespace std;
 
 class InvestmentStatus {
     public:
-        const string PENDING = "Pending";
-        const string FUNDING = "Funding";
-        const string FUNDED = "Funded";
+        const uint8_t PENDING = 0; // "Pending"
+        const uint8_t FUNDING = 1; // "Funding"
+        const uint8_t FUNDED = 2; // "Funded"
 
         InvestmentStatus () {
             constants.insert(PENDING);
@@ -15,10 +15,10 @@ class InvestmentStatus {
             constants.insert(FUNDED);
         }
 
-        bool is_valid_constant (string constant) {
+        bool is_valid_constant (uint8_t constant) {
             auto itr = constants.find(constant);
             return (itr != constants.end()) ? true : false;
         }
     private:
-        set<string> constants;
+        set<uint8_t> constants;
 } INVESTMENT_STATUS;
