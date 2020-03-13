@@ -12,6 +12,12 @@ const Eos = require('eosjs')
 
 const currency = '2,USD'
 
+const networksNames = {
+  local: 'local',
+  telosTestnet: 'telosTestnet'
+}
+
+
 const networks = {
 	local: 'cf057bbfb72640471fd910bcb67639c22df9f92470936cddc1ade0e2f2e7dc4f',
 	telosTestnet: '1eaa0824707c8c16bd25145493bf062aecddfeb56c736f6ba6397f3195f33c9f',
@@ -32,7 +38,7 @@ const endpoints = {
 
 const ownerAccounts = {
   local: 'owner',
-  telosTestnet: 'proxycapital',
+  telosTestnet: 'ownerprxycap',
   telosMainnet: 'proxycapital'
 }
 
@@ -52,7 +58,7 @@ console.log(""+netName)
 const publicKeys = {
   [networks.local]: ['EOS6MRyAjQq8ud7hVNYcfnVPJqcVpscN5So8BhtHuGYqET5GDW5CV', 'EOS6MRyAjQq8ud7hVNYcfnVPJqcVpscN5So8BhtHuGYqET5GDW5CV'],
   [networks.telosMainnet]: ['EOS6H8Xd2iKMa3KEF4JAQLbHAxkQcyrYgWXjrRJMsY5yEr2Ws7DCj', 'EOS6H8Xd2iKMa3KEF4JAQLbHAxkQcyrYgWXjrRJMsY5yEr2Ws7DCj'],
-  [networks.telosTestnet]: ['EOS8MHrY9xo9HZP4LvZcWEpzMVv1cqSLxiN2QMVNy8naSi1xWZH29', 'EOS8C9tXuPMkmB6EA7vDgGtzA99k1BN6UxjkGisC1QKpQ6YV7MFqm']
+  [networks.telosTestnet]: ['EOS4vExvL4rYEELk6tVBqq5FUTuQ5pqKJ7eJfJbTwSF5he55E7A5N', 'EOS4vExvL4rYEELk6tVBqq5FUTuQ5pqKJ7eJfJbTwSF5he55E7A5N']
   // NOTE: Testnet seems to use EOS8C9tXuPMkmB6EA7vDgGtzA99k1BN6UxjkGisC1QKpQ6YV7MFqm for onwer and active - verify
 }
 const [ ownerPublicKey, activePublicKey ] = publicKeys[chainId]
@@ -97,26 +103,26 @@ const accountsMetadata = (network) => {
   } else if (network == networks.telosMainnet) {
     return {
         owner: account(owner),
-        firstuser: account('prxycapusraa', '10000000.0000 USD'),
-        seconduser: account('prxycapusrbb', '10000000.0000 USD'),
-        thirduser: account('prxycapusrcc', '5000000.0000 USD'),
-        fourthuser: account('prxycapusrdd', '5000000.0000 USD'),
-        transactions: contract('proxycaptrxn', 'transactions'),
-        projects: contract('proxycapprjt', 'projects'),
-        accounts: contract('proxycapaccn', 'accounts'),
-        permissions: contract('proxycapprms', 'permissions')
+        firstuser: account('proxycapusra', '10000000.0000 USD'),
+        seconduser: account('proxycapusrb', '10000000.0000 USD'),
+        thirduser: account('proxycapusrc', '5000000.0000 USD'),
+        fourthuser: account('proxycapusrd', '5000000.0000 USD'),
+        transactions: contract('proxycaptrnx', 'transactions'),
+        projects: contract('proxycapproj', 'projects'),
+        accounts: contract('proxycapacct', 'accounts'),
+        permissions: contract('proxycapperm', 'permissions')
     }
   } else if (network == networks.telosTestnet) {
     return {
         owner: account(owner),
-        firstuser: account('prxycapusraa', '10000000.0000 USD'),
-        seconduser: account('prxycapusrbb', '10000000.0000 USD'),
-        thirduser: account('prxycapusrcc', '5000000.0000 USD'),
-        fourthuser: account('prxycapusrdd', '5000000.0000 USD'),
-        transactions: contract('proxycaptrxn', 'transactions'),
-        projects: contract('proxycapprjt', 'projects'),
-        accounts: contract('proxycapaccn', 'accounts'),
-        permissions: contract('proxycapprms', 'permissions')
+        firstuser: account('proxycapusra', '10000000.0000 USD'),
+        seconduser: account('proxycapusrb', '10000000.0000 USD'),
+        thirduser: account('proxycapusrc', '5000000.0000 USD'),
+        fourthuser: account('proxycapusrd', '5000000.0000 USD'),
+        transactions: contract('proxycaptrnx', 'transactions'),
+        projects: contract('proxycapproj', 'projects'),
+        accounts: contract('proxycapacct', 'accounts'),
+        permissions: contract('proxycapperm', 'permissions')
     }
   } else {
     throw new Error(`${network} deployment not supported`)
@@ -197,6 +203,7 @@ const initContracts = (accounts) =>
   )
 
 module.exports = {
-	accounts, names, permissions, isLocal, createKeypair, activePublicKey, currency, keyProvider, permissions
+  accounts, names, permissions, isLocal, createKeypair, activePublicKey, currency, keyProvider, permissions,
+  networksNames
 }
 

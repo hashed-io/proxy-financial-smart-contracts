@@ -114,6 +114,8 @@ CONTRACT projects : public contract {
                               string file, 
                               uint64_t date );
 
+        ACTION deletetrnsfr (name actor, uint64_t transfer_id);
+
         ACTION confrmtrnsfr (name actor, uint64_t transfer_id, string file);
 
 
@@ -148,7 +150,7 @@ CONTRACT projects : public contract {
 
             string fund_lp; // url
             asset total_fund_offering_amount;
-            uint64_t total_number_fund_offering; // decimal 2
+            uint64_t total_number_fund_offering;
             asset price_per_fund_unit;
             uint64_t approved_date;
             name approved_by;
@@ -200,7 +202,12 @@ CONTRACT projects : public contract {
             uint16_t annual_preferred_return; // decimal
             uint64_t signed_agreement_date;
 
-            string file;
+            asset total_confirmed_transfered_amount;
+            asset total_unconfirmed_transfered_amount;
+            uint16_t total_confirmed_transfers;
+            uint16_t total_unconfirmed_transfers;
+
+            string subscription_package;
             uint64_t status;
             name approved_by;
             uint64_t approved_date;
@@ -214,12 +221,14 @@ CONTRACT projects : public contract {
 
         TABLE fund_transfer_table {
             uint64_t fund_transfer_id;
-            string file;
+            string proof_of_transfer;
             asset amount;
             uint64_t investment_id;
             name user;
             uint64_t status;
-            uint64_t date;
+            uint64_t transfer_date;
+            uint64_t updated_date;
+            uint64_t confirmed_date;
 
             uint64_t primary_key() const { return fund_transfer_id; }
             uint64_t by_investment() const { return investment_id; }
@@ -271,6 +280,7 @@ CONTRACT projects : public contract {
         fund_transfer_tables transfers;
 
         void checkusrtype (name user, string type);
+        void delete_transfer_aux (uint64_t transfer_id);
 
 };
 

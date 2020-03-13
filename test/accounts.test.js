@@ -2,7 +2,6 @@ const assert = require('assert');
 const accounts = require('../scripts/accounts.json')
 const { names, currency } = require('../scripts/helper')
 
-
 describe("Proxy Capital Accounts Contract", function (eoslime) {
 
     let firstuser = eoslime.Account.load(names.firstuser, accounts[names.firstuser].privateKey, 'active')

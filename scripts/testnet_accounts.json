@@ -1,0 +1,38 @@
+{
+    "ownerprxycap": {
+        "privateKey": "5JiC7P3mP6h6BkCLcGnKrHCd5a4g3D8bJf377agm9ZTemK3pGJu",
+        "publicKey": "EOS4vExvL4rYEELk6tVBqq5FUTuQ5pqKJ7eJfJbTwSF5he55E7A5N"
+    },
+    "proxycapusra": {
+        "privateKey": "5KQszFMhEYhXDu4zcZcLpKZuKt2zNUdHQ8CXZB2nXcYkUmZs99Y",
+        "publicKey": "EOS8QVXkq2GU6Y2sBnRhFf7bHyuVSQdCVuza4629oyW5QUzoaK91r"
+    },
+    "proxycapusrb": {
+        "privateKey": "5J9XBrkCoczbNwxc6h6FvGuSHtFqGjQFW6Rnshv36Mi2qMy5qsB",
+        "publicKey": "EOS5tWRCiJkVzs7ktSeF4NWUXGoeZ2xcRGUcWsoLbSafT5BDf5nmQ"
+    },
+    "proxycapusrc": {
+        "privateKey": "5K6eT9fKAPHFqDnfAb8cNF9MkbZR9FnP7L5YD2eFqnk1Th2XmhG",
+        "publicKey": "EOS8MCMYnydmKNuCYzBciyfkAEAm4h3CHHxptvGuFKcmR2ud3u8s1"
+    },
+    "proxycapusrd": {
+        "privateKey": "5KTmsACgCgSTBvUN5nTTMCod8heWCBw4WyN1q1hMhFwGsaroY3g",
+        "publicKey": "EOS7XTtyPdgrdPzyNTHwHzgevsGJrNih54xcTQH9u3adBMZzbjXGS"
+    },
+    "proxycaptrnx": {
+        "privateKey": "5JBKsepD8bxSMWNE2Kau7hiBU3QCvbzrGioR9sW56WsxVP6LQQH",
+        "publicKey": "EOS5xJJHkqsadnLb6P2fhFmd8e9aJXfBbhmuVJvQrcV2Nu3p5Edx5"
+    },
+    "proxycapproj": {
+        "privateKey": "5JbQ6smuDR7di8TMfG8FuSPPrUspgZvx56X2khXRSodgrZ3hrY5",
+        "publicKey": "EOS6zczR8Z8AoGF8TiWKiqQ7Dnm6wLkmpL4KUzJVemA14FgvtRBnz"
+    },
+    "proxycapacct": {
+        "privateKey": "5KYToGQjfNeeDZeoerjFt1tM2jkQggBUHg1ebaTFqMnQmKw18Ed",
+        "publicKey": "EOS7PatB5o9Fjao7vv6gewL2q6k46Ezv4N2wxoopj3Q6QHJ2uAnkS"
+    },
+    "proxycapperm": {
+        "privateKey": "5JcSYGX1nLLCzCvxyribZLevwbo4r31WEFfwoZcgFqwXZws3NhH",
+        "publicKey": "EOS8fZiThK85jvnw2omQtzCNit5nZATKKaXwuChJmboRp7ouu184E"
+    }
+}

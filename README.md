@@ -11,21 +11,23 @@ npm install -g eoslime
 
 # Deploy Tools
 
-Use the compile.js script to 
+Use npm run to compile, deploy, test:
 
- * compile all the contracts. They will be stored in the artifacts directory
+ * Compile all the contracts. They will be stored in the artifacts directory
 
 ```
-./scripts/compile.js
+npm run compile
 ```
 
- * deploy and test the contracts respectively
+ * Deploy all the contracts and create the permissions.
+ * To chose a block chain (local or testnet) set the variable EOSIO_NETWORK to "local" or "telosTestnet" in the .env file.
+ * The permissions and other configurations are in the helper.js file.
 
 ```
 npm run deploy
-npm run test
 ```
 
-
-
-
+* Test all the contracts. It will just work on the local node.
+```
+npm run test
+```
