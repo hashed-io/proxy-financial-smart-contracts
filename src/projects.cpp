@@ -506,7 +506,7 @@ ACTION projects::deletetrnsfr (name actor, uint64_t transfer_id) {
 	delete_transfer_aux(transfer_id);
 }
 
-ACTION projects::confrmtrnsfr (name actor, uint64_t transfer_id, string file) {
+ACTION projects::confrmtrnsfr (name actor, uint64_t transfer_id, string proof_of_transfer) {
 	require_auth(actor);
 
 	checkusrtype(actor, USER_TYPES.FUND);
@@ -528,8 +528,8 @@ ACTION projects::confrmtrnsfr (name actor, uint64_t transfer_id, string file) {
 	transfers.modify(itr_transfer, _self, [&](auto & modified_transfer){
 		modified_transfer.status = TRANSFER_STATUS.CONFIRMED;
 		modified_transfer.confirmed_date = eosio::current_time_point().sec_since_epoch();
-		if (file.length() > 0) {
-			modified_transfer.proof_of_transfer = file;
+		if (proof_of_transfer.length() > 0) {
+			modified_transfer.proof_of_transfer = proof_of_transfer;
 		}
 	});
 
