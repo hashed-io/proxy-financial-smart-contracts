@@ -229,6 +229,7 @@ CONTRACT projects : public contract {
             uint64_t transfer_date;
             uint64_t updated_date;
             uint64_t confirmed_date;
+            name confirmed_by;
 
             uint64_t primary_key() const { return fund_transfer_id; }
             uint64_t by_investment() const { return investment_id; }

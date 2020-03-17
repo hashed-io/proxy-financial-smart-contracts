@@ -36,9 +36,6 @@ async function createPermissions (eoslime) {
 async function deployLocal (eoslime) {
     
     console.log('Deploying on local node')
-    console.log(accounts)
-
-    console.log(existing_accounts)
 
     let owner = eoslime.Account.load(accounts.owner.account, process.env.LOCAL_PRIVATE_KEY)
     const accounts_names = Object.keys(names)

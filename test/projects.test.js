@@ -496,46 +496,58 @@ describe("Proxy Capital Projects Contract", function (eoslime) {
 
         const expectedInvestments = [
             {
-              investment_id: 0,
-              user: 'prxycapusraa',
-              project_id: 0,
-              total_investment_amount: '4000.00 USD',
-              quantity_units_purchased: 40,
-              annual_preferred_return: 700,
-              signed_agreement_date: 832098900,
-              file: 'http://www.first-agreement.com',
-              status: 1,
-              approved_by: '',
-              approved_date: 0,
-              investment_date: time
+                investment_id: 0,
+                user: 'prxycapusraa',
+                project_id: 0,
+                total_investment_amount: '4000.00 USD',
+                quantity_units_purchased: 40,
+                annual_preferred_return: 700,
+                signed_agreement_date: 832098900,
+                total_confirmed_transfered_amount: '0.00 USD',
+                total_unconfirmed_transfered_amount: '0.00 USD',
+                total_confirmed_transfers: 0,
+                total_unconfirmed_transfers: 0,
+                subscription_package: 'http://www.first-agreement.com',
+                status: 1,
+                approved_by: '',
+                approved_date: 0,
+                investment_date: time
             },
             {
-              investment_id: 1,
-              user: 'prxycapusraa',
-              project_id: 1,
-              total_investment_amount: '3000.00 USD',
-              quantity_units_purchased: 40,
-              annual_preferred_return: 700,
-              signed_agreement_date: 832098900,
-              file: 'http://www.first-agreement.com',
-              status: 1,
-              approved_by: '',
-              approved_date: 0,
-              investment_date: time
+                investment_id: 1,
+                user: 'prxycapusraa',
+                project_id: 1,
+                total_investment_amount: '3000.00 USD',
+                quantity_units_purchased: 40,
+                annual_preferred_return: 700,
+                signed_agreement_date: 832098900,
+                total_confirmed_transfered_amount: '0.00 USD',
+                total_unconfirmed_transfered_amount: '0.00 USD',
+                total_confirmed_transfers: 0,
+                total_unconfirmed_transfers: 0,
+                subscription_package: 'http://www.first-agreement.com',
+                status: 1,
+                approved_by: '',
+                approved_date: 0,
+                investment_date: time
             },
             {
-              investment_id: 2,
-              user: 'prxycapusrdd',
-              project_id: 1,
-              total_investment_amount: '1000.00 USD',
-              quantity_units_purchased: 40,
-              annual_preferred_return: 700,
-              signed_agreement_date: 832098900,
-              file: 'http://www.fourth-agreement.com',
-              status: 1,
-              approved_by: '',
-              approved_date: 0,
-              investment_date: time
+                investment_id: 2,
+                user: 'prxycapusrdd',
+                project_id: 1,
+                total_investment_amount: '1000.00 USD',
+                quantity_units_purchased: 40,
+                annual_preferred_return: 700,
+                signed_agreement_date: 832098900,
+                total_confirmed_transfered_amount: '0.00 USD',
+                total_unconfirmed_transfered_amount: '0.00 USD',
+                total_confirmed_transfers: 0,
+                total_unconfirmed_transfers: 0,
+                subscription_package: 'http://www.fourth-agreement.com',
+                status: 1,
+                approved_by: '',
+                approved_date: 0,
+                investment_date: time
             }
         ]
 
@@ -574,44 +586,57 @@ describe("Proxy Capital Projects Contract", function (eoslime) {
 
         const expectedInvestmentsTable = [
             {
-              investment_id: 0,
-              user: 'prxycapusraa',
-              project_id: 0,
-              total_investment_amount: '4000.00 USD',
-              quantity_units_purchased: 40,
-              annual_preferred_return: 700,
-              signed_agreement_date: 832098900,
-              file: 'http://www.first-agreement.com',
-              status: 2,
-              approved_by: 'prxycapusrcc',
-              approved_date: time
+                investment_id: 0,
+                user: 'prxycapusraa',
+                project_id: 0,
+                total_investment_amount: '4000.00 USD',
+                quantity_units_purchased: 40,
+                annual_preferred_return: 700,
+                signed_agreement_date: 832098900,
+                total_confirmed_transfered_amount: '0.00 USD',
+                total_unconfirmed_transfered_amount: '0.00 USD',
+                total_confirmed_transfers: 0,
+                total_unconfirmed_transfers: 0,
+                subscription_package: 'http://www.first-agreement.com',
+                status: 2,
+                approved_by: 'prxycapusrcc',
+                approved_date: time
             },
             {
-              investment_id: 1,
-              user: 'prxycapusraa',
-              project_id: 1,
-              total_investment_amount: '3000.00 USD',
-              quantity_units_purchased: 40,
-              annual_preferred_return: 700,
-              signed_agreement_date: 832098900,
-              file: 'http://www.first-agreement.com',
-              status: 2,
-              approved_by: 'prxycapusrcc',
-              approved_date: time
+                investment_id: 1,
+                user: 'prxycapusraa',
+                project_id: 1,
+                total_investment_amount: '3000.00 USD',
+                quantity_units_purchased: 40,
+                annual_preferred_return: 700,
+                signed_agreement_date: 832098900,
+                total_confirmed_transfered_amount: '0.00 USD',
+                total_unconfirmed_transfered_amount: '0.00 USD',
+                total_confirmed_transfers: 0,
+                total_unconfirmed_transfers: 0,
+                subscription_package: 'http://www.first-agreement.com',
+                status: 2,
+                approved_by: 'prxycapusrcc',
+                approved_date: time
             },
             {
-              investment_id: 2,
-              user: 'prxycapusrdd',
-              project_id: 1,
-              total_investment_amount: '1000.00 USD',
-              quantity_units_purchased: 40,
-              annual_preferred_return: 700,
-              signed_agreement_date: 832098900,
-              file: 'http://www.fourth-agreement.com',
-              status: 2,
-              approved_by: 'prxycapusrcc',
-              approved_date: time
+                investment_id: 2,
+                user: 'prxycapusrdd',
+                project_id: 1,
+                total_investment_amount: '1000.00 USD',
+                quantity_units_purchased: 40,
+                annual_preferred_return: 700,
+                signed_agreement_date: 832098900,
+                total_confirmed_transfered_amount: '0.00 USD',
+                total_unconfirmed_transfered_amount: '0.00 USD',
+                total_confirmed_transfers: 0,
+                total_unconfirmed_transfers: 0,
+                subscription_package: 'http://www.fourth-agreement.com',
+                status: 2,
+                approved_by: 'prxycapusrcc',
+                approved_date: time
             }
+            
         ]
 
         try {
@@ -644,72 +669,106 @@ describe("Proxy Capital Projects Contract", function (eoslime) {
             return investment
         })
 
+        let time = parseInt(new Date() / 1000)
+
+        transfersTableBefore = transfersTableBefore.map(transfer => {
+            if (transfer.updated_date <= time + 5 && (transfer.updated_date > time - 5)) {
+                transfer.updated_date = time
+            }
+            if (transfer.confirmed_date <= time + 5 && (transfer.confirmed_date > time - 5)) {
+                transfer.confirmed_date = time
+            }
+            return transfer
+        })
+
         const expectedInvestmentsTableBefore = [
             {
-              investment_id: 0,
-              user: 'prxycapusraa',
-              project_id: 0,
-              total_investment_amount: '4000.00 USD',
-              quantity_units_purchased: 40,
-              annual_preferred_return: 700,
-              signed_agreement_date: 832098900,
-              file: 'http://www.first-agreement.com',
-              status: 3,
-              approved_by: 'prxycapusrcc'
+                investment_id: 0,
+                user: 'prxycapusraa',
+                project_id: 0,
+                total_investment_amount: '4000.00 USD',
+                quantity_units_purchased: 40,
+                annual_preferred_return: 700,
+                signed_agreement_date: 832098900,
+                total_confirmed_transfered_amount: '4000.00 USD',
+                total_unconfirmed_transfered_amount: '0.00 USD',
+                total_confirmed_transfers: 1,
+                total_unconfirmed_transfers: 0,
+                subscription_package: 'http://www.first-agreement.com',
+                status: 3,
+                approved_by: 'prxycapusrcc'
             },
             {
-              investment_id: 1,
-              user: 'prxycapusraa',
-              project_id: 1,
-              total_investment_amount: '3000.00 USD',
-              quantity_units_purchased: 40,
-              annual_preferred_return: 700,
-              signed_agreement_date: 832098900,
-              file: 'http://www.first-agreement.com',
-              status: 2,
-              approved_by: 'prxycapusrcc'
+                investment_id: 1,
+                user: 'prxycapusraa',
+                project_id: 1,
+                total_investment_amount: '3000.00 USD',
+                quantity_units_purchased: 40,
+                annual_preferred_return: 700,
+                signed_agreement_date: 832098900,
+                total_confirmed_transfered_amount: '400.00 USD',
+                total_unconfirmed_transfered_amount: '0.00 USD',
+                total_confirmed_transfers: 1,
+                total_unconfirmed_transfers: 0,
+                subscription_package: 'http://www.first-agreement.com',
+                status: 2,
+                approved_by: 'prxycapusrcc'
             },
             {
-              investment_id: 2,
-              user: 'prxycapusrdd',
-              project_id: 1,
-              total_investment_amount: '1000.00 USD',
-              quantity_units_purchased: 40,
-              annual_preferred_return: 700,
-              signed_agreement_date: 832098900,
-              file: 'http://www.fourth-agreement.com',
-              status: 2,
-              approved_by: 'prxycapusrcc'
+                investment_id: 2,
+                user: 'prxycapusrdd',
+                project_id: 1,
+                total_investment_amount: '1000.00 USD',
+                quantity_units_purchased: 40,
+                annual_preferred_return: 700,
+                signed_agreement_date: 832098900,
+                total_confirmed_transfered_amount: '500.00 USD',
+                total_unconfirmed_transfered_amount: '0.00 USD',
+                total_confirmed_transfers: 1,
+                total_unconfirmed_transfers: 0,
+                subscription_package: 'http://www.fourth-agreement.com',
+                status: 2,
+                approved_by: 'prxycapusrcc'
             }
+            
         ]
 
         const expectedTransfersTableBefore = [
             {
-              fund_transfer_id: 0,
-              file: 'http://www.file.com',
-              amount: '4000.00 USD',
-              investment_id: 0,
-              user: 'prxycapusraa',
-              date: 832098900,
-              status: 2
+                fund_transfer_id: 0,
+                proof_of_transfer: 'http://www.file.com',
+                amount: '4000.00 USD',
+                investment_id: 0,
+                user: 'prxycapusraa',
+                status: 2,
+                transfer_date: 832098900,
+                updated_date: time,
+                confirmed_date: time,
+                confirmed_by: 'prxycapusrcc'
             },
             {
-              fund_transfer_id: 1,
-              file: 'http://www.file.com',
-              amount: '400.00 USD',
-              investment_id: 1,
-              user: 'prxycapusraa',
-              date: 832098900,
-              status: 2
+                fund_transfer_id: 1,
+                proof_of_transfer: 'http://www.file.com',
+                amount: '400.00 USD',
+                investment_id: 1,
+                user: 'prxycapusraa',
+                status: 2,
+                transfer_date: 832098900,
+                updated_date: time,
+                confirmed_date: time,
+                confirmed_by: 'prxycapusrcc'
             },
             {
-              fund_transfer_id: 2,
-              file: 'http://www.file.com',
-              amount: '500.00 USD',
-              investment_id: 2,
-              user: 'prxycapusrdd',
-              date: 832098900,
-              status: 2
+                fund_transfer_id: 2,
+                proof_of_transfer: 'http://www.file.com',
+                amount: '500.00 USD',
+                investment_id: 2,
+                user: 'prxycapusrdd',
+                status: 2,
+                transfer_date: 832098900,
+                updated_date: time,
+                confirmed_date: time,
+                confirmed_by: 'prxycapusrcc'
             }
         ]
           
@@ -717,9 +776,122 @@ describe("Proxy Capital Projects Contract", function (eoslime) {
         assert.deepEqual(transfersTableBefore, expectedTransfersTableBefore, 'The transfers table is not right.')
           
         await firstuserContract.maketransfer(firstuser.name, "2600.00 USD", 1, "http://www.file.com", 832098900);
+
+        let transfersTableMiddle = await projectsContract.transfers.limit(10).find()
+        let investmentsTableMiddle = await projectsContract.investments.limit(10).find()
+
+        investmentsTableMiddle = investmentsTableMiddle.map(investment => {
+            delete investment.approved_date
+            delete investment.investment_date
+            return investment
+        })
+
+        transfersTableMiddle = await transfersTableMiddle.map(transfer => {
+            delete transfer.transfer_date
+            delete transfer.updated_date
+            if (transfer.fund_transfer_id !== 3) {
+                delete transfer.confirmed_date
+            }
+            return transfer
+        })
+
+        const expectedTransfersMiddle = [
+            {
+                fund_transfer_id: 0,
+                proof_of_transfer: 'http://www.file.com',
+                amount: '4000.00 USD',
+                investment_id: 0,
+                user: 'prxycapusraa',
+                status: 2,
+                confirmed_by: 'prxycapusrcc'
+            },
+            {
+                fund_transfer_id: 1,
+                proof_of_transfer: 'http://www.file.com',
+                amount: '400.00 USD',
+                investment_id: 1,
+                user: 'prxycapusraa',
+                status: 2,
+                confirmed_by: 'prxycapusrcc'
+            },
+            {
+                fund_transfer_id: 2,
+                proof_of_transfer: 'http://www.file.com',
+                amount: '500.00 USD',
+                investment_id: 2,
+                user: 'prxycapusrdd',
+                status: 2,
+                confirmed_by: 'prxycapusrcc'
+            },
+            {
+                fund_transfer_id: 3,
+                proof_of_transfer: 'http://www.file.com',
+                amount: '2600.00 USD',
+                investment_id: 1,
+                user: 'prxycapusraa',
+                status: 1,
+                confirmed_date: 0,
+                confirmed_by: ''
+            }            
+        ]
+
+        const expectedInvestmentsMiddle = [
+            {
+                investment_id: 0,
+                user: 'prxycapusraa',
+                project_id: 0,
+                total_investment_amount: '4000.00 USD',
+                quantity_units_purchased: 40,
+                annual_preferred_return: 700,
+                signed_agreement_date: 832098900,
+                total_confirmed_transfered_amount: '4000.00 USD',
+                total_unconfirmed_transfered_amount: '0.00 USD',
+                total_confirmed_transfers: 1,
+                total_unconfirmed_transfers: 0,
+                subscription_package: 'http://www.first-agreement.com',
+                status: 3,
+                approved_by: 'prxycapusrcc'
+            },
+            {
+                investment_id: 1,
+                user: 'prxycapusraa',
+                project_id: 1,
+                total_investment_amount: '3000.00 USD',
+                quantity_units_purchased: 40,
+                annual_preferred_return: 700,
+                signed_agreement_date: 832098900,
+                total_confirmed_transfered_amount: '400.00 USD',
+                total_unconfirmed_transfered_amount: '2600.00 USD',
+                total_confirmed_transfers: 1,
+                total_unconfirmed_transfers: 1,
+                subscription_package: 'http://www.first-agreement.com',
+                status: 2,
+                approved_by: 'prxycapusrcc'
+            },
+            {
+                investment_id: 2,
+                user: 'prxycapusrdd',
+                project_id: 1,
+                total_investment_amount: '1000.00 USD',
+                quantity_units_purchased: 40,
+                annual_preferred_return: 700,
+                signed_agreement_date: 832098900,
+                total_confirmed_transfered_amount: '500.00 USD',
+                total_unconfirmed_transfered_amount: '0.00 USD',
+                total_confirmed_transfers: 1,
+                total_unconfirmed_transfers: 0,
+                subscription_package: 'http://www.fourth-agreement.com',
+                status: 2,
+                approved_by: 'prxycapusrcc'
+            }
+        ]
+
+        assert.deepEqual(transfersTableMiddle, expectedTransfersMiddle, 'The transfers table is not right.')
+        assert.deepEqual(investmentsTableMiddle, expectedInvestmentsMiddle, 'The investments table is not right.') 
+
         await thirduserContract.confrmtrnsfr(thirduser.name, 3, '')
 
-        const transfersTableAfter = await projectsContract.transfers.limit(10).find()
+        let transfersTableAfter = await projectsContract.transfers.limit(10).find()
         let investmentsTableAfter = await projectsContract.investments.limit(10).find()
 
         investmentsTableAfter = investmentsTableAfter.map(invest => {
@@ -728,82 +900,121 @@ describe("Proxy Capital Projects Contract", function (eoslime) {
             return invest
         })
 
+        time = parseInt(new Date() / 1000)
+
+        transfersTableAfter = transfersTableAfter.map(transfer => {
+            if (transfer.updated_date <= time + 5 && (transfer.updated_date > time - 5)) {
+                transfer.updated_date = time
+            }
+            if (transfer.confirmed_date <= time + 5 && (transfer.confirmed_date > time - 5)) {
+                transfer.confirmed_date = time
+            }
+            return transfer
+        })
+
+        transfersTableAfter = await transfersTableAfter.map(transfer => {
+            if (transfer.fund_transfer_id !== 3) {
+                delete transfer.confirmed_date
+                delete transfer.updated_date
+            }
+            return transfer
+        })
+
         const expectedTransfersTableAfter = [
             {
-              fund_transfer_id: 0,
-              file: 'http://www.file.com',
-              amount: '4000.00 USD',
-              investment_id: 0,
-              user: 'prxycapusraa',
-              date: 832098900,
-              status: 2
+                fund_transfer_id: 0,
+                proof_of_transfer: 'http://www.file.com',
+                amount: '4000.00 USD',
+                investment_id: 0,
+                user: 'prxycapusraa',
+                status: 2,
+                transfer_date: 832098900,
+                confirmed_by: 'prxycapusrcc'
             },
             {
-              fund_transfer_id: 1,
-              file: 'http://www.file.com',
-              amount: '400.00 USD',
-              investment_id: 1,
-              user: 'prxycapusraa',
-              date: 832098900,
-              status: 2
+                fund_transfer_id: 1,
+                proof_of_transfer: 'http://www.file.com',
+                amount: '400.00 USD',
+                investment_id: 1,
+                user: 'prxycapusraa',
+                status: 2,
+                transfer_date: 832098900,
+                confirmed_by: 'prxycapusrcc'
             },
             {
-              fund_transfer_id: 2,
-              file: 'http://www.file.com',
-              amount: '500.00 USD',
-              investment_id: 2,
-              user: 'prxycapusrdd',
-              date: 832098900,
-              status: 2
+                fund_transfer_id: 2,
+                proof_of_transfer: 'http://www.file.com',
+                amount: '500.00 USD',
+                investment_id: 2,
+                user: 'prxycapusrdd',
+                status: 2,
+                transfer_date: 832098900,
+                confirmed_by: 'prxycapusrcc'
             },
             {
-              fund_transfer_id: 3,
-              file: 'http://www.file.com',
-              amount: '2600.00 USD',
-              investment_id: 1,
-              user: 'prxycapusraa',
-              date: 832098900,
-              status: 2
+                fund_transfer_id: 3,
+                proof_of_transfer: 'http://www.file.com',
+                amount: '2600.00 USD',
+                investment_id: 1,
+                user: 'prxycapusraa',
+                status: 2,
+                transfer_date: 832098900,
+                updated_date: time,
+                confirmed_date: time,
+                confirmed_by: 'prxycapusrcc'
             }
         ]
 
         const expectedInvestmentsTableAfter = [
             {
-              investment_id: 0,
-              user: 'prxycapusraa',
-              project_id: 0,
-              total_investment_amount: '4000.00 USD',
-              quantity_units_purchased: 40,
-              annual_preferred_return: 700,
-              signed_agreement_date: 832098900,
-              file: 'http://www.first-agreement.com',
-              status: 3,
-              approved_by: 'prxycapusrcc'
+                investment_id: 0,
+                user: 'prxycapusraa',
+                project_id: 0,
+                total_investment_amount: '4000.00 USD',
+                quantity_units_purchased: 40,
+                annual_preferred_return: 700,
+                signed_agreement_date: 832098900,
+                total_confirmed_transfered_amount: '4000.00 USD',
+                total_unconfirmed_transfered_amount: '0.00 USD',
+                total_confirmed_transfers: 1,
+                total_unconfirmed_transfers: 0,
+                subscription_package: 'http://www.first-agreement.com',
+                status: 3,
+                approved_by: 'prxycapusrcc'
             },
             {
-              investment_id: 1,
-              user: 'prxycapusraa',
-              project_id: 1,
-              total_investment_amount: '3000.00 USD',
-              quantity_units_purchased: 40,
-              annual_preferred_return: 700,
-              signed_agreement_date: 832098900,
-              file: 'http://www.first-agreement.com',
-              status: 3,
-              approved_by: 'prxycapusrcc'
+                investment_id: 1,
+                user: 'prxycapusraa',
+                project_id: 1,
+                total_investment_amount: '3000.00 USD',
+                quantity_units_purchased: 40,
+                annual_preferred_return: 700,
+                signed_agreement_date: 832098900,
+                total_confirmed_transfered_amount: '3000.00 USD',
+                total_unconfirmed_transfered_amount: '0.00 USD',
+                total_confirmed_transfers: 2,
+                total_unconfirmed_transfers: 0,
+                subscription_package: 'http://www.first-agreement.com',
+                status: 3,
+                approved_by: 'prxycapusrcc'
             },
             {
-              investment_id: 2,
-              user: 'prxycapusrdd',
-              project_id: 1,
-              total_investment_amount: '1000.00 USD',
-              quantity_units_purchased: 40,
-              annual_preferred_return: 700,
-              signed_agreement_date: 832098900,
-              file: 'http://www.fourth-agreement.com',
-              status: 2,
-              approved_by: 'prxycapusrcc'
+                investment_id: 2,
+                user: 'prxycapusrdd',
+                project_id: 1,
+                total_investment_amount: '1000.00 USD',
+                quantity_units_purchased: 40,
+                annual_preferred_return: 700,
+                signed_agreement_date: 832098900,
+                total_confirmed_transfered_amount: '500.00 USD',
+                total_unconfirmed_transfered_amount: '0.00 USD',
+                total_confirmed_transfers: 1,
+                total_unconfirmed_transfers: 0,
+                subscription_package: 'http://www.fourth-agreement.com',
+                status: 2,
+                approved_by: 'prxycapusrcc'
             }
+            
         ]
 
         assert.deepEqual(transfersTableAfter, expectedTransfersTableAfter, 'The transfers table is not right.')
@@ -829,7 +1040,183 @@ describe("Proxy Capital Projects Contract", function (eoslime) {
 
     })
 
+    it('Should edit and delete an investment', async () => {
 
+        await firstuserContract.invest(firstuser.name, 0, "25000.00 USD", 40, 700, 99999, "http://www.first-agreement.com")
+        await firstuserContract.editinvest(firstuser.name, 3, "2500.00 USD", 20, 400, 99999, "http://www.first-agreement-updated.com")
+
+        let time = parseInt(new Date() / 1000)
+        let investmentsTableAfter = await projectsContract.investments.limit(10).find()
+
+        investmentsTableAfter = investmentsTableAfter.map(investment => {
+            if (investment.investment_id === 3) {
+                if (investment.investment_date <= time + 5 && (investment.investment_date > time - 5)) {
+                    investment.investment_date = time
+                }
+                return investment
+            }
+        })
+
+        const expectedInvestments = [
+            {
+                investment_id: 3,
+                user: 'prxycapusraa',
+                project_id: 0,
+                total_investment_amount: '2500.00 USD',
+                quantity_units_purchased: 20,
+                annual_preferred_return: 400,
+                signed_agreement_date: 99999,
+                total_confirmed_transfered_amount: '0.00 USD',
+                total_unconfirmed_transfered_amount: '0.00 USD',
+                total_confirmed_transfers: 0,
+                total_unconfirmed_transfers: 0,
+                subscription_package: 'http://www.first-agreement-updated.com',
+                status: 1,
+                approved_by: '',
+                approved_date: 0,
+                investment_date: time
+            }            
+        ]
+
+        assert.deepEqual(investmentsTableAfter.filter(Boolean), expectedInvestments, 'The investments table is not right.')
+
+        await firstuserContract.deleteinvest(firstuser.name, 3)
+        let investmentsTableAfterDelete = await projectsContract.investments.limit(10).find()
+
+        investmentsTableAfterDelete = investmentsTableAfterDelete.map(investment => {
+            if (investment.investment_id === 3) {
+                return investment
+            }
+        })
+
+        assert.deepEqual(investmentsTableAfterDelete.filter(Boolean), [], 'The investments table is not right.')
+
+        try {
+            await firstuserContract.editinvest(firstuser.name, 0, "2500.00 USD", 20, 400, 99999, "http://www.first-agreement-updated.com")
+        } catch (err) {
+            assert.deepEqual(getError(err), 'proxycapprjt: the investment can not be modified anymore.', 'Something else went wrong.')            
+        }
+
+    })
+
+    it('Should edit and delete transfers', async () => {
+
+        await fourthuserContract.invest(fourthuser.name, 0, "1500.00 USD", 40, 700, 832098900, "http://www.fourth-agreement.com")
+        await thirduserContract.approveinvst(thirduser.name, 3)
+
+        await fourthuserContract.maketransfer(fourthuser.name, "1500.00 USD", 3, "http://www.file.com", 832098900)
+
+        let transfersTable = await projectsContract.transfers.limit(10).find()
+
+        transfersTable = transfersTable.map(transfer => {
+            if (transfer.fund_transfer_id === 4) {
+                delete transfer.updated_date
+                return transfer
+            }
+        })
+
+        await sleep(2000)
+        await fourthuserContract.edittransfer(fourthuser.name, 4, "1200.00 USD", "http://www.file-update.com", 2222222)
+
+        let transfersTableAfter = await projectsContract.transfers.limit(10).find()
+        
+        transfersTableAfter = transfersTableAfter.map(transfer => {
+            if (transfer.fund_transfer_id === 4) {
+                delete transfer.updated_date
+                return transfer
+            }
+        })
+
+        let investmentsTable = await projectsContract.investments.limit(10).find()
+
+        investmentsTable = investmentsTable.map(investment => {
+            if (investment.investment_id === 3) {
+                delete investment.approved_date
+                delete investment.investment_date
+                return investment
+            }
+        })
+
+        const expectedTransfer = [
+            {
+              fund_transfer_id: 4,
+              proof_of_transfer: 'http://www.file-update.com',
+              amount: '1200.00 USD',
+              investment_id: 3,
+              user: 'prxycapusrdd',
+              status: 1,
+              transfer_date: 2222222,
+              confirmed_date: 0,
+              confirmed_by: ''
+            }
+        ]
+        
+        const expectedInvestment = [
+            {
+              investment_id: 3,
+              user: 'prxycapusrdd',
+              project_id: 0,
+              total_investment_amount: '1500.00 USD',
+              quantity_units_purchased: 40,
+              annual_preferred_return: 700,
+              signed_agreement_date: 832098900,
+              total_confirmed_transfered_amount: '0.00 USD',
+              total_unconfirmed_transfered_amount: '1200.00 USD',
+              total_confirmed_transfers: 0,
+              total_unconfirmed_transfers: 1,
+              subscription_package: 'http://www.fourth-agreement.com',
+              status: 2,
+              approved_by: 'prxycapusrcc'
+            }
+        ]
+        
+        assert.deepEqual(transfersTableAfter.filter(Boolean), expectedTransfer, 'The transfers table is not right.')
+        assert.deepEqual(investmentsTable.filter(Boolean), expectedInvestment, 'The investments table is not right.')
+
+        await fourthuserContract.deletetrnsfr(fourthuser.name, 4)
+
+        let transfersTableAfterDelete = await projectsContract.transfers.limit(10).find()
+
+        transfersTableAfterDelete = transfersTableAfterDelete.map(transfer => {
+            if (transfer.fund_transfer_id === 4) {
+                return transfer
+            }
+        })
+
+        assert.deepEqual(transfersTableAfterDelete.filter(Boolean), [], 'The transfers table is not right.')
+
+        let investmentsTableAfterDelete = await projectsContract.investments.limit(10).find()
+
+        investmentsTableAfterDelete = investmentsTableAfterDelete.map(investment => {
+            if (investment.investment_id === 3) {
+                delete investment.approved_date
+                delete investment.investment_date
+                return investment
+            }
+        })
+
+        const expectedTableAfterDelete = [
+            {
+                investment_id: 3,
+                user: 'prxycapusrdd',
+                project_id: 0,
+                total_investment_amount: '1500.00 USD',
+                quantity_units_purchased: 40,
+                annual_preferred_return: 700,
+                signed_agreement_date: 832098900,
+                total_confirmed_transfered_amount: '0.00 USD',
+                total_unconfirmed_transfered_amount: '0.00 USD',
+                total_confirmed_transfers: 0,
+                total_unconfirmed_transfers: 0,
+                subscription_package: 'http://www.fourth-agreement.com',
+                status: 2,
+                approved_by: 'prxycapusrcc'
+            }            
+        ]
+        
+        assert.deepEqual(investmentsTableAfterDelete.filter(Boolean), expectedTableAfterDelete, 'The investments table is not right.')
+
+    })
 
 })
 

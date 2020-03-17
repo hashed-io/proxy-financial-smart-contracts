@@ -528,6 +528,8 @@ ACTION projects::confrmtrnsfr (name actor, uint64_t transfer_id, string file) {
 	transfers.modify(itr_transfer, _self, [&](auto & modified_transfer){
 		modified_transfer.status = TRANSFER_STATUS.CONFIRMED;
 		modified_transfer.confirmed_date = eosio::current_time_point().sec_since_epoch();
+		modified_transfer.updated_date = eosio::current_time_point().sec_since_epoch();
+		modified_transfer.confirmed_by = actor;
 		if (file.length() > 0) {
 			modified_transfer.proof_of_transfer = file;
 		}
