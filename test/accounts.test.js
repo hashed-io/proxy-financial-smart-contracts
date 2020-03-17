@@ -1,6 +1,7 @@
 const assert = require('assert');
 const accounts = require('../scripts/accounts.json')
 const { names, currency } = require('../scripts/helper')
+const projectConfig = require('./config/new_project.json')
 
 describe("Proxy Capital Accounts Contract", function (eoslime) {
 
@@ -35,175 +36,196 @@ describe("Proxy Capital Accounts Contract", function (eoslime) {
 
     })
 
-    // it('Should create new accounts properly', async () => {
+    it('Should create new accounts properly', async () => {
 
-    //     firstuserContractProjects = await eoslime.Contract.at(names.projects, firstuser)
-    //     await firstuserContractProjects.addproject(firstuser.name, 'test project', 'this is a test', '10.0000 USD')
+        seconduserContractProjects = await eoslime.Contract.at(names.projects, seconduser)
+        await seconduserContractProjects.addproject(
+            seconduser.name,
+            projectConfig.project_class,
+            projectConfig.project_name, 
+            projectConfig.description, 
+            projectConfig.total_project_cost,
+            projectConfig.debt_financing,
+            projectConfig.term,
+            projectConfig.interest_rate,
+            projectConfig.loan_agreement,
+            projectConfig.total_equity_financing,
+            projectConfig.total_gp_equity,
+            projectConfig.private_equity,
+            projectConfig.annual_return,
+            projectConfig.project_co_lp,
+            projectConfig.project_co_lp_date,
+            projectConfig.projected_completion_date,
+            projectConfig.projected_stabilization_date,
+            projectConfig.anticipated_year_sale
+        )
 
-    //     // Assets children
-    //     await firstuserContract.addaccount(firstuser.name, 0, 'Liquid Primary', 1, 'Assets', currency)
-    //     await firstuserContract.addaccount(firstuser.name, 0, 'Reserve Account', 1, 'Assets', currency)
 
-    //     // Equity children
-    //     await firstuserContract.addaccount(firstuser.name, 0, 'Investments', 2, 'Equity', currency)
-    //     await firstuserContract.addaccount(firstuser.name, 0, 'Franklin Johnson', 8, 'Equity', currency)
-    //     await firstuserContract.addaccount(firstuser.name, 0, 'Michelle Wu', 8, 'Equity', currency)
 
-    //     // Expenses children
-    //     await firstuserContract.addaccount(firstuser.name, 0, 'Development', 3, 'Expenses', currency)
-    //     await firstuserContract.addaccount(firstuser.name, 0, 'Marketing', 3, 'Expenses', currency)
-    //     await firstuserContract.addaccount(firstuser.name, 0, 'Tech Infrastructure', 3, 'Expenses', currency)
-    //     await firstuserContract.addaccount(firstuser.name, 0, 'Travel', 3, 'Expenses', currency)
+        // Assets children
+        await seconduserContract.addaccount(seconduser.name, 0, 'Liquid Primary', 1, 'Assets', currency)
+        await seconduserContract.addaccount(seconduser.name, 0, 'Reserve Account', 1, 'Assets', currency)
 
-    //     const expected = [
-    //         {
-    //           account_id: 1,
-    //           parent_id: 0,
-    //           account_name: 'Assets',
-    //           account_subtype: 'Assets',
-    //           increase_balance: '0.0000 USD',
-    //           decrease_balance: '0.0000 USD',
-    //           num_children: 2,
-    //           account_symbol: '4,USD'
-    //         },
-    //         {
-    //           account_id: 2,
-    //           parent_id: 0,
-    //           account_name: 'Equity',
-    //           account_subtype: 'Equity',
-    //           increase_balance: '0.0000 USD',
-    //           decrease_balance: '0.0000 USD',
-    //           num_children: 1,
-    //           account_symbol: '4,USD'
-    //         },
-    //         {
-    //           account_id: 3,
-    //           parent_id: 0,
-    //           account_name: 'Expenses',
-    //           account_subtype: 'Expenses',
-    //           increase_balance: '0.0000 USD',
-    //           decrease_balance: '0.0000 USD',
-    //           num_children: 4,
-    //           account_symbol: '4,USD'
-    //         },
-    //         {
-    //           account_id: 4,
-    //           parent_id: 0,
-    //           account_name: 'Income',
-    //           account_subtype: 'Income',
-    //           increase_balance: '0.0000 USD',
-    //           decrease_balance: '0.0000 USD',
-    //           num_children: 0,
-    //           account_symbol: '4,USD'
-    //         },
-    //         {
-    //           account_id: 5,
-    //           parent_id: 0,
-    //           account_name: 'Liabilities',
-    //           account_subtype: 'Liabilities',
-    //           increase_balance: '0.0000 USD',
-    //           decrease_balance: '0.0000 USD',
-    //           num_children: 0,
-    //           account_symbol: '4,USD'
-    //         },
-    //         {
-    //           account_id: 6,
-    //           parent_id: 1,
-    //           account_name: 'Liquid Primary',
-    //           account_subtype: 'Assets',
-    //           increase_balance: '0.0000 USD',
-    //           decrease_balance: '0.0000 USD',
-    //           num_children: 0,
-    //           account_symbol: '4,USD'
-    //         },
-    //         {
-    //           account_id: 7,
-    //           parent_id: 1,
-    //           account_name: 'Reserve Account',
-    //           account_subtype: 'Assets',
-    //           increase_balance: '0.0000 USD',
-    //           decrease_balance: '0.0000 USD',
-    //           num_children: 0,
-    //           account_symbol: '4,USD'
-    //         },
-    //         {
-    //           account_id: 8,
-    //           parent_id: 2,
-    //           account_name: 'Investments',
-    //           account_subtype: 'Equity',
-    //           increase_balance: '0.0000 USD',
-    //           decrease_balance: '0.0000 USD',
-    //           num_children: 2,
-    //           account_symbol: '4,USD'
-    //         },
-    //         {
-    //           account_id: 9,
-    //           parent_id: 8,
-    //           account_name: 'Franklin Johnson',
-    //           account_subtype: 'Equity',
-    //           increase_balance: '0.0000 USD',
-    //           decrease_balance: '0.0000 USD',
-    //           num_children: 0,
-    //           account_symbol: '4,USD'
-    //         },
-    //         {
-    //           account_id: 10,
-    //           parent_id: 8,
-    //           account_name: 'Michelle Wu',
-    //           account_subtype: 'Equity',
-    //           increase_balance: '0.0000 USD',
-    //           decrease_balance: '0.0000 USD',
-    //           num_children: 0,
-    //           account_symbol: '4,USD'
-    //         },
-    //         {
-    //           account_id: 11,
-    //           parent_id: 3,
-    //           account_name: 'Development',
-    //           account_subtype: 'Expenses',
-    //           increase_balance: '0.0000 USD',
-    //           decrease_balance: '0.0000 USD',
-    //           num_children: 0,
-    //           account_symbol: '4,USD'
-    //         },
-    //         {
-    //           account_id: 12,
-    //           parent_id: 3,
-    //           account_name: 'Marketing',
-    //           account_subtype: 'Expenses',
-    //           increase_balance: '0.0000 USD',
-    //           decrease_balance: '0.0000 USD',
-    //           num_children: 0,
-    //           account_symbol: '4,USD'
-    //         },
-    //         {
-    //           account_id: 13,
-    //           parent_id: 3,
-    //           account_name: 'Tech Infrastructure',
-    //           account_subtype: 'Expenses',
-    //           increase_balance: '0.0000 USD',
-    //           decrease_balance: '0.0000 USD',
-    //           num_children: 0,
-    //           account_symbol: '4,USD'
-    //         },
-    //         {
-    //           account_id: 14,
-    //           parent_id: 3,
-    //           account_name: 'Travel',
-    //           account_subtype: 'Expenses',
-    //           increase_balance: '0.0000 USD',
-    //           decrease_balance: '0.0000 USD',
-    //           num_children: 0,
-    //           account_symbol: '4,USD'
-    //         }
-    //       ]          
+        // Equity children
+        await seconduserContract.addaccount(seconduser.name, 0, 'Investments', 2, 'Equity', currency)
+        await seconduserContract.addaccount(seconduser.name, 0, 'Franklin Johnson', 8, 'Equity', currency)
+        await seconduserContract.addaccount(seconduser.name, 0, 'Michelle Wu', 8, 'Equity', currency)
 
-    //     const provider = eoslime.Provider
-    //     const accountsTable = await provider.select('accounts').from(names.accounts).scope('0').limit(20).find()
+        // Expenses children
+        await seconduserContract.addaccount(seconduser.name, 0, 'Development', 3, 'Expenses', currency)
+        await seconduserContract.addaccount(seconduser.name, 0, 'Marketing', 3, 'Expenses', currency)
+        await seconduserContract.addaccount(seconduser.name, 0, 'Tech Infrastructure', 3, 'Expenses', currency)
+        await seconduserContract.addaccount(seconduser.name, 0, 'Travel', 3, 'Expenses', currency)
 
-    //     assert.deepEqual(expected, accountsTable, 'The accounts are not right.')
+        const expected = [
+            {
+              account_id: 1,
+              parent_id: 0,
+              account_name: 'Assets',
+              account_subtype: 'Assets',
+              increase_balance: '0.00 USD',
+              decrease_balance: '0.00 USD',
+              num_children: 2,
+              account_symbol: '2,USD'
+            },
+            {
+              account_id: 2,
+              parent_id: 0,
+              account_name: 'Equity',
+              account_subtype: 'Equity',
+              increase_balance: '0.00 USD',
+              decrease_balance: '0.00 USD',
+              num_children: 1,
+              account_symbol: '2,USD'
+            },
+            {
+              account_id: 3,
+              parent_id: 0,
+              account_name: 'Expenses',
+              account_subtype: 'Expenses',
+              increase_balance: '0.00 USD',
+              decrease_balance: '0.00 USD',
+              num_children: 4,
+              account_symbol: '2,USD'
+            },
+            {
+              account_id: 4,
+              parent_id: 0,
+              account_name: 'Income',
+              account_subtype: 'Income',
+              increase_balance: '0.00 USD',
+              decrease_balance: '0.00 USD',
+              num_children: 0,
+              account_symbol: '2,USD'
+            },
+            {
+              account_id: 5,
+              parent_id: 0,
+              account_name: 'Liabilities',
+              account_subtype: 'Liabilities',
+              increase_balance: '0.00 USD',
+              decrease_balance: '0.00 USD',
+              num_children: 0,
+              account_symbol: '2,USD'
+            },
+            {
+              account_id: 6,
+              parent_id: 1,
+              account_name: 'Liquid Primary',
+              account_subtype: 'Assets',
+              increase_balance: '0.00 USD',
+              decrease_balance: '0.00 USD',
+              num_children: 0,
+              account_symbol: '2,USD'
+            },
+            {
+              account_id: 7,
+              parent_id: 1,
+              account_name: 'Reserve Account',
+              account_subtype: 'Assets',
+              increase_balance: '0.00 USD',
+              decrease_balance: '0.00 USD',
+              num_children: 0,
+              account_symbol: '2,USD'
+            },
+            {
+              account_id: 8,
+              parent_id: 2,
+              account_name: 'Investments',
+              account_subtype: 'Equity',
+              increase_balance: '0.00 USD',
+              decrease_balance: '0.00 USD',
+              num_children: 2,
+              account_symbol: '2,USD'
+            },
+            {
+              account_id: 9,
+              parent_id: 8,
+              account_name: 'Franklin Johnson',
+              account_subtype: 'Equity',
+              increase_balance: '0.00 USD',
+              decrease_balance: '0.00 USD',
+              num_children: 0,
+              account_symbol: '2,USD'
+            },
+            {
+              account_id: 10,
+              parent_id: 8,
+              account_name: 'Michelle Wu',
+              account_subtype: 'Equity',
+              increase_balance: '0.00 USD',
+              decrease_balance: '0.00 USD',
+              num_children: 0,
+              account_symbol: '2,USD'
+            },
+            {
+              account_id: 11,
+              parent_id: 3,
+              account_name: 'Development',
+              account_subtype: 'Expenses',
+              increase_balance: '0.00 USD',
+              decrease_balance: '0.00 USD',
+              num_children: 0,
+              account_symbol: '2,USD'
+            },
+            {
+              account_id: 12,
+              parent_id: 3,
+              account_name: 'Marketing',
+              account_subtype: 'Expenses',
+              increase_balance: '0.00 USD',
+              decrease_balance: '0.00 USD',
+              num_children: 0,
+              account_symbol: '2,USD'
+            },
+            {
+              account_id: 13,
+              parent_id: 3,
+              account_name: 'Tech Infrastructure',
+              account_subtype: 'Expenses',
+              increase_balance: '0.00 USD',
+              decrease_balance: '0.00 USD',
+              num_children: 0,
+              account_symbol: '2,USD'
+            },
+            {
+              account_id: 14,
+              parent_id: 3,
+              account_name: 'Travel',
+              account_subtype: 'Expenses',
+              increase_balance: '0.00 USD',
+              decrease_balance: '0.00 USD',
+              num_children: 0,
+              account_symbol: '2,USD'
+            }
+          ]          
 
-    // })
+        const provider = eoslime.Provider
+        const accountsTable = await provider.select('accounts').from(names.accounts).scope('0').limit(20).find()
+
+        assert.deepEqual(expected, accountsTable, 'The accounts are not right.')
+
+    })
 
 })
 

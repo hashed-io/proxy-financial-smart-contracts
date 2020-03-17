@@ -1,6 +1,7 @@
 const assert = require('assert');
 const accounts = require('../scripts/accounts.json')
 const { names, currency } = require('../scripts/helper')
+const projectConfig = require('./config/new_project.json')
 
 function getError (err) {
     return JSON.parse(err).error.details[0].message.replace('assertion failure with message: ', '')
@@ -48,79 +49,135 @@ describe("EOSIO Token", function (eoslime) {
 
     })
 
-    // it('Should create transactions properly', async () => {
+    it('Should create transactions properly', async () => {
 
-    //     let firstuserContractProjects = await eoslime.Contract.at(names.projects, firstuser)
-    //     await firstuserContractProjects.addproject(firstuser.name, 'test project', 'this is a test', '10.0000 USD')
+        let seconduserContractProjects = await eoslime.Contract.at(names.projects, seconduser)
+        await seconduserContractProjects.addproject(
+            seconduser.name,
+            projectConfig.project_class,
+            projectConfig.project_name, 
+            projectConfig.description, 
+            projectConfig.total_project_cost,
+            projectConfig.debt_financing,
+            projectConfig.term,
+            projectConfig.interest_rate,
+            projectConfig.loan_agreement,
+            projectConfig.total_equity_financing,
+            projectConfig.total_gp_equity,
+            projectConfig.private_equity,
+            projectConfig.annual_return,
+            projectConfig.project_co_lp,
+            projectConfig.project_co_lp_date,
+            projectConfig.projected_completion_date,
+            projectConfig.projected_stabilization_date,
+            projectConfig.anticipated_year_sale
+        )
 
-    //     let firstuserContractAccounts = await eoslime.Contract.at(names.accounts, firstuser)
+        let seconduserContractAccounts = await eoslime.Contract.at(names.accounts, seconduser)
 
-    //     // Assets children
-    //     await firstuserContractAccounts.addaccount(firstuser.name, 0, 'Liquid Primary', 1, 'Assets', currency) // id = 6
-    //     await firstuserContractAccounts.addaccount(firstuser.name, 0, 'Reserve Account', 1, 'Assets', currency) // id = 7
+        // Assets children
+        await seconduserContractAccounts.addaccount(seconduser.name, 0, 'Liquid Primary', 1, 'Assets', currency) // id = 6
+        await seconduserContractAccounts.addaccount(seconduser.name, 0, 'Reserve Account', 1, 'Assets', currency) // id = 7
 
-    //     // Equity children
-    //     await firstuserContractAccounts.addaccount(firstuser.name, 0, 'Investments', 2, 'Equity', currency) // id = 8
-    //     await firstuserContractAccounts.addaccount(firstuser.name, 0, 'Franklin Johnson', 8, 'Equity', currency) // id = 9
-    //     await firstuserContractAccounts.addaccount(firstuser.name, 0, 'Michelle Wu', 8, 'Equity', currency) // id = 10
+        // Equity children
+        await seconduserContractAccounts.addaccount(seconduser.name, 0, 'Investments', 2, 'Equity', currency) // id = 8
+        await seconduserContractAccounts.addaccount(seconduser.name, 0, 'Franklin Johnson', 8, 'Equity', currency) // id = 9
+        await seconduserContractAccounts.addaccount(seconduser.name, 0, 'Michelle Wu', 8, 'Equity', currency) // id = 10
 
-    //     // Expenses children
-    //     await firstuserContractAccounts.addaccount(firstuser.name, 0, 'Development', 3, 'Expenses', currency) // id = 11
-    //     await firstuserContractAccounts.addaccount(firstuser.name, 0, 'Marketing', 3, 'Expenses', currency) // id = 12
-    //     await firstuserContractAccounts.addaccount(firstuser.name, 0, 'Tech Infrastructure', 3, 'Expenses', currency) // id = 13
-    //     await firstuserContractAccounts.addaccount(firstuser.name, 0, 'Travel', 3, 'Expenses', currency) // id = 14
+        // Expenses children
+        await seconduserContractAccounts.addaccount(seconduser.name, 0, 'Development', 3, 'Expenses', currency) // id = 11
+        await seconduserContractAccounts.addaccount(seconduser.name, 0, 'Marketing', 3, 'Expenses', currency) // id = 12
+        await seconduserContractAccounts.addaccount(seconduser.name, 0, 'Tech Infrastructure', 3, 'Expenses', currency) // id = 13
+        await seconduserContractAccounts.addaccount(seconduser.name, 0, 'Travel', 3, 'Expenses', currency) // id = 14
 
-    //     await firstuserContract.transact(firstuser.name, 0, 10, 6, 1023020302, "Invest into project", "100000.0000 USD", 1, 
-    //                                     ['https://docs.telos.kitchen/tO6eoye_Td-76wBz7J3EZQ#','https://docs.telos.kitchen/jJq8d7dwSlCSvj42yZyBGg#'])
+        await seconduserContract.transact(seconduser.name, 0, 10, 6, 1023020302, "Invest into project", "100000.00 USD", 1, 
+                                        ['https://docs.telos.kitchen/tO6eoye_Td-76wBz7J3EZQ#','https://docs.telos.kitchen/jJq8d7dwSlCSvj42yZyBGg#'])
 
-    //     await firstuserContract.transact(firstuser.name, 0, 13, 6, 1023020302, "AWS Server Expenses", "100.0000 USD", 1, 
-    //                                     ['https://docs.telos.kitchen/tO6eoye_Td-76wBz7J3EZQ#'])
+        await seconduserContract.transact(seconduser.name, 0, 13, 6, 1023020302, "AWS Server Expenses", "100.00 USD", 1, 
+                                        ['https://docs.telos.kitchen/tO6eoye_Td-76wBz7J3EZQ#'])
 
-    //     await firstuserContract.transact(firstuser.name, 0, 13, 6, 1023020302, "AWS Server Expenses", "200.0000 USD", 1, 
-    //                                     ['https://docs.telos.kitchen/tO6eoye_Td-76wBz7J3EZQ#'])
-
-
-
-    //     let seconduserContractProjects = await eoslime.Contract.at(names.projects, seconduser)
-    //     await seconduserContractProjects.addproject(seconduser.name, 'test project 2', 'this is a test 2', '10.0000 USD')
-
-    //     let seconduserContractAccounts = await eoslime.Contract.at(names.accounts, seconduser)
-
-    //      // Assets children
-    //     await seconduserContractAccounts.addaccount(seconduser.name, 1, 'Liquid Primary', 1, 'Assets', currency) // id = 6
-    //     await seconduserContractAccounts.addaccount(seconduser.name, 1, 'Reserve Account', 1, 'Assets', currency) // id = 7
-
-    //     // Equity children
-    //     await seconduserContractAccounts.addaccount(seconduser.name, 1, 'Investments', 2, 'Equity', currency) // id = 8
-    //     await seconduserContractAccounts.addaccount(seconduser.name, 1, 'Franklin Johnson', 8, 'Equity', currency) // id = 9
-    //     await seconduserContractAccounts.addaccount(seconduser.name, 1, 'Michelle Wu', 8, 'Equity', currency) // id = 10
-
-    //     // Expenses children
-    //     await seconduserContractAccounts.addaccount(seconduser.name, 1, 'Development', 3, 'Expenses', currency) // id = 11
-    //     await seconduserContractAccounts.addaccount(seconduser.name, 1, 'Marketing', 3, 'Expenses', currency) // id = 12
-    //     await seconduserContractAccounts.addaccount(seconduser.name, 1, 'Tech Infrastructure', 3, 'Expenses', currency) // id = 13
-    //     await seconduserContractAccounts.addaccount(seconduser.name, 1, 'Travel', 3, 'Expenses', currency) // id = 14
-
-    //     await seconduserContract.transact(seconduser.name, 1, 6, 13, 1023020302, "Test 2", "100.0000 USD", 0, 
-    //                                 ['https://docs.telos.kitchen/tO6eoye_Td-76wBz7J3EZQ#'])
-
-    //     await seconduserContract.transact(seconduser.name, 1, 9, 5, 1023020302, "Test 3", "200.0000 USD", 0, 
-    //                                     ['https://docs.telos.kitchen/tO6eoye_Td-76wBz7J3EZQ#'])
-
-
-    //     const provider = eoslime.Provider
-    //     const secondProjectTableBefore = await provider.select('transactions').from(names.transactions).scope('1').limit(20).find()
-    //     const accountsTable = await provider.select('accounts').from(names.accounts).scope('1').limit(20).find()
+        await seconduserContract.transact(seconduser.name, 0, 13, 6, 1023020302, "AWS Server Expenses", "200.00 USD", 1, 
+                                        ['https://docs.telos.kitchen/tO6eoye_Td-76wBz7J3EZQ#'])
         
-    //     // console.log(accountsTable)
-    //     // console.log(secondProjectTableBefore)
+    })
 
-    //     await seconduserContract.deletetrxn(seconduser.name, 1, 1)
+    it('Should edit and delete transactions', async () => {
 
-    //     await seconduserContract.edittrxn(seconduser.name, 1, 0, 22222222, "Changed transaction", "500.0000 USD", 1, 
-    //                                     ['https://docs.telos.kitchen#', 'https://docs.telos.kitchen/sajiojoas#'])
+        let seconduserContractProjects = await eoslime.Contract.at(names.projects, seconduser)
+        await seconduserContractProjects.addproject(
+            seconduser.name,
+            projectConfig.project_class,
+            projectConfig.project_name + ' 2', 
+            projectConfig.description, 
+            projectConfig.total_project_cost,
+            projectConfig.debt_financing,
+            projectConfig.term,
+            projectConfig.interest_rate,
+            projectConfig.loan_agreement,
+            projectConfig.total_equity_financing,
+            projectConfig.total_gp_equity,
+            projectConfig.private_equity,
+            projectConfig.annual_return,
+            projectConfig.project_co_lp,
+            projectConfig.project_co_lp_date,
+            projectConfig.projected_completion_date,
+            projectConfig.projected_stabilization_date,
+            projectConfig.anticipated_year_sale
+        )
 
-    // })
+        let seconduserContractAccounts = await eoslime.Contract.at(names.accounts, seconduser)
+
+         // Assets children
+        await seconduserContractAccounts.addaccount(seconduser.name, 1, 'Liquid Primary', 1, 'Assets', currency) // id = 6
+        await seconduserContractAccounts.addaccount(seconduser.name, 1, 'Reserve Account', 1, 'Assets', currency) // id = 7
+
+        // Equity children
+        await seconduserContractAccounts.addaccount(seconduser.name, 1, 'Investments', 2, 'Equity', currency) // id = 8
+        await seconduserContractAccounts.addaccount(seconduser.name, 1, 'Franklin Johnson', 8, 'Equity', currency) // id = 9
+        await seconduserContractAccounts.addaccount(seconduser.name, 1, 'Michelle Wu', 8, 'Equity', currency) // id = 10
+
+        // Expenses children
+        await seconduserContractAccounts.addaccount(seconduser.name, 1, 'Development', 3, 'Expenses', currency) // id = 11
+        await seconduserContractAccounts.addaccount(seconduser.name, 1, 'Marketing', 3, 'Expenses', currency) // id = 12
+        await seconduserContractAccounts.addaccount(seconduser.name, 1, 'Tech Infrastructure', 3, 'Expenses', currency) // id = 13
+        await seconduserContractAccounts.addaccount(seconduser.name, 1, 'Travel', 3, 'Expenses', currency) // id = 14
+
+        await seconduserContract.transact(seconduser.name, 1, 6, 13, 1023020302, "Test 2", "100.00 USD", 0, 
+                                    ['https://docs.telos.kitchen/tO6eoye_Td-76wBz7J3EZQ#'])
+
+        await seconduserContract.transact(seconduser.name, 1, 9, 5, 1023020302, "Test 3", "200.00 USD", 0, 
+                                        ['https://docs.telos.kitchen/tO6eoye_Td-76wBz7J3EZQ#'])
+
+
+        const provider = eoslime.Provider
+
+        await seconduserContract.deletetrxn(seconduser.name, 1, 1)
+
+        await seconduserContract.edittrxn(seconduser.name, 1, 0, 22222222, "Changed transaction", "500.00 USD", 1, 
+                                        ['https://docs.telos.kitchen#', 'https://docs.telos.kitchen/sajiojoas#'])
+
+        const secondTransactionsTableAfter = await provider.select('transactions').from(names.transactions).scope('1').limit(20).find()
+
+        const expectedTransactionsTable = [
+            {
+                transaction_id: 0,
+                from: 6,
+                to: 13,
+                from_increase: 1,
+                amount: '500.00 USD',
+                actor: 'prxycapusrbb',
+                timestamp: 22222222,
+                description: 'Changed transaction',
+                supporting_urls: [
+                    'https://docs.telos.kitchen#',
+                    'https://docs.telos.kitchen/sajiojoas#'
+                ]
+            }
+        ]
+        
+        assert.deepEqual(secondTransactionsTableAfter, expectedTransactionsTable, 'The transactions table is not right.')
+
+    })
    
 });
 

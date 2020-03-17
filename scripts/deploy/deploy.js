@@ -10,6 +10,38 @@ function ownerNotExistError (err) {
     return (JSON.parse(err).error.code === 3040000)
 }
 
+
+async function resetAllContracts (eoslime) {
+    if (!process.argv.includes('--reset')) {
+        return
+    }
+
+    console.log('\n\nResetting all the contracts...')
+
+    let transactions = await eoslime.Account.load(names.transactions, existing_accounts[names.transactions].privateKey, 'active')
+    let accountss = await eoslime.Account.load(names.accounts, existing_accounts[names.accounts].privateKey, 'active')
+    let projects = await eoslime.Account.load(names.projects, existing_accounts[names.projects].privateKey, 'active')
+    let permissions = await eoslime.Account.load(names.permissions, existing_accounts[names.permissions].privateKey, 'active')
+
+    let transactionsContract = await eoslime.Contract.at(names.transactions, transactions)
+    let accountssContract = await eoslime.Contract.at(names.accounts, accountss)
+    let projectsContract = await eoslime.Contract.at(names.projects, projects)
+    let permissionsContract = await eoslime.Contract.at(names.permissions, permissions)
+
+    console.log('reset permissions contract')
+    await permissionsContract.reset()
+
+    console.log('reset transactions contract')
+    await transactionsContract.reset();
+
+    console.log('reset accounts contract')
+    await accountssContract.reset()
+
+    console.log('reset projects contract')
+    await projectsContract.reset()
+}
+
+
 async function createPermissions (eoslime) {
     
     for (const permission of permissions) {
@@ -21,7 +53,7 @@ async function createPermissions (eoslime) {
 
                 const at_pos_target = permission.target.indexOf('@')
                 const account_target = permission.target.substring(0, at_pos_target)
-                const account = eoslime.Account.load(account_target, existing_accounts[account_target].privateKey)
+                const account = await eoslime.Account.load(account_target, existing_accounts[account_target].privateKey)
 
                 await account.addOnBehalfAccount(account_name, account_permission)
                 console.log('authority', permission.actor, 'added to', account_target)
@@ -37,7 +69,7 @@ async function deployLocal (eoslime) {
     
     console.log('Deploying on local node')
 
-    let owner = eoslime.Account.load(accounts.owner.account, process.env.LOCAL_PRIVATE_KEY)
+    let owner = await eoslime.Account.load(accounts.owner.account, process.env.LOCAL_PRIVATE_KEY)
     const accounts_names = Object.keys(names)
     
     for (let i = 0; i < accounts_names.length; i++) {
@@ -82,7 +114,7 @@ async function deployTestnet (eoslime) {
 
     console.log('Deploying on Testnet')
     
-    let owner = eoslime.Account.load(accounts.owner.account, existing_accounts[accounts.owner.account].privateKey)
+    let owner = await eoslime.Account.load(accounts.owner.account, existing_accounts[accounts.owner.account].privateKey)
 
     const accounts_names = Object.keys(names)
 
@@ -91,7 +123,7 @@ async function deployTestnet (eoslime) {
 
         try {
             if (accounts[accounts_names[i]].type === 'contract') {
-                let deployer = eoslime.Account.load(accounts[accounts_names[i]].account, existing_accounts[accounts[accounts_names[i]].account].privateKey)
+                let deployer = await eoslime.Account.load(accounts[accounts_names[i]].account, existing_accounts[accounts[accounts_names[i]].account].privateKey)
                 
                 console.log('transfer some tokens')
                 await owner.send(deployer, '10.0000', 'TLOS')
@@ -117,9 +149,11 @@ let deploy = async function (eoslime, deployer) {
 
     if (process.env.EOSIO_NETWORK === networksNames.local) {
         existing_accounts = require('../accounts.json')
+        await resetAllContracts(eoslime)
         await deployLocal(eoslime)
     } else if (process.env.EOSIO_NETWORK === networksNames.telosTestnet) {
         existing_accounts = require('../testnet_accounts.json')
+        await resetAllContracts(eoslime)
         await deployTestnet(eoslime)
     }
 

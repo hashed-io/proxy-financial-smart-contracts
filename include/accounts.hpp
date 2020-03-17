@@ -87,12 +87,42 @@ CONTRACT accounts : public contract {
         // table from projects contract
         TABLE project_table {
 			uint64_t project_id;
-			name owner;
-			string project_name;
+            uint64_t developer_id;
+			name owner; // who is a project owner?
+            string project_class;
+            string project_name;
 			string description;
-			asset initial_goal;
+            uint64_t created_date;
+            uint64_t status;
+
+            asset total_project_cost;
+            asset debt_financing;
+            uint8_t term;
+            uint16_t interest_rate; // decimal 2
+            string loan_agreement; // url
+
+			asset total_equity_financing;
+            asset total_gp_equity;
+            asset private_equity;
+            uint16_t annual_return; // decimal 2
+            string project_co_lp; // url
+            uint64_t project_co_lp_date;
+
+            uint64_t projected_completion_date;
+            uint64_t projected_stabilization_date;
+            uint64_t anticipated_year_sale;
+
+            string fund_lp; // url
+            asset total_fund_offering_amount;
+            uint64_t total_number_fund_offering;
+            asset price_per_fund_unit;
+            uint64_t approved_date;
+            name approved_by;
 
 			uint64_t primary_key() const { return project_id; }
+            uint64_t by_owner() const { return owner.value; }
+            uint64_t by_developer() const { return developer_id; }
+            uint64_t by_status() const { return status; }
 		};
 
         typedef eosio::multi_index <"accounts"_n, account_table,
