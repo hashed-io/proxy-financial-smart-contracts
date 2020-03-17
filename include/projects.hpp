@@ -106,17 +106,17 @@ CONTRACT projects : public contract {
 
         ACTION approveinvst (name actor, uint64_t investment_id);
 
-        ACTION maketransfer (name actor, asset amount, uint64_t investment_id, string file, uint64_t date);
+        ACTION maketransfer (name actor, asset amount, uint64_t investment_id, string proof_of_transfer, uint64_t date);
 
         ACTION edittransfer ( name actor, 
 						      uint64_t transfer_id,
                               asset amount, 
-                              string file, 
+                              string proof_of_transfer, 
                               uint64_t date );
 
         ACTION deletetrnsfr (name actor, uint64_t transfer_id);
 
-        ACTION confrmtrnsfr (name actor, uint64_t transfer_id, string file);
+        ACTION confrmtrnsfr (name actor, uint64_t transfer_id, string proof_of_transfer);
 
 
     private:
