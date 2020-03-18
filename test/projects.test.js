@@ -172,7 +172,7 @@ describe("Proxy Capital Projects Contract", function (eoslime) {
                 projectConfig.anticipated_year_sale_refinance
             )
         } catch (err) {
-            assert.deepEqual(getError(err), "proxycapproj: the symbols must be the same. amount symbol EUR != USD", 'Something else went wrong.')
+            assert.deepEqual(getError(err), names.projects + ": the symbols must be the same. 10000.00 EUR. amount symbol:EUR!=USD", 'Something else went wrong.')
         }
 
         await seconduserContract.addproject(

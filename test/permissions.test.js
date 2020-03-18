@@ -1,69 +1,12 @@
 const assert = require('assert');
 const accounts = require('../scripts/accounts.json')
 const { names, currency } = require('../scripts/helper')
+const projectConfig = require('./config/new_project.json')
 
 function getError (err) {
     return JSON.parse(err).error.details[0].message.replace('assertion failure with message: ', '')
 }
 
-// const name ACCOUNTS_ADD = "addaccount"_n;
-// const name ACCOUNTS_REMOVE = "deleteaccnt"_n;
-// const name ACCOUNTS_EDIT = "editaccount"_n;
-// const name TRANSACTIONS_ADD = "transact"_n;
-// const name TRANSACTIONS_REMOVE = "deletetrxn"_n;
-// const name TRANSACTIONS_EDIT = "edittrxn"_n;
-// const name PROJECTS_REMOVE = "nothing"_n;
-// const name PROJECTS_EDIT = "nothing2"_n;
-// const name PERMISSIONS_ADD_PERMISSION = "givepermissn"_n;
-// const name PERMISSIONS_REMOVE_PERMISSION = "removeprmssn"_n;
-// const name PERMISSIONS_ADD_ROLE = "addrole"_n;
-// const name PERMISSIONS_REMOVE_ROLE = "removerole"_n;
-// const name PERMISSIONS_ASSIGN = "assignrole"_n;
-
-// actor = {
-//     user:
-//     accounts:
-//     projects:
-//     transactions:
-//     permissions:
-//     accountsContract:
-//     projectsContract:
-//     transactionsContract:
-//     permissionsContract:
-// }
-
-
-// function checkActions (eoslime, actor) {
-//     let check = {}
-
-//     actor.permissionsContract.reset()
-//     actor.accountsContract.reset()
-//     actor.projectsContract.reset()
-//     actor.transactionsContract.reset()
-
-//     try {
-//         await actor.accounts.addaccount(actor.user.name, 0, 'test account', 3, 'Expenses', currency)
-//         check.addaccount = true
-//     } catch (err) {
-//         check.addaccount = false
-//     }
-
-//     try {
-//         await actor.accounts.deleteaccnt(actor.name, 0, 6)
-//         check.deleteaccnt = true
-//     } catch (err) {
-//         check.deleteaccnt = false
-//     }
-
-//     try {
-//         await actor.transactions.transact(actor.name, 0, 10, 6, 1023020302, "Invest into project", "100000.0000 USD", 1, 
-//                                         ['https://docs.telos.kitchen/tO6eoye_Td-76wBz7J3EZQ#','https://docs.telos.kitchen/jJq8d7dwSlCSvj42yZyBGg#'])
-//         check.transact = true
-//     } catch (err) {
-//         check.transact = false
-//     }
-
-// }
 
 describe("Proxy Capital Permissions Contract", function (eoslime) {
 
@@ -124,119 +67,146 @@ describe("Proxy Capital Permissions Contract", function (eoslime) {
 
     })
 
-    // it('Should validate permissions properly', async () => {
+    it('Should validate permissions properly', async () => {
 
-    //     await firstuserContractProjects.addproject(firstuser.name, "Test project", "This is a test description", "100000.0000 USD")
+        await seconduserContractProjects.addproject(
+            seconduser.name,
+            projectConfig.project_class,
+            projectConfig.project_name, 
+            projectConfig.description, 
+            projectConfig.total_project_cost,
+            projectConfig.debt_financing,
+            projectConfig.term,
+            projectConfig.interest_rate,
+            projectConfig.loan_agreement,
+            projectConfig.total_equity_financing,
+            projectConfig.total_gp_equity,
+            projectConfig.private_equity,
+            projectConfig.annual_return,
+            projectConfig.project_co_lp,
+            projectConfig.project_co_lp_date,
+            projectConfig.projected_completion_date,
+            projectConfig.projected_stabilization_date,
+            projectConfig.anticipated_year_sale_refinance
+        )
 
-    //     await firstuserContractAccounts.addaccount(firstuser.name, 0, 'Liquid Primary', 1, 'Assets', currency) // id = 6
-    //     await firstuserContractAccounts.addaccount(firstuser.name, 0, 'Reserve Account', 1, 'Assets', currency) // id = 7
+        await seconduserContractAccounts.addaccount(seconduser.name, 0, 'Liquid Primary', 1, 'Assets', currency) // id = 6
+        await seconduserContractAccounts.addaccount(seconduser.name, 0, 'Reserve Account', 1, 'Assets', currency) // id = 7
 
-    //     // Equity children
-    //     await firstuserContractAccounts.addaccount(firstuser.name, 0, 'Investments', 2, 'Equity', currency) // id = 8
-    //     await firstuserContractAccounts.addaccount(firstuser.name, 0, 'Franklin Johnson', 8, 'Equity', currency) // id = 9
-    //     await firstuserContractAccounts.addaccount(firstuser.name, 0, 'Michelle Wu', 8, 'Equity', currency) // id = 10
+        // Equity children
+        await seconduserContractAccounts.addaccount(seconduser.name, 0, 'Investments', 2, 'Equity', currency) // id = 8
+        await seconduserContractAccounts.addaccount(seconduser.name, 0, 'Franklin Johnson', 8, 'Equity', currency) // id = 9
+        await seconduserContractAccounts.addaccount(seconduser.name, 0, 'Michelle Wu', 8, 'Equity', currency) // id = 10
 
-    //     // Expenses children
-    //     await firstuserContractAccounts.addaccount(firstuser.name, 0, 'Development', 3, 'Expenses', currency) // id = 11
-    //     await firstuserContractAccounts.addaccount(firstuser.name, 0, 'Marketing', 3, 'Expenses', currency) // id = 12
-    //     await firstuserContractAccounts.addaccount(firstuser.name, 0, 'Tech Infrastructure', 3, 'Expenses', currency) // id = 13
-    //     await firstuserContractAccounts.addaccount(firstuser.name, 0, 'Travel', 3, 'Expenses', currency) // id = 14
+        // Expenses children
+        await seconduserContractAccounts.addaccount(seconduser.name, 0, 'Development', 3, 'Expenses', currency) // id = 11
+        await seconduserContractAccounts.addaccount(seconduser.name, 0, 'Marketing', 3, 'Expenses', currency) // id = 12
+        await seconduserContractAccounts.addaccount(seconduser.name, 0, 'Tech Infrastructure', 3, 'Expenses', currency) // id = 13
+        await seconduserContractAccounts.addaccount(seconduser.name, 0, 'Travel', 3, 'Expenses', currency) // id = 14
 
-    //     await firstuserContractTransactions.transact(firstuser.name, 0, 10, 6, 1023020302, "Invest into project", "100000.0000 USD", 1, 
-    //                                     ['https://docs.telos.kitchen/tO6eoye_Td-76wBz7J3EZQ#','https://docs.telos.kitchen/jJq8d7dwSlCSvj42yZyBGg#'])
+        await seconduserContractTransactions.transact(seconduser.name, 0, 10, 6, 1023020302, "Invest into project", "100000.00 USD", 1, 
+                                        ['https://docs.telos.kitchen/tO6eoye_Td-76wBz7J3EZQ#','https://docs.telos.kitchen/jJq8d7dwSlCSvj42yZyBGg#'])
 
-    //     await firstuserContractTransactions.transact(firstuser.name, 0, 13, 6, 1023020302, "AWS Server Expenses", "100.0000 USD", 1, 
-    //                                     ['https://docs.telos.kitchen/tO6eoye_Td-76wBz7J3EZQ#'])
+        await seconduserContractTransactions.transact(seconduser.name, 0, 13, 6, 1023020302, "AWS Server Expenses", "100.00 USD", 1, 
+                                        ['https://docs.telos.kitchen/tO6eoye_Td-76wBz7J3EZQ#'])
 
-    //     await firstuserContractTransactions.transact(firstuser.name, 0, 13, 6, 1023020302, "AWS Server Expenses", "200.0000 USD", 1, 
-    //                                     ['https://docs.telos.kitchen/tO6eoye_Td-76wBz7J3EZQ#'])
+        await seconduserContractTransactions.transact(seconduser.name, 0, 13, 6, 1023020302, "AWS Server Expenses", "200.00 USD", 1, 
+                                        ['https://docs.telos.kitchen/tO6eoye_Td-76wBz7J3EZQ#'])
 
         
-    //     await seconduserContractProjects.addproject(seconduser.name, 'test project 2', 'this is a test 2', '10.0000 USD')
+        await seconduserContractProjects.addproject(
+            seconduser.name,
+            projectConfig.project_class,
+            projectConfig.project_name + ' 2', 
+            projectConfig.description, 
+            projectConfig.total_project_cost,
+            projectConfig.debt_financing,
+            projectConfig.term,
+            projectConfig.interest_rate,
+            projectConfig.loan_agreement,
+            projectConfig.total_equity_financing,
+            projectConfig.total_gp_equity,
+            projectConfig.private_equity,
+            projectConfig.annual_return,
+            projectConfig.project_co_lp,
+            projectConfig.project_co_lp_date,
+            projectConfig.projected_completion_date,
+            projectConfig.projected_stabilization_date,
+            projectConfig.anticipated_year_sale_refinance
+        )
 
-    //     try {
-    //         // this should fail
-    //         await seconduserContractAccounts.addaccount(seconduser.name, 0, 'Some account', 3, 'Expenses', currency) // id = 15
-    //     }
-    //     catch (err) {
-    //         console.log(getError(err))
-    //     }
+        try {
+            // this should fail
+            await firstuserContractAccounts.addaccount(firstuser.name, 0, 'Some account', 3, 'Expenses', currency) // id = 15
+        }
+        catch (err) {
+            assert.deepEqual(getError(err), names.permissions + ": the user does not have an entry in the roles table.", 'Something else went wrong.')
+        }
 
-    //     // add a new role and assign it to seconduser
-    //     await firstuserContract.addrole(firstuser.name, 0, 'Test Role', 0)
-    //     await firstuserContract.assignrole(firstuser.name, seconduser.name, 0, 3)
+        // add a new role and assign it to seconduser
+        await seconduserContract.addrole(seconduser.name, 0, 'Test Role', 0)
+        await seconduserContract.assignrole(seconduser.name, firstuser.name, 0, 3)
 
         
-    //     const rolesTable = await provider.select('roles').from(names.permissions).scope('0').limit(20).find()
-    //     const userRoles = await provider.select('userroles').from(names.permissions).scope('0').limit(20).find()
+        const rolesTable = await provider.select('roles').from(names.permissions).scope('0').limit(20).find()
+        const userRoles = await provider.select('userroles').from(names.permissions).scope('0').limit(20).find()
 
-    //     console.log(rolesTable)
-    //     console.log(userRoles)
+        try {
+            // this should fail
+            await firstuserContractAccounts.addaccount(firstuser.name, 0, 'Some account', 3, 'Expenses', currency) // id = 15
+        }
+        catch (err) {
+            assert.deepEqual(getError(err), names.permissions + ": the user proxycapusra does not have permissions to do this.", 'Something else went wrong.')
+        }
 
-    //     try {
-    //         // this should fail
-    //         await seconduserContractAccounts.addaccount(seconduser.name, 0, 'Some account', 3, 'Expenses', currency) // id = 15
-    //     }
-    //     catch (err) {
-    //         console.log(getError(err))
-    //     }
+        try {
+            // this should fail
+            await firstuserContract.givepermissn(firstuser.name, 0, 'addaccount', 3)
+        }
+        catch (err) {
+            assert.deepEqual(getError(err), names.permissions + ": the user proxycapusra does not have permissions to do this.", 'Something else went wrong.')
+        }
 
-    //     try {
-    //         // this should fail
-    //         await seconduserContract.givepermissn(seconduser.name, 0, 'addaccount', 3)
-    //     }
-    //     catch (err) {
-    //         console.log(getError(err))
-    //     }
+        await seconduserContract.givepermissn(seconduser.name, 0, 'addaccount', 3)
 
-    //     await firstuserContract.givepermissn(firstuser.name, 0, 'addaccount', 3)
+        await firstuserContractAccounts.addaccount(firstuser.name, 0, 'Some account', 3, 'Expenses', currency) // id = 15
 
-    //     await seconduserContractAccounts.addaccount(seconduser.name, 0, 'Some account', 3, 'Expenses', currency) // id = 15
+        const accountsTableBefore = await provider.select('accounts').from(names.accounts).scope('0').limit(20).find()
 
-    //     const accountsTableBefore = await provider.select('accounts').from(names.accounts).scope('0').limit(20).find()
-    //     console.log(accountsTableBefore)
+        try {
+            // this should fail
+            await firstuserContractTransactions.transact(firstuser.name, 0, 13, 6, 1023020302, "AWS Server Expenses", "220.00 USD", 1, 
+                                        ['https://docs.telos.kitchen/tO6eoye_Td-76wBz7J3EZQ#'])
+        }
+        catch (err) {
+            assert.deepEqual(getError(err), names.permissions + ": the user proxycapusra does not have permissions to do this.", 'Something else went wrong.')
+        }
 
+        await seconduserContract.givepermissn(seconduser.name, 0, 'transact', 3)
+        await firstuserContractTransactions.transact(firstuser.name, 0, 13, 6, 1023020302, "AWS Server Expenses", "200.00 USD", 1, 
+                                        ['https://docs.telos.kitchen/tO6eoye_Td-76wBz7J3EZQ#'])
 
-    //     try {
-    //         // this should fail
-    //         await seconduserContractTransactions.transact(seconduser.name, 0, 13, 6, 1023020302, "AWS Server Expenses", "220.0000 USD", 1, 
-    //                                     ['https://docs.telos.kitchen/tO6eoye_Td-76wBz7J3EZQ#'])
-    //     }
-    //     catch (err) {
-    //         console.log(getError(err))
-    //     }
+        const transactionsTableBefore = await provider.select('transactions').from(names.transactions).scope('0').limit(20).find()
 
-    //     await firstuserContract.givepermissn(firstuser.name, 0, 'transact', 3)
+        await seconduserContract.assignrole(seconduser.name, firstuser.name, 0, 1)
+        await firstuserContract.addrole(firstuser.name, 0, 'Test Role 2', 0)
+        await firstuserContract.addrole(firstuser.name, 0, 'Test Role 3', 7999)
+        await seconduserContract.removeprmssn(seconduser.name, 0, 'addrole', 1)
 
-    //     await seconduserContractTransactions.transact(seconduser.name, 0, 13, 6, 1023020302, "AWS Server Expenses", "200.0000 USD", 1, 
-    //                                     ['https://docs.telos.kitchen/tO6eoye_Td-76wBz7J3EZQ#'])
+        try {
+            await firstuserContract.addrole(firstuser.name, 0, 'Test Role 4', 0)
+        }
+        catch (err) {
+            assert.deepEqual(getError(err), names.permissions + ": the user proxycapusra does not have permissions to do this.", 'Something else went wrong.')
+        }
 
-    //     const transactionsTableBefore = await provider.select('transactions').from(names.transactions).scope('0').limit(20).find()
-    //     console.log(transactionsTableBefore)
+        const rolesTable2 = await provider.select('roles').from(names.permissions).scope('0').limit(20).find()
 
-    //     await firstuserContract.assignrole(firstuser.name, seconduser.name, 0, 1)
+        await seconduserContract.removerole(seconduser.name, 0, 4)
 
-    //     await seconduserContract.addrole(seconduser.name, 0, 'Test Role 2', 0)
-    //     await seconduserContract.addrole(seconduser.name, 0, 'Test Role 3', 7999)
+        const rolesTable3 = await provider.select('roles').from(names.permissions).scope('0').limit(20).find()
 
-    //     await firstuserContract.removeprmssn(firstuser.name, 0, 'addrole', 1)
-
-    //     try {
-    //         await seconduserContract.addrole(seconduser.name, 0, 'Test Role 4', 0)
-    //     }
-    //     catch (err) {
-    //         console.log(getError(err))
-    //     }
-
-    //     const rolesTable2 = await provider.select('roles').from(names.permissions).scope('0').limit(20).find()
-    //     console.log(rolesTable2)
-
-    //     await seconduserContract.removerole(seconduser.name, 0, 4)
-
-    //     const rolesTable3 = await provider.select('roles').from(names.permissions).scope('0').limit(20).find()
-    //     console.log(rolesTable3)
-
-    // })
+    })
 
 
 })

@@ -179,5 +179,5 @@ describe("EOSIO Token", function (eoslime) {
 
     })
    
-});
+})
 

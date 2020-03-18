@@ -18,6 +18,6 @@ namespace contract_names {
 }
 
 void check_asset(asset amount, name contract_name) {
-	check(amount.symbol == CURRENCY, contract_name.to_string() + ": the symbols must be the same. amount symbol " + amount.symbol.code().to_string() + " != " + CURRENCY.code().to_string());
+	check(amount.symbol == CURRENCY, contract_name.to_string() + ": the symbols must be the same. " + amount.to_string() + ". amount symbol:" + amount.symbol.code().to_string() + "!=" + CURRENCY.code().to_string());
 	check(amount > asset(0, CURRENCY), contract_name.to_string() + ": the amount must be greater than zero.");
 }
