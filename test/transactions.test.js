@@ -70,7 +70,7 @@ describe("EOSIO Token", function (eoslime) {
             projectConfig.project_co_lp_date,
             projectConfig.projected_completion_date,
             projectConfig.projected_stabilization_date,
-            projectConfig.anticipated_year_sale
+            projectConfig.anticipated_year_sale_refinance
         )
 
         let seconduserContractAccounts = await eoslime.Contract.at(names.accounts, seconduser)
@@ -122,7 +122,7 @@ describe("EOSIO Token", function (eoslime) {
             projectConfig.project_co_lp_date,
             projectConfig.projected_completion_date,
             projectConfig.projected_stabilization_date,
-            projectConfig.anticipated_year_sale
+            projectConfig.anticipated_year_sale_refinance
         )
 
         let seconduserContractAccounts = await eoslime.Contract.at(names.accounts, seconduser)
@@ -165,7 +165,7 @@ describe("EOSIO Token", function (eoslime) {
                 to: 13,
                 from_increase: 1,
                 amount: '500.00 USD',
-                actor: 'prxycapusrbb',
+                actor: 'proxycapusrb',
                 timestamp: 22222222,
                 description: 'Changed transaction',
                 supporting_urls: [

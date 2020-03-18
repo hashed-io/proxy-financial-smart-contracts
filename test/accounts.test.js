@@ -57,7 +57,7 @@ describe("Proxy Capital Accounts Contract", function (eoslime) {
             projectConfig.project_co_lp_date,
             projectConfig.projected_completion_date,
             projectConfig.projected_stabilization_date,
-            projectConfig.anticipated_year_sale
+            projectConfig.anticipated_year_sale_refinance
         )
 
 
@@ -223,7 +223,49 @@ describe("Proxy Capital Accounts Contract", function (eoslime) {
         const provider = eoslime.Provider
         const accountsTable = await provider.select('accounts').from(names.accounts).scope('0').limit(20).find()
 
-        assert.deepEqual(expected, accountsTable, 'The accounts are not right.')
+        assert.deepEqual(accountsTable, expected, 'The accounts are not right.')
+
+    })
+
+    it('Should edit and delete accounts', async () => {
+
+      await seconduserContract.editaccount(seconduser.name, 0, 6, 'Liquid Primary Test')
+
+      const provider = eoslime.Provider
+      let accountsTable = await provider.select('accounts').from(names.accounts).scope('0').limit(20).find()
+
+      accountsTable = accountsTable.map(account => {
+        if (account.account_id === 6) {
+          return account
+        }
+      })
+
+      const expectedAccountsTable = [
+        {
+          account_id: 6,
+          parent_id: 1,
+          num_children: 0,
+          account_name: 'Liquid Primary Test',
+          account_subtype: 'Assets',
+          increase_balance: '0.00 USD',
+          decrease_balance: '0.00 USD',
+          account_symbol: '2,USD'
+        }
+      ]
+      
+      assert.deepEqual(accountsTable.filter(Boolean), expectedAccountsTable, 'The accounts are not right.')
+
+      await seconduserContract.deleteaccnt(seconduser.name, 0, 6)
+
+      let accountsTableAfterDelete = await provider.select('accounts').from(names.accounts).scope('0').limit(20).find()
+
+      accountsTableAfterDelete = accountsTableAfterDelete.map(account => {
+        if (account.account_id === 6) {
+          return account
+        }
+      })
+
+      assert.deepEqual(accountsTableAfterDelete.filter(Boolean), [], 'The accounts are not right.')
 
     })
 

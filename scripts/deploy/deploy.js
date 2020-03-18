@@ -125,14 +125,14 @@ async function deployTestnet (eoslime) {
             if (accounts[accounts_names[i]].type === 'contract') {
                 let deployer = await eoslime.Account.load(accounts[accounts_names[i]].account, existing_accounts[accounts[accounts_names[i]].account].privateKey)
                 
-                console.log('transfer some tokens')
-                await owner.send(deployer, '10.0000', 'TLOS')
+                // console.log('transfer some tokens')
+                // await owner.send(deployer, '10.0000', 'TLOS')
 
-                console.log('buying cpu and net')
-                await deployer.buyBandwidth('5.0000 TLOS', '5.0000 TLOS')
+                // console.log('buying cpu and net')
+                // await deployer.buyBandwidth('5.0000 TLOS', '5.0000 TLOS')
 
-                console.log('buying ram for:', accounts[accounts_names[i]].account)
-                await deployer.buyRam(1000000);
+                // console.log('buying ram for:', accounts[accounts_names[i]].account)
+                // await deployer.buyRam(1000000);
 
                 await eoslime.Contract.deployOnAccount('./artifacts/'+accounts_names[i]+'.wasm', './artifacts/'+accounts_names[i]+'.abi', deployer)
                 console.log(accounts[accounts_names[i]].account, 'successfully deployed')

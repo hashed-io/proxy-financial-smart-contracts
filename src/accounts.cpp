@@ -121,6 +121,8 @@ ACTION accounts::editaccount (name actor, uint64_t project_id, uint64_t account_
         std::make_tuple(actor, project_id, ACTION_NAMES.ACCOUNTS_EDIT)
     ).send();
 
+    check(new_name.length() > 0, contract_names::accounts.to_string() + ": the account name can not be an empty string.");
+
     auto itr_project = projects_table.find(project_id);
     check(itr_project != projects_table.end(), contract_names::accounts.to_string() + ": the project does not exist.");
 
@@ -151,7 +153,7 @@ ACTION accounts::deleteaccnt (name actor, uint64_t project_id, uint64_t account_
     ).send();
 
     auto project = projects_table.find(project_id);
-	check(project != projects_table.end(), contract_names::accounts.to_string() + ": the project where the account is trying to be placed does not exist.");
+	check(project != projects_table.end(), contract_names::accounts.to_string() + ": the project where the account is trying to be created does not exist.");
 
 	account_tables accounts(_self, project_id);
 
@@ -173,10 +175,10 @@ ACTION accounts::deleteaccnt (name actor, uint64_t project_id, uint64_t account_
 }
 
 ACTION accounts::addaccount ( name actor,
-                              uint64_t project_id, 
-                              string account_name, 
-                              uint64_t parent_id, 
-                              string account_subtype, 
+                              uint64_t project_id,
+                              string account_name,
+                              uint64_t parent_id,
+                              string account_subtype,
                               symbol account_currency ) {
 
     require_auth(actor);
@@ -245,5 +247,5 @@ ACTION accounts::deleteaccnts(uint64_t project_id) {
 }
 
 
-EOSIO_DISPATCH(accounts, (reset)(addaccount)(initaccounts)(addbalance)(subbalance)(canceladd)(cancelsub)(deleteaccnts));
+EOSIO_DISPATCH(accounts, (reset)(addaccount)(editaccount)(deleteaccnt)(initaccounts)(addbalance)(subbalance)(canceladd)(cancelsub)(deleteaccnts));
 

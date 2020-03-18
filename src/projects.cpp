@@ -61,11 +61,11 @@ ACTION projects::reset () {
 		itr_transfer = transfers.erase(itr_transfer);
 	}
 
-	// hardcoding some users
-	addtestuser("prxycapusraa"_n, "firstuser", USER_TYPES.INVESTOR);
-	addtestuser("prxycapusrdd"_n, "fourthuser", USER_TYPES.INVESTOR);
-	addtestuser("prxycapusrbb"_n, "seconduser", USER_TYPES.DEVELOPER);
-	addtestuser("prxycapusrcc"_n, "thirduser", USER_TYPES.FUND);
+	// hardcoding some users for testnet
+	addtestuser("proxycapusra"_n, "firstuser", USER_TYPES.INVESTOR);
+	addtestuser("proxycapusrd"_n, "fourthuser", USER_TYPES.INVESTOR);
+	addtestuser("proxycapusrb"_n, "seconduser", USER_TYPES.DEVELOPER);
+	addtestuser("proxycapusrc"_n, "thirduser", USER_TYPES.FUND);
 }
 
 ACTION projects::addtestuser (name user, string user_name, string type) {
@@ -122,7 +122,7 @@ ACTION projects::addproject ( name actor,
 							  uint64_t project_co_lp_date,
 							  uint64_t projected_completion_date,
 							  uint64_t projected_stabilization_date,
-							  uint64_t anticipated_year_sale ) {
+							  uint64_t anticipated_year_sale_refinance ) {
 
     require_auth(actor);
 	checkuserdev(actor);
@@ -172,7 +172,7 @@ ACTION projects::addproject ( name actor,
 
 		new_project.projected_completion_date = projected_completion_date;
 		new_project.projected_stabilization_date = projected_stabilization_date;
-		new_project.anticipated_year_sale = anticipated_year_sale;
+		new_project.anticipated_year_sale_refinance = anticipated_year_sale_refinance;
 
 	});
 
@@ -249,7 +249,7 @@ ACTION projects::editproject ( name actor,
 							   uint64_t project_co_lp_date,
 							   uint64_t projected_completion_date,
 							   uint64_t projected_stabilization_date,
-							   uint64_t anticipated_year_sale ) {
+							   uint64_t anticipated_year_sale_refinance ) {
 
 	require_auth(actor);
 
@@ -295,7 +295,7 @@ ACTION projects::editproject ( name actor,
 
 		modified_project.projected_completion_date = projected_completion_date;
 		modified_project.projected_stabilization_date = projected_stabilization_date;
-		modified_project.anticipated_year_sale = anticipated_year_sale;
+		modified_project.anticipated_year_sale_refinance = anticipated_year_sale_refinance;
 
 	});
 }

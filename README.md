@@ -27,7 +27,7 @@ npm run compile
 npm run deploy
 ```
 
-* Test all the contracts. It will just work on the local node.
+* Test all the contracts. It will work only on a local node.
 ```
 npm run test
 ```

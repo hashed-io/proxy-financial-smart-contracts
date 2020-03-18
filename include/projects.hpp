@@ -71,7 +71,7 @@ CONTRACT projects : public contract {
                              uint64_t project_co_lp_date,
                              uint64_t projected_completion_date,
                              uint64_t projected_stabilization_date,
-                             uint64_t anticipated_year_sale );
+                             uint64_t anticipated_year_sale_refinance );
 
         ACTION deleteprojct (name actor, uint64_t project_id);
 
@@ -124,7 +124,7 @@ CONTRACT projects : public contract {
         TABLE project_table {
 			uint64_t project_id;
             uint64_t developer_id;
-			name owner; // who is a project owner?
+			name owner;
             string project_class;
             string project_name;
 			string description;
@@ -146,7 +146,7 @@ CONTRACT projects : public contract {
 
             uint64_t projected_completion_date;
             uint64_t projected_stabilization_date;
-            uint64_t anticipated_year_sale;
+            uint64_t anticipated_year_sale_refinance;
 
             string fund_lp; // url
             asset total_fund_offering_amount;

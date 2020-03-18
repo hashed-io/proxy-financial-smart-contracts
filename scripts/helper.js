@@ -91,14 +91,14 @@ const accountsMetadata = (network) => {
   if (network == networks.local) {
     return {
       	owner: account(owner),
-      	firstuser: account('prxycapusraa', '10000000.0000 USD'),
-      	seconduser: account('prxycapusrbb', '10000000.0000 USD'),
-        thirduser: account('prxycapusrcc', '5000000.0000 USD'),
-        fourthuser: account('prxycapusrdd', '5000000.0000 USD'),
-        transactions: contract('proxycaptrxn', 'transactions'),
-        projects: contract('proxycapprjt', 'projects'),
-        accounts: contract('proxycapaccn', 'accounts'),
-        permissions: contract('proxycapprms', 'permissions')
+      	firstuser: account('proxycapusra', '10000000.0000 USD'),
+      	seconduser: account('proxycapusrb', '10000000.0000 USD'),
+        thirduser: account('proxycapusrc', '5000000.0000 USD'),
+        fourthuser: account('proxycapusrd', '5000000.0000 USD'),
+        transactions: contract('proxycaptrnx', 'transactions'),
+        projects: contract('proxycapproj', 'projects'),
+        accounts: contract('proxycapacct', 'accounts'),
+        permissions: contract('proxycapperm', 'permissions')
     }
   } else if (network == networks.telosMainnet) {
     return {
