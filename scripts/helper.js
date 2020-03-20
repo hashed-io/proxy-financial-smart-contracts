@@ -142,6 +142,9 @@ const permissions = [
 		target: `${accounts.projects.account}@active`,
 		actor: `${accounts.projects.account}@eosio.code`
   }, {
+		target: `${accounts.transactions.account}@active`,
+		actor: `${accounts.projects.account}@active`
+  }, {
 		target: `${accounts.accounts.account}@active`,
 		actor: `${accounts.accounts.account}@eosio.code`
   }, {

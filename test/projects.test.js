@@ -335,6 +335,87 @@ describe("Proxy Capital Projects Contract", function (eoslime) {
         
     })
 
+    it('Should edit and delete a project', async () => {
+
+        await seconduserContract.addproject(
+            seconduser.name, 
+            projectConfig.project_class,
+            projectConfig.project_name + " Editable",
+            projectConfig.description, 
+            projectConfig.total_project_cost,
+            projectConfig.debt_financing,
+            projectConfig.term,
+            projectConfig.interest_rate,
+            projectConfig.loan_agreement,
+            projectConfig.total_equity_financing,
+            projectConfig.total_gp_equity,
+            projectConfig.private_equity,
+            projectConfig.annual_return,
+            projectConfig.project_co_lp,
+            projectConfig.project_co_lp_date,
+            projectConfig.projected_completion_date,
+            projectConfig.projected_stabilization_date,
+            projectConfig.anticipated_year_sale_refinance
+        )
+
+        let projectsTableBefore = await projectsContract.projects.limit(10).find()
+
+        await seconduserContract.editproject(
+            seconduser.name,
+            2, // project id
+            projectConfig.project_class,
+            projectConfig.project_name + " Editable",
+            "Just an editable description", 
+            projectConfig.total_project_cost,
+            projectConfig.debt_financing,
+            projectConfig.term,
+            100,
+            projectConfig.loan_agreement,
+            projectConfig.total_equity_financing,
+            projectConfig.total_gp_equity,
+            projectConfig.private_equity,
+            projectConfig.annual_return,
+            "http://www.lp-edited.com",
+            projectConfig.project_co_lp_date,
+            projectConfig.projected_completion_date,
+            projectConfig.projected_stabilization_date,
+            projectConfig.anticipated_year_sale_refinance
+        )
+
+        await seconduserContract.editproject(
+            seconduser.name,
+            2, // project id
+            projectConfig.project_class,
+            projectConfig.project_name + " Edited",
+            "Just an editable description", 
+            projectConfig.total_project_cost,
+            projectConfig.debt_financing,
+            projectConfig.term,
+            100,
+            projectConfig.loan_agreement,
+            projectConfig.total_equity_financing,
+            projectConfig.total_gp_equity,
+            projectConfig.private_equity,
+            projectConfig.annual_return,
+            "http://www.lp-edited.com",
+            projectConfig.project_co_lp_date,
+            projectConfig.projected_completion_date,
+            projectConfig.projected_stabilization_date,
+            projectConfig.anticipated_year_sale_refinance
+        )
+
+        let projectsTableAfter = await projectsContract.projects.limit(10).find()
+
+        console.log(projectsTableBefore)
+        console.log(projectsTableAfter)
+
+        await seconduserContract.deleteprojct(seconduser.name, 2)
+
+        let projectsTableAfterDelete = await projectsContract.projects.limit(10).find()
+        console.log(projectsTableAfterDelete)
+
+    })
+
     it('Should approve the project', async () => {
 
         await thirduserContract.approveprjct(
