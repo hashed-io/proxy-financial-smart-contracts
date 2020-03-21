@@ -4,6 +4,8 @@
 void accounts::change_balance (uint64_t project_id, uint64_t account_id, asset amount, bool increase, bool cancel) {
     account_tables accounts(_self, project_id);
 
+    print("nothing");
+
     auto itr_account = accounts.find(account_id);
     check(itr_account != accounts.end(), contract_names::accounts.to_string() + ": the account does not exist.");
     check(itr_account -> num_children == 0, contract_names::accounts.to_string() + ": can not add balance to a parent account.");

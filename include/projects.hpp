@@ -92,7 +92,7 @@ CONTRACT projects : public contract {
                         uint64_t quantity_units_purchased,
                         uint16_t annual_preferred_return,
                         uint64_t signed_agreement_date,
-                        string file );
+                        string subscription_package );
 
         ACTION editinvest ( name actor, 
 							uint64_t investment_id,
@@ -100,7 +100,7 @@ CONTRACT projects : public contract {
                             uint64_t quantity_units_purchased,
                             uint16_t annual_preferred_return,
                             uint64_t signed_agreement_date,
-                            string file );
+                            string subscription_package );
 
         ACTION deleteinvest (name actor, uint64_t investment_id);
 

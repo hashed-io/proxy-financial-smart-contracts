@@ -9,6 +9,8 @@ void projects::checkusrtype (name user, string type) {
 
 void projects::delete_transfer_aux (uint64_t transfer_id) {
 
+	print("nothing");
+
 	auto itr_transfer = transfers.find(transfer_id);
 	auto itr_investment = investments.find(itr_transfer -> investment_id);
 
