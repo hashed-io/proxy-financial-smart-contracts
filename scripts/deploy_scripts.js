@@ -42,27 +42,32 @@ async function getReset () {
 
 async function deployScript () {
 
-    let cmd
-    let reset = await getReset()
-
-    if (process.env.EOSIO_NETWORK === networksNames.local) {        
-
-        cmd = 'eoslime deploy --path="./scripts/deploy/"'
-
-    } else if (process.env.EOSIO_NETWORK === networksNames.telosTestnet) {
-
-        cmd = 'eoslime deploy --path="./scripts/deploy/" --network.url="https://testnet.telos.caleos.io" --network.chainId="1eaa0824707c8c16bd25145493bf062aecddfeb56c736f6ba6397f3195f33c9f"'
-
+    try {
+        
+        let cmd
+        let reset = await getReset()
+        
+        if (process.env.EOSIO_NETWORK === networksNames.local) {        
+            
+            cmd = 'eoslime deploy --path="./scripts/deploy/"'
+            
+        } else if (process.env.EOSIO_NETWORK === networksNames.telosTestnet) {
+            
+            cmd = 'eoslime deploy --path="./scripts/deploy/" --network.url="https://testnet.telos.caleos.io" --network.chainId="1eaa0824707c8c16bd25145493bf062aecddfeb56c736f6ba6397f3195f33c9f"'
+            
+        }
+        
+        cmd += reset
+        
+        console.log('Running command: ')
+        console.log(cmd)
+        
+        const output = await execAsync(cmd)
+        console.log(output.stdout)
+        return process.exit(0)
+    } catch (error) {
+        console.log(error)        
     }
-
-    cmd += reset
-
-    console.log('Running command: ')
-    console.log(cmd)
-
-    const output = await execAsync(cmd)
-    console.log(output.stdout)
-    return process.exit(0)
 }
 
 deployScript()
