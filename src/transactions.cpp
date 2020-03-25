@@ -1,100 +1,64 @@
 #include <transactions.hpp>
 
 
-name transactions::get_action_from (string type_from, bool increase) {
-	name action_from;
+void transactions::make_transaction ( name & actor,
+									  uint64_t transaction_id,
+									  uint64_t & project_id, 
+									  vector<transaction_amount> & amounts,
+									  uint64_t & date,
+									  string & description,
+									  vector<string> & supporting_urls ) {
 
-	if (increase) {
-		action_from = "addbalance"_n;
-	} else {
-		action_from = "subbalance"_n;
-	}
-
-	return action_from;
-}
-
-name transactions::get_action_to (string type_from, string type_to, bool increase) {
-	name action_to;
-
-	if (type_from == ACCOUNT_TYPES.DEBIT) {
-		if (increase) { // left side
-			if (type_to == ACCOUNT_TYPES.DEBIT) {
-				action_to = "subbalance"_n;
-			} else {
-				action_to = "addbalance"_n;
-			}
-		} else { // right side
-			if (type_to == ACCOUNT_TYPES.DEBIT) {
-				action_to = "addbalance"_n;
-			}
-			else {
-				action_to = "subbalance"_n;
-			}
-		}
-	} else { // from is credit
-		if (increase) { // right side
-			if (type_to == ACCOUNT_TYPES.DEBIT) {
-				action_to = "addbalance"_n;
-			} else {
-				action_to = "subbalance"_n;
-			}
-		} else { // left side
-			if (type_to == ACCOUNT_TYPES.DEBIT) {
-				action_to = "subbalance"_n;
-			} else {
-				action_to = "addbalance"_n;
-			}
-		}
-	}
-
-	return action_to;
-}
-
-string transactions::get_account_type (uint64_t project_id, uint64_t account_id) {
+	transaction_tables transactions(_self, project_id);
+	account_transaction_tables accnttrxns(_self, project_id);
 
 	account_tables accounts(contract_names::accounts, project_id);
 
-	auto itr_account = accounts.find(account_id);
-	check(itr_account != accounts.end(), contract_names::transactions.to_string() + ": the account with the id = " + to_string(account_id) + " does not exist.");
+	auto itr_amounts = amounts.begin();
+	uint64_t trx_id = 0;
+	int64_t total = 0;
+	name action_accnt;
 
-	string type_account;
-
-	auto itr_type_account = account_types.begin();
-	while (itr_type_account != account_types.end()) {
-		if (itr_type_account -> type_name == itr_account -> account_subtype) {
-			type_account = itr_type_account -> account_class;
-		}
-		itr_type_account++;
+	if (transaction_id == 0) {
+		trx_id = transactions.available_primary_key();
+		trx_id = (trx_id > 0) ? trx_id : 1;
+	} else {
+		trx_id = transaction_id;
 	}
 
-	return type_account;
-}
+	while (itr_amounts != amounts.end()) {
+		auto itr_account = accounts.find(itr_amounts -> account_id);
+		check(itr_account != accounts.end(), contract_names::transactions.to_string() + ": the account does not exist.");
 
-name transactions::get_cancel_action (name action_to_be_canceled) {
-	return (action_to_be_canceled == "addbalance"_n) ? "canceladd"_n : "cancelsub"_n;
-}
+		accnttrxns.emplace(_self, [&](auto & atrx){
+			atrx.accnt_transaction_id = accnttrxns.available_primary_key();
+			atrx.transaction_id = trx_id;
+			atrx.account_id = itr_amounts -> account_id;
+			atrx.amount = itr_amounts -> amount;
+		});
 
-void transactions::make_transaction ( name actor, 
-									  uint64_t project_id, 
-									  uint64_t from, 
-									  uint64_t to,
-									  uint64_t date,
-									  string description, 
-									  asset amount, 
-									  bool increase,
-									  vector<string> supporting_urls ) {
+		total += itr_amounts -> amount;
 
-	string type_from = get_account_type(project_id, from);
-	string type_to = get_account_type(project_id, to);
+		if (itr_amounts -> amount < 0) {
+			action_accnt = "subbalance"_n;
+		} else {
+			action_accnt = "addbalance"_n;
+		}
 
-	transaction_tables transactions(_self, project_id);
+		action (
+			permission_level(contract_names::accounts, "active"_n),
+			contract_names::accounts,
+			action_accnt,
+			std::make_tuple(project_id, itr_amounts -> account_id, asset(abs(itr_amounts -> amount), CURRENCY))
+		).send();
+
+		itr_amounts++;
+	}
+
+	check(total == 0, contract_names::transactions.to_string() + ": the transaction total balance must be zero.");
 
 	transactions.emplace(_self, [&](auto & new_transaction){
-		new_transaction.transaction_id = transactions.available_primary_key();
-		new_transaction.from = from;
-		new_transaction.to = to;
-		new_transaction.from_increase = increase;
-		new_transaction.amount = amount;
+		new_transaction.transaction_id = trx_id;
 		new_transaction.actor = actor;
 		new_transaction.timestamp = date;
 		new_transaction.description = description;
@@ -103,85 +67,76 @@ void transactions::make_transaction ( name actor,
 			new_transaction.supporting_urls.push_back(supporting_urls[i]);
 		}
 	});
-
-	name action_from = get_action_from(type_from, increase);
-	name action_to = get_action_to(type_from, type_to, increase);
 	
-	action (
-		permission_level(contract_names::accounts, "active"_n),
-		contract_names::accounts,
-		action_from,
-		std::make_tuple(project_id, from, amount)
-	).send();
-
-	action (
-		permission_level(contract_names::accounts, "active"_n),
-		contract_names::accounts,
-		action_to,
-		std::make_tuple(project_id, to, amount)
-	).send();
 }
 
 void transactions::delete_transaction (uint64_t project_id, uint64_t transaction_id) {
 
 	transaction_tables transactions(_self, project_id);
+	account_transaction_tables accnttrxns(_self, project_id);
 
 	auto itr_trxn = transactions.find(transaction_id);
 	check(itr_trxn != transactions.end(), contract_names::transactions.to_string() + ": the transaction you want to delete does not exist.");
 
-	asset amount = itr_trxn -> amount;
-	bool increase = itr_trxn -> from_increase;
-	uint64_t from = itr_trxn -> from;
-	uint64_t to = itr_trxn -> to;
+	auto accnttrxns_by_transactions = accnttrxns.get_index<"bytrxns"_n>();
+	auto itr_amount = accnttrxns_by_transactions.begin();
+	name action_cancel_amount;
 
-	string type_from = get_account_type(project_id, from);
-	string type_to = get_account_type(project_id, to);
+	while (itr_amount != accnttrxns_by_transactions.end() &&
+		   itr_amount -> transaction_id == transaction_id) {
+		
+		if (itr_amount -> amount < 0) {
+			action_cancel_amount = "cancelsub"_n;
+		} else {
+			action_cancel_amount = "canceladd"_n;
+		}
 
-	name action_from = get_cancel_action(get_action_from(type_from, increase));
-	name action_to = get_cancel_action(get_action_to(type_from, type_to, increase));
+		action (
+			permission_level(contract_names::accounts, "active"_n),
+			contract_names::accounts,
+			action_cancel_amount,
+			std::make_tuple(project_id, itr_amount -> account_id, asset(abs(itr_amount -> amount), CURRENCY))
+		).send();
+
+		itr_amount = accnttrxns_by_transactions.erase(itr_amount);
+	}
 
 	transactions.erase(itr_trxn);
-
-	action (
-		permission_level(contract_names::accounts, "active"_n),
-		contract_names::accounts,
-		action_from,
-		std::make_tuple(project_id, from, amount)
-	).send();
-
-	action (
-		permission_level(contract_names::accounts, "active"_n),
-		contract_names::accounts,
-		action_to,
-		std::make_tuple(project_id, to, amount)
-	).send();
 }
+
+
+
 
 ACTION transactions::reset () {
 	require_auth(_self);
 
+	print("Hello");
+
 	for (int i = 0; i < RESET_IDS; i++) {
 		transaction_tables transactions(_self, i);
+		
 		auto itr_t = transactions.begin();
 		while (itr_t != transactions.end()) {
 			itr_t = transactions.erase(itr_t);
+		}
+
+		account_transaction_tables accnttrxns(_self, i);
+
+		auto itr_at = accnttrxns.begin();
+		while (itr_at != accnttrxns.end()) {
+			itr_at = accnttrxns.erase(itr_at);
 		}
 	}
 }
 
 ACTION transactions::transact ( name actor, 
-								uint64_t project_id, 
-								uint64_t from, 
-								uint64_t to,
+						  		uint64_t project_id, 
+								vector<transaction_amount> amounts,
 								uint64_t date,
-								string description, 
-								asset amount, 
-								bool increase,
+								string description,
 								vector<string> supporting_urls ) {
 
 	require_auth(actor);
-	check_asset(amount, contract_names::transactions);
-	check(from != to, contract_names::transactions.to_string() + ": from must be different than to");
 
 	action (
         permission_level(contract_names::permissions, "active"_n),
@@ -193,7 +148,7 @@ ACTION transactions::transact ( name actor,
 	auto itr_project = projects.find(project_id);
 	check(itr_project != projects.end(), contract_names::transactions.to_string() + ": the project with the id = " + to_string(project_id) + " does not exist.");
 
-	make_transaction(actor, project_id, from, to, date, description, amount, increase, supporting_urls);
+	make_transaction(actor, 0, project_id, amounts, date, description, supporting_urls);
 }
 
 ACTION transactions::deletetrxn (name actor, uint64_t project_id, uint64_t transaction_id) {
@@ -209,17 +164,15 @@ ACTION transactions::deletetrxn (name actor, uint64_t project_id, uint64_t trans
 	delete_transaction(project_id, transaction_id);
 }
 
-ACTION transactions::edittrxn ( name actor,
-								uint64_t project_id, 
+ACTION transactions::edittrxn ( name actor, 
+								uint64_t project_id,
 								uint64_t transaction_id,
+								vector<transaction_amount> amounts,
 								uint64_t date,
 								string description,
-								asset amount,
-								bool increase,
 								vector<string> supporting_urls ) {
 	
 	require_auth(actor);
-	check_asset(amount, contract_names::transactions);
 
 	action (
         permission_level(contract_names::permissions, "active"_n),
@@ -236,11 +189,8 @@ ACTION transactions::edittrxn ( name actor,
 	auto itr_trxn = transactions.find(transaction_id);
 	check(itr_trxn != transactions.end(), contract_names::transactions.to_string() + ": the transaction does not exist.");
 
-	uint64_t from = itr_trxn -> from;
-	uint64_t to = itr_trxn -> to;
-
 	delete_transaction(project_id, transaction_id);
-	make_transaction(actor, project_id, from, to, date, description, amount, increase, supporting_urls);
+	make_transaction(actor, transaction_id, project_id, amounts, date, description, supporting_urls);
 }
 
 
@@ -248,10 +198,16 @@ ACTION transactions::deletetrxns (uint64_t project_id) {
 	require_auth(_self);
 
 	transaction_tables transactions(_self, project_id);
+	account_transaction_tables accnttrxns(_self, project_id);
 
 	auto itr_transaction = transactions.begin();
 	while (itr_transaction != transactions.end()) {
 		itr_transaction = transactions.erase(itr_transaction);
+	}
+
+	auto itr_at = accnttrxns.begin();
+	while (itr_at != accnttrxns.end()) {
+		itr_at = accnttrxns.erase(itr_at);
 	}
 }
 

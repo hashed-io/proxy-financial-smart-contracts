@@ -406,13 +406,13 @@ describe("Proxy Capital Projects Contract", function (eoslime) {
 
         let projectsTableAfter = await projectsContract.projects.limit(10).find()
 
-        console.log(projectsTableBefore)
-        console.log(projectsTableAfter)
+        // console.log(projectsTableBefore)
+        // console.log(projectsTableAfter)
 
         await seconduserContract.deleteprojct(seconduser.name, 2)
 
         let projectsTableAfterDelete = await projectsContract.projects.limit(10).find()
-        console.log(projectsTableAfterDelete)
+        // console.log(projectsTableAfterDelete)
 
     })
 

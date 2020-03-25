@@ -106,13 +106,13 @@ CONTRACT projects : public contract {
 
         ACTION approveinvst (name actor, uint64_t investment_id);
 
-        ACTION maketransfer (name actor, asset amount, uint64_t investment_id, string proof_of_transfer, uint64_t date);
+        ACTION maketransfer (name actor, asset amount, uint64_t investment_id, string proof_of_transfer, uint64_t transfer_date);
 
         ACTION edittransfer ( name actor, 
 						      uint64_t transfer_id,
                               asset amount, 
                               string proof_of_transfer, 
-                              uint64_t date );
+                              uint64_t transfer_date );
 
         ACTION deletetrnsfr (name actor, uint64_t transfer_id);
 

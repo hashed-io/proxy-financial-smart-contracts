@@ -89,95 +89,81 @@ describe("EOSIO Token", function (eoslime) {
         await seconduserContractAccounts.addaccount(seconduser.name, 0, 'Marketing', 3, 'Expenses', currency) // id = 12
         await seconduserContractAccounts.addaccount(seconduser.name, 0, 'Tech Infrastructure', 3, 'Expenses', currency) // id = 13
         await seconduserContractAccounts.addaccount(seconduser.name, 0, 'Travel', 3, 'Expenses', currency) // id = 14
-
-        await seconduserContract.transact(seconduser.name, 0, 10, 6, 1023020302, "Invest into project", "100000.00 USD", 1, 
-                                        ['https://docs.telos.kitchen/tO6eoye_Td-76wBz7J3EZQ#','https://docs.telos.kitchen/jJq8d7dwSlCSvj42yZyBGg#'])
-
-        await seconduserContract.transact(seconduser.name, 0, 13, 6, 1023020302, "AWS Server Expenses", "100.00 USD", 1, 
-                                        ['https://docs.telos.kitchen/tO6eoye_Td-76wBz7J3EZQ#'])
-
-        await seconduserContract.transact(seconduser.name, 0, 13, 6, 1023020302, "AWS Server Expenses", "200.00 USD", 1, 
-                                        ['https://docs.telos.kitchen/tO6eoye_Td-76wBz7J3EZQ#'])
         
-    })
-
-    it('Should edit and delete transactions', async () => {
-
-        let seconduserContractProjects = await eoslime.Contract.at(names.projects, seconduser)
-        await seconduserContractProjects.addproject(
-            seconduser.name,
-            projectConfig.project_class,
-            projectConfig.project_name + ' 2', 
-            projectConfig.description, 
-            projectConfig.total_project_cost,
-            projectConfig.debt_financing,
-            projectConfig.term,
-            projectConfig.interest_rate,
-            projectConfig.loan_agreement,
-            projectConfig.total_equity_financing,
-            projectConfig.total_gp_equity,
-            projectConfig.private_equity,
-            projectConfig.annual_return,
-            projectConfig.project_co_lp,
-            projectConfig.project_co_lp_date,
-            projectConfig.projected_completion_date,
-            projectConfig.projected_stabilization_date,
-            projectConfig.anticipated_year_sale_refinance
-        )
-
-        let seconduserContractAccounts = await eoslime.Contract.at(names.accounts, seconduser)
-
-         // Assets children
-        await seconduserContractAccounts.addaccount(seconduser.name, 1, 'Liquid Primary', 1, 'Assets', currency) // id = 6
-        await seconduserContractAccounts.addaccount(seconduser.name, 1, 'Reserve Account', 1, 'Assets', currency) // id = 7
-
-        // Equity children
-        await seconduserContractAccounts.addaccount(seconduser.name, 1, 'Investments', 2, 'Equity', currency) // id = 8
-        await seconduserContractAccounts.addaccount(seconduser.name, 1, 'Franklin Johnson', 8, 'Equity', currency) // id = 9
-        await seconduserContractAccounts.addaccount(seconduser.name, 1, 'Michelle Wu', 8, 'Equity', currency) // id = 10
-
-        // Expenses children
-        await seconduserContractAccounts.addaccount(seconduser.name, 1, 'Development', 3, 'Expenses', currency) // id = 11
-        await seconduserContractAccounts.addaccount(seconduser.name, 1, 'Marketing', 3, 'Expenses', currency) // id = 12
-        await seconduserContractAccounts.addaccount(seconduser.name, 1, 'Tech Infrastructure', 3, 'Expenses', currency) // id = 13
-        await seconduserContractAccounts.addaccount(seconduser.name, 1, 'Travel', 3, 'Expenses', currency) // id = 14
-
-        await seconduserContract.transact(seconduser.name, 1, 6, 13, 1023020302, "Test 2", "100.00 USD", 0, 
-                                    ['https://docs.telos.kitchen/tO6eoye_Td-76wBz7J3EZQ#'])
-
-        await seconduserContract.transact(seconduser.name, 1, 9, 5, 1023020302, "Test 3", "200.00 USD", 0, 
-                                        ['https://docs.telos.kitchen/tO6eoye_Td-76wBz7J3EZQ#'])
-
-
-        const provider = eoslime.Provider
-
-        await seconduserContract.deletetrxn(seconduser.name, 1, 1)
-
-        await seconduserContract.edittrxn(seconduser.name, 1, 0, 22222222, "Changed transaction", "500.00 USD", 1, 
-                                        ['https://docs.telos.kitchen#', 'https://docs.telos.kitchen/sajiojoas#'])
-
-        const secondTransactionsTableAfter = await provider.select('transactions').from(names.transactions).scope('1').limit(20).find()
-
-        const expectedTransactionsTable = [
+        const amounts1 = [
             {
-                transaction_id: 0,
-                from: 6,
-                to: 13,
-                from_increase: 1,
-                amount: '500.00 USD',
-                actor: 'proxycapusrb',
-                timestamp: 22222222,
-                description: 'Changed transaction',
-                supporting_urls: [
-                    'https://docs.telos.kitchen#',
-                    'https://docs.telos.kitchen/sajiojoas#'
-                ]
+                'account_id': 11,
+                'amount': 200
+            }, {
+                'account_id': 6,
+                'amount': -300
+            }, {
+                'account_id': 12,
+                'amount': 100
             }
         ]
-        
-        assert.deepEqual(secondTransactionsTableAfter, expectedTransactionsTable, 'The transactions table is not right.')
+
+        const amounts2 = [
+            {
+                'account_id': 10,
+                'amount': 4000000
+            }, {
+                'account_id': 6,
+                'amount': -4000000
+            }
+        ]
+
+        await seconduserContract.transact(seconduser.name, 0, amounts1, 1023020302, "Monthly expenses",
+                                        ['https://docs.telos.kitchen/tO6eoye_Td-76wBz7J3EZQ#','https://docs.telos.kitchen/jJq8d7dwSlCSvj42yZyBGg#'])
+
+        await seconduserContract.transact(seconduser.name, 0, amounts2, 1023020304, "Investment",
+                                        ['https://docs.telos.kitchen-2/tO6eoye_Td-76wBz7J3EZQ#','https://docs.telos.kitchen-2/jJq8d7dwSlCSvj42yZyBGg#'])
+
+        // const provider = eoslime.Provider
+        // let accountsTable = await provider.select('accounts').from(names.accounts).scope('0').limit(20).find()
+        // let transactionsTable = await provider.select('transactions').from(names.transactions).scope('0').limit(20).find()
+        // let accnttransactionsTable = await provider.select('accnttrx').from(names.transactions).scope('0').limit(20).find()
+
+        // console.log('accounts:', accountsTable)
+        // console.log('transactions:', transactionsTable)
+        // console.log('accnt_trxns:', accnttransactionsTable)
 
     })
-   
+
+    it('Should delete a transaction', async () => {
+
+        await seconduserContract.deletetrxn(seconduser.name, 0, 1);
+
+    })
+
+    it('Should edit the transaction', async () => {
+
+        const amounts = [
+            {
+                'account_id': 10,
+                'amount': 4500000
+            }, {
+                'account_id': 6,
+                'amount': -4000000
+            }, {
+                'account_id': 7,
+                'amount': -500000
+            }
+        ]
+
+        await seconduserContract.edittrxn(seconduser.name, 0, 2, amounts, 1023020304, "Investment Remastered",
+                                        ['https://docs.telos.kitchen-2/tO6eoye_Td-76wBz7J3EZQ#','https://docs.telos.kitchen-2r/jJq8d7dwSlCSvj42yZyBGg#'])
+
+        // const provider = eoslime.Provider
+        // let accountsTable = await provider.select('accounts').from(names.accounts).scope('0').limit(20).find()
+        // let transactionsTable = await provider.select('transactions').from(names.transactions).scope('0').limit(20).find()
+        // let accnttransactionsTable = await provider.select('accnttrx').from(names.transactions).scope('0').limit(20).find()
+
+        // console.log('accounts:', accountsTable)
+        // console.log('transactions:', transactionsTable)
+        // console.log('accnt_trxns:', accnttransactionsTable)
+
+    })
+
 })
 

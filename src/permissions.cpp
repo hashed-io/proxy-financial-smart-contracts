@@ -192,6 +192,8 @@ ACTION permissions::addrole (name actor, uint64_t project_id, string role_name, 
 ACTION permissions::removerole (name actor, uint64_t project_id, uint64_t role_id) {
     require_auth(actor);
 
+    print("Hello");
+
     check(role_id != 0, contract_names::permissions.to_string() + ": can not remove the owner role.");
 
     role_tables roles(_self, project_id);

@@ -7,6 +7,9 @@ function getError (err) {
     return JSON.parse(err).error.details[0].message.replace('assertion failure with message: ', '')
 }
 
+function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
 
 describe("Proxy Capital Permissions Contract", function (eoslime) {
 
@@ -104,14 +107,25 @@ describe("Proxy Capital Permissions Contract", function (eoslime) {
         await seconduserContractAccounts.addaccount(seconduser.name, 0, 'Tech Infrastructure', 3, 'Expenses', currency) // id = 13
         await seconduserContractAccounts.addaccount(seconduser.name, 0, 'Travel', 3, 'Expenses', currency) // id = 14
 
-        await seconduserContractTransactions.transact(seconduser.name, 0, 10, 6, 1023020302, "Invest into project", "100000.00 USD", 1, 
+        const amounts = [
+            {
+                'account_id': 11,
+                'amount': 200
+            }, {
+                'account_id': 6,
+                'amount': -300
+            }, {
+                'account_id': 12,
+                'amount': 100
+            }
+        ]
+
+        await seconduserContractTransactions.transact(seconduser.name, 0, amounts, 1023020302, "Monthly expenses",
                                         ['https://docs.telos.kitchen/tO6eoye_Td-76wBz7J3EZQ#','https://docs.telos.kitchen/jJq8d7dwSlCSvj42yZyBGg#'])
 
-        await seconduserContractTransactions.transact(seconduser.name, 0, 13, 6, 1023020302, "AWS Server Expenses", "100.00 USD", 1, 
-                                        ['https://docs.telos.kitchen/tO6eoye_Td-76wBz7J3EZQ#'])
-
-        await seconduserContractTransactions.transact(seconduser.name, 0, 13, 6, 1023020302, "AWS Server Expenses", "200.00 USD", 1, 
-                                        ['https://docs.telos.kitchen/tO6eoye_Td-76wBz7J3EZQ#'])
+        await sleep(1500)
+        await seconduserContractTransactions.transact(seconduser.name, 0, amounts, 1023020302, "Monthly expenses",
+                                        ['https://docs.telos.kitchen/tO6eoye_Td-76wBz7J3EZQ#','https://docs.telos.kitchen/jJq8d7dwSlCSvj42yZyBGg#'])
 
         
         await seconduserContractProjects.addproject(
@@ -175,16 +189,18 @@ describe("Proxy Capital Permissions Contract", function (eoslime) {
 
         try {
             // this should fail
-            await firstuserContractTransactions.transact(firstuser.name, 0, 13, 6, 1023020302, "AWS Server Expenses", "220.00 USD", 1, 
-                                        ['https://docs.telos.kitchen/tO6eoye_Td-76wBz7J3EZQ#'])
+            await firstuserContractTransactions.transact(firstuser.name, 0, amounts, 1023020302, "Monthly expenses",
+                                        ['https://docs.telos.kitchen/tO6eoye_Td-76wBz7J3EZQ#','https://docs.telos.kitchen/jJq8d7dwSlCSvj42yZyBGg#'])
         }
         catch (err) {
             assert.deepEqual(getError(err), names.permissions + ": the user proxycapusra does not have permissions to do this.", 'Something else went wrong.')
         }
 
         await seconduserContract.givepermissn(seconduser.name, 0, 'transact', 3)
-        await firstuserContractTransactions.transact(firstuser.name, 0, 13, 6, 1023020302, "AWS Server Expenses", "200.00 USD", 1, 
-                                        ['https://docs.telos.kitchen/tO6eoye_Td-76wBz7J3EZQ#'])
+
+        await sleep(1000)
+        await firstuserContractTransactions.transact(firstuser.name, 0, amounts, 1023020302, "Monthly expenses",
+                                        ['https://docs.telos.kitchen/tO6eoye_Td-76wBz7J3EZQ#','https://docs.telos.kitchen/jJq8d7dwSlCSvj42yZyBGg#'])
 
         const transactionsTableBefore = await provider.select('transactions').from(names.transactions).scope('0').limit(20).find()
 
