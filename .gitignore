@@ -3,5 +3,5 @@ artifacts
 .eosproj
 scripts/accounts.json
 
-.vscode/settings.json
+.vscode/
 package-lock.json

@@ -65,12 +65,9 @@ async function createPermissions (eoslime) {
 }
 
 
-async function deployLocal (eoslime) {
+async function createAccounts (eoslime, owner, accounts_names) {
     
-    console.log('Deploying on local node')
-
-    let owner = await eoslime.Account.load(accounts.owner.account, process.env.LOCAL_PRIVATE_KEY)
-    const accounts_names = Object.keys(names)
+    console.log('Creating accounts in local node')
     
     for (let i = 0; i < accounts_names.length; i++) {
         if (accounts_names[i] !== owner.name) {
@@ -84,15 +81,32 @@ async function deployLocal (eoslime) {
                 console.log('successfully created', existing_accounts[accounts[accounts_names[i]].account])
             } catch (err) {
                 if (ownerNotExistError(err)) {
-                    console.log('the owner account shold exist to deploy the rest of accounts')
-                    return process.exit(-1)
+                    console.log('the owner account should exist to deploy the rest of accounts')
+                    throw err
                 }
                 console.log(accounts[accounts_names[i]].account, 'already exists')
             }
+        }
+    }
 
+    fs.writeFileSync('./scripts/accounts.json', JSON.stringify(existing_accounts))
+
+}
+
+async function deployLocal (eoslime) {
+    
+    let owner = await eoslime.Account.load(accounts.owner.account, process.env.LOCAL_PRIVATE_KEY)
+    const accounts_names = Object.keys(names)
+    
+    await createAccounts(eoslime, owner, accounts_names)
+
+    console.log('Deploying on local node')
+
+    for (let i = 0; i < accounts_names.length; i++) {
+        if (accounts_names[i] !== owner.name) {
             try {
                 if (accounts[accounts_names[i]].type === 'contract') {
-                    console.log('deploying:', accounts[accounts_names[i]].account)
+                    console.log(`deploying: account: ${accounts[accounts_names[i]].account}, privateKey: ${existing_accounts[accounts[accounts_names[i]].account].privateKey}`)
                     deployer = eoslime.Account.load(accounts[accounts_names[i]].account, existing_accounts[accounts[accounts_names[i]].account].privateKey)
             
                     await eoslime.Contract.deployOnAccount('./artifacts/'+accounts_names[i]+'.wasm', './artifacts/'+accounts_names[i]+'.abi', deployer)
@@ -103,10 +117,6 @@ async function deployLocal (eoslime) {
             }
         }
     }
-
-    fs.writeFile('./scripts/accounts.json', JSON.stringify(existing_accounts), (err) => {
-        if(err) throw err
-    })
 
 }
 
@@ -146,9 +156,16 @@ async function deployTestnet (eoslime) {
 
 
 let deploy = async function (eoslime, deployer) {
-
+    
     if (process.env.EOSIO_NETWORK === networksNames.local) {
-        existing_accounts = require('../accounts.json')
+        console.log('Checking if accounts.json exists...')
+        if(fs.existsSync('./scripts/accounts.json')){
+            console.log('accounts.json exists. Loading...')
+            existing_accounts = require('../accounts.json')
+        } else {
+            console.log('accounts.json does not exist.')
+            existing_accounts = {}   
+        }
         await resetAllContracts(eoslime)
         await deployLocal(eoslime)
     } else if (process.env.EOSIO_NETWORK === networksNames.telosTestnet) {
