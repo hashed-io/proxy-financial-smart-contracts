@@ -3,6 +3,7 @@ const accounts = require('../scripts/accounts.json')
 const { names, currency } = require('../scripts/helper')
 const projectConfig = require('./config/new_project.json')
 
+
 function getError (err) {
     return JSON.parse(err).error.details[0].message.replace('assertion failure with message: ', '')
 }
@@ -12,6 +13,8 @@ function sleep(ms) {
 }
 
 describe("Proxy Capital Permissions Contract", function (eoslime) {
+
+    this.timeout(15000)
 
     let firstuser = eoslime.Account.load(names.firstuser, accounts[names.firstuser].privateKey, 'active')
     let seconduser = eoslime.Account.load(names.seconduser, accounts[names.seconduser].privateKey, 'active')
