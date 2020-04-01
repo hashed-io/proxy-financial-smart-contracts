@@ -91,10 +91,10 @@ const accountsMetadata = (network) => {
   if (network == networks.local) {
     return {
       	owner: account(owner),
-      	firstuser: account('proxycapusra', '10000000.0000 USD'),
-      	seconduser: account('proxycapusrb', '10000000.0000 USD'),
-        thirduser: account('proxycapusrc', '5000000.0000 USD'),
-        fourthuser: account('proxycapusrd', '5000000.0000 USD'),
+      	firstuser: account('investorusr1', '10000000.0000 USD'),
+      	seconduser: account('developerco1', '10000000.0000 USD'),
+        thirduser: account('fundusr11111', '5000000.0000 USD'),
+        fourthuser: account('investorusr2', '5000000.0000 USD'),
         transactions: contract('proxycaptrnx', 'transactions'),
         projects: contract('proxycapproj', 'projects'),
         accounts: contract('proxycapacct', 'accounts'),
@@ -103,10 +103,10 @@ const accountsMetadata = (network) => {
   } else if (network == networks.telosMainnet) {
     return {
         owner: account(owner),
-        firstuser: account('proxycapusra', '10000000.0000 USD'),
-        seconduser: account('proxycapusrb', '10000000.0000 USD'),
-        thirduser: account('proxycapusrc', '5000000.0000 USD'),
-        fourthuser: account('proxycapusrd', '5000000.0000 USD'),
+        firstuser: account('investorusr1', '10000000.0000 USD'),
+        seconduser: account('developerco1', '10000000.0000 USD'),
+        thirduser: account('fundusr11111', '5000000.0000 USD'),
+        fourthuser: account('investorusr2', '5000000.0000 USD'),
         transactions: contract('proxycaptrnx', 'transactions'),
         projects: contract('proxycapproj', 'projects'),
         accounts: contract('proxycapacct', 'accounts'),
@@ -115,10 +115,10 @@ const accountsMetadata = (network) => {
   } else if (network == networks.telosTestnet) {
     return {
         owner: account(owner),
-        firstuser: account('proxycapusra', '10000000.0000 USD'),
-        seconduser: account('proxycapusrb', '10000000.0000 USD'),
-        thirduser: account('proxycapusrc', '5000000.0000 USD'),
-        fourthuser: account('proxycapusrd', '5000000.0000 USD'),
+        firstuser: account('investorusr1', '10000000.0000 USD'),
+        seconduser: account('developerco1', '10000000.0000 USD'),
+        thirduser: account('fundusr11111', '5000000.0000 USD'),
+        fourthuser: account('investorusr2', '5000000.0000 USD'),
         transactions: contract('proxycaptrnx', 'transactions'),
         projects: contract('proxycapproj', 'projects'),
         accounts: contract('proxycapacct', 'accounts'),

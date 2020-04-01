@@ -62,10 +62,10 @@ ACTION projects::reset () {
 	}
 
 	// hardcoding some users for testnet
-	addtestuser("proxycapusra"_n, "firstuser", USER_TYPES.INVESTOR);
-	addtestuser("proxycapusrd"_n, "fourthuser", USER_TYPES.INVESTOR);
-	addtestuser("proxycapusrb"_n, "seconduser", USER_TYPES.DEVELOPER);
-	addtestuser("proxycapusrc"_n, "thirduser", USER_TYPES.FUND);
+	addtestuser("investorusr1"_n, "Investor 1", USER_TYPES.INVESTOR);
+	addtestuser("investorusr2"_n, "Investor 2", USER_TYPES.INVESTOR);
+	addtestuser("developerco1"_n, "Developer Co.", USER_TYPES.DEVELOPER);
+	addtestuser("fundusr11111"_n, "Fund", USER_TYPES.FUND);
 }
 
 ACTION projects::addtestuser (name user, string user_name, string type) {
