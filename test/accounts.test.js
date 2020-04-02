@@ -3,6 +3,10 @@ const accounts = require('../scripts/accounts.json')
 const { names, currency } = require('../scripts/helper')
 const projectConfig = require('./config/new_project.json')
 
+function getError (err) {
+  return JSON.parse(err).error.details[0].message.replace('assertion failure with message: ', '')
+}
+
 describe("Proxy Capital Accounts Contract", function (eoslime) {
 
     let firstuser = eoslime.Account.load(names.firstuser, accounts[names.firstuser].privateKey, 'active')
@@ -63,19 +67,19 @@ describe("Proxy Capital Accounts Contract", function (eoslime) {
 
 
         // Assets children
-        await seconduserContract.addaccount(seconduser.name, 0, 'Liquid Primary', 1, 'Assets', currency)
-        await seconduserContract.addaccount(seconduser.name, 0, 'Reserve Account', 1, 'Assets', currency)
+        await seconduserContract.addaccount(seconduser.name, 0, 'Liquid Primary', 1, currency)      // id = 6
+        await seconduserContract.addaccount(seconduser.name, 0, 'Reserve Account', 1, currency)     // id = 7
 
         // Equity children
-        await seconduserContract.addaccount(seconduser.name, 0, 'Investments', 2, 'Equity', currency)
-        await seconduserContract.addaccount(seconduser.name, 0, 'Franklin Johnson', 8, 'Equity', currency)
-        await seconduserContract.addaccount(seconduser.name, 0, 'Michelle Wu', 8, 'Equity', currency)
+        await seconduserContract.addaccount(seconduser.name, 0, 'Investments', 2, currency)         // id = 8
+        await seconduserContract.addaccount(seconduser.name, 0, 'Franklin Johnson', 8, currency)    // id = 9
+        await seconduserContract.addaccount(seconduser.name, 0, 'Michelle Wu', 8, currency)         // id = 10
 
         // Expenses children
-        await seconduserContract.addaccount(seconduser.name, 0, 'Development', 3, 'Expenses', currency)
-        await seconduserContract.addaccount(seconduser.name, 0, 'Marketing', 3, 'Expenses', currency)
-        await seconduserContract.addaccount(seconduser.name, 0, 'Tech Infrastructure', 3, 'Expenses', currency)
-        await seconduserContract.addaccount(seconduser.name, 0, 'Travel', 3, 'Expenses', currency)
+        await seconduserContract.addaccount(seconduser.name, 0, 'Development', 3, currency)         // id = 11
+        await seconduserContract.addaccount(seconduser.name, 0, 'Marketing', 3, currency)           // id = 12
+        await seconduserContract.addaccount(seconduser.name, 0, 'Tech Infrastructure', 3, currency) // id = 13
+        await seconduserContract.addaccount(seconduser.name, 0, 'Travel', 3, currency)              // id = 14
 
         const expected = [
             {
@@ -269,6 +273,84 @@ describe("Proxy Capital Accounts Contract", function (eoslime) {
 
     })
 
+    it('Should create total budgets', async () => {
+
+      // travel children
+      await seconduserContract.addaccount(seconduser.name, 0, 'Flights', 14, currency)  // id = 15
+      await seconduserContract.addaccount(seconduser.name, 0, 'Bus', 14, currency)      // id = 16
+      await seconduserContract.addaccount(seconduser.name, 0, 'Taxis', 14, currency)    // id = 17
+
+      await seconduserContract.addbudget(seconduser.name, 0, 17, "300.00 USD", 1, 1585762692, 1588354692, 1)
+      await seconduserContract.addbudget(seconduser.name, 0, 16, "200.00 USD", 1, 1585762692, 1588354692, 1)
+
+      try {
+        await seconduserContract.addbudget(seconduser.name, 0, 15, "700.00 USD", 1, 1585762692, 1588354692, 0)
+      } catch (err) {
+        console.log(getError(err))
+      }
+
+      await seconduserContract.addaccount(seconduser.name, 0, 'Backend', 11, currency)    // id = 18
+      await seconduserContract.addaccount(seconduser.name, 0, 'Frontend', 11, currency)   // id = 19
+
+      await seconduserContract.addbudget(seconduser.name, 0, 18, "200.00 USD", 1, 1585762692, 1588354692, 0)
+      await seconduserContract.addbudget(seconduser.name, 0, 19, "200.00 USD", 1, 1585762692, 1588354692, 0)
+
+      try {
+        await seconduserContract.addbudget(seconduser.name, 0, 11, "350.00 USD", 1, 1585762692, 1588354692, 1)
+      } catch (err) {
+        console.log(getError(err))
+      }
+
+    })
+
+    it('Should create any date budgets', async () => {
+
+      await seconduserContract.addbudget(seconduser.name, 0, 17, "300.00 USD", 2, 1585762692, 1588354692, 1)
+      await seconduserContract.addbudget(seconduser.name, 0, 16, "200.00 USD", 2, 1585762692, 1588354692, 0)
+
+      try {
+        await seconduserContract.addbudget(seconduser.name, 0, 17, "300.00 USD", 2, 1585762692, 1588354392, 1)
+      } catch (err) {
+        console.log(getError(err))
+      }
+
+      await seconduserContract.addbudget(seconduser.name, 0, 17, "300.00 USD", 2, 1588441092, 1591033092, 0)
+
+      const provider = eoslime.Provider
+      let budgetsDatesTable = await provider.select('budgetdates').from(names.accounts).scope('0').limit(20).find()
+      let budgetsTable = await provider.select('budgets').from(names.accounts).scope('0').limit(20).find()
+
+      console.log(budgetsDatesTable)
+      console.log(budgetsTable)
+
+    })
+
+    it('Should delete budgets', async () => {
+
+      await seconduserContract.deletebudget(seconduser.name, 0, 2, 1) // account_id = 14
+      await seconduserContract.deletebudget(seconduser.name, 0, 1, 0)
+      await seconduserContract.deletebudget(seconduser.name, 0, 12, 1)
+
+      const provider = eoslime.Provider
+      let budgetsDatesTable = await provider.select('budgetdates').from(names.accounts).scope('0').limit(20).find()
+      let budgetsTable = await provider.select('budgets').from(names.accounts).scope('0').limit(20).find()
+
+      console.log(budgetsDatesTable)
+      console.log(budgetsTable)
+
+    })
+
+    it('Should edit budgets', async() => {
+
+      await seconduserContract.editbudget(seconduser.name, 0, 8, "555.00 USD", 1, 1585762692, 1588354692, 1)
+
+      const provider = eoslime.Provider
+      let budgetsDatesTable = await provider.select('budgetdates').from(names.accounts).scope('0').limit(20).find()
+      let budgetsTable = await provider.select('budgets').from(names.accounts).scope('0').limit(20).find()
+
+      console.log(budgetsDatesTable)
+      console.log(budgetsTable)
+
+    })
+
 })
-
-

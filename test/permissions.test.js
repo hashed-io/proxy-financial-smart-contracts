@@ -93,19 +93,19 @@ describe("Proxy Capital Permissions Contract", function (eoslime) {
             projectConfig.anticipated_year_sale_refinance
         )
 
-        await seconduserContractAccounts.addaccount(seconduser.name, 0, 'Liquid Primary', 1, 'Assets', currency) // id = 6
-        await seconduserContractAccounts.addaccount(seconduser.name, 0, 'Reserve Account', 1, 'Assets', currency) // id = 7
+        await seconduserContractAccounts.addaccount(seconduser.name, 0, 'Liquid Primary', 1, currency) // id = 6
+        await seconduserContractAccounts.addaccount(seconduser.name, 0, 'Reserve Account', 1, currency) // id = 7
 
         // Equity children
-        await seconduserContractAccounts.addaccount(seconduser.name, 0, 'Investments', 2, 'Equity', currency) // id = 8
-        await seconduserContractAccounts.addaccount(seconduser.name, 0, 'Franklin Johnson', 8, 'Equity', currency) // id = 9
-        await seconduserContractAccounts.addaccount(seconduser.name, 0, 'Michelle Wu', 8, 'Equity', currency) // id = 10
+        await seconduserContractAccounts.addaccount(seconduser.name, 0, 'Investments', 2, currency) // id = 8
+        await seconduserContractAccounts.addaccount(seconduser.name, 0, 'Franklin Johnson', 8, currency) // id = 9
+        await seconduserContractAccounts.addaccount(seconduser.name, 0, 'Michelle Wu', 8, currency) // id = 10
 
         // Expenses children
-        await seconduserContractAccounts.addaccount(seconduser.name, 0, 'Development', 3, 'Expenses', currency) // id = 11
-        await seconduserContractAccounts.addaccount(seconduser.name, 0, 'Marketing', 3, 'Expenses', currency) // id = 12
-        await seconduserContractAccounts.addaccount(seconduser.name, 0, 'Tech Infrastructure', 3, 'Expenses', currency) // id = 13
-        await seconduserContractAccounts.addaccount(seconduser.name, 0, 'Travel', 3, 'Expenses', currency) // id = 14
+        await seconduserContractAccounts.addaccount(seconduser.name, 0, 'Development', 3, currency) // id = 11
+        await seconduserContractAccounts.addaccount(seconduser.name, 0, 'Marketing', 3, currency) // id = 12
+        await seconduserContractAccounts.addaccount(seconduser.name, 0, 'Tech Infrastructure', 3, currency) // id = 13
+        await seconduserContractAccounts.addaccount(seconduser.name, 0, 'Travel', 3, currency) // id = 14
 
         const amounts = [
             {
@@ -151,7 +151,7 @@ describe("Proxy Capital Permissions Contract", function (eoslime) {
 
         try {
             // this should fail
-            await firstuserContractAccounts.addaccount(firstuser.name, 0, 'Some account', 3, 'Expenses', currency) // id = 15
+            await firstuserContractAccounts.addaccount(firstuser.name, 0, 'Some account', 3, currency) // id = 15
         }
         catch (err) {
             assert.deepEqual(getError(err), names.permissions + ": the user does not have an entry in the roles table.", 'Something else went wrong.')
@@ -167,7 +167,7 @@ describe("Proxy Capital Permissions Contract", function (eoslime) {
 
         try {
             // this should fail
-            await firstuserContractAccounts.addaccount(firstuser.name, 0, 'Some account', 3, 'Expenses', currency) // id = 15
+            await firstuserContractAccounts.addaccount(firstuser.name, 0, 'Some account', 3, currency) // id = 15
         }
         catch (err) {
             assert.deepEqual(getError(err), names.permissions + ": the user proxycapusra does not have permissions to do this.", 'Something else went wrong.')
@@ -183,7 +183,7 @@ describe("Proxy Capital Permissions Contract", function (eoslime) {
 
         await seconduserContract.givepermissn(seconduser.name, 0, 'addaccount', 3)
 
-        await firstuserContractAccounts.addaccount(firstuser.name, 0, 'Some account', 3, 'Expenses', currency) // id = 15
+        await firstuserContractAccounts.addaccount(firstuser.name, 0, 'Some account', 3, currency) // id = 15
 
         const accountsTableBefore = await provider.select('accounts').from(names.accounts).scope('0').limit(20).find()
 
