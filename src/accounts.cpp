@@ -138,7 +138,7 @@ void accounts::create_budget_aux ( name actor,
     
     account_tables accounts(_self, project_id);
     budget_tables budgets(_self, project_id);
-    budget_date_tables budget_dates(_self, project_id);
+    budget_period_tables budget_dates(_self, project_id);
 
     auto dates_by_type = budget_dates.get_index<"bytype"_n>();
     auto itr_dates = dates_by_type.find(budget_type_id);
@@ -275,7 +275,7 @@ ACTION accounts::reset () {
             itr_budgets = budgets.erase(itr_budgets);
         }
 
-        budget_date_tables budget_dates(_self, i);
+        budget_period_tables budget_dates(_self, i);
         auto itr_budget_dates = budget_dates.begin();
         while (itr_budget_dates != budget_dates.end()) {
             itr_budget_dates = budget_dates.erase(itr_budget_dates);
@@ -637,7 +637,7 @@ ACTION accounts::deletebudget (name actor, uint64_t project_id, uint64_t budget_
     auto itr_budgets_date = budgets_by_date.find(date_id);
 
     if (itr_budgets_date == budgets_by_date.end()) {
-        budget_date_tables budget_dates(_self, project_id);
+        budget_period_tables budget_dates(_self, project_id);
         auto itr_date = budget_dates.find(date_id);
         budget_dates.erase(itr_date);
     }
@@ -669,7 +669,7 @@ ACTION accounts::delbdgtsacct (uint64_t project_id, uint64_t account_id) {
         auto itr_budgets_date = budgets_by_date.find(date_id);
 
         if (itr_budgets_date == budgets_by_date.end()) {
-            budget_date_tables budget_dates(_self, project_id);
+            budget_period_tables budget_dates(_self, project_id);
             auto itr_date = budget_dates.find(date_id);
             budget_dates.erase(itr_date);
         }

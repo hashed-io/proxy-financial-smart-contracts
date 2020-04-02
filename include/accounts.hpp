@@ -123,7 +123,7 @@ CONTRACT accounts : public contract {
         };
 
         // scoped by project
-        TABLE budget_date_table {
+        TABLE budget_period_table {
             uint64_t budget_date_id;
             uint64_t date_begin;
             uint64_t date_end;
@@ -204,14 +204,14 @@ CONTRACT accounts : public contract {
             const_mem_fun<budget_table, uint64_t, &budget_table::by_date>>
         > budget_tables;
 
-        typedef eosio::multi_index <"budgetdates"_n, budget_date_table,
+        typedef eosio::multi_index <"budgetdates"_n, budget_period_table,
             indexed_by<"bytype"_n,
-            const_mem_fun<budget_date_table, uint64_t, &budget_date_table::by_type>>,
+            const_mem_fun<budget_period_table, uint64_t, &budget_period_table::by_type>>,
             indexed_by<"bybegin"_n,
-            const_mem_fun<budget_date_table, uint64_t, &budget_date_table::by_begin>>,
+            const_mem_fun<budget_period_table, uint64_t, &budget_period_table::by_begin>>,
             indexed_by<"byend"_n,
-            const_mem_fun<budget_date_table, uint64_t, &budget_date_table::by_end>>
-        > budget_date_tables;
+            const_mem_fun<budget_period_table, uint64_t, &budget_period_table::by_end>>
+        > budget_period_tables;
         
         typedef eosio::multi_index <"budgettypes"_n, budget_type_table> budget_type_tables;
 
