@@ -71,7 +71,7 @@ ACTION projects::resetusers () {
 	}
 	// hardcoding some users for testnet
 	addtestuser("investoruser"_n, "James Smith", USER_TYPES.INVESTOR);
-	addtestuser("investorusr2"_n, "Investor 2", USER_TYPES.INVESTOR);
+	addtestuser("investorusr2"_n, "Sally Fields", USER_TYPES.INVESTOR);
 	addtestuser("builderuser1"_n, "Mary Williams", USER_TYPES.DEVELOPER);
 	addtestuser("proxyadmin11"_n, "John Miller", USER_TYPES.FUND);
 }

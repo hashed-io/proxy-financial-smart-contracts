@@ -218,7 +218,7 @@ describe("Proxy Capital Projects Contract", function (eoslime) {
             },
             {
                 account: 'investorusr2',
-                user_name: 'Investor 2',
+                user_name: 'Sally Fields',
                 entity_id: 1,
                 type: 'Investor'
             },
@@ -237,7 +237,7 @@ describe("Proxy Capital Projects Contract", function (eoslime) {
             },
             {
                 investor_id: 1,
-                description: 'Test description for investor Investor 2'
+                description: 'Test description for investor Sally Fields'
             }
         ]
 
