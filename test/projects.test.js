@@ -205,20 +205,14 @@ describe("Proxy Capital Projects Contract", function (eoslime) {
 
         const expectedUsersTable = [
             {
-                account: 'developerco1',
-                user_name: 'Developer Co.',
+                account: 'builderuser1',
+                user_name: 'Mary Williams',
                 entity_id: 0,
                 type: 'Developer'
             },
             {
-                account: 'fundusr11111',
-                user_name: 'Fund',
-                entity_id: 0,
-                type: 'Fund'
-            },
-            {
-                account: 'investorusr1',
-                user_name: 'Investor 1',
+                account: 'investoruser',
+                user_name: 'James Smith',
                 entity_id: 0,
                 type: 'Investor'
             },
@@ -227,13 +221,19 @@ describe("Proxy Capital Projects Contract", function (eoslime) {
                 user_name: 'Investor 2',
                 entity_id: 1,
                 type: 'Investor'
+            },
+            {
+                account: 'proxyadmin11',
+                user_name: 'John Miller',
+                entity_id: 0,
+                type: 'Fund'
             }
         ]
 
         const expectedInvestorsTable = [
             {
                 investor_id: 0,
-                description: 'Test description for investor Investor 1'
+                description: 'Test description for investor James Smith'
             },
             {
                 investor_id: 1,
@@ -245,7 +245,7 @@ describe("Proxy Capital Projects Contract", function (eoslime) {
             {
                 developer_id: 0,
                 developer_name: 'Developer0',
-                description: 'Test decription for developer Developer Co.'
+                description: 'Test decription for developer Mary Williams'
             }
         ]
 
@@ -253,14 +253,14 @@ describe("Proxy Capital Projects Contract", function (eoslime) {
             {
                 fund_id: 0,
                 fund_name: 'Fund0',
-                description: 'Test description for fund Fund'
+                description: 'Test description for fund John Miller'
             }
         ]
 
         const expectedProjectsTable = [
             {
                 project_id: 0,
-                owner: 'developerco1',
+                owner: 'builderuser1',
                 project_name: 'Test Project',
                 description: 'This is a test project.',
                 created_date: parseInt(new Date() / 1000),
@@ -290,7 +290,7 @@ describe("Proxy Capital Projects Contract", function (eoslime) {
             },
             {
                 project_id: 1,
-                owner: 'developerco1',
+                owner: 'builderuser1',
                 project_name: 'Test Project 2',
                 description: 'This is a test project.',
                 created_date: parseInt(new Date() / 1000),
@@ -449,7 +449,7 @@ describe("Proxy Capital Projects Contract", function (eoslime) {
         const expectedProjectsTable = [
             {
                 project_id: 0,
-                owner: 'developerco1',
+                owner: 'builderuser1',
                 project_name: 'Test Project',
                 description: 'This is a test project.',
                 status: 2,
@@ -474,11 +474,11 @@ describe("Proxy Capital Projects Contract", function (eoslime) {
                 total_number_fund_offering: 40000,
                 price_per_fund_unit: '300.00 USD',
                 approved_date: parseInt(new Date() / 1000),
-                approved_by: 'fundusr11111'
+                approved_by: 'proxyadmin11'
             },
             {
                 project_id: 1,
-                owner: 'developerco1',
+                owner: 'builderuser1',
                 project_name: 'Test Project 2',
                 description: 'This is a test project.',
                 status: 2,
@@ -503,7 +503,7 @@ describe("Proxy Capital Projects Contract", function (eoslime) {
                 total_number_fund_offering: 40000,
                 price_per_fund_unit: '300.00 USD',
                 approved_date: parseInt(new Date() / 1000),
-                approved_by: 'fundusr11111'
+                approved_by: 'proxyadmin11'
             }
         ]
 
@@ -578,7 +578,7 @@ describe("Proxy Capital Projects Contract", function (eoslime) {
         const expectedInvestments = [
             {
                 investment_id: 0,
-                user: 'investorusr1',
+                user: 'investoruser',
                 project_id: 0,
                 total_investment_amount: '4000.00 USD',
                 quantity_units_purchased: 40,
@@ -596,7 +596,7 @@ describe("Proxy Capital Projects Contract", function (eoslime) {
             },
             {
                 investment_id: 1,
-                user: 'investorusr1',
+                user: 'investoruser',
                 project_id: 1,
                 total_investment_amount: '3000.00 USD',
                 quantity_units_purchased: 40,
@@ -668,7 +668,7 @@ describe("Proxy Capital Projects Contract", function (eoslime) {
         const expectedInvestmentsTable = [
             {
                 investment_id: 0,
-                user: 'investorusr1',
+                user: 'investoruser',
                 project_id: 0,
                 total_investment_amount: '4000.00 USD',
                 quantity_units_purchased: 40,
@@ -680,12 +680,12 @@ describe("Proxy Capital Projects Contract", function (eoslime) {
                 total_unconfirmed_transfers: 0,
                 subscription_package: 'http://www.first-agreement.com',
                 status: 2,
-                approved_by: 'fundusr11111',
+                approved_by: 'proxyadmin11',
                 approved_date: time
             },
             {
                 investment_id: 1,
-                user: 'investorusr1',
+                user: 'investoruser',
                 project_id: 1,
                 total_investment_amount: '3000.00 USD',
                 quantity_units_purchased: 40,
@@ -697,7 +697,7 @@ describe("Proxy Capital Projects Contract", function (eoslime) {
                 total_unconfirmed_transfers: 0,
                 subscription_package: 'http://www.first-agreement.com',
                 status: 2,
-                approved_by: 'fundusr11111',
+                approved_by: 'proxyadmin11',
                 approved_date: time
             },
             {
@@ -714,7 +714,7 @@ describe("Proxy Capital Projects Contract", function (eoslime) {
                 total_unconfirmed_transfers: 0,
                 subscription_package: 'http://www.fourth-agreement.com',
                 status: 2,
-                approved_by: 'fundusr11111',
+                approved_by: 'proxyadmin11',
                 approved_date: time
             }
 
@@ -765,7 +765,7 @@ describe("Proxy Capital Projects Contract", function (eoslime) {
         const expectedInvestmentsTableBefore = [
             {
                 investment_id: 0,
-                user: 'investorusr1',
+                user: 'investoruser',
                 project_id: 0,
                 total_investment_amount: '4000.00 USD',
                 quantity_units_purchased: 40,
@@ -777,11 +777,11 @@ describe("Proxy Capital Projects Contract", function (eoslime) {
                 total_unconfirmed_transfers: 0,
                 subscription_package: 'http://www.first-agreement.com',
                 status: 3,
-                approved_by: 'fundusr11111'
+                approved_by: 'proxyadmin11'
             },
             {
                 investment_id: 1,
-                user: 'investorusr1',
+                user: 'investoruser',
                 project_id: 1,
                 total_investment_amount: '3000.00 USD',
                 quantity_units_purchased: 40,
@@ -793,7 +793,7 @@ describe("Proxy Capital Projects Contract", function (eoslime) {
                 total_unconfirmed_transfers: 0,
                 subscription_package: 'http://www.first-agreement.com',
                 status: 2,
-                approved_by: 'fundusr11111'
+                approved_by: 'proxyadmin11'
             },
             {
                 investment_id: 2,
@@ -809,7 +809,7 @@ describe("Proxy Capital Projects Contract", function (eoslime) {
                 total_unconfirmed_transfers: 0,
                 subscription_package: 'http://www.fourth-agreement.com',
                 status: 2,
-                approved_by: 'fundusr11111'
+                approved_by: 'proxyadmin11'
             }
 
         ]
@@ -820,24 +820,24 @@ describe("Proxy Capital Projects Contract", function (eoslime) {
                 proof_of_transfer: 'http://www.file.com',
                 amount: '4000.00 USD',
                 investment_id: 0,
-                user: 'investorusr1',
+                user: 'investoruser',
                 status: 2,
                 transfer_date: 832098900,
                 updated_date: time,
                 confirmed_date: time,
-                confirmed_by: 'fundusr11111'
+                confirmed_by: 'proxyadmin11'
             },
             {
                 fund_transfer_id: 1,
                 proof_of_transfer: 'http://www.file.com',
                 amount: '400.00 USD',
                 investment_id: 1,
-                user: 'investorusr1',
+                user: 'investoruser',
                 status: 2,
                 transfer_date: 832098900,
                 updated_date: time,
                 confirmed_date: time,
-                confirmed_by: 'fundusr11111'
+                confirmed_by: 'proxyadmin11'
             },
             {
                 fund_transfer_id: 2,
@@ -849,7 +849,7 @@ describe("Proxy Capital Projects Contract", function (eoslime) {
                 transfer_date: 832098900,
                 updated_date: time,
                 confirmed_date: time,
-                confirmed_by: 'fundusr11111'
+                confirmed_by: 'proxyadmin11'
             }
         ]
 
@@ -882,18 +882,18 @@ describe("Proxy Capital Projects Contract", function (eoslime) {
                 proof_of_transfer: 'http://www.file.com',
                 amount: '4000.00 USD',
                 investment_id: 0,
-                user: 'investorusr1',
+                user: 'investoruser',
                 status: 2,
-                confirmed_by: 'fundusr11111'
+                confirmed_by: 'proxyadmin11'
             },
             {
                 fund_transfer_id: 1,
                 proof_of_transfer: 'http://www.file.com',
                 amount: '400.00 USD',
                 investment_id: 1,
-                user: 'investorusr1',
+                user: 'investoruser',
                 status: 2,
-                confirmed_by: 'fundusr11111'
+                confirmed_by: 'proxyadmin11'
             },
             {
                 fund_transfer_id: 2,
@@ -902,14 +902,14 @@ describe("Proxy Capital Projects Contract", function (eoslime) {
                 investment_id: 2,
                 user: 'investorusr2',
                 status: 2,
-                confirmed_by: 'fundusr11111'
+                confirmed_by: 'proxyadmin11'
             },
             {
                 fund_transfer_id: 3,
                 proof_of_transfer: 'http://www.file.com',
                 amount: '2600.00 USD',
                 investment_id: 1,
-                user: 'investorusr1',
+                user: 'investoruser',
                 status: 1,
                 confirmed_date: 0,
                 confirmed_by: ''
@@ -919,7 +919,7 @@ describe("Proxy Capital Projects Contract", function (eoslime) {
         const expectedInvestmentsMidle = [
             {
                 investment_id: 0,
-                user: 'investorusr1',
+                user: 'investoruser',
                 project_id: 0,
                 total_investment_amount: '4000.00 USD',
                 quantity_units_purchased: 40,
@@ -931,11 +931,11 @@ describe("Proxy Capital Projects Contract", function (eoslime) {
                 total_unconfirmed_transfers: 0,
                 subscription_package: 'http://www.first-agreement.com',
                 status: 3,
-                approved_by: 'fundusr11111'
+                approved_by: 'proxyadmin11'
             },
             {
                 investment_id: 1,
-                user: 'investorusr1',
+                user: 'investoruser',
                 project_id: 1,
                 total_investment_amount: '3000.00 USD',
                 quantity_units_purchased: 40,
@@ -947,7 +947,7 @@ describe("Proxy Capital Projects Contract", function (eoslime) {
                 total_unconfirmed_transfers: 1,
                 subscription_package: 'http://www.first-agreement.com',
                 status: 2,
-                approved_by: 'fundusr11111'
+                approved_by: 'proxyadmin11'
             },
             {
                 investment_id: 2,
@@ -963,7 +963,7 @@ describe("Proxy Capital Projects Contract", function (eoslime) {
                 total_unconfirmed_transfers: 0,
                 subscription_package: 'http://www.fourth-agreement.com',
                 status: 2,
-                approved_by: 'fundusr11111'
+                approved_by: 'proxyadmin11'
             }
         ]
 
@@ -1007,20 +1007,20 @@ describe("Proxy Capital Projects Contract", function (eoslime) {
                 proof_of_transfer: 'http://www.file.com',
                 amount: '4000.00 USD',
                 investment_id: 0,
-                user: 'investorusr1',
+                user: 'investoruser',
                 status: 2,
                 transfer_date: 832098900,
-                confirmed_by: 'fundusr11111'
+                confirmed_by: 'proxyadmin11'
             },
             {
                 fund_transfer_id: 1,
                 proof_of_transfer: 'http://www.file.com',
                 amount: '400.00 USD',
                 investment_id: 1,
-                user: 'investorusr1',
+                user: 'investoruser',
                 status: 2,
                 transfer_date: 832098900,
-                confirmed_by: 'fundusr11111'
+                confirmed_by: 'proxyadmin11'
             },
             {
                 fund_transfer_id: 2,
@@ -1030,26 +1030,26 @@ describe("Proxy Capital Projects Contract", function (eoslime) {
                 user: 'investorusr2',
                 status: 2,
                 transfer_date: 832098900,
-                confirmed_by: 'fundusr11111'
+                confirmed_by: 'proxyadmin11'
             },
             {
                 fund_transfer_id: 3,
                 proof_of_transfer: 'http://www.file.com',
                 amount: '2600.00 USD',
                 investment_id: 1,
-                user: 'investorusr1',
+                user: 'investoruser',
                 status: 2,
                 transfer_date: 832098900,
                 updated_date: time,
                 confirmed_date: time,
-                confirmed_by: 'fundusr11111'
+                confirmed_by: 'proxyadmin11'
             }
         ]
 
         const expectedInvestmentsTableAfter = [
             {
                 investment_id: 0,
-                user: 'investorusr1',
+                user: 'investoruser',
                 project_id: 0,
                 total_investment_amount: '4000.00 USD',
                 quantity_units_purchased: 40,
@@ -1061,11 +1061,11 @@ describe("Proxy Capital Projects Contract", function (eoslime) {
                 total_unconfirmed_transfers: 0,
                 subscription_package: 'http://www.first-agreement.com',
                 status: 3,
-                approved_by: 'fundusr11111'
+                approved_by: 'proxyadmin11'
             },
             {
                 investment_id: 1,
-                user: 'investorusr1',
+                user: 'investoruser',
                 project_id: 1,
                 total_investment_amount: '3000.00 USD',
                 quantity_units_purchased: 40,
@@ -1077,7 +1077,7 @@ describe("Proxy Capital Projects Contract", function (eoslime) {
                 total_unconfirmed_transfers: 0,
                 subscription_package: 'http://www.first-agreement.com',
                 status: 3,
-                approved_by: 'fundusr11111'
+                approved_by: 'proxyadmin11'
             },
             {
                 investment_id: 2,
@@ -1093,7 +1093,7 @@ describe("Proxy Capital Projects Contract", function (eoslime) {
                 total_unconfirmed_transfers: 0,
                 subscription_package: 'http://www.fourth-agreement.com',
                 status: 2,
-                approved_by: 'fundusr11111'
+                approved_by: 'proxyadmin11'
             }
 
         ]
@@ -1141,7 +1141,7 @@ describe("Proxy Capital Projects Contract", function (eoslime) {
         const expectedInvestments = [
             {
                 investment_id: 3,
-                user: 'investorusr1',
+                user: 'investoruser',
                 project_id: 0,
                 total_investment_amount: '2500.00 USD',
                 quantity_units_purchased: 20,
@@ -1247,7 +1247,7 @@ describe("Proxy Capital Projects Contract", function (eoslime) {
                 total_unconfirmed_transfers: 1,
                 subscription_package: 'http://www.fourth-agreement.com',
                 status: 2,
-                approved_by: 'fundusr11111'
+                approved_by: 'proxyadmin11'
             }
         ]
 
@@ -1291,7 +1291,7 @@ describe("Proxy Capital Projects Contract", function (eoslime) {
                 total_unconfirmed_transfers: 0,
                 subscription_package: 'http://www.fourth-agreement.com',
                 status: 2,
-                approved_by: 'fundusr11111'
+                approved_by: 'proxyadmin11'
             }
         ]
 

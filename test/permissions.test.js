@@ -173,7 +173,7 @@ describe("Proxy Capital Permissions Contract", function (eoslime) {
             await firstuserContractAccounts.addaccount(firstuser.name, 0, 'Some account', 3, 'Expenses', currency) // id = 15
         }
         catch (err) {
-            assert.deepEqual(getError(err), names.permissions + ": the user investorusr1 does not have permissions to do this.", 'Something else went wrong.')
+            assert.deepEqual(getError(err), names.permissions + ": the user investoruser does not have permissions to do this.", 'Something else went wrong.')
         }
 
         try {
@@ -181,7 +181,7 @@ describe("Proxy Capital Permissions Contract", function (eoslime) {
             await firstuserContract.givepermissn(firstuser.name, 0, 'addaccount', 3)
         }
         catch (err) {
-            assert.deepEqual(getError(err), names.permissions + ": the user investorusr1 does not have permissions to do this.", 'Something else went wrong.')
+            assert.deepEqual(getError(err), names.permissions + ": the user investoruser does not have permissions to do this.", 'Something else went wrong.')
         }
 
         await seconduserContract.givepermissn(seconduser.name, 0, 'addaccount', 3)
@@ -196,7 +196,7 @@ describe("Proxy Capital Permissions Contract", function (eoslime) {
                                         ['https://docs.telos.kitchen/tO6eoye_Td-76wBz7J3EZQ#','https://docs.telos.kitchen/jJq8d7dwSlCSvj42yZyBGg#'])
         }
         catch (err) {
-            assert.deepEqual(getError(err), names.permissions + ": the user investorusr1 does not have permissions to do this.", 'Something else went wrong.')
+            assert.deepEqual(getError(err), names.permissions + ": the user investoruser does not have permissions to do this.", 'Something else went wrong.')
         }
 
         await seconduserContract.givepermissn(seconduser.name, 0, 'transact', 3)
@@ -216,7 +216,7 @@ describe("Proxy Capital Permissions Contract", function (eoslime) {
             await firstuserContract.addrole(firstuser.name, 0, 'Test Role 4', 0)
         }
         catch (err) {
-            assert.deepEqual(getError(err), names.permissions + ": the user investorusr1 does not have permissions to do this.", 'Something else went wrong.')
+            assert.deepEqual(getError(err), names.permissions + ": the user investoruser does not have permissions to do this.", 'Something else went wrong.')
         }
 
         const rolesTable2 = await provider.select('roles').from(names.permissions).scope('0').limit(20).find()

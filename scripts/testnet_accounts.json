@@ -3,21 +3,21 @@
         "privateKey": "5JiC7P3mP6h6BkCLcGnKrHCd5a4g3D8bJf377agm9ZTemK3pGJu",
         "publicKey": "EOS4vExvL4rYEELk6tVBqq5FUTuQ5pqKJ7eJfJbTwSF5he55E7A5N"
     },
-    "developerco1": {
-        "privateKey": "5JjGTXyFNqbWTYGBzmZw8kAsLYM223QwsUDVmTTCiRK4gAAuSRA",
-        "publicKey": "EOS7X2LvB4ULWuKDLxJGuTKs5bFixNsEwghCDuGHwihhwf6bDx7T2"
+    "builderuser1": {
+        "privateKey": "5K82Kgh9dFydFLkjEzwxPqPtXTENAo6Yc2XRTiPvuExyVy12ETc",
+        "publicKey": "EOS6vmx6m2YHr2CDEUnYiBJg5Vus2NvryyTbdeMwaWWw7YN3nSgR3"
     },
-    "investorusr1": {
-        "privateKey": "5KPRbNyMCg4BVj4j5pR2UbFS79ia3jnM6Z42FfCZy1vw6UJadck",
-        "publicKey": "EOS7Lx6pkZkN2g1ikioi3ndgn6icrphDdffTsBcNdyBjgSmuv7NZT"
+    "investoruser": {
+        "privateKey": "5J2egJBWkTMmUuPpS9MA7hQSHiXKSApJ7PPWST487ZtLUUyk75i",
+        "publicKey": "EOS778kcNprC4f75S16NzgDm2GmYUUeMZ9jei3UBQHiPQqcd3W3fk"
     },
     "investorusr2": {
         "privateKey": "5Jbjs8muHoBGanFNH4gwmhWncb8oNVEjjzh4fcptYhunp14RZ6d",
         "publicKey": "EOS541KtZCZunfAAGHPSJm4urut81swf42X4Sbxmht9inEfsgzxeN"
     },
-    "fundusr11111": {
-        "privateKey": "5KhUoZn1xVAbjg6vAy9oAsJNX213MMvQL7nmUGdySj9Mikpdkte",
-        "publicKey": "EOS5uKkKEGTpb4ZKHSfbxqXpZmnJr4ATTEr173jUFN5CuW14nW7SS"
+    "proxyadmin11": {
+        "privateKey": "5HycHpX9ZMdf8WPzp7c5rmE8VjYs5PNxt1ztSoXbVFbBA4uYwjb",
+        "publicKey": "EOS6XQKSQJWS2a6tv1h3595JT1FC5mKXiPCUS5ky8UDUknEFP6kSk"
     },
     "proxycaptrnx": {
         "privateKey": "5JBKsepD8bxSMWNE2Kau7hiBU3QCvbzrGioR9sW56WsxVP6LQQH",
