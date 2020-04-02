@@ -91,9 +91,9 @@ const accountsMetadata = (network) => {
   if (network == networks.local) {
     return {
       	owner: account(owner),
-      	firstuser: account('investorusr1', '10000000.0000 USD'),
-      	seconduser: account('developerco1', '10000000.0000 USD'),
-        thirduser: account('fundusr11111', '5000000.0000 USD'),
+      	firstuser: account('investoruser', '10000000.0000 USD'),
+      	seconduser: account('builderuser1', '10000000.0000 USD'),
+        thirduser: account('proxyadmin11', '5000000.0000 USD'),
         fourthuser: account('investorusr2', '5000000.0000 USD'),
         transactions: contract('proxycaptrnx', 'transactions'),
         projects: contract('proxycapproj', 'projects'),
@@ -103,9 +103,9 @@ const accountsMetadata = (network) => {
   } else if (network == networks.telosMainnet) {
     return {
         owner: account(owner),
-        firstuser: account('investorusr1', '10000000.0000 USD'),
-        seconduser: account('developerco1', '10000000.0000 USD'),
-        thirduser: account('fundusr11111', '5000000.0000 USD'),
+        firstuser: account('investoruser', '10000000.0000 USD'),
+        seconduser: account('builderuser1', '10000000.0000 USD'),
+        thirduser: account('proxyadmin11', '5000000.0000 USD'),
         fourthuser: account('investorusr2', '5000000.0000 USD'),
         transactions: contract('proxycaptrnx', 'transactions'),
         projects: contract('proxycapproj', 'projects'),
@@ -115,9 +115,9 @@ const accountsMetadata = (network) => {
   } else if (network == networks.telosTestnet) {
     return {
         owner: account(owner),
-        firstuser: account('investorusr1', '10000000.0000 USD'),
-        seconduser: account('developerco1', '10000000.0000 USD'),
-        thirduser: account('fundusr11111', '5000000.0000 USD'),
+        firstuser: account('investoruser', '10000000.0000 USD'),
+        seconduser: account('builderuser1', '10000000.0000 USD'),
+        thirduser: account('proxyadmin11', '5000000.0000 USD'),
         fourthuser: account('investorusr2', '5000000.0000 USD'),
         transactions: contract('proxycaptrnx', 'transactions'),
         projects: contract('proxycapproj', 'projects'),

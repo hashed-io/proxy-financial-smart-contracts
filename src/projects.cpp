@@ -22,18 +22,12 @@ void projects::delete_transfer_aux (uint64_t transfer_id) {
 	transfers.erase(itr_transfer);
 }
 
-
 ACTION projects::reset () {
     require_auth(_self);
 
     auto itr_p = projects_table.begin();
 	while (itr_p != projects_table.end()) {
 		itr_p = projects_table.erase(itr_p);
-	}
-
-	auto itr_users = users.begin();
-	while (itr_users != users.end()) {
-		itr_users = users.erase(itr_users);
 	}
 
 	auto itr_investor = investors.begin();
@@ -60,12 +54,26 @@ ACTION projects::reset () {
 	while (itr_transfer != transfers.end()) {
 		itr_transfer = transfers.erase(itr_transfer);
 	}
+	action (
+        permission_level(get_self(), "active"_n),
+        get_self(),
+        "resetusers"_n,
+        std::make_tuple()
+    ).send();
+}
 
+ACTION projects::resetusers () {
+    require_auth(_self);
+
+	auto itr_users = users.begin();
+	while (itr_users != users.end()) {
+		itr_users = users.erase(itr_users);
+	}
 	// hardcoding some users for testnet
-	addtestuser("investorusr1"_n, "Investor 1", USER_TYPES.INVESTOR);
-	addtestuser("investorusr2"_n, "Investor 2", USER_TYPES.INVESTOR);
-	addtestuser("developerco1"_n, "Developer Co.", USER_TYPES.DEVELOPER);
-	addtestuser("fundusr11111"_n, "Fund", USER_TYPES.FUND);
+	addtestuser("investoruser"_n, "James Smith", USER_TYPES.INVESTOR);
+	addtestuser("investorusr2"_n, "Sally Fields", USER_TYPES.INVESTOR);
+	addtestuser("builderuser1"_n, "Mary Williams", USER_TYPES.DEVELOPER);
+	addtestuser("proxyadmin11"_n, "John Miller", USER_TYPES.FUND);
 }
 
 ACTION projects::addtestuser (name user, string user_name, string type) {
@@ -552,7 +560,7 @@ ACTION projects::confrmtrnsfr (name actor, uint64_t transfer_id, string proof_of
 
 
 
-EOSIO_DISPATCH(projects, (reset)(addproject)(approveprjct)(addtestuser)(invest)(approveinvst)(maketransfer)(editproject)(deleteprojct)(deleteinvest)(editinvest)(confrmtrnsfr)(edittransfer)(deletetrnsfr));
+EOSIO_DISPATCH(projects, (reset)(resetusers)(addproject)(approveprjct)(addtestuser)(invest)(approveinvst)(maketransfer)(editproject)(deleteprojct)(deleteinvest)(editinvest)(confrmtrnsfr)(edittransfer)(deletetrnsfr));
 
 
 
