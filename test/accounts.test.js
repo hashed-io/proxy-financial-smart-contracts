@@ -286,7 +286,7 @@ describe("Proxy Capital Accounts Contract", function (eoslime) {
       try {
         await seconduserContract.addbudget(seconduser.name, 0, 15, "700.00 USD", 1, 1585762692, 1588354692, 0)
       } catch (err) {
-        console.log(getError(err))
+        assert.deepEqual(getError(err), 'proxycapacct: the child can not have more budget than its parent, account_id = 15 parent_budget = 500.00 USD.', 'Something else went wrong.')
       }
 
       await seconduserContract.addaccount(seconduser.name, 0, 'Backend', 11, currency)    // id = 18
@@ -295,61 +295,402 @@ describe("Proxy Capital Accounts Contract", function (eoslime) {
       await seconduserContract.addbudget(seconduser.name, 0, 18, "200.00 USD", 1, 1585762692, 1588354692, 0)
       await seconduserContract.addbudget(seconduser.name, 0, 19, "200.00 USD", 1, 1585762692, 1588354692, 0)
 
-      try {
-        await seconduserContract.addbudget(seconduser.name, 0, 11, "350.00 USD", 1, 1585762692, 1588354692, 1)
-      } catch (err) {
-        console.log(getError(err))
-      }
-
-    })
-
-    it('Should create any date budgets', async () => {
-
-      await seconduserContract.addbudget(seconduser.name, 0, 17, "300.00 USD", 2, 1585762692, 1588354692, 1)
-      await seconduserContract.addbudget(seconduser.name, 0, 16, "200.00 USD", 2, 1585762692, 1588354692, 0)
-
-      try {
-        await seconduserContract.addbudget(seconduser.name, 0, 17, "300.00 USD", 2, 1585762692, 1588354392, 1)
-      } catch (err) {
-        console.log(getError(err))
-      }
-
-      await seconduserContract.addbudget(seconduser.name, 0, 17, "300.00 USD", 2, 1588441092, 1591033092, 0)
+      await seconduserContract.addbudget(seconduser.name, 0, 11, "350.00 USD", 1, 1585762692, 1588354692, 1)
 
       const provider = eoslime.Provider
       let budgetsDatesTable = await provider.select('budgetdates').from(names.accounts).scope('0').limit(20).find()
       let budgetsTable = await provider.select('budgets').from(names.accounts).scope('0').limit(20).find()
 
-      console.log(budgetsDatesTable)
-      console.log(budgetsTable)
+      const expectedDatesTable = [
+        { budget_date_id: 1, date_begin: 0, date_end: 0, budget_type_id: 1 }
+      ]      
+
+      const expectedBudgets = [
+        {
+          budget_id: 1,
+          account_id: 17,
+          amount: '300.00 USD',
+          budget_date_id: 1
+        },
+        {
+          budget_id: 2,
+          account_id: 14,
+          amount: '500.00 USD',
+          budget_date_id: 1
+        },
+        {
+          budget_id: 3,
+          account_id: 3,
+          amount: '900.00 USD',
+          budget_date_id: 1
+        },
+        {
+          budget_id: 4,
+          account_id: 16,
+          amount: '200.00 USD',
+          budget_date_id: 1
+        },
+        {
+          budget_id: 5,
+          account_id: 18,
+          amount: '200.00 USD',
+          budget_date_id: 1
+        },
+        {
+          budget_id: 6,
+          account_id: 19,
+          amount: '200.00 USD',
+          budget_date_id: 1
+        },
+        {
+          budget_id: 7,
+          account_id: 11,
+          amount: '400.00 USD',
+          budget_date_id: 1
+        }
+      ]      
+      
+      assert.deepEqual(budgetsDatesTable, expectedDatesTable, 'The budgets dates are not right.')
+
+      budgetsTable = budgetsTable.map(row => {
+        return {
+          budget_id: row.budget_id,
+          account_id: row.account_id,
+          amount: row.amount,
+          budget_date_id: row.budget_date_id
+        }
+      })
+
+      assert.deepEqual(budgetsTable, expectedBudgets, 'The budgets are not right.')
+
+    })
+
+    it('Should create any date budgets', async () => {
+
+      await seconduserContract.addbudget(seconduser.name, 0, 17, "300.00 USD", 2, 1585762692, 1588354692, 0)
+      await seconduserContract.addbudget(seconduser.name, 0, 16, "200.00 USD", 2, 1585762692, 1588354692, 0)
+
+      try {
+        await seconduserContract.addbudget(seconduser.name, 0, 17, "300.00 USD", 2, 1585762692, 1588354392, 1)
+      } catch (err) {
+        assert.deepEqual(getError(err), 'proxycapacct: the interval from begin to end overlaps with an existing budget.', 'Something else went wrong.')
+      }
+
+      await seconduserContract.addbudget(seconduser.name, 0, 17, "300.00 USD", 2, 1588441092, 1591033092, 0)
+      await seconduserContract.addbudget(seconduser.name, 0, 17, "300.00 USD", 2, 1585762692, 1588354692, 1)
+
+      const provider = eoslime.Provider
+      let budgetsDatesTable = await provider.select('budgetdates').from(names.accounts).scope('0').limit(20).find()
+      let budgetsTable = await provider.select('budgets').from(names.accounts).scope('0').limit(20).find()
+
+      const expectedDatesTable = [
+        { budget_date_id: 1, date_begin: 0, date_end: 0, budget_type_id: 1 },
+        {
+          budget_date_id: 2,
+          date_begin: 1585762692,
+          date_end: 1588354692,
+          budget_type_id: 2
+        },
+        {
+          budget_date_id: 3,
+          date_begin: 1588441092,
+          date_end: 1591033092,
+          budget_type_id: 2
+        }
+      ]           
+
+      const expectedBudgets = [
+        {
+          budget_id: 1,
+          account_id: 17,
+          amount: '300.00 USD',
+          budget_date_id: 1
+        },
+        {
+          budget_id: 2,
+          account_id: 14,
+          amount: '500.00 USD',
+          budget_date_id: 1
+        },
+        {
+          budget_id: 3,
+          account_id: 3,
+          amount: '900.00 USD',
+          budget_date_id: 1
+        },
+        {
+          budget_id: 4,
+          account_id: 16,
+          amount: '200.00 USD',
+          budget_date_id: 1
+        },
+        {
+          budget_id: 5,
+          account_id: 18,
+          amount: '200.00 USD',
+          budget_date_id: 1
+        },
+        {
+          budget_id: 6,
+          account_id: 19,
+          amount: '200.00 USD',
+          budget_date_id: 1
+        },
+        {
+          budget_id: 7,
+          account_id: 11,
+          amount: '400.00 USD',
+          budget_date_id: 1
+        },
+        {
+          budget_id: 8,
+          account_id: 17,
+          amount: '600.00 USD',
+          budget_date_id: 2
+        },
+        {
+          budget_id: 9,
+          account_id: 16,
+          amount: '200.00 USD',
+          budget_date_id: 2
+        },
+        {
+          budget_id: 10,
+          account_id: 17,
+          amount: '300.00 USD',
+          budget_date_id: 3
+        },
+        {
+          budget_id: 11,
+          account_id: 14,
+          amount: '800.00 USD',
+          budget_date_id: 2
+        },
+        {
+          budget_id: 12,
+          account_id: 3,
+          amount: '800.00 USD',
+          budget_date_id: 2
+        }
+      ]      
+      
+      assert.deepEqual(budgetsDatesTable, expectedDatesTable, 'The budgets dates are not right.')
+
+      budgetsTable = budgetsTable.map(row => {
+        return {
+          budget_id: row.budget_id,
+          account_id: row.account_id,
+          amount: row.amount,
+          budget_date_id: row.budget_date_id
+        }
+      })
+
+      assert.deepEqual(budgetsTable, expectedBudgets, 'The budgets are not right.')
 
     })
 
     it('Should delete budgets', async () => {
 
       await seconduserContract.deletebudget(seconduser.name, 0, 2, 1) // account_id = 14
-      await seconduserContract.deletebudget(seconduser.name, 0, 1, 0)
-      await seconduserContract.deletebudget(seconduser.name, 0, 12, 1)
+      await seconduserContract.deletebudget(seconduser.name, 0, 1, 1)
+      await seconduserContract.deletebudget(seconduser.name, 0, 10, 1)
+      await seconduserContract.deletebudget(seconduser.name, 0, 9, 1)
+      await seconduserContract.deletebudget(seconduser.name, 0, 6, 0)
 
       const provider = eoslime.Provider
       let budgetsDatesTable = await provider.select('budgetdates').from(names.accounts).scope('0').limit(20).find()
       let budgetsTable = await provider.select('budgets').from(names.accounts).scope('0').limit(20).find()
 
-      console.log(budgetsDatesTable)
-      console.log(budgetsTable)
+      const expectedDatesTable = [
+        { budget_date_id: 1, date_begin: 0, date_end: 0, budget_type_id: 1 },
+        {
+          budget_date_id: 2,
+          date_begin: 1585762692,
+          date_end: 1588354692,
+          budget_type_id: 2
+        }
+      ]          
+
+      const expectedBudgets = [
+        {
+          budget_id: 3,
+          account_id: 3,
+          amount: '400.00 USD',
+          budget_date_id: 1
+        },
+        {
+          budget_id: 4,
+          account_id: 16,
+          amount: '200.00 USD',
+          budget_date_id: 1
+        },
+        {
+          budget_id: 5,
+          account_id: 18,
+          amount: '200.00 USD',
+          budget_date_id: 1
+        },
+        {
+          budget_id: 7,
+          account_id: 11,
+          amount: '400.00 USD',
+          budget_date_id: 1
+        },
+        {
+          budget_id: 8,
+          account_id: 17,
+          amount: '600.00 USD',
+          budget_date_id: 2
+        },
+        {
+          budget_id: 11,
+          account_id: 14,
+          amount: '600.00 USD',
+          budget_date_id: 2
+        },
+        {
+          budget_id: 12,
+          account_id: 3,
+          amount: '600.00 USD',
+          budget_date_id: 2
+        }
+      ]      
+      
+      assert.deepEqual(budgetsDatesTable, expectedDatesTable, 'The budgets dates are not right.')
+
+      budgetsTable = budgetsTable.map(row => {
+        return {
+          budget_id: row.budget_id,
+          account_id: row.account_id,
+          amount: row.amount,
+          budget_date_id: row.budget_date_id
+        }
+      })
+
+      assert.deepEqual(budgetsTable, expectedBudgets, 'The budgets are not right.')
 
     })
 
     it('Should edit budgets', async() => {
 
-      await seconduserContract.editbudget(seconduser.name, 0, 8, "555.00 USD", 1, 1585762692, 1588354692, 1)
+      await seconduserContract.addbudget(seconduser.name, 0, 15, "100.00 USD", 2, 1585762692, 1588354692, 1)
+      await seconduserContract.editbudget(seconduser.name, 0, 8, "550.00 USD", 1, 1585762692, 1588354692, 1)
+      await seconduserContract.editbudget(seconduser.name, 0, 5, "250.00 USD", 1, 1585762692, 1588354692, 1)
+
+      try {
+        await seconduserContract.editbudget(seconduser.name, 0, 13, "350.00 USD", 2, 1585762692, 1588354192, 1)
+      } catch (err) {
+        assert.deepEqual(getError(err), 'proxycapacct: the interval from begin to end overlaps with an existing budget.', 'Something else went wrong.')
+      }
+
+      try {
+        await seconduserContract.editbudget(seconduser.name, 0, 13, "350.00 USD", 2, 1585762692, 1588354692, 0)
+      } catch (err) {
+        assert.deepEqual(getError(err), 'proxycapacct: the child can not have more budget than its parent, account_id = 15 parent_budget = 100.00 USD.', 'Something else went wrong.')
+      }
 
       const provider = eoslime.Provider
       let budgetsDatesTable = await provider.select('budgetdates').from(names.accounts).scope('0').limit(20).find()
       let budgetsTable = await provider.select('budgets').from(names.accounts).scope('0').limit(20).find()
 
-      console.log(budgetsDatesTable)
-      console.log(budgetsTable)
+      const expectedDatesTable = [
+        { budget_date_id: 1, date_begin: 0, date_end: 0, budget_type_id: 1 },
+        {
+          budget_date_id: 2,
+          date_begin: 1585762692,
+          date_end: 1588354692,
+          budget_type_id: 2
+        }
+      ]
+
+      const expectedBudgets = [
+        {
+          budget_id: 3,
+          account_id: 3,
+          amount: '1000.00 USD',
+          budget_date_id: 1
+        },
+        {
+          budget_id: 4,
+          account_id: 16,
+          amount: '200.00 USD',
+          budget_date_id: 1
+        },
+        {
+          budget_id: 7,
+          account_id: 11,
+          amount: '250.00 USD',
+          budget_date_id: 1
+        },
+        {
+          budget_id: 11,
+          account_id: 14,
+          amount: '100.00 USD',
+          budget_date_id: 2
+        },
+        {
+          budget_id: 12,
+          account_id: 3,
+          amount: '100.00 USD',
+          budget_date_id: 2
+        },
+        {
+          budget_id: 13,
+          account_id: 15,
+          amount: '100.00 USD',
+          budget_date_id: 2
+        },
+        {
+          budget_id: 14,
+          account_id: 17,
+          amount: '550.00 USD',
+          budget_date_id: 1
+        },
+        {
+          budget_id: 15,
+          account_id: 14,
+          amount: '750.00 USD',
+          budget_date_id: 1
+        },
+        {
+          budget_id: 16,
+          account_id: 18,
+          amount: '250.00 USD',
+          budget_date_id: 1
+        }
+      ]      
+      
+      assert.deepEqual(budgetsDatesTable, expectedDatesTable, 'The budgets dates are not right.')
+
+      budgetsTable = budgetsTable.map(row => {
+        return {
+          budget_id: row.budget_id,
+          account_id: row.account_id,
+          amount: row.amount,
+          budget_date_id: row.budget_date_id
+        }
+      })
+
+      assert.deepEqual(budgetsTable, expectedBudgets, 'The budgets are not right.')
+
+    })
+
+    it('Should delete all the budgets for all the accounts', async () => {
+
+      await accountssContract.delbdgtsacct(0, 3)
+      await accountssContract.delbdgtsacct(0, 14)
+      await accountssContract.delbdgtsacct(0, 17)
+      await accountssContract.delbdgtsacct(0, 16)
+      await accountssContract.delbdgtsacct(0, 15)
+      await accountssContract.delbdgtsacct(0, 11)
+      await accountssContract.delbdgtsacct(0, 18)
+
+      const provider = eoslime.Provider
+      let budgetsDatesTable = await provider.select('budgetdates').from(names.accounts).scope('0').limit(20).find()
+      let budgetsTable = await provider.select('budgets').from(names.accounts).scope('0').limit(20).find()
+
+      assert.deepEqual(budgetsDatesTable, [], 'The budgets dates are not right.')
+      assert.deepEqual(budgetsTable, [], 'The budgets are not right.')
 
     })
 

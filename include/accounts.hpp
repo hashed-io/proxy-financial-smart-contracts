@@ -69,7 +69,9 @@ CONTRACT accounts : public contract {
 
         ACTION deletebudget (name actor, uint64_t project_id, uint64_t budget_id, bool modify_parents);
 
-        // ACTION delbdgtsacct (uint64_t project_id, uint64_t account_id);
+        ACTION rcalcbudgets (name actor, uint64_t project_id, uint64_t account_id, uint64_t date_id);
+
+        ACTION delbdgtsacct (uint64_t project_id, uint64_t account_id);
     
 
     private:
@@ -227,7 +229,8 @@ CONTRACT accounts : public contract {
         bool match (uint64_t begin, uint64_t end, uint64_t new_begin, uint64_t new_end);
         uint64_t get_id_budget_type (string budget_name);
         
-        void create_budget_aux ( uint64_t project_id,
+        void create_budget_aux ( name actor,
+                                 uint64_t project_id,
                                  uint64_t account_id,
                                  asset amount,
                                  uint64_t budget_type_id,

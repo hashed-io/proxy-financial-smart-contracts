@@ -11,7 +11,6 @@ void accounts::change_balance (uint64_t project_id, uint64_t account_id, asset a
     uint64_t parent_id = 0;
     while (itr_account != accounts.end()) {
         parent_id = itr_account -> parent_id;
-        print("PROCESSED:", itr_account -> account_name, "\n");
         accounts.modify(itr_account, _self, [&](auto & modified_account){
             if (increase) {
                 if (cancel) {
@@ -47,7 +46,89 @@ bool accounts::match (uint64_t begin, uint64_t end, uint64_t new_begin, uint64_t
     return false;
 }
 
-void accounts::create_budget_aux ( uint64_t project_id,
+
+ACTION accounts::rcalcbudgets (name actor, uint64_t project_id, uint64_t account_id, uint64_t date_id) {
+
+    require_auth(actor);
+
+    // ========================== //
+    // check for permissions here //
+    // ========================== //
+
+    budget_tables budgets(_self, project_id);
+    account_tables accounts(_self, project_id);
+
+    uint64_t parent_id = account_id;
+    uint64_t budget_id;
+    asset sum_children_budget;
+
+    while (parent_id > 0) {
+
+        set <uint64_t> children;
+        auto accounts_by_parents = accounts.get_index<"byparent"_n>();
+        auto itr_accounts_by_parents = accounts_by_parents.find(parent_id);
+
+        sum_children_budget = asset(0, CURRENCY);
+        budget_id = 0;
+
+        while (itr_accounts_by_parents != accounts_by_parents.end() && itr_accounts_by_parents -> parent_id == parent_id) {
+            children.insert(itr_accounts_by_parents -> account_id);
+            itr_accounts_by_parents++;
+        }
+
+        auto budgets_by_date = budgets.get_index<"bydate"_n>();
+        auto itr_budgets_date = budgets_by_date.find(date_id);
+
+        while (itr_budgets_date != budgets_by_date.end() && itr_budgets_date -> budget_date_id == date_id) {
+
+            if (itr_budgets_date -> account_id == parent_id) {
+                budget_id = itr_budgets_date -> budget_id;
+                if (children.empty()) {
+                    break;
+                }
+            }
+
+            if (children.find(itr_budgets_date -> account_id) != children.end()) {
+                sum_children_budget += itr_budgets_date -> amount;
+            } 
+
+            itr_budgets_date++;
+        }
+
+        if (budget_id == 0) {
+            uint64_t new_budget_id = budgets.available_primary_key();
+            new_budget_id = (new_budget_id > 0) ? new_budget_id : 1;
+
+            budgets.emplace(_self, [&](auto & new_budget){
+                new_budget.budget_id = new_budget_id;
+                new_budget.account_id = parent_id;
+                new_budget.amount = sum_children_budget;
+                new_budget.budget_date_id = date_id;
+                new_budget.budget_creation = eosio::current_time_point().sec_since_epoch();
+                new_budget.budget_update = eosio::current_time_point().sec_since_epoch();
+            });
+        } else {
+            auto itr_budget = budgets.find(budget_id);
+            check(itr_budget != budgets.end(), contract_names::accounts.to_string() + ": the budget does not exist.");
+            
+            if (sum_children_budget < itr_budget -> amount) {
+                sum_children_budget = itr_budget -> amount;
+            }
+
+            budgets.modify(itr_budget, _self, [&](auto & modified_budget){
+                modified_budget.amount = sum_children_budget;
+                modified_budget.budget_update = eosio::current_time_point().sec_since_epoch();
+            });
+        }
+
+        auto itr_accounts = accounts.find(parent_id);
+        parent_id = itr_accounts -> parent_id;
+    }
+}
+
+
+void accounts::create_budget_aux ( name actor,
+                                   uint64_t project_id,
                                    uint64_t account_id,
                                    asset amount,
                                    uint64_t budget_type_id,
@@ -81,11 +162,7 @@ void accounts::create_budget_aux ( uint64_t project_id,
 
         itr_dates++;
     }
-
-    // if dates exist, search if there is a budget with that id
-    auto budgets_by_date = budgets.get_index<"bydate"_n>();
-    auto itr_budgets_date = budgets_by_date.find(dates_id);
-
+    
     auto itr_a = accounts.find(account_id);
     parent_id = itr_a -> parent_id;
     
@@ -97,6 +174,9 @@ void accounts::create_budget_aux ( uint64_t project_id,
         children.insert(itr_accounts -> account_id);
         itr_accounts++;
     }
+
+    auto budgets_by_date = budgets.get_index<"bydate"_n>();
+    auto itr_budgets_date = budgets_by_date.find(dates_id);
 
     while (itr_budgets_date != budgets_by_date.end() && itr_budgets_date -> budget_date_id == dates_id) {
         if (itr_budgets_date -> account_id == account_id) {
@@ -110,7 +190,7 @@ void accounts::create_budget_aux ( uint64_t project_id,
         }
         itr_budgets_date++;
     }
-    
+
     // if the dates dont exist, create one entry
     if (dates_id == 0) {
         dates_id = budget_dates.available_primary_key();
@@ -155,9 +235,11 @@ void accounts::create_budget_aux ( uint64_t project_id,
 
     if (parent_id > 0) {
         if (modify_parents) {
-            create_budget_aux(project_id, parent_id, amount, budget_type_id, date_begin, date_end, modify_parents);
+            rcalcbudgets (actor, project_id, account_id, dates_id);
         }
         else if (parent_has_budget){
+            check(amount >= sum_children_budget, 
+                contract_names::accounts.to_string() + ": the parent " + to_string(account_id) + " can not have less budget than its children. amount = " + amount.to_string() + " sum_children = " + sum_children_budget.to_string());
             check(amount <= parent_budget, contract_names::accounts.to_string() + ": the child can not have more budget than its parent, account_id = " + to_string(account_id) + " parent_budget = " + parent_budget.to_string() + ".");
         }
     }
@@ -411,12 +493,10 @@ ACTION accounts::deleteaccnts (uint64_t project_id) {
 
     auto itr_account = accounts.begin();
     while (itr_account != accounts.end()) {
-        // delbdgtsacct (_self, project_id, itr_account -> account_id);
+        delbdgtsacct (project_id, itr_account -> account_id);
         itr_account = accounts.erase(itr_account);
     }
 }
-
-
 
 
 ACTION accounts::addbudget ( name actor,
@@ -449,7 +529,7 @@ ACTION accounts::addbudget ( name actor,
 
     check_asset(amount, contract_names::accounts);
 
-    create_budget_aux(project_id, account_id, amount, budget_type_id, date_begin, date_end, modify_parents);
+    create_budget_aux(actor, project_id, account_id, amount, budget_type_id, date_begin, date_end, modify_parents);
 }
 
 
@@ -484,7 +564,7 @@ ACTION accounts::editbudget ( name actor,
     }
 
     deletebudget(actor, project_id, budget_id, modify_parents);
-    create_budget_aux(project_id, budget_itr -> account_id, amount, budget_type_id, date_begin, date_end, modify_parents);
+    create_budget_aux(actor, project_id, budget_itr -> account_id, amount, budget_type_id, date_begin, date_end, modify_parents);
 }
 
 
@@ -497,40 +577,33 @@ void accounts::remove_budget_amount (uint64_t project_id, uint64_t budget_id, as
     auto itr_budget = budgets.find(budget_id);
     uint64_t account_id = 0;
     uint64_t parent_id = 0;
-    uint64_t date_id = itr_budget -> budget_date_id;
-    set<uint64_t> explored;
+    uint64_t date_id = 0;
 
     while (itr_budget != budgets.end()) {
         account_id = itr_budget -> account_id;
-
+        date_id = itr_budget -> budget_date_id;
+        
         budgets.modify(itr_budget, _self, [&](auto & modified_budget){
             modified_budget.amount -= amount;
         });
 
-        explored.insert(budget_id);
-
         auto itr_account = accounts.find(account_id);
         check(itr_account != accounts.end(), contract_names::accounts.to_string() + ": the account does not exist.");
 
-        if (itr_account -> parent_id > 0) {
-            budget_id = 0;
+        budget_id = 0;
 
-            auto budgets_by_date = budgets.get_index<"byaccount"_n>();
-            auto itr_budgets_by_date = budgets_by_date.find(itr_account -> parent_id);
+        auto budgets_by_date = budgets.get_index<"byaccount"_n>();
+        auto itr_budgets_by_date = budgets_by_date.find(itr_account -> parent_id);
 
-            while (itr_budgets_by_date != budgets_by_date.end()) {
-                if (itr_budgets_by_date -> budget_date_id == date_id && explored.find(itr_budgets_by_date -> budget_id) == explored.end()) {
-                    budget_id = itr_budgets_by_date -> budget_id;
-                    break;
-                }
-                itr_budgets_by_date++;
+        while (itr_budgets_by_date != budgets_by_date.end()) {
+            if (itr_budgets_by_date -> account_id == itr_account -> parent_id && itr_budgets_by_date -> budget_date_id == date_id) {
+                budget_id = itr_budgets_by_date -> budget_id;
+                break;
             }
-
-            itr_budget = budgets.find(budget_id);
-
-        } else {
-            itr_budget = budgets.end();
+            itr_budgets_by_date++;
         }
+
+        itr_budget = budgets.find(budget_id);
     }
 }
 
@@ -555,13 +628,13 @@ ACTION accounts::deletebudget (name actor, uint64_t project_id, uint64_t budget_
     if (modify_parents) {
         remove_budget_amount(project_id, budget_id, budget_itr -> amount);
     }
-    
-    // delete if there is no other entry of budgets dates
-    auto budgets_by_date = budgets.get_index<"bydate"_n>();
-    auto itr_budgets_date = budgets_by_date.find(date_id);
 
     // delete the budget entry
     budgets.erase(budget_itr);
+
+    // delete if there is no other entry of budgets dates
+    auto budgets_by_date = budgets.get_index<"bydate"_n>();
+    auto itr_budgets_date = budgets_by_date.find(date_id);
 
     if (itr_budgets_date == budgets_by_date.end()) {
         budget_date_tables budget_dates(_self, project_id);
@@ -571,30 +644,38 @@ ACTION accounts::deletebudget (name actor, uint64_t project_id, uint64_t budget_
 }
 
 
-// ACTION accounts::delbdgtsacct (name actor, uint64_t project_id, uint64_t account_id) {
+ACTION accounts::delbdgtsacct (uint64_t project_id, uint64_t account_id) {
 
-//     require_auth(actor);
+    require_auth(_self);
 
-//     if (actor != _self) {
-//         // ========================== //
-//         // check for permissions here //
-//         // ========================== //
-//     }
+    account_tables accounts(_self, project_id);
+    budget_tables budgets(_self, project_id);
 
-//     account_tables accounts(_self, project_id);
-//     budget_tables budgets(_self, project_id);
+    auto accnt_itr = accounts.find(account_id);
+    check(accnt_itr != accounts.end(), contract_names::accounts.to_string() + ": the account does not exist.");
 
-//     auto accnt_itr = accounts.find(account_id);
-//     check(accnt_itr != accounts.end(), contract_names::accounts.to_string() + ": the account does not exist.");
+    uint64_t date_id = 0;
 
-//     auto budgets_by_accounts = budgets.get_index<"byaccount"_n>();
-//     auto budget_itr = budgets_by_accounts.find(account_id);
+    auto budgets_by_accounts = budgets.get_index<"byaccount"_n>();
+    auto budget_itr = budgets_by_accounts.find(account_id);
 
-//     while (budget_itr != budgets_by_accounts.end() && budget_itr -> account_id == account_id) {
-//         budget_itr = budgets_by_accounts.erase(budget_itr);
-//     }
-// }
+    while (budget_itr != budgets_by_accounts.end() && budget_itr -> account_id == account_id) {
+        date_id = budget_itr -> budget_date_id;
+
+        budget_itr = budgets_by_accounts.erase(budget_itr);
+
+        // delete if there is no other entry of budgets dates
+        auto budgets_by_date = budgets.get_index<"bydate"_n>();
+        auto itr_budgets_date = budgets_by_date.find(date_id);
+
+        if (itr_budgets_date == budgets_by_date.end()) {
+            budget_date_tables budget_dates(_self, project_id);
+            auto itr_date = budget_dates.find(date_id);
+            budget_dates.erase(itr_date);
+        }
+    }
+}
 
 
-EOSIO_DISPATCH(accounts, (reset)(addaccount)(editaccount)(deleteaccnt)(initaccounts)(addbalance)(subbalance)(canceladd)(cancelsub)(deleteaccnts)(addbudget)(deletebudget)(editbudget));
+EOSIO_DISPATCH(accounts, (reset)(addaccount)(editaccount)(deleteaccnt)(initaccounts)(addbalance)(subbalance)(canceladd)(cancelsub)(deleteaccnts)(addbudget)(deletebudget)(editbudget)(rcalcbudgets)(delbdgtsacct));
 
