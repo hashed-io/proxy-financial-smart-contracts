@@ -3,21 +3,21 @@
         "privateKey": "5JiC7P3mP6h6BkCLcGnKrHCd5a4g3D8bJf377agm9ZTemK3pGJu",
         "publicKey": "EOS4vExvL4rYEELk6tVBqq5FUTuQ5pqKJ7eJfJbTwSF5he55E7A5N"
     },
-    "proxycapusra": {
-        "privateKey": "5KQszFMhEYhXDu4zcZcLpKZuKt2zNUdHQ8CXZB2nXcYkUmZs99Y",
-        "publicKey": "EOS8QVXkq2GU6Y2sBnRhFf7bHyuVSQdCVuza4629oyW5QUzoaK91r"
+    "developerco1": {
+        "privateKey": "5JjGTXyFNqbWTYGBzmZw8kAsLYM223QwsUDVmTTCiRK4gAAuSRA",
+        "publicKey": "EOS7X2LvB4ULWuKDLxJGuTKs5bFixNsEwghCDuGHwihhwf6bDx7T2"
     },
-    "proxycapusrb": {
-        "privateKey": "5J9XBrkCoczbNwxc6h6FvGuSHtFqGjQFW6Rnshv36Mi2qMy5qsB",
-        "publicKey": "EOS5tWRCiJkVzs7ktSeF4NWUXGoeZ2xcRGUcWsoLbSafT5BDf5nmQ"
+    "investorusr1": {
+        "privateKey": "5KPRbNyMCg4BVj4j5pR2UbFS79ia3jnM6Z42FfCZy1vw6UJadck",
+        "publicKey": "EOS7Lx6pkZkN2g1ikioi3ndgn6icrphDdffTsBcNdyBjgSmuv7NZT"
     },
-    "proxycapusrc": {
-        "privateKey": "5K6eT9fKAPHFqDnfAb8cNF9MkbZR9FnP7L5YD2eFqnk1Th2XmhG",
-        "publicKey": "EOS8MCMYnydmKNuCYzBciyfkAEAm4h3CHHxptvGuFKcmR2ud3u8s1"
+    "investorusr2": {
+        "privateKey": "5Jbjs8muHoBGanFNH4gwmhWncb8oNVEjjzh4fcptYhunp14RZ6d",
+        "publicKey": "EOS541KtZCZunfAAGHPSJm4urut81swf42X4Sbxmht9inEfsgzxeN"
     },
-    "proxycapusrd": {
-        "privateKey": "5KTmsACgCgSTBvUN5nTTMCod8heWCBw4WyN1q1hMhFwGsaroY3g",
-        "publicKey": "EOS7XTtyPdgrdPzyNTHwHzgevsGJrNih54xcTQH9u3adBMZzbjXGS"
+    "fundusr11111": {
+        "privateKey": "5KhUoZn1xVAbjg6vAy9oAsJNX213MMvQL7nmUGdySj9Mikpdkte",
+        "publicKey": "EOS5uKkKEGTpb4ZKHSfbxqXpZmnJr4ATTEr173jUFN5CuW14nW7SS"
     },
     "proxycaptrnx": {
         "privateKey": "5JBKsepD8bxSMWNE2Kau7hiBU3QCvbzrGioR9sW56WsxVP6LQQH",

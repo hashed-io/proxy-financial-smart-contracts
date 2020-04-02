@@ -3,7 +3,7 @@ const accounts = require('../scripts/accounts.json')
 const { names } = require('../scripts/helper')
 const projectConfig = require('./config/new_project.json')
 
-function getError (err) {
+function getError(err) {
     return JSON.parse(err).error.details[0].message.replace('assertion failure with message: ', '')
 }
 
@@ -51,12 +51,12 @@ describe("Proxy Capital Projects Contract", function (eoslime) {
     })
 
     it('Should create the project', async () => {
-        
+
         await seconduserContract.addproject(
             seconduser.name,
             projectConfig.project_class,
-            projectConfig.project_name, 
-            projectConfig.description, 
+            projectConfig.project_name,
+            projectConfig.description,
             projectConfig.total_project_cost,
             projectConfig.debt_financing,
             projectConfig.term,
@@ -77,8 +77,8 @@ describe("Proxy Capital Projects Contract", function (eoslime) {
             await firstuserContract.addproject(
                 firstuser.name,
                 projectConfig.project_class,
-                projectConfig.project_name + " 2", 
-                projectConfig.description, 
+                projectConfig.project_name + " 2",
+                projectConfig.description,
                 projectConfig.total_project_cost,
                 projectConfig.debt_financing,
                 projectConfig.term,
@@ -104,8 +104,8 @@ describe("Proxy Capital Projects Contract", function (eoslime) {
             await seconduserContract.addproject(
                 seconduser.name,
                 projectConfig.project_class,
-                projectConfig.project_name, 
-                projectConfig.description, 
+                projectConfig.project_name,
+                projectConfig.description,
                 projectConfig.total_project_cost,
                 projectConfig.debt_financing,
                 projectConfig.term,
@@ -129,8 +129,8 @@ describe("Proxy Capital Projects Contract", function (eoslime) {
             await seconduserContract.addproject(
                 seconduser.name,
                 projectConfig.project_class,
-                projectConfig.project_name + " 2", 
-                projectConfig.description, 
+                projectConfig.project_name + " 2",
+                projectConfig.description,
                 projectConfig.total_project_cost,
                 projectConfig.debt_financing,
                 projectConfig.term,
@@ -154,8 +154,8 @@ describe("Proxy Capital Projects Contract", function (eoslime) {
             await seconduserContract.addproject(
                 seconduser.name,
                 projectConfig.project_class,
-                projectConfig.project_name + " 2", 
-                projectConfig.description, 
+                projectConfig.project_name + " 2",
+                projectConfig.description,
                 "10000.00 EUR",
                 projectConfig.debt_financing,
                 projectConfig.term,
@@ -176,10 +176,10 @@ describe("Proxy Capital Projects Contract", function (eoslime) {
         }
 
         await seconduserContract.addproject(
-            seconduser.name, 
+            seconduser.name,
             projectConfig.project_class,
             projectConfig.project_name + " 2",
-            projectConfig.description, 
+            projectConfig.description,
             projectConfig.total_project_cost,
             projectConfig.debt_financing,
             projectConfig.term,
@@ -195,7 +195,7 @@ describe("Proxy Capital Projects Contract", function (eoslime) {
             projectConfig.projected_stabilization_date,
             projectConfig.anticipated_year_sale_refinance
         )
-    
+
 
         let projectsTableBeforeApproval = await projectsContract.projects.limit(10).find()
         const usersTable = await projectsContract.users.limit(10).find()
@@ -205,118 +205,118 @@ describe("Proxy Capital Projects Contract", function (eoslime) {
 
         const expectedUsersTable = [
             {
-              account: 'proxycapusra',
-              user_name: 'firstuser',
-              entity_id: 0,
-              type: 'Investor'
+                account: 'developerco1',
+                user_name: 'Developer Co.',
+                entity_id: 0,
+                type: 'Developer'
             },
             {
-              account: 'proxycapusrb',
-              user_name: 'seconduser',
-              entity_id: 0,
-              type: 'Developer'
+                account: 'fundusr11111',
+                user_name: 'Fund',
+                entity_id: 0,
+                type: 'Fund'
             },
             {
-              account: 'proxycapusrc',
-              user_name: 'thirduser',
-              entity_id: 0,
-              type: 'Fund'
+                account: 'investorusr1',
+                user_name: 'Investor 1',
+                entity_id: 0,
+                type: 'Investor'
             },
             {
-              account: 'proxycapusrd',
-              user_name: 'fourthuser',
-              entity_id: 1,
-              type: 'Investor'
+                account: 'investorusr2',
+                user_name: 'Investor 2',
+                entity_id: 1,
+                type: 'Investor'
             }
         ]
 
         const expectedInvestorsTable = [
             {
-              investor_id: 0,
-              description: 'Test description for investor firstuser'
+                investor_id: 0,
+                description: 'Test description for investor Investor 1'
             },
             {
-              investor_id: 1,
-              description: 'Test description for investor fourthuser'
+                investor_id: 1,
+                description: 'Test description for investor Investor 2'
             }
         ]
-        
+
         const expectedDevelopersTable = [
             {
-              developer_id: 0,
-              developer_name: 'Developer0',
-              description: 'Test decription for developer seconduser'
+                developer_id: 0,
+                developer_name: 'Developer0',
+                description: 'Test decription for developer Developer Co.'
             }
         ]
-        
+
         const expectedFundsTable = [
             {
-              fund_id: 0,
-              fund_name: 'Fund0',
-              description: 'Test description for fund thirduser'
+                fund_id: 0,
+                fund_name: 'Fund0',
+                description: 'Test description for fund Fund'
             }
         ]
 
         const expectedProjectsTable = [
             {
-              project_id: 0,
-              owner: 'proxycapusrb',
-              project_name: 'Test Project',
-              description: 'This is a test project.',
-              created_date: parseInt(new Date() / 1000),
-              total_project_cost: '435000.00 USD',
-              debt_financing: '2000.00 USD',
-              term: 3,
-              interest_rate: 100,
-              loan_agreement: 'https://loan-agreement.com',
-              total_equity_financing: '3000.00 USD',
-              total_gp_equity: '2100.00 USD',
-              private_equity: '5000.00 USD',
-              annual_return: 500,
-              project_co_lp: 'https://project-co-lp.com',
-              project_co_lp_date: 1583864481,
-              projected_completion_date: 1683864481,
-              projected_stabilization_date: 1593864481,
-              anticipated_year_sale_refinance: 2023,
-              fund_lp: '',
-              total_fund_offering_amount: '0 ',
-              total_number_fund_offering: 0,
-              price_per_fund_unit: '0 ',
-              approved_date: 0,
-              approved_by: '',
-              developer_id: 0,
-              project_class: 'NNN',
-              status: 1
+                project_id: 0,
+                owner: 'developerco1',
+                project_name: 'Test Project',
+                description: 'This is a test project.',
+                created_date: parseInt(new Date() / 1000),
+                total_project_cost: '435000.00 USD',
+                debt_financing: '2000.00 USD',
+                term: 3,
+                interest_rate: 100,
+                loan_agreement: 'https://loan-agreement.com',
+                total_equity_financing: '3000.00 USD',
+                total_gp_equity: '2100.00 USD',
+                private_equity: '5000.00 USD',
+                annual_return: 500,
+                project_co_lp: 'https://project-co-lp.com',
+                project_co_lp_date: 1583864481,
+                projected_completion_date: 1683864481,
+                projected_stabilization_date: 1593864481,
+                anticipated_year_sale_refinance: 2023,
+                fund_lp: '',
+                total_fund_offering_amount: '0 ',
+                total_number_fund_offering: 0,
+                price_per_fund_unit: '0 ',
+                approved_date: 0,
+                approved_by: '',
+                developer_id: 0,
+                project_class: 'NNN',
+                status: 1
             },
             {
-              project_id: 1,
-              owner: 'proxycapusrb',
-              project_name: 'Test Project 2',
-              description: 'This is a test project.',
-              created_date: parseInt(new Date() / 1000),
-              status: 1,
-              total_project_cost: '435000.00 USD',
-              debt_financing: '2000.00 USD',
-              term: 3,
-              interest_rate: 100,
-              loan_agreement: 'https://loan-agreement.com',
-              total_equity_financing: '3000.00 USD',
-              total_gp_equity: '2100.00 USD',
-              private_equity: '5000.00 USD',
-              annual_return: 500,
-              project_co_lp: 'https://project-co-lp.com',
-              project_co_lp_date: 1583864481,
-              projected_completion_date: 1683864481,
-              projected_stabilization_date: 1593864481,
-              anticipated_year_sale_refinance: 2023,
-              fund_lp: '',
-              total_fund_offering_amount: '0 ',
-              total_number_fund_offering: 0,
-              price_per_fund_unit: '0 ',
-              approved_date: 0,
-              approved_by: '',
-              developer_id: 0,
-              project_class: 'NNN'
+                project_id: 1,
+                owner: 'developerco1',
+                project_name: 'Test Project 2',
+                description: 'This is a test project.',
+                created_date: parseInt(new Date() / 1000),
+                status: 1,
+                total_project_cost: '435000.00 USD',
+                debt_financing: '2000.00 USD',
+                term: 3,
+                interest_rate: 100,
+                loan_agreement: 'https://loan-agreement.com',
+                total_equity_financing: '3000.00 USD',
+                total_gp_equity: '2100.00 USD',
+                private_equity: '5000.00 USD',
+                annual_return: 500,
+                project_co_lp: 'https://project-co-lp.com',
+                project_co_lp_date: 1583864481,
+                projected_completion_date: 1683864481,
+                projected_stabilization_date: 1593864481,
+                anticipated_year_sale_refinance: 2023,
+                fund_lp: '',
+                total_fund_offering_amount: '0 ',
+                total_number_fund_offering: 0,
+                price_per_fund_unit: '0 ',
+                approved_date: 0,
+                approved_by: '',
+                developer_id: 0,
+                project_class: 'NNN'
             }
         ]
 
@@ -332,16 +332,16 @@ describe("Proxy Capital Projects Contract", function (eoslime) {
         assert.deepEqual(developersTable, expectedDevelopersTable, 'The developers table is not right.')
         assert.deepEqual(fundsTable, expectedFundsTable, 'The funds table is not right.')
         assert.deepEqual(projectsTableBeforeApproval, expectedProjectsTable, 'The projects table is not right.')
-        
+
     })
 
     it('Should edit and delete a project', async () => {
 
         await seconduserContract.addproject(
-            seconduser.name, 
+            seconduser.name,
             projectConfig.project_class,
             projectConfig.project_name + " Editable",
-            projectConfig.description, 
+            projectConfig.description,
             projectConfig.total_project_cost,
             projectConfig.debt_financing,
             projectConfig.term,
@@ -365,7 +365,7 @@ describe("Proxy Capital Projects Contract", function (eoslime) {
             2, // project id
             projectConfig.project_class,
             projectConfig.project_name + " Editable",
-            "Just an editable description", 
+            "Just an editable description",
             projectConfig.total_project_cost,
             projectConfig.debt_financing,
             projectConfig.term,
@@ -387,7 +387,7 @@ describe("Proxy Capital Projects Contract", function (eoslime) {
             2, // project id
             projectConfig.project_class,
             projectConfig.project_name + " Edited",
-            "Just an editable description", 
+            "Just an editable description",
             projectConfig.total_project_cost,
             projectConfig.debt_financing,
             projectConfig.term,
@@ -437,7 +437,7 @@ describe("Proxy Capital Projects Contract", function (eoslime) {
         )
 
         let projectsTableAfterApproval = await projectsContract.projects.limit(10).find()
-        
+
         projectsTableAfterApproval = projectsTableAfterApproval.map(project => {
             delete project.created_date
             if (project.approved_date <= parseInt(new Date() / 1000) + 5 && (project.approved_date > parseInt(new Date() / 1000) - 5)) {
@@ -448,62 +448,62 @@ describe("Proxy Capital Projects Contract", function (eoslime) {
 
         const expectedProjectsTable = [
             {
-              project_id: 0,
-              owner: 'proxycapusrb',
-              project_name: 'Test Project',
-              description: 'This is a test project.',
-              status: 2,
-              developer_id: 0,
-              project_class: 'NNN',
-              total_project_cost: '435000.00 USD',
-              debt_financing: '2000.00 USD',
-              term: 3,
-              interest_rate: 100,
-              loan_agreement: 'https://loan-agreement.com',
-              total_equity_financing: '3000.00 USD',
-              total_gp_equity: '2100.00 USD',
-              private_equity: '5000.00 USD',
-              annual_return: 500,
-              project_co_lp: 'https://project-co-lp.com',
-              project_co_lp_date: 1583864481,
-              projected_completion_date: 1683864481,
-              projected_stabilization_date: 1593864481,
-              anticipated_year_sale_refinance: 2023,
-              fund_lp: 'https://fund-lp.com',
-              total_fund_offering_amount: '400000.00 USD',
-              total_number_fund_offering: 40000,
-              price_per_fund_unit: '300.00 USD',
-              approved_date: parseInt(new Date() / 1000),
-              approved_by: 'proxycapusrc'
+                project_id: 0,
+                owner: 'developerco1',
+                project_name: 'Test Project',
+                description: 'This is a test project.',
+                status: 2,
+                developer_id: 0,
+                project_class: 'NNN',
+                total_project_cost: '435000.00 USD',
+                debt_financing: '2000.00 USD',
+                term: 3,
+                interest_rate: 100,
+                loan_agreement: 'https://loan-agreement.com',
+                total_equity_financing: '3000.00 USD',
+                total_gp_equity: '2100.00 USD',
+                private_equity: '5000.00 USD',
+                annual_return: 500,
+                project_co_lp: 'https://project-co-lp.com',
+                project_co_lp_date: 1583864481,
+                projected_completion_date: 1683864481,
+                projected_stabilization_date: 1593864481,
+                anticipated_year_sale_refinance: 2023,
+                fund_lp: 'https://fund-lp.com',
+                total_fund_offering_amount: '400000.00 USD',
+                total_number_fund_offering: 40000,
+                price_per_fund_unit: '300.00 USD',
+                approved_date: parseInt(new Date() / 1000),
+                approved_by: 'fundusr11111'
             },
             {
-              project_id: 1,
-              owner: 'proxycapusrb',
-              project_name: 'Test Project 2',
-              description: 'This is a test project.',
-              status: 2,
-              developer_id: 0,
-              project_class: 'NNN',
-              total_project_cost: '435000.00 USD',
-              debt_financing: '2000.00 USD',
-              term: 3,
-              interest_rate: 100,
-              loan_agreement: 'https://loan-agreement.com',
-              total_equity_financing: '3000.00 USD',
-              total_gp_equity: '2100.00 USD',
-              private_equity: '5000.00 USD',
-              annual_return: 500,
-              project_co_lp: 'https://project-co-lp.com',
-              project_co_lp_date: 1583864481,
-              projected_completion_date: 1683864481,
-              projected_stabilization_date: 1593864481,
-              anticipated_year_sale_refinance: 2023,
-              fund_lp: 'https://fund-lp.com',
-              total_fund_offering_amount: '400000.00 USD',
-              total_number_fund_offering: 40000,
-              price_per_fund_unit: '300.00 USD',
-              approved_date: parseInt(new Date() / 1000),
-              approved_by: 'proxycapusrc'
+                project_id: 1,
+                owner: 'developerco1',
+                project_name: 'Test Project 2',
+                description: 'This is a test project.',
+                status: 2,
+                developer_id: 0,
+                project_class: 'NNN',
+                total_project_cost: '435000.00 USD',
+                debt_financing: '2000.00 USD',
+                term: 3,
+                interest_rate: 100,
+                loan_agreement: 'https://loan-agreement.com',
+                total_equity_financing: '3000.00 USD',
+                total_gp_equity: '2100.00 USD',
+                private_equity: '5000.00 USD',
+                annual_return: 500,
+                project_co_lp: 'https://project-co-lp.com',
+                project_co_lp_date: 1583864481,
+                projected_completion_date: 1683864481,
+                projected_stabilization_date: 1593864481,
+                anticipated_year_sale_refinance: 2023,
+                fund_lp: 'https://fund-lp.com',
+                total_fund_offering_amount: '400000.00 USD',
+                total_number_fund_offering: 40000,
+                price_per_fund_unit: '300.00 USD',
+                approved_date: parseInt(new Date() / 1000),
+                approved_by: 'fundusr11111'
             }
         ]
 
@@ -557,8 +557,8 @@ describe("Proxy Capital Projects Contract", function (eoslime) {
         await seconduserContract.addproject(
             seconduser.name,
             projectConfig.project_class,
-            projectConfig.project_name + " 3", 
-            projectConfig.description, 
+            projectConfig.project_name + " 3",
+            projectConfig.description,
             projectConfig.total_project_cost,
             projectConfig.debt_financing,
             projectConfig.term,
@@ -578,7 +578,7 @@ describe("Proxy Capital Projects Contract", function (eoslime) {
         const expectedInvestments = [
             {
                 investment_id: 0,
-                user: 'proxycapusra',
+                user: 'investorusr1',
                 project_id: 0,
                 total_investment_amount: '4000.00 USD',
                 quantity_units_purchased: 40,
@@ -596,7 +596,7 @@ describe("Proxy Capital Projects Contract", function (eoslime) {
             },
             {
                 investment_id: 1,
-                user: 'proxycapusra',
+                user: 'investorusr1',
                 project_id: 1,
                 total_investment_amount: '3000.00 USD',
                 quantity_units_purchased: 40,
@@ -614,7 +614,7 @@ describe("Proxy Capital Projects Contract", function (eoslime) {
             },
             {
                 investment_id: 2,
-                user: 'proxycapusrd',
+                user: 'investorusr2',
                 project_id: 1,
                 total_investment_amount: '1000.00 USD',
                 quantity_units_purchased: 40,
@@ -668,7 +668,7 @@ describe("Proxy Capital Projects Contract", function (eoslime) {
         const expectedInvestmentsTable = [
             {
                 investment_id: 0,
-                user: 'proxycapusra',
+                user: 'investorusr1',
                 project_id: 0,
                 total_investment_amount: '4000.00 USD',
                 quantity_units_purchased: 40,
@@ -680,12 +680,12 @@ describe("Proxy Capital Projects Contract", function (eoslime) {
                 total_unconfirmed_transfers: 0,
                 subscription_package: 'http://www.first-agreement.com',
                 status: 2,
-                approved_by: 'proxycapusrc',
+                approved_by: 'fundusr11111',
                 approved_date: time
             },
             {
                 investment_id: 1,
-                user: 'proxycapusra',
+                user: 'investorusr1',
                 project_id: 1,
                 total_investment_amount: '3000.00 USD',
                 quantity_units_purchased: 40,
@@ -697,12 +697,12 @@ describe("Proxy Capital Projects Contract", function (eoslime) {
                 total_unconfirmed_transfers: 0,
                 subscription_package: 'http://www.first-agreement.com',
                 status: 2,
-                approved_by: 'proxycapusrc',
+                approved_by: 'fundusr11111',
                 approved_date: time
             },
             {
                 investment_id: 2,
-                user: 'proxycapusrd',
+                user: 'investorusr2',
                 project_id: 1,
                 total_investment_amount: '1000.00 USD',
                 quantity_units_purchased: 40,
@@ -714,10 +714,10 @@ describe("Proxy Capital Projects Contract", function (eoslime) {
                 total_unconfirmed_transfers: 0,
                 subscription_package: 'http://www.fourth-agreement.com',
                 status: 2,
-                approved_by: 'proxycapusrc',
+                approved_by: 'fundusr11111',
                 approved_date: time
             }
-            
+
         ]
 
         try {
@@ -726,7 +726,7 @@ describe("Proxy Capital Projects Contract", function (eoslime) {
         } catch (err) {
             assert.deepEqual(getError(err), 'proxycapproj: the invesment has been already approved.', 'The investments table is not right.')
         }
-          
+
         assert.deepEqual(investmentsTable, expectedInvestmentsTable, 'The investments table is not right.')
 
     })
@@ -765,7 +765,7 @@ describe("Proxy Capital Projects Contract", function (eoslime) {
         const expectedInvestmentsTableBefore = [
             {
                 investment_id: 0,
-                user: 'proxycapusra',
+                user: 'investorusr1',
                 project_id: 0,
                 total_investment_amount: '4000.00 USD',
                 quantity_units_purchased: 40,
@@ -777,11 +777,11 @@ describe("Proxy Capital Projects Contract", function (eoslime) {
                 total_unconfirmed_transfers: 0,
                 subscription_package: 'http://www.first-agreement.com',
                 status: 3,
-                approved_by: 'proxycapusrc'
+                approved_by: 'fundusr11111'
             },
             {
                 investment_id: 1,
-                user: 'proxycapusra',
+                user: 'investorusr1',
                 project_id: 1,
                 total_investment_amount: '3000.00 USD',
                 quantity_units_purchased: 40,
@@ -793,11 +793,11 @@ describe("Proxy Capital Projects Contract", function (eoslime) {
                 total_unconfirmed_transfers: 0,
                 subscription_package: 'http://www.first-agreement.com',
                 status: 2,
-                approved_by: 'proxycapusrc'
+                approved_by: 'fundusr11111'
             },
             {
                 investment_id: 2,
-                user: 'proxycapusrd',
+                user: 'investorusr2',
                 project_id: 1,
                 total_investment_amount: '1000.00 USD',
                 quantity_units_purchased: 40,
@@ -809,9 +809,9 @@ describe("Proxy Capital Projects Contract", function (eoslime) {
                 total_unconfirmed_transfers: 0,
                 subscription_package: 'http://www.fourth-agreement.com',
                 status: 2,
-                approved_by: 'proxycapusrc'
+                approved_by: 'fundusr11111'
             }
-            
+
         ]
 
         const expectedTransfersTableBefore = [
@@ -820,42 +820,42 @@ describe("Proxy Capital Projects Contract", function (eoslime) {
                 proof_of_transfer: 'http://www.file.com',
                 amount: '4000.00 USD',
                 investment_id: 0,
-                user: 'proxycapusra',
+                user: 'investorusr1',
                 status: 2,
                 transfer_date: 832098900,
                 updated_date: time,
                 confirmed_date: time,
-                confirmed_by: 'proxycapusrc'
+                confirmed_by: 'fundusr11111'
             },
             {
                 fund_transfer_id: 1,
                 proof_of_transfer: 'http://www.file.com',
                 amount: '400.00 USD',
                 investment_id: 1,
-                user: 'proxycapusra',
+                user: 'investorusr1',
                 status: 2,
                 transfer_date: 832098900,
                 updated_date: time,
                 confirmed_date: time,
-                confirmed_by: 'proxycapusrc'
+                confirmed_by: 'fundusr11111'
             },
             {
                 fund_transfer_id: 2,
                 proof_of_transfer: 'http://www.file.com',
                 amount: '500.00 USD',
                 investment_id: 2,
-                user: 'proxycapusrd',
+                user: 'investorusr2',
                 status: 2,
                 transfer_date: 832098900,
                 updated_date: time,
                 confirmed_date: time,
-                confirmed_by: 'proxycapusrc'
+                confirmed_by: 'fundusr11111'
             }
         ]
-          
+
         assert.deepEqual(investmentsTableBefore, expectedInvestmentsTableBefore, 'The investments table is not right.')
         assert.deepEqual(transfersTableBefore, expectedTransfersTableBefore, 'The transfers table is not right.')
-          
+
         await firstuserContract.maketransfer(firstuser.name, "2600.00 USD", 1, "http://www.file.com", 832098900);
 
         let transfersTableMidle = await projectsContract.transfers.limit(10).find()
@@ -882,44 +882,44 @@ describe("Proxy Capital Projects Contract", function (eoslime) {
                 proof_of_transfer: 'http://www.file.com',
                 amount: '4000.00 USD',
                 investment_id: 0,
-                user: 'proxycapusra',
+                user: 'investorusr1',
                 status: 2,
-                confirmed_by: 'proxycapusrc'
+                confirmed_by: 'fundusr11111'
             },
             {
                 fund_transfer_id: 1,
                 proof_of_transfer: 'http://www.file.com',
                 amount: '400.00 USD',
                 investment_id: 1,
-                user: 'proxycapusra',
+                user: 'investorusr1',
                 status: 2,
-                confirmed_by: 'proxycapusrc'
+                confirmed_by: 'fundusr11111'
             },
             {
                 fund_transfer_id: 2,
                 proof_of_transfer: 'http://www.file.com',
                 amount: '500.00 USD',
                 investment_id: 2,
-                user: 'proxycapusrd',
+                user: 'investorusr2',
                 status: 2,
-                confirmed_by: 'proxycapusrc'
+                confirmed_by: 'fundusr11111'
             },
             {
                 fund_transfer_id: 3,
                 proof_of_transfer: 'http://www.file.com',
                 amount: '2600.00 USD',
                 investment_id: 1,
-                user: 'proxycapusra',
+                user: 'investorusr1',
                 status: 1,
                 confirmed_date: 0,
                 confirmed_by: ''
-            }            
+            }
         ]
 
         const expectedInvestmentsMidle = [
             {
                 investment_id: 0,
-                user: 'proxycapusra',
+                user: 'investorusr1',
                 project_id: 0,
                 total_investment_amount: '4000.00 USD',
                 quantity_units_purchased: 40,
@@ -931,11 +931,11 @@ describe("Proxy Capital Projects Contract", function (eoslime) {
                 total_unconfirmed_transfers: 0,
                 subscription_package: 'http://www.first-agreement.com',
                 status: 3,
-                approved_by: 'proxycapusrc'
+                approved_by: 'fundusr11111'
             },
             {
                 investment_id: 1,
-                user: 'proxycapusra',
+                user: 'investorusr1',
                 project_id: 1,
                 total_investment_amount: '3000.00 USD',
                 quantity_units_purchased: 40,
@@ -947,11 +947,11 @@ describe("Proxy Capital Projects Contract", function (eoslime) {
                 total_unconfirmed_transfers: 1,
                 subscription_package: 'http://www.first-agreement.com',
                 status: 2,
-                approved_by: 'proxycapusrc'
+                approved_by: 'fundusr11111'
             },
             {
                 investment_id: 2,
-                user: 'proxycapusrd',
+                user: 'investorusr2',
                 project_id: 1,
                 total_investment_amount: '1000.00 USD',
                 quantity_units_purchased: 40,
@@ -963,12 +963,12 @@ describe("Proxy Capital Projects Contract", function (eoslime) {
                 total_unconfirmed_transfers: 0,
                 subscription_package: 'http://www.fourth-agreement.com',
                 status: 2,
-                approved_by: 'proxycapusrc'
+                approved_by: 'fundusr11111'
             }
         ]
 
         assert.deepEqual(transfersTableMidle, expectedTransfersMidle, 'The transfers table is not right.')
-        assert.deepEqual(investmentsTableMidle, expectedInvestmentsMidle, 'The investments table is not right.') 
+        assert.deepEqual(investmentsTableMidle, expectedInvestmentsMidle, 'The investments table is not right.')
 
         await thirduserContract.confrmtrnsfr(thirduser.name, 3, '')
 
@@ -1007,49 +1007,49 @@ describe("Proxy Capital Projects Contract", function (eoslime) {
                 proof_of_transfer: 'http://www.file.com',
                 amount: '4000.00 USD',
                 investment_id: 0,
-                user: 'proxycapusra',
+                user: 'investorusr1',
                 status: 2,
                 transfer_date: 832098900,
-                confirmed_by: 'proxycapusrc'
+                confirmed_by: 'fundusr11111'
             },
             {
                 fund_transfer_id: 1,
                 proof_of_transfer: 'http://www.file.com',
                 amount: '400.00 USD',
                 investment_id: 1,
-                user: 'proxycapusra',
+                user: 'investorusr1',
                 status: 2,
                 transfer_date: 832098900,
-                confirmed_by: 'proxycapusrc'
+                confirmed_by: 'fundusr11111'
             },
             {
                 fund_transfer_id: 2,
                 proof_of_transfer: 'http://www.file.com',
                 amount: '500.00 USD',
                 investment_id: 2,
-                user: 'proxycapusrd',
+                user: 'investorusr2',
                 status: 2,
                 transfer_date: 832098900,
-                confirmed_by: 'proxycapusrc'
+                confirmed_by: 'fundusr11111'
             },
             {
                 fund_transfer_id: 3,
                 proof_of_transfer: 'http://www.file.com',
                 amount: '2600.00 USD',
                 investment_id: 1,
-                user: 'proxycapusra',
+                user: 'investorusr1',
                 status: 2,
                 transfer_date: 832098900,
                 updated_date: time,
                 confirmed_date: time,
-                confirmed_by: 'proxycapusrc'
+                confirmed_by: 'fundusr11111'
             }
         ]
 
         const expectedInvestmentsTableAfter = [
             {
                 investment_id: 0,
-                user: 'proxycapusra',
+                user: 'investorusr1',
                 project_id: 0,
                 total_investment_amount: '4000.00 USD',
                 quantity_units_purchased: 40,
@@ -1061,11 +1061,11 @@ describe("Proxy Capital Projects Contract", function (eoslime) {
                 total_unconfirmed_transfers: 0,
                 subscription_package: 'http://www.first-agreement.com',
                 status: 3,
-                approved_by: 'proxycapusrc'
+                approved_by: 'fundusr11111'
             },
             {
                 investment_id: 1,
-                user: 'proxycapusra',
+                user: 'investorusr1',
                 project_id: 1,
                 total_investment_amount: '3000.00 USD',
                 quantity_units_purchased: 40,
@@ -1077,11 +1077,11 @@ describe("Proxy Capital Projects Contract", function (eoslime) {
                 total_unconfirmed_transfers: 0,
                 subscription_package: 'http://www.first-agreement.com',
                 status: 3,
-                approved_by: 'proxycapusrc'
+                approved_by: 'fundusr11111'
             },
             {
                 investment_id: 2,
-                user: 'proxycapusrd',
+                user: 'investorusr2',
                 project_id: 1,
                 total_investment_amount: '1000.00 USD',
                 quantity_units_purchased: 40,
@@ -1093,9 +1093,9 @@ describe("Proxy Capital Projects Contract", function (eoslime) {
                 total_unconfirmed_transfers: 0,
                 subscription_package: 'http://www.fourth-agreement.com',
                 status: 2,
-                approved_by: 'proxycapusrc'
+                approved_by: 'fundusr11111'
             }
-            
+
         ]
 
         assert.deepEqual(transfersTableAfter, expectedTransfersTableAfter, 'The transfers table is not right.')
@@ -1108,7 +1108,7 @@ describe("Proxy Capital Projects Contract", function (eoslime) {
         }
 
         try {
-            await fourthuserContract.maketransfer(fourthuser.name, "200.00 USD", 1, "http://www.file.com", 832098900);         
+            await fourthuserContract.maketransfer(fourthuser.name, "200.00 USD", 1, "http://www.file.com", 832098900);
         } catch (err) {
             assert.deepEqual(getError(err), 'proxycapproj: the user can only make a transfer in an investment created by itself.', 'Something else went wrong.')
         }
@@ -1141,7 +1141,7 @@ describe("Proxy Capital Projects Contract", function (eoslime) {
         const expectedInvestments = [
             {
                 investment_id: 3,
-                user: 'proxycapusra',
+                user: 'investorusr1',
                 project_id: 0,
                 total_investment_amount: '2500.00 USD',
                 quantity_units_purchased: 20,
@@ -1156,7 +1156,7 @@ describe("Proxy Capital Projects Contract", function (eoslime) {
                 approved_by: '',
                 approved_date: 0,
                 investment_date: time
-            }            
+            }
         ]
 
         assert.deepEqual(investmentsTableAfter.filter(Boolean), expectedInvestments, 'The investments table is not right.')
@@ -1175,7 +1175,7 @@ describe("Proxy Capital Projects Contract", function (eoslime) {
         try {
             await firstuserContract.editinvest(firstuser.name, 0, "2500.00 USD", 20, 400, 99999, "http://www.first-agreement-updated.com")
         } catch (err) {
-            assert.deepEqual(getError(err), 'proxycapproj: the investment can not be modified anymore.', 'Something else went wrong.')            
+            assert.deepEqual(getError(err), 'proxycapproj: the investment can not be modified anymore.', 'Something else went wrong.')
         }
 
     })
@@ -1200,7 +1200,7 @@ describe("Proxy Capital Projects Contract", function (eoslime) {
         await fourthuserContract.edittransfer(fourthuser.name, 4, "1200.00 USD", "http://www.file-update.com", 2222222)
 
         let transfersTableAfter = await projectsContract.transfers.limit(10).find()
-        
+
         transfersTableAfter = transfersTableAfter.map(transfer => {
             if (transfer.fund_transfer_id === 4) {
                 delete transfer.updated_date
@@ -1220,37 +1220,37 @@ describe("Proxy Capital Projects Contract", function (eoslime) {
 
         const expectedTransfer = [
             {
-              fund_transfer_id: 4,
-              proof_of_transfer: 'http://www.file-update.com',
-              amount: '1200.00 USD',
-              investment_id: 3,
-              user: 'proxycapusrd',
-              status: 1,
-              transfer_date: 2222222,
-              confirmed_date: 0,
-              confirmed_by: ''
+                fund_transfer_id: 4,
+                proof_of_transfer: 'http://www.file-update.com',
+                amount: '1200.00 USD',
+                investment_id: 3,
+                user: 'investorusr2',
+                status: 1,
+                transfer_date: 2222222,
+                confirmed_date: 0,
+                confirmed_by: ''
             }
         ]
-        
+
         const expectedInvestment = [
             {
-              investment_id: 3,
-              user: 'proxycapusrd',
-              project_id: 0,
-              total_investment_amount: '1500.00 USD',
-              quantity_units_purchased: 40,
-              annual_preferred_return: 700,
-              signed_agreement_date: 832098900,
-              total_confirmed_transfered_amount: '0.00 USD',
-              total_unconfirmed_transfered_amount: '1200.00 USD',
-              total_confirmed_transfers: 0,
-              total_unconfirmed_transfers: 1,
-              subscription_package: 'http://www.fourth-agreement.com',
-              status: 2,
-              approved_by: 'proxycapusrc'
+                investment_id: 3,
+                user: 'investorusr2',
+                project_id: 0,
+                total_investment_amount: '1500.00 USD',
+                quantity_units_purchased: 40,
+                annual_preferred_return: 700,
+                signed_agreement_date: 832098900,
+                total_confirmed_transfered_amount: '0.00 USD',
+                total_unconfirmed_transfered_amount: '1200.00 USD',
+                total_confirmed_transfers: 0,
+                total_unconfirmed_transfers: 1,
+                subscription_package: 'http://www.fourth-agreement.com',
+                status: 2,
+                approved_by: 'fundusr11111'
             }
         ]
-        
+
         assert.deepEqual(transfersTableAfter.filter(Boolean), expectedTransfer, 'The transfers table is not right.')
         assert.deepEqual(investmentsTable.filter(Boolean), expectedInvestment, 'The investments table is not right.')
 
@@ -1279,7 +1279,7 @@ describe("Proxy Capital Projects Contract", function (eoslime) {
         const expectedTableAfterDelete = [
             {
                 investment_id: 3,
-                user: 'proxycapusrd',
+                user: 'investorusr2',
                 project_id: 0,
                 total_investment_amount: '1500.00 USD',
                 quantity_units_purchased: 40,
@@ -1291,10 +1291,10 @@ describe("Proxy Capital Projects Contract", function (eoslime) {
                 total_unconfirmed_transfers: 0,
                 subscription_package: 'http://www.fourth-agreement.com',
                 status: 2,
-                approved_by: 'proxycapusrc'
-            }            
+                approved_by: 'fundusr11111'
+            }
         ]
-        
+
         assert.deepEqual(investmentsTableAfterDelete.filter(Boolean), expectedTableAfterDelete, 'The investments table is not right.')
 
     })

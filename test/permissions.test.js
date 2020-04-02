@@ -3,6 +3,7 @@ const accounts = require('../scripts/accounts.json')
 const { names, currency } = require('../scripts/helper')
 const projectConfig = require('./config/new_project.json')
 
+
 function getError (err) {
     return JSON.parse(err).error.details[0].message.replace('assertion failure with message: ', '')
 }
@@ -12,6 +13,8 @@ function sleep(ms) {
 }
 
 describe("Proxy Capital Permissions Contract", function (eoslime) {
+
+    this.timeout(15000)
 
     let firstuser = eoslime.Account.load(names.firstuser, accounts[names.firstuser].privateKey, 'active')
     let seconduser = eoslime.Account.load(names.seconduser, accounts[names.seconduser].privateKey, 'active')
@@ -170,7 +173,7 @@ describe("Proxy Capital Permissions Contract", function (eoslime) {
             await firstuserContractAccounts.addaccount(firstuser.name, 0, 'Some account', 3, currency) // id = 15
         }
         catch (err) {
-            assert.deepEqual(getError(err), names.permissions + ": the user proxycapusra does not have permissions to do this.", 'Something else went wrong.')
+            assert.deepEqual(getError(err), names.permissions + ": the user investorusr1 does not have permissions to do this.", 'Something else went wrong.')
         }
 
         try {
@@ -178,7 +181,7 @@ describe("Proxy Capital Permissions Contract", function (eoslime) {
             await firstuserContract.givepermissn(firstuser.name, 0, 'addaccount', 3)
         }
         catch (err) {
-            assert.deepEqual(getError(err), names.permissions + ": the user proxycapusra does not have permissions to do this.", 'Something else went wrong.')
+            assert.deepEqual(getError(err), names.permissions + ": the user investorusr1 does not have permissions to do this.", 'Something else went wrong.')
         }
 
         await seconduserContract.givepermissn(seconduser.name, 0, 'addaccount', 3)
@@ -193,7 +196,7 @@ describe("Proxy Capital Permissions Contract", function (eoslime) {
                                         ['https://docs.telos.kitchen/tO6eoye_Td-76wBz7J3EZQ#','https://docs.telos.kitchen/jJq8d7dwSlCSvj42yZyBGg#'])
         }
         catch (err) {
-            assert.deepEqual(getError(err), names.permissions + ": the user proxycapusra does not have permissions to do this.", 'Something else went wrong.')
+            assert.deepEqual(getError(err), names.permissions + ": the user investorusr1 does not have permissions to do this.", 'Something else went wrong.')
         }
 
         await seconduserContract.givepermissn(seconduser.name, 0, 'transact', 3)
@@ -213,7 +216,7 @@ describe("Proxy Capital Permissions Contract", function (eoslime) {
             await firstuserContract.addrole(firstuser.name, 0, 'Test Role 4', 0)
         }
         catch (err) {
-            assert.deepEqual(getError(err), names.permissions + ": the user proxycapusra does not have permissions to do this.", 'Something else went wrong.')
+            assert.deepEqual(getError(err), names.permissions + ": the user investorusr1 does not have permissions to do this.", 'Something else went wrong.')
         }
 
         const rolesTable2 = await provider.select('roles').from(names.permissions).scope('0').limit(20).find()
