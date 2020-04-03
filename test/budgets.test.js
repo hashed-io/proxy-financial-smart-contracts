@@ -114,7 +114,7 @@ describe("Proxy Capital Accounts Contract", function (eoslime) {
       let budgetsTable = await provider.select('budgets').from(names.budgets).scope('0').limit(20).find()
 
       const expectedDatesTable = [
-        { budget_period_id: 1, date_begin: 0, date_end: 0, budget_type_id: 1 }
+        { budget_period_id: 1, begin_date: 0, end_date: 0, budget_type_id: 1 }
       ]      
 
       const expectedBudgets = [
@@ -204,17 +204,17 @@ describe("Proxy Capital Accounts Contract", function (eoslime) {
       let budgetsTable = await provider.select('budgets').from(names.budgets).scope('0').limit(20).find()
 
       const expectedDatesTable = [
-        { budget_period_id: 1, date_begin: 0, date_end: 0, budget_type_id: 1 },
+        { budget_period_id: 1, begin_date: 0, end_date: 0, budget_type_id: 1 },
         {
           budget_period_id: 2,
-          date_begin: 1585762692,
-          date_end: 1588354692,
+          begin_date: 1585762692,
+          end_date: 1588354692,
           budget_type_id: 2
         },
         {
           budget_period_id: 3,
-          date_begin: 1588441092,
-          date_end: 1591033092,
+          begin_date: 1588441092,
+          end_date: 1591033092,
           budget_type_id: 2
         }
       ]           
@@ -335,11 +335,11 @@ describe("Proxy Capital Accounts Contract", function (eoslime) {
       let budgetsTable = await provider.select('budgets').from(names.budgets).scope('0').limit(20).find()
 
       const expectedDatesTable = [
-        { budget_period_id: 1, date_begin: 0, date_end: 0, budget_type_id: 1 },
+        { budget_period_id: 1, begin_date: 0, end_date: 0, budget_type_id: 1 },
         {
           budget_period_id: 2,
-          date_begin: 1585762692,
-          date_end: 1588354692,
+          begin_date: 1585762692,
+          end_date: 1588354692,
           budget_type_id: 2
         }
       ]          
@@ -435,11 +435,11 @@ describe("Proxy Capital Accounts Contract", function (eoslime) {
       let budgetsTable = await provider.select('budgets').from(names.budgets).scope('0').limit(20).find()
 
       const expectedDatesTable = [
-        { budget_period_id: 1, date_begin: 0, date_end: 0, budget_type_id: 1 },
+        { budget_period_id: 1, begin_date: 0, end_date: 0, budget_type_id: 1 },
         {
           budget_period_id: 2,
-          date_begin: 1585762692,
-          date_end: 1588354692,
+          begin_date: 1585762692,
+          end_date: 1588354692,
           budget_type_id: 2
         }
       ]

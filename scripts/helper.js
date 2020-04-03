@@ -170,6 +170,9 @@ const permissions = [
   }, {
 		target: `${accounts.budgets.account}@active`,
 		actor: `${accounts.accounts.account}@active`
+  }, {
+		target: `${accounts.permissions.account}@active`,
+		actor: `${accounts.budgets.account}@active`
   }
   
 ]

@@ -30,8 +30,8 @@ CONTRACT budgets : public contract {
                            uint64_t account_id,
                            asset amount,
                            uint64_t budget_type_id,
-                           uint64_t date_begin,
-                           uint64_t date_end,
+                           uint64_t begin_date,
+                           uint64_t end_date,
                            bool modify_parents );
 
         ACTION editbudget ( name actor,
@@ -39,13 +39,13 @@ CONTRACT budgets : public contract {
                             uint64_t budget_id,
                             asset amount,
                             uint64_t budget_type_id,
-                            uint64_t date_begin,
-                            uint64_t date_end,
+                            uint64_t begin_date,
+                            uint64_t end_date,
                             bool modify_parents );
 
         ACTION deletebudget (name actor, uint64_t project_id, uint64_t budget_id, bool modify_parents);
 
-        ACTION rcalcbudgets (name actor, uint64_t project_id, uint64_t account_id, uint64_t date_id);
+        ACTION rcalcbudgets (name actor, uint64_t project_id, uint64_t account_id, uint64_t budget_period_id);
 
         ACTION delbdgtsacct (uint64_t project_id, uint64_t account_id);
     
@@ -80,14 +80,14 @@ CONTRACT budgets : public contract {
         // scoped by project
         TABLE budget_period_table {
             uint64_t budget_period_id;
-            uint64_t date_begin;
-            uint64_t date_end;
+            uint64_t begin_date;
+            uint64_t end_date;
             uint64_t budget_type_id;
 
             uint64_t primary_key() const { return budget_period_id; }
             uint64_t by_type() const { return budget_type_id; }
-            uint64_t by_begin() const { return date_begin; }
-            uint64_t by_end() const { return date_end; }
+            uint64_t by_begin() const { return begin_date; }
+            uint64_t by_end() const { return end_date; }
         };
 
         TABLE budget_type_table {
@@ -151,8 +151,8 @@ CONTRACT budgets : public contract {
                                  uint64_t account_id,
                                  asset amount,
                                  uint64_t budget_type_id,
-                                 uint64_t date_begin,
-                                 uint64_t date_end,
+                                 uint64_t begin_date,
+                                 uint64_t end_date,
                                  bool modify_parents );
 
         void remove_budget_amount (uint64_t project_id, uint64_t budget_id, asset amount);

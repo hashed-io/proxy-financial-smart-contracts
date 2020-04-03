@@ -10,6 +10,9 @@ function ownerNotExistError (err) {
     return (JSON.parse(err).error.code === 3040000)
 }
 
+function getError (err) {
+return JSON.parse(err).error.details[0].message.replace('assertion failure with message: ', '')
+}
 
 async function resetAllContracts (eoslime) {
     if (!process.argv.includes('--reset')) {
@@ -18,27 +21,31 @@ async function resetAllContracts (eoslime) {
 
     console.log('\n\nResetting all the contracts...')
 
-    let transactions = await eoslime.Account.load(names.transactions, existing_accounts[names.transactions].privateKey, 'active')
-    let accountss = await eoslime.Account.load(names.accounts, existing_accounts[names.accounts].privateKey, 'active')
-    let projects = await eoslime.Account.load(names.projects, existing_accounts[names.projects].privateKey, 'active')
-    let permissions = await eoslime.Account.load(names.permissions, existing_accounts[names.permissions].privateKey, 'active')
+    const accounts_names = Object.keys(names)
 
-    let transactionsContract = await eoslime.Contract.at(names.transactions, transactions)
-    let accountssContract = await eoslime.Contract.at(names.accounts, accountss)
-    let projectsContract = await eoslime.Contract.at(names.projects, projects)
-    let permissionsContract = await eoslime.Contract.at(names.permissions, permissions)
+    for (let i = 0; i < accounts_names.length; i++) {
+        try {
+            if (accounts[accounts_names[i]].type === 'contract') {
+                try {
+                    let account = await eoslime.Account.load(accounts[accounts_names[i]].account, existing_accounts[accounts[accounts_names[i]].account].privateKey, 'active')
+                    let contract = await eoslime.Contract.at(accounts[accounts_names[i]].account, account)
+            
+                    console.log('reset', accounts[accounts_names[i]].account)
+                    await contract.reset()
+                } catch (err) {
+                    if (err.message == "Cannot read property 'privateKey' of undefined") {
+                        console.log('The account', accounts[accounts_names[i]].account,'is not in accounts.json')
+                    } else {
+                        console.log(err.message)
+                    }
+                }            
+            }
+        } catch (err) {
+            console.log(err)
+        }
+    }
 
-    console.log('reset permissions contract')
-    await permissionsContract.reset()
-
-    console.log('reset transactions contract')
-    await transactionsContract.reset();
-
-    console.log('reset accounts contract')
-    await accountssContract.reset()
-
-    console.log('reset projects contract')
-    await projectsContract.reset()
+    console.log('\n\n')
 }
 
 

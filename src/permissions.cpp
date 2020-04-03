@@ -70,6 +70,29 @@ ACTION permissions::reset () {
     }
 }
 
+
+ACTION permissions::addaction (name action_name) {
+    require_auth(_self);
+
+    auto itr_permission = permissions_table.begin();
+    uint64_t max_permission = 0;
+
+    while (itr_permission != permissions_table.end()) {
+        check(itr_permission -> action_name != action_name, 
+            contract_names::permissions.to_string() + ": the action " + action_name.to_string() + " is already in the permissions table.");
+        max_permission |= itr_permission -> permissions;
+        itr_permission++;
+    }
+
+    max_permission += 1;
+
+    permissions_table.emplace(_self, [&](auto & new_action){
+        new_action.action_name = action_name;
+        new_action.permissions = max_permission;
+    });
+}
+
+
 ACTION permissions::initroles (uint64_t project_id) {
     require_auth(_self);
 
@@ -222,5 +245,5 @@ ACTION permissions::deletepmssns (uint64_t project_id) {
 }
 
 
-EOSIO_DISPATCH(permissions, (reset)(assignrole)(checkprmissn)(givepermissn)(removeprmssn)(initroles)(addrole)(removerole)(deletepmssns));
+EOSIO_DISPATCH(permissions, (reset)(assignrole)(checkprmissn)(givepermissn)(removeprmssn)(initroles)(addrole)(removerole)(deletepmssns)(addaction));
 

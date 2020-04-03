@@ -11,13 +11,17 @@ class ActionNames {
         const name TRANSACTIONS_ADD = "transact"_n;
         const name TRANSACTIONS_REMOVE = "deletetrxn"_n;
         const name TRANSACTIONS_EDIT = "edittrxn"_n;
-        const name PROJECTS_REMOVE = "nothing"_n;
-        const name PROJECTS_EDIT = "nothing2"_n;
+        const name PROJECTS_REMOVE = "deleteprojct"_n;
+        const name PROJECTS_EDIT = "editproject"_n;
         const name PERMISSIONS_ADD_PERMISSION = "givepermissn"_n;
         const name PERMISSIONS_REMOVE_PERMISSION = "removeprmssn"_n;
         const name PERMISSIONS_ADD_ROLE = "addrole"_n;
         const name PERMISSIONS_REMOVE_ROLE = "removerole"_n;
         const name PERMISSIONS_ASSIGN = "assignrole"_n;
+        const name BUDGETS_ADD = "addbudget"_n;
+        const name BUDGETS_REMOVE = "editbudget"_n;
+        const name BUDGETS_EDIT = "deletebudget"_n;
+        const name BUDGETS_RECALCULATE = "rcalcbudgets"_n;
 
         ActionNames () {
             constants.insert(ACCOUNTS_ADD);
@@ -31,6 +35,10 @@ class ActionNames {
             constants.insert(PERMISSIONS_ADD_ROLE);
             constants.insert(PERMISSIONS_REMOVE_ROLE);
             constants.insert(PERMISSIONS_ASSIGN);
+            constants.insert(BUDGETS_ADD);
+            constants.insert(BUDGETS_REMOVE);
+            constants.insert(BUDGETS_EDIT);
+            constants.insert(BUDGETS_RECALCULATE);
         }
 
         bool is_valid_constant (name constant) {

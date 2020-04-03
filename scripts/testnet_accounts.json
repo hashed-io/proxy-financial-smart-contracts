@@ -34,5 +34,9 @@
     "proxycapperm": {
         "privateKey": "5JcSYGX1nLLCzCvxyribZLevwbo4r31WEFfwoZcgFqwXZws3NhH",
         "publicKey": "EOS8fZiThK85jvnw2omQtzCNit5nZATKKaXwuChJmboRp7ouu184E"
+    },
+    "proxycapbdgt": {
+        "privateKey": "5JBtKsnLz2Ts3xMLR3fRYXLriFFxRj41i6dYDMPuuifaV5MfmSs",
+        "publicKey": "EOS7n46QuH8UbhM3NSpEhyRyPZowgKtfXBHceebBaudgoaM7z3FPt"
     }
 }
