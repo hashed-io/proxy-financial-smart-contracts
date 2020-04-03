@@ -8,7 +8,6 @@
 #include <account_types.hpp>
 #include <account_subtypes.hpp>
 #include <action_names.hpp>
-#include <budget_types.hpp>
 
 using namespace eosio;
 using namespace std;
@@ -21,7 +20,6 @@ CONTRACT accounts : public contract {
         accounts(name receiver, name code, datastream<const char*> ds)
             : contract(receiver, code, ds),
               account_types(receiver, receiver.value),
-              budget_types(receiver, receiver.value),
               projects_table(contract_names::projects, contract_names::projects.value)
               {}
         
@@ -48,30 +46,6 @@ CONTRACT accounts : public contract {
 		ACTION cancelsub (uint64_t project_id, uint64_t account_id, asset amount);
 
 		ACTION deleteaccnts (uint64_t project_id);
-
-        ACTION addbudget ( name actor,
-                           uint64_t project_id,
-                           uint64_t account_id,
-                           asset amount,
-                           uint64_t budget_type_id,
-                           uint64_t date_begin,
-                           uint64_t date_end,
-                           bool modify_parents );
-
-        ACTION editbudget ( name actor,
-                            uint64_t project_id,
-                            uint64_t budget_id,
-                            asset amount,
-                            uint64_t budget_type_id,
-                            uint64_t date_begin,
-                            uint64_t date_end,
-                            bool modify_parents );
-
-        ACTION deletebudget (name actor, uint64_t project_id, uint64_t budget_id, bool modify_parents);
-
-        ACTION rcalcbudgets (name actor, uint64_t project_id, uint64_t account_id, uint64_t date_id);
-
-        ACTION delbdgtsacct (uint64_t project_id, uint64_t account_id);
     
 
     private:
@@ -83,15 +57,6 @@ CONTRACT accounts : public contract {
 			make_pair(ACCOUNT_SUBTYPES.INCOME, ACCOUNT_TYPES.CREDIT),
 			make_pair(ACCOUNT_SUBTYPES.LIABILITIES, ACCOUNT_TYPES.CREDIT)
 		};
-
-        const vector< pair<string, string> > budget_types_v = {
-            make_pair(BUDGET_TYPES.TOTAL, "Total budget of the account"),
-            make_pair(BUDGET_TYPES.ANNUALLY, "Anual budget of the account"),
-            make_pair(BUDGET_TYPES.MONTHLY, "Budget for the month"),
-            make_pair(BUDGET_TYPES.WEEKLY, "Budget for the week"),
-            make_pair(BUDGET_TYPES.DAILY, "Budget for the day"),
-            make_pair(BUDGET_TYPES.CUSTOM, "Budget for a given period of time")
-        };
 
         // scoped by project_id
 		TABLE account_table {
@@ -107,41 +72,6 @@ CONTRACT accounts : public contract {
 			uint64_t primary_key() const { return account_id; }
 			uint64_t by_parent() const { return parent_id; }
 		};
-        
-        // scoped by project_id
-        TABLE budget_table {
-            uint64_t budget_id;
-            uint64_t account_id;
-            asset amount;
-            uint64_t budget_creation;
-            uint64_t budget_update;
-            uint64_t budget_date_id;
-            
-            uint64_t primary_key() const { return budget_id; }
-            uint64_t by_account() const { return account_id; }
-            uint64_t by_date() const { return budget_date_id; }
-        };
-
-        // scoped by project
-        TABLE budget_period_table {
-            uint64_t budget_date_id;
-            uint64_t date_begin;
-            uint64_t date_end;
-            uint64_t budget_type_id;
-
-            uint64_t primary_key() const { return budget_date_id; }
-            uint64_t by_type() const { return budget_type_id; }
-            uint64_t by_begin() const { return date_begin; }
-            uint64_t by_end() const { return date_end; }
-        };
-
-        TABLE budget_type_table {
-            uint64_t budget_type_id;
-            string type_name;
-            string description;
-
-            uint64_t primary_key() const { return budget_type_id; }
-        };
 
         TABLE type_table {
 			uint64_t type_id;
@@ -197,48 +127,14 @@ CONTRACT accounts : public contract {
 			const_mem_fun<account_table, uint64_t, &account_table::by_parent>>
 		> account_tables;
 
-        typedef eosio::multi_index <"budgets"_n, budget_table,
-            indexed_by<"byaccount"_n,
-            const_mem_fun<budget_table, uint64_t, &budget_table::by_account>>,
-            indexed_by<"bydate"_n,
-            const_mem_fun<budget_table, uint64_t, &budget_table::by_date>>
-        > budget_tables;
-
-        typedef eosio::multi_index <"budgetdates"_n, budget_period_table,
-            indexed_by<"bytype"_n,
-            const_mem_fun<budget_period_table, uint64_t, &budget_period_table::by_type>>,
-            indexed_by<"bybegin"_n,
-            const_mem_fun<budget_period_table, uint64_t, &budget_period_table::by_begin>>,
-            indexed_by<"byend"_n,
-            const_mem_fun<budget_period_table, uint64_t, &budget_period_table::by_end>>
-        > budget_period_tables;
-        
-        typedef eosio::multi_index <"budgettypes"_n, budget_type_table> budget_type_tables;
-
         typedef eosio::multi_index <"accnttypes"_n, type_table> type_tables;
 
         typedef eosio::multi_index <"projects"_n, project_table> project_tables;
 
         type_tables account_types;
         project_tables projects_table;
-        budget_type_tables budget_types;
-
 
 		void change_balance (uint64_t project_id, uint64_t account_id, asset amount, bool increase, bool cancel);
-        bool overlap(uint64_t begin, uint64_t end, uint64_t new_begin, uint64_t new_end);
-        bool match (uint64_t begin, uint64_t end, uint64_t new_begin, uint64_t new_end);
-        uint64_t get_id_budget_type (string budget_name);
-        
-        void create_budget_aux ( name actor,
-                                 uint64_t project_id,
-                                 uint64_t account_id,
-                                 asset amount,
-                                 uint64_t budget_type_id,
-                                 uint64_t date_begin,
-                                 uint64_t date_end,
-                                 bool modify_parents );
-
-        void remove_budget_amount (uint64_t project_id, uint64_t budget_id, asset amount);
 };
 
 

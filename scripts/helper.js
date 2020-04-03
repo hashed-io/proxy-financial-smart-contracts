@@ -98,7 +98,8 @@ const accountsMetadata = (network) => {
         transactions: contract('proxycaptrnx', 'transactions'),
         projects: contract('proxycapproj', 'projects'),
         accounts: contract('proxycapacct', 'accounts'),
-        permissions: contract('proxycapperm', 'permissions')
+        permissions: contract('proxycapperm', 'permissions'),
+        budgets: contract('proxycapbdgt', 'budgets')
     }
   } else if (network == networks.telosMainnet) {
     return {
@@ -110,7 +111,8 @@ const accountsMetadata = (network) => {
         transactions: contract('proxycaptrnx', 'transactions'),
         projects: contract('proxycapproj', 'projects'),
         accounts: contract('proxycapacct', 'accounts'),
-        permissions: contract('proxycapperm', 'permissions')
+        permissions: contract('proxycapperm', 'permissions'),
+        budgets: contract('proxycapbdgt', 'budgets')
     }
   } else if (network == networks.telosTestnet) {
     return {
@@ -122,13 +124,13 @@ const accountsMetadata = (network) => {
         transactions: contract('proxycaptrnx', 'transactions'),
         projects: contract('proxycapproj', 'projects'),
         accounts: contract('proxycapacct', 'accounts'),
-        permissions: contract('proxycapperm', 'permissions')
+        permissions: contract('proxycapperm', 'permissions'),
+        budgets: contract('proxycapbdgt', 'budgets')
     }
   } else {
     throw new Error(`${network} deployment not supported`)
   }
 }
-
 
 
 const accounts = accountsMetadata(chainId)
@@ -148,6 +150,9 @@ const permissions = [
 		target: `${accounts.accounts.account}@active`,
 		actor: `${accounts.accounts.account}@eosio.code`
   }, {
+		target: `${accounts.budgets.account}@active`,
+		actor: `${accounts.budgets.account}@eosio.code`
+  }, {
 		target: `${accounts.accounts.account}@active`,
 		actor: `${accounts.projects.account}@active`
   }, {
@@ -162,6 +167,9 @@ const permissions = [
   }, {
 		target: `${accounts.permissions.account}@active`,
 		actor: `${accounts.projects.account}@active`
+  }, {
+		target: `${accounts.budgets.account}@active`,
+		actor: `${accounts.accounts.account}@active`
   }
   
 ]

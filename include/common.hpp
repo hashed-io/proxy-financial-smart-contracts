@@ -15,6 +15,7 @@ namespace contract_names {
     name transactions = "proxycaptrnx"_n;
     name permissions = "proxycapperm"_n;
     name contracts = "proxycapcont"_n;
+    name budgets = "proxycapbdgt"_n;
 }
 
 void check_asset(asset amount, name contract_name) {

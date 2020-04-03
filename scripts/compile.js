@@ -13,7 +13,8 @@ const contracts = [
 	'projects',
 	'accounts',
 	'transactions',
-	'permissions'
+	'permissions',
+	'budgets'
 ].sort()
 
 const command = ({ contract, source, dir }) => {
