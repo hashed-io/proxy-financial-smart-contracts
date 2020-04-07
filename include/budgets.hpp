@@ -109,9 +109,12 @@ CONTRACT budgets : public contract {
 			asset increase_balance;
 			asset decrease_balance;
 			symbol account_symbol;
+            uint64_t ledger_id;
+            string description;
 
 			uint64_t primary_key() const { return account_id; }
 			uint64_t by_parent() const { return parent_id; }
+            uint64_t by_ledger() const { return ledger_id; }
 		};
         
 
@@ -137,7 +140,9 @@ CONTRACT budgets : public contract {
 
         typedef eosio::multi_index <"accounts"_n, account_table,
 			indexed_by<"byparent"_n,
-			const_mem_fun<account_table, uint64_t, &account_table::by_parent>>
+			const_mem_fun<account_table, uint64_t, &account_table::by_parent>>,
+            indexed_by<"byledger"_n,
+            const_mem_fun<account_table, uint64_t, &account_table::by_ledger>>
 		> account_tables;
 
         budget_type_tables budget_types;

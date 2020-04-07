@@ -20,20 +20,25 @@ CONTRACT accounts : public contract {
         accounts(name receiver, name code, datastream<const char*> ds)
             : contract(receiver, code, ds),
               account_types(receiver, receiver.value),
-              projects_table(contract_names::projects, contract_names::projects.value)
+              projects_table(contract_names::projects, contract_names::projects.value),
+              users(contract_names::projects, contract_names::projects.value),
+              entities(contract_names::projects, contract_names::projects.value)
               {}
         
         ACTION reset ();
 
-        ACTION initaccounts (uint64_t project_id);
+        ACTION addledger (uint64_t project_id, uint64_t ledger_id);
+
+        // ACTION initaccounts (uint64_t project_id);
 
         ACTION addaccount ( name actor,
-                            uint64_t project_id, 
-                            string account_name, 
-                            uint64_t parent_id, 
-                            symbol account_currency );
+                            uint64_t project_id,
+                            string account_name,
+                            uint64_t parent_id,
+                            symbol account_currency,
+                            string description );
 
-		ACTION editaccount (name actor, uint64_t project_id, uint64_t account_id, string account_name);
+		ACTION editaccount (name actor, uint64_t project_id, uint64_t account_id, string account_name, string description);
 
 		ACTION deleteaccnt (name actor, uint64_t project_id, uint64_t account_id);
 
@@ -58,6 +63,11 @@ CONTRACT accounts : public contract {
 			make_pair(ACCOUNT_SUBTYPES.LIABILITIES, ACCOUNT_TYPES.CREDIT)
 		};
 
+        const vector <string> ledger_v = {
+            "Developer ledger",
+            "Fund ledger"
+        };
+
         // scoped by project_id
 		TABLE account_table {
 			uint64_t account_id;
@@ -68,9 +78,12 @@ CONTRACT accounts : public contract {
 			asset increase_balance;
 			asset decrease_balance;
 			symbol account_symbol;
+            uint64_t ledger_id;
+            string description;
 
 			uint64_t primary_key() const { return account_id; }
 			uint64_t by_parent() const { return parent_id; }
+            uint64_t by_ledger() const { return ledger_id; }
 		};
 
         TABLE type_table {
@@ -80,6 +93,16 @@ CONTRACT accounts : public contract {
 
 			uint64_t primary_key() const { return type_id; }
 		};
+        
+        // scoped by projects
+        TABLE ledger_table {
+            uint64_t ledger_id;
+            uint64_t entity_id;
+            string description;
+
+            uint64_t primary_key() const { return ledger_id; }
+            uint64_t by_entity() const { return entity_id; }
+        };
 
         // table from projects contract
         TABLE project_table {
@@ -122,17 +145,48 @@ CONTRACT accounts : public contract {
             uint64_t by_status() const { return status; }
 		};
 
+        TABLE user_table {
+            name account;
+            string user_name;
+            uint64_t entity_id;
+            string type;
+
+            uint64_t primary_key() const { return account.value; }
+        };
+
+        TABLE entity_table {
+            uint64_t entity_id;
+            string entity_name;
+            string description;
+            string type;
+
+            uint64_t primary_key() const { return entity_id; }
+        };
+
         typedef eosio::multi_index <"accounts"_n, account_table,
 			indexed_by<"byparent"_n,
-			const_mem_fun<account_table, uint64_t, &account_table::by_parent>>
+			const_mem_fun<account_table, uint64_t, &account_table::by_parent>>,
+            indexed_by<"byledger"_n,
+            const_mem_fun<account_table, uint64_t, &account_table::by_ledger>>
 		> account_tables;
 
         typedef eosio::multi_index <"accnttypes"_n, type_table> type_tables;
 
         typedef eosio::multi_index <"projects"_n, project_table> project_tables;
 
+        typedef eosio::multi_index <"users"_n, user_table> user_tables;
+
+        typedef eosio::multi_index <"entities"_n, entity_table> entity_tables;
+
+        typedef eosio::multi_index <"ledgers"_n, ledger_table,
+            indexed_by<"byentity"_n,
+            const_mem_fun<ledger_table, uint64_t, &ledger_table::by_entity>>
+        > ledger_tables;
+
         type_tables account_types;
         project_tables projects_table;
+        user_tables users;
+        entity_tables entities;
 
 		void change_balance (uint64_t project_id, uint64_t account_id, asset amount, bool increase, bool cancel);
 };

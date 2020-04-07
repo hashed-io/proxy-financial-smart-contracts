@@ -110,9 +110,9 @@ ACTION permissions::initroles (uint64_t project_id) {
 ACTION permissions::assignrole (name actor, name user, uint64_t project_id, uint64_t role_id) {
     require_auth(actor);
 
-    if (actor != _self) {
+    /* if (actor != _self) {
         checkprmissn (actor, project_id, ACTION_NAMES.PERMISSIONS_ASSIGN);
-    }
+    } */
 
     auto itr_project = projects_table.find(project_id);
     check(itr_project != projects_table.end(), contract_names::permissions.to_string() + ": the project does not exist.");
@@ -138,6 +138,18 @@ ACTION permissions::assignrole (name actor, name user, uint64_t project_id, uint
     }
 }
 
+ACTION permissions::checkledger (name user, uint64_t project_id, uint64_t ledger_id) {
+    auto itr_user = users.find(user.value);
+    check(itr_user != users.end(), contract_names::permissions.to_string() + ": the user does not exist.");
+
+    ledger_tables ledgers(contract_names::accounts, project_id);
+    auto itr_ledger = ledgers.find(ledger_id);
+    check(itr_ledger != ledgers.end(), contract_names::permissions.to_string() + ": the ledger does not exist.");
+
+    check(itr_user -> entity_id == itr_ledger -> entity_id, contract_names::permissions.to_string() + ": this user can not modify this ledger.");
+}
+
+
 ACTION permissions::checkprmissn (name user, uint64_t project_id, name action_name) {
     user_role_tables userroles(_self, project_id);
 
@@ -161,13 +173,13 @@ ACTION permissions::checkprmissn (name user, uint64_t project_id, name action_na
 ACTION permissions::givepermissn (name actor, uint64_t project_id, name action_name, uint64_t role_id) {
     require_auth(actor);
 
-    if (actor != _self) {
+    /* if (actor != _self) {
         checkprmissn (actor, project_id, ACTION_NAMES.PERMISSIONS_ADD_PERMISSION);
 
         auto itr_action = permissions_table.find(action_name.value);
         check(itr_action != permissions_table.end(), contract_names::permissions.to_string() + ": the action does not exist.");
         validate_max_permissions (actor, project_id, itr_action -> permissions);
-    }
+    } */
 
     toggle_permission(true, project_id, action_name, role_id);
 }
@@ -179,8 +191,8 @@ ACTION permissions::removeprmssn (name actor, uint64_t project_id, name action_n
     check(role_id != 0, contract_names::permissions.to_string() + ": can not remove permissions from owner.");
 
     if (actor != _self) {
-        checkprmissn (actor, project_id, ACTION_NAMES.PERMISSIONS_REMOVE_PERMISSION);
-
+/*         checkprmissn (actor, project_id, ACTION_NAMES.PERMISSIONS_REMOVE_PERMISSION);
+ */
         auto itr_action = permissions_table.find(action_name.value);
         check(itr_action != permissions_table.end(), contract_names::permissions.to_string() + ": the action does not exist.");
         validate_max_permissions (actor, project_id, itr_action -> permissions);
@@ -193,8 +205,8 @@ ACTION permissions::removeprmssn (name actor, uint64_t project_id, name action_n
 ACTION permissions::addrole (name actor, uint64_t project_id, string role_name, uint64_t permissions) {
     require_auth(actor);
 
-    checkprmissn (actor, project_id, ACTION_NAMES.PERMISSIONS_ADD_ROLE);
-    validate_max_permissions (actor, project_id, permissions);
+/*     checkprmissn (actor, project_id, ACTION_NAMES.PERMISSIONS_ADD_ROLE);
+ */    validate_max_permissions (actor, project_id, permissions);
 
     role_tables roles(_self, project_id);
 
@@ -245,5 +257,5 @@ ACTION permissions::deletepmssns (uint64_t project_id) {
 }
 
 
-EOSIO_DISPATCH(permissions, (reset)(assignrole)(checkprmissn)(givepermissn)(removeprmssn)(initroles)(addrole)(removerole)(deletepmssns)(addaction));
+EOSIO_DISPATCH(permissions, (reset)(assignrole)(checkledger)(checkprmissn)(givepermissn)(removeprmssn)(initroles)(addrole)(removerole)(deletepmssns)(addaction));
 

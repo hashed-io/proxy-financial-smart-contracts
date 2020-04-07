@@ -12,14 +12,14 @@ describe("Proxy Capital Transactions Contract", function (eoslime) {
     // Increase mocha(testing framework) time, otherwise tests fails
     this.timeout(15000);
 
-    let firstuser = eoslime.Account.load(names.firstuser, accounts[names.firstuser].privateKey, 'active')
+    let thirduser = eoslime.Account.load(names.thirduser, accounts[names.thirduser].privateKey, 'active')
     let seconduser = eoslime.Account.load(names.seconduser, accounts[names.seconduser].privateKey, 'active')
     let transactions = eoslime.Account.load(names.transactions, accounts[names.transactions].privateKey, 'active')
     let accountss = eoslime.Account.load(names.accounts, accounts[names.accounts].privateKey, 'active')
     let projects = eoslime.Account.load(names.projects, accounts[names.projects].privateKey, 'active')
     let permissions = eoslime.Account.load(names.permissions, accounts[names.permissions].privateKey, 'active')
 
-    let firstuserContract
+    let thirduserContract
     let seconduserContract
     let transactionsContract
     let accountssContract
@@ -28,7 +28,7 @@ describe("Proxy Capital Transactions Contract", function (eoslime) {
 
     before(async () => {
 
-        firstuserContract = await eoslime.Contract.at(names.transactions, firstuser)
+        thirduserContract = await eoslime.Contract.at(names.transactions, thirduser)
         seconduserContract = await eoslime.Contract.at(names.transactions, seconduser)
         transactionsContract = await eoslime.Contract.at(names.transactions, transactions)
         accountssContract = await eoslime.Contract.at(names.accounts, accountss)
@@ -76,39 +76,39 @@ describe("Proxy Capital Transactions Contract", function (eoslime) {
         let seconduserContractAccounts = await eoslime.Contract.at(names.accounts, seconduser)
 
         // Assets children
-        await seconduserContractAccounts.addaccount(seconduser.name, 0, 'Liquid Primary', 1, currency) // id = 6
-        await seconduserContractAccounts.addaccount(seconduser.name, 0, 'Reserve Account', 1, currency) // id = 7
+        await seconduserContractAccounts.addaccount(seconduser.name, 0, 'Liquid Primary', 1, currency, 'Test description 6')       // id = 11
+        await seconduserContractAccounts.addaccount(seconduser.name, 0, 'Reserve Account', 1, currency, 'Test description 7')      // id = 12
 
         // Equity children
-        await seconduserContractAccounts.addaccount(seconduser.name, 0, 'Investments', 2, currency) // id = 8
-        await seconduserContractAccounts.addaccount(seconduser.name, 0, 'Franklin Johnson', 8, currency) // id = 9
-        await seconduserContractAccounts.addaccount(seconduser.name, 0, 'Michelle Wu', 8, currency) // id = 10
+        await seconduserContractAccounts.addaccount(seconduser.name, 0, 'Investments', 2, currency, 'Test description 8')          // id = 13
+        await seconduserContractAccounts.addaccount(seconduser.name, 0, 'Franklin Johnson', 13, currency, 'Test description 9')     // id = 14
+        await seconduserContractAccounts.addaccount(seconduser.name, 0, 'Michelle Wu', 13, currency, 'Test description 10')         // id = 15
 
         // Expenses children
-        await seconduserContractAccounts.addaccount(seconduser.name, 0, 'Development', 3, currency) // id = 11
-        await seconduserContractAccounts.addaccount(seconduser.name, 0, 'Marketing', 3, currency) // id = 12
-        await seconduserContractAccounts.addaccount(seconduser.name, 0, 'Tech Infrastructure', 3, currency) // id = 13
-        await seconduserContractAccounts.addaccount(seconduser.name, 0, 'Travel', 3, currency) // id = 14
+        await seconduserContractAccounts.addaccount(seconduser.name, 0, 'Development', 3, currency, 'Test description 11')         // id = 16
+        await seconduserContractAccounts.addaccount(seconduser.name, 0, 'Marketing', 3, currency, 'Test description 12')           // id = 17
+        await seconduserContractAccounts.addaccount(seconduser.name, 0, 'Tech Infrastructure', 3, currency, 'Test description 13') // id = 18
+        await seconduserContractAccounts.addaccount(seconduser.name, 0, 'Travel', 3, currency, 'Test description 14')              // id = 19
         
         const amounts1 = [
             {
-                'account_id': 11,
+                'account_id': 16,
                 'amount': 200
             }, {
-                'account_id': 6,
+                'account_id': 11,
                 'amount': -300
             }, {
-                'account_id': 12,
+                'account_id': 17,
                 'amount': 100
             }
         ]
 
         const amounts2 = [
             {
-                'account_id': 10,
+                'account_id': 15,
                 'amount': 4000000
             }, {
-                'account_id': 6,
+                'account_id': 11,
                 'amount': -4000000
             }
         ]
@@ -133,7 +133,9 @@ describe("Proxy Capital Transactions Contract", function (eoslime) {
               account_subtype: 'Assets',
               increase_balance: '0.00 USD',
               decrease_balance: '40003.00 USD',
-              account_symbol: '2,USD'
+              account_symbol: '2,USD',
+              ledger_id: 1,
+              description: '---'
             },
             {
               account_id: 2,
@@ -143,7 +145,9 @@ describe("Proxy Capital Transactions Contract", function (eoslime) {
               account_subtype: 'Equity',
               increase_balance: '40000.00 USD',
               decrease_balance: '0.00 USD',
-              account_symbol: '2,USD'
+              account_symbol: '2,USD',
+              ledger_id: 1,
+              description: '---'
             },
             {
               account_id: 3,
@@ -153,7 +157,9 @@ describe("Proxy Capital Transactions Contract", function (eoslime) {
               account_subtype: 'Expenses',
               increase_balance: '3.00 USD',
               decrease_balance: '0.00 USD',
-              account_symbol: '2,USD'
+              account_symbol: '2,USD',
+              ledger_id: 1,
+              description: '---'
             },
             {
               account_id: 4,
@@ -163,7 +169,9 @@ describe("Proxy Capital Transactions Contract", function (eoslime) {
               account_subtype: 'Income',
               increase_balance: '0.00 USD',
               decrease_balance: '0.00 USD',
-              account_symbol: '2,USD'
+              account_symbol: '2,USD',
+              ledger_id: 1,
+              description: '---'
             },
             {
               account_id: 5,
@@ -173,99 +181,180 @@ describe("Proxy Capital Transactions Contract", function (eoslime) {
               account_subtype: 'Liabilities',
               increase_balance: '0.00 USD',
               decrease_balance: '0.00 USD',
-              account_symbol: '2,USD'
+              account_symbol: '2,USD',
+              ledger_id: 1,
+              description: '---'
             },
             {
               account_id: 6,
+              parent_id: 0,
+              num_children: 0,
+              account_name: 'Assets',
+              account_subtype: 'Assets',
+              increase_balance: '0.00 USD',
+              decrease_balance: '0.00 USD',
+              account_symbol: '2,USD',
+              ledger_id: 2,
+              description: '---'
+            },
+            {
+              account_id: 7,
+              parent_id: 0,
+              num_children: 0,
+              account_name: 'Equity',
+              account_subtype: 'Equity',
+              increase_balance: '0.00 USD',
+              decrease_balance: '0.00 USD',
+              account_symbol: '2,USD',
+              ledger_id: 2,
+              description: '---'
+            },
+            {
+              account_id: 8,
+              parent_id: 0,
+              num_children: 0,
+              account_name: 'Expenses',
+              account_subtype: 'Expenses',
+              increase_balance: '0.00 USD',
+              decrease_balance: '0.00 USD',
+              account_symbol: '2,USD',
+              ledger_id: 2,
+              description: '---'
+            },
+            {
+              account_id: 9,
+              parent_id: 0,
+              num_children: 0,
+              account_name: 'Income',
+              account_subtype: 'Income',
+              increase_balance: '0.00 USD',
+              decrease_balance: '0.00 USD',
+              account_symbol: '2,USD',
+              ledger_id: 2,
+              description: '---'
+            },
+            {
+              account_id: 10,
+              parent_id: 0,
+              num_children: 0,
+              account_name: 'Liabilities',
+              account_subtype: 'Liabilities',
+              increase_balance: '0.00 USD',
+              decrease_balance: '0.00 USD',
+              account_symbol: '2,USD',
+              ledger_id: 2,
+              description: '---'
+            },
+            {
+              account_id: 11,
               parent_id: 1,
               num_children: 0,
               account_name: 'Liquid Primary',
               account_subtype: 'Assets',
               increase_balance: '0.00 USD',
               decrease_balance: '40003.00 USD',
-              account_symbol: '2,USD'
+              account_symbol: '2,USD',
+              ledger_id: 1,
+              description: 'Test description 6'
             },
             {
-              account_id: 7,
+              account_id: 12,
               parent_id: 1,
               num_children: 0,
               account_name: 'Reserve Account',
               account_subtype: 'Assets',
               increase_balance: '0.00 USD',
               decrease_balance: '0.00 USD',
-              account_symbol: '2,USD'
+              account_symbol: '2,USD',
+              ledger_id: 1,
+              description: 'Test description 7'
             },
             {
-              account_id: 8,
+              account_id: 13,
               parent_id: 2,
               num_children: 2,
               account_name: 'Investments',
               account_subtype: 'Equity',
               increase_balance: '40000.00 USD',
               decrease_balance: '0.00 USD',
-              account_symbol: '2,USD'
+              account_symbol: '2,USD',
+              ledger_id: 1,
+              description: 'Test description 8'
             },
             {
-              account_id: 9,
-              parent_id: 8,
+              account_id: 14,
+              parent_id: 13,
               num_children: 0,
               account_name: 'Franklin Johnson',
               account_subtype: 'Equity',
               increase_balance: '0.00 USD',
               decrease_balance: '0.00 USD',
-              account_symbol: '2,USD'
+              account_symbol: '2,USD',
+              ledger_id: 1,
+              description: 'Test description 9'
             },
             {
-              account_id: 10,
-              parent_id: 8,
+              account_id: 15,
+              parent_id: 13,
               num_children: 0,
               account_name: 'Michelle Wu',
               account_subtype: 'Equity',
               increase_balance: '40000.00 USD',
               decrease_balance: '0.00 USD',
-              account_symbol: '2,USD'
+              account_symbol: '2,USD',
+              ledger_id: 1,
+              description: 'Test description 10'
             },
             {
-              account_id: 11,
+              account_id: 16,
               parent_id: 3,
               num_children: 0,
               account_name: 'Development',
               account_subtype: 'Expenses',
               increase_balance: '2.00 USD',
               decrease_balance: '0.00 USD',
-              account_symbol: '2,USD'
+              account_symbol: '2,USD',
+              ledger_id: 1,
+              description: 'Test description 11'
             },
             {
-              account_id: 12,
+              account_id: 17,
               parent_id: 3,
               num_children: 0,
               account_name: 'Marketing',
               account_subtype: 'Expenses',
               increase_balance: '1.00 USD',
               decrease_balance: '0.00 USD',
-              account_symbol: '2,USD'
+              account_symbol: '2,USD',
+              ledger_id: 1,
+              description: 'Test description 12'
             },
             {
-              account_id: 13,
+              account_id: 18,
               parent_id: 3,
               num_children: 0,
               account_name: 'Tech Infrastructure',
               account_subtype: 'Expenses',
               increase_balance: '0.00 USD',
               decrease_balance: '0.00 USD',
-              account_symbol: '2,USD'
+              account_symbol: '2,USD',
+              ledger_id: 1,
+              description: 'Test description 13'
             },
             {
-              account_id: 14,
+              account_id: 19,
               parent_id: 3,
               num_children: 0,
               account_name: 'Travel',
               account_subtype: 'Expenses',
               increase_balance: '0.00 USD',
               decrease_balance: '0.00 USD',
-              account_symbol: '2,USD'
+              account_symbol: '2,USD',
+              ledger_id: 1,
+              description: 'Test description 14'
             }
         ]
+          
 
         const expectedTransactions = [
             {
@@ -293,36 +382,36 @@ describe("Proxy Capital Transactions Contract", function (eoslime) {
         const expectedAccntTransactions = [
             {
               accnt_transaction_id: 0,
-              account_id: 11,
+              account_id: 16,
               transaction_id: 1,
               amount: 200
             },
             {
               accnt_transaction_id: 1,
-              account_id: 6,
+              account_id: 11,
               transaction_id: 1,
               amount: -300
             },
             {
               accnt_transaction_id: 2,
-              account_id: 12,
+              account_id: 17,
               transaction_id: 1,
               amount: 100
             },
             {
               accnt_transaction_id: 3,
-              account_id: 10,
+              account_id: 15,
               transaction_id: 2,
               amount: 4000000
             },
             {
               accnt_transaction_id: 4,
-              account_id: 6,
+              account_id: 11,
               transaction_id: 2,
               amount: -4000000
             }
         ]
-          
+
         assert.deepEqual(accountsTable, expectedAccounts, 'The accounts table is not right.')
         assert.deepEqual(transactionsTable, expectedTransactions, 'The transactions table is not right.')
         assert.deepEqual(accnttransactionsTable, expectedAccntTransactions, 'The accnttrxns table is not right.')
@@ -346,7 +435,9 @@ describe("Proxy Capital Transactions Contract", function (eoslime) {
               account_subtype: 'Assets',
               increase_balance: '0.00 USD',
               decrease_balance: '40000.00 USD',
-              account_symbol: '2,USD'
+              account_symbol: '2,USD',
+              ledger_id: 1,
+              description: '---'
             },
             {
               account_id: 2,
@@ -356,7 +447,9 @@ describe("Proxy Capital Transactions Contract", function (eoslime) {
               account_subtype: 'Equity',
               increase_balance: '40000.00 USD',
               decrease_balance: '0.00 USD',
-              account_symbol: '2,USD'
+              account_symbol: '2,USD',
+              ledger_id: 1,
+              description: '---'
             },
             {
               account_id: 3,
@@ -366,7 +459,9 @@ describe("Proxy Capital Transactions Contract", function (eoslime) {
               account_subtype: 'Expenses',
               increase_balance: '0.00 USD',
               decrease_balance: '0.00 USD',
-              account_symbol: '2,USD'
+              account_symbol: '2,USD',
+              ledger_id: 1,
+              description: '---'
             },
             {
               account_id: 4,
@@ -376,7 +471,9 @@ describe("Proxy Capital Transactions Contract", function (eoslime) {
               account_subtype: 'Income',
               increase_balance: '0.00 USD',
               decrease_balance: '0.00 USD',
-              account_symbol: '2,USD'
+              account_symbol: '2,USD',
+              ledger_id: 1,
+              description: '---'
             },
             {
               account_id: 5,
@@ -386,97 +483,177 @@ describe("Proxy Capital Transactions Contract", function (eoslime) {
               account_subtype: 'Liabilities',
               increase_balance: '0.00 USD',
               decrease_balance: '0.00 USD',
-              account_symbol: '2,USD'
+              account_symbol: '2,USD',
+              ledger_id: 1,
+              description: '---'
             },
             {
               account_id: 6,
+              parent_id: 0,
+              num_children: 0,
+              account_name: 'Assets',
+              account_subtype: 'Assets',
+              increase_balance: '0.00 USD',
+              decrease_balance: '0.00 USD',
+              account_symbol: '2,USD',
+              ledger_id: 2,
+              description: '---'
+            },
+            {
+              account_id: 7,
+              parent_id: 0,
+              num_children: 0,
+              account_name: 'Equity',
+              account_subtype: 'Equity',
+              increase_balance: '0.00 USD',
+              decrease_balance: '0.00 USD',
+              account_symbol: '2,USD',
+              ledger_id: 2,
+              description: '---'
+            },
+            {
+              account_id: 8,
+              parent_id: 0,
+              num_children: 0,
+              account_name: 'Expenses',
+              account_subtype: 'Expenses',
+              increase_balance: '0.00 USD',
+              decrease_balance: '0.00 USD',
+              account_symbol: '2,USD',
+              ledger_id: 2,
+              description: '---'
+            },
+            {
+              account_id: 9,
+              parent_id: 0,
+              num_children: 0,
+              account_name: 'Income',
+              account_subtype: 'Income',
+              increase_balance: '0.00 USD',
+              decrease_balance: '0.00 USD',
+              account_symbol: '2,USD',
+              ledger_id: 2,
+              description: '---'
+            },
+            {
+              account_id: 10,
+              parent_id: 0,
+              num_children: 0,
+              account_name: 'Liabilities',
+              account_subtype: 'Liabilities',
+              increase_balance: '0.00 USD',
+              decrease_balance: '0.00 USD',
+              account_symbol: '2,USD',
+              ledger_id: 2,
+              description: '---'
+            },
+            {
+              account_id: 11,
               parent_id: 1,
               num_children: 0,
               account_name: 'Liquid Primary',
               account_subtype: 'Assets',
               increase_balance: '0.00 USD',
               decrease_balance: '40000.00 USD',
-              account_symbol: '2,USD'
+              account_symbol: '2,USD',
+              ledger_id: 1,
+              description: 'Test description 6'
             },
             {
-              account_id: 7,
+              account_id: 12,
               parent_id: 1,
               num_children: 0,
               account_name: 'Reserve Account',
               account_subtype: 'Assets',
               increase_balance: '0.00 USD',
               decrease_balance: '0.00 USD',
-              account_symbol: '2,USD'
+              account_symbol: '2,USD',
+              ledger_id: 1,
+              description: 'Test description 7'
             },
             {
-              account_id: 8,
+              account_id: 13,
               parent_id: 2,
               num_children: 2,
               account_name: 'Investments',
               account_subtype: 'Equity',
               increase_balance: '40000.00 USD',
               decrease_balance: '0.00 USD',
-              account_symbol: '2,USD'
+              account_symbol: '2,USD',
+              ledger_id: 1,
+              description: 'Test description 8'
             },
             {
-              account_id: 9,
-              parent_id: 8,
+              account_id: 14,
+              parent_id: 13,
               num_children: 0,
               account_name: 'Franklin Johnson',
               account_subtype: 'Equity',
               increase_balance: '0.00 USD',
               decrease_balance: '0.00 USD',
-              account_symbol: '2,USD'
+              account_symbol: '2,USD',
+              ledger_id: 1,
+              description: 'Test description 9'
             },
             {
-              account_id: 10,
-              parent_id: 8,
+              account_id: 15,
+              parent_id: 13,
               num_children: 0,
               account_name: 'Michelle Wu',
               account_subtype: 'Equity',
               increase_balance: '40000.00 USD',
               decrease_balance: '0.00 USD',
-              account_symbol: '2,USD'
+              account_symbol: '2,USD',
+              ledger_id: 1,
+              description: 'Test description 10'
             },
             {
-              account_id: 11,
+              account_id: 16,
               parent_id: 3,
               num_children: 0,
               account_name: 'Development',
               account_subtype: 'Expenses',
               increase_balance: '0.00 USD',
               decrease_balance: '0.00 USD',
-              account_symbol: '2,USD'
+              account_symbol: '2,USD',
+              ledger_id: 1,
+              description: 'Test description 11'
             },
             {
-              account_id: 12,
+              account_id: 17,
               parent_id: 3,
               num_children: 0,
               account_name: 'Marketing',
               account_subtype: 'Expenses',
               increase_balance: '0.00 USD',
               decrease_balance: '0.00 USD',
-              account_symbol: '2,USD'
+              account_symbol: '2,USD',
+              ledger_id: 1,
+              description: 'Test description 12'
             },
             {
-              account_id: 13,
+              account_id: 18,
               parent_id: 3,
               num_children: 0,
               account_name: 'Tech Infrastructure',
               account_subtype: 'Expenses',
               increase_balance: '0.00 USD',
               decrease_balance: '0.00 USD',
-              account_symbol: '2,USD'
+              account_symbol: '2,USD',
+              ledger_id: 1,
+              description: 'Test description 13'
             },
             {
-              account_id: 14,
+              account_id: 19,
               parent_id: 3,
               num_children: 0,
               account_name: 'Travel',
               account_subtype: 'Expenses',
               increase_balance: '0.00 USD',
               decrease_balance: '0.00 USD',
-              account_symbol: '2,USD'
+              account_symbol: '2,USD',
+              ledger_id: 1,
+              description: 'Test description 14'
             }
         ]
           
@@ -498,19 +675,18 @@ describe("Proxy Capital Transactions Contract", function (eoslime) {
         const expectedAccntTransactions = [
             {
               accnt_transaction_id: 3,
-              account_id: 10,
+              account_id: 15,
               transaction_id: 2,
               amount: 4000000
             },
             {
               accnt_transaction_id: 4,
-              account_id: 6,
+              account_id: 11,
               transaction_id: 2,
               amount: -4000000
             }
         ]
-          
-          
+
         assert.deepEqual(accountsTable, expectedAccounts, 'The accounts table is not right.')
         assert.deepEqual(transactionsTable, expectedTransactions, 'The transactions table is not right.')
         assert.deepEqual(accnttransactionsTable, expectedAccntTransactions, 'The accnttrxns table is not right.')
@@ -521,13 +697,13 @@ describe("Proxy Capital Transactions Contract", function (eoslime) {
 
         const amounts = [
             {
-                'account_id': 10,
+                'account_id': 15,
                 'amount': 4500000
             }, {
-                'account_id': 6,
+                'account_id': 11,
                 'amount': -4000000
             }, {
-                'account_id': 7,
+                'account_id': 12,
                 'amount': -500000
             }
         ]
@@ -549,7 +725,9 @@ describe("Proxy Capital Transactions Contract", function (eoslime) {
               account_subtype: 'Assets',
               increase_balance: '0.00 USD',
               decrease_balance: '45000.00 USD',
-              account_symbol: '2,USD'
+              account_symbol: '2,USD',
+              ledger_id: 1,
+              description: '---'
             },
             {
               account_id: 2,
@@ -559,7 +737,9 @@ describe("Proxy Capital Transactions Contract", function (eoslime) {
               account_subtype: 'Equity',
               increase_balance: '45000.00 USD',
               decrease_balance: '0.00 USD',
-              account_symbol: '2,USD'
+              account_symbol: '2,USD',
+              ledger_id: 1,
+              description: '---'
             },
             {
               account_id: 3,
@@ -569,7 +749,9 @@ describe("Proxy Capital Transactions Contract", function (eoslime) {
               account_subtype: 'Expenses',
               increase_balance: '0.00 USD',
               decrease_balance: '0.00 USD',
-              account_symbol: '2,USD'
+              account_symbol: '2,USD',
+              ledger_id: 1,
+              description: '---'
             },
             {
               account_id: 4,
@@ -579,7 +761,9 @@ describe("Proxy Capital Transactions Contract", function (eoslime) {
               account_subtype: 'Income',
               increase_balance: '0.00 USD',
               decrease_balance: '0.00 USD',
-              account_symbol: '2,USD'
+              account_symbol: '2,USD',
+              ledger_id: 1,
+              description: '---'
             },
             {
               account_id: 5,
@@ -589,99 +773,180 @@ describe("Proxy Capital Transactions Contract", function (eoslime) {
               account_subtype: 'Liabilities',
               increase_balance: '0.00 USD',
               decrease_balance: '0.00 USD',
-              account_symbol: '2,USD'
+              account_symbol: '2,USD',
+              ledger_id: 1,
+              description: '---'
             },
             {
               account_id: 6,
+              parent_id: 0,
+              num_children: 0,
+              account_name: 'Assets',
+              account_subtype: 'Assets',
+              increase_balance: '0.00 USD',
+              decrease_balance: '0.00 USD',
+              account_symbol: '2,USD',
+              ledger_id: 2,
+              description: '---'
+            },
+            {
+              account_id: 7,
+              parent_id: 0,
+              num_children: 0,
+              account_name: 'Equity',
+              account_subtype: 'Equity',
+              increase_balance: '0.00 USD',
+              decrease_balance: '0.00 USD',
+              account_symbol: '2,USD',
+              ledger_id: 2,
+              description: '---'
+            },
+            {
+              account_id: 8,
+              parent_id: 0,
+              num_children: 0,
+              account_name: 'Expenses',
+              account_subtype: 'Expenses',
+              increase_balance: '0.00 USD',
+              decrease_balance: '0.00 USD',
+              account_symbol: '2,USD',
+              ledger_id: 2,
+              description: '---'
+            },
+            {
+              account_id: 9,
+              parent_id: 0,
+              num_children: 0,
+              account_name: 'Income',
+              account_subtype: 'Income',
+              increase_balance: '0.00 USD',
+              decrease_balance: '0.00 USD',
+              account_symbol: '2,USD',
+              ledger_id: 2,
+              description: '---'
+            },
+            {
+              account_id: 10,
+              parent_id: 0,
+              num_children: 0,
+              account_name: 'Liabilities',
+              account_subtype: 'Liabilities',
+              increase_balance: '0.00 USD',
+              decrease_balance: '0.00 USD',
+              account_symbol: '2,USD',
+              ledger_id: 2,
+              description: '---'
+            },
+            {
+              account_id: 11,
               parent_id: 1,
               num_children: 0,
               account_name: 'Liquid Primary',
               account_subtype: 'Assets',
               increase_balance: '0.00 USD',
               decrease_balance: '40000.00 USD',
-              account_symbol: '2,USD'
+              account_symbol: '2,USD',
+              ledger_id: 1,
+              description: 'Test description 6'
             },
             {
-              account_id: 7,
+              account_id: 12,
               parent_id: 1,
               num_children: 0,
               account_name: 'Reserve Account',
               account_subtype: 'Assets',
               increase_balance: '0.00 USD',
               decrease_balance: '5000.00 USD',
-              account_symbol: '2,USD'
+              account_symbol: '2,USD',
+              ledger_id: 1,
+              description: 'Test description 7'
             },
             {
-              account_id: 8,
+              account_id: 13,
               parent_id: 2,
               num_children: 2,
               account_name: 'Investments',
               account_subtype: 'Equity',
               increase_balance: '45000.00 USD',
               decrease_balance: '0.00 USD',
-              account_symbol: '2,USD'
+              account_symbol: '2,USD',
+              ledger_id: 1,
+              description: 'Test description 8'
             },
             {
-              account_id: 9,
-              parent_id: 8,
+              account_id: 14,
+              parent_id: 13,
               num_children: 0,
               account_name: 'Franklin Johnson',
               account_subtype: 'Equity',
               increase_balance: '0.00 USD',
               decrease_balance: '0.00 USD',
-              account_symbol: '2,USD'
+              account_symbol: '2,USD',
+              ledger_id: 1,
+              description: 'Test description 9'
             },
             {
-              account_id: 10,
-              parent_id: 8,
+              account_id: 15,
+              parent_id: 13,
               num_children: 0,
               account_name: 'Michelle Wu',
               account_subtype: 'Equity',
               increase_balance: '45000.00 USD',
               decrease_balance: '0.00 USD',
-              account_symbol: '2,USD'
+              account_symbol: '2,USD',
+              ledger_id: 1,
+              description: 'Test description 10'
             },
             {
-              account_id: 11,
+              account_id: 16,
               parent_id: 3,
               num_children: 0,
               account_name: 'Development',
               account_subtype: 'Expenses',
               increase_balance: '0.00 USD',
               decrease_balance: '0.00 USD',
-              account_symbol: '2,USD'
+              account_symbol: '2,USD',
+              ledger_id: 1,
+              description: 'Test description 11'
             },
             {
-              account_id: 12,
+              account_id: 17,
               parent_id: 3,
               num_children: 0,
               account_name: 'Marketing',
               account_subtype: 'Expenses',
               increase_balance: '0.00 USD',
               decrease_balance: '0.00 USD',
-              account_symbol: '2,USD'
+              account_symbol: '2,USD',
+              ledger_id: 1,
+              description: 'Test description 12'
             },
             {
-              account_id: 13,
+              account_id: 18,
               parent_id: 3,
               num_children: 0,
               account_name: 'Tech Infrastructure',
               account_subtype: 'Expenses',
               increase_balance: '0.00 USD',
               decrease_balance: '0.00 USD',
-              account_symbol: '2,USD'
+              account_symbol: '2,USD',
+              ledger_id: 1,
+              description: 'Test description 13'
             },
             {
-              account_id: 14,
+              account_id: 19,
               parent_id: 3,
               num_children: 0,
               account_name: 'Travel',
               account_subtype: 'Expenses',
               increase_balance: '0.00 USD',
               decrease_balance: '0.00 USD',
-              account_symbol: '2,USD'
+              account_symbol: '2,USD',
+              ledger_id: 1,
+              description: 'Test description 14'
             }
         ]
+          
           
 
         const expectedTransactions = [
@@ -701,28 +966,419 @@ describe("Proxy Capital Transactions Contract", function (eoslime) {
         const expectedAccntTransactions = [
             {
               accnt_transaction_id: 0,
-              account_id: 10,
+              account_id: 15,
               transaction_id: 2,
               amount: 4500000
             },
             {
               accnt_transaction_id: 1,
-              account_id: 6,
+              account_id: 11,
               transaction_id: 2,
               amount: -4000000
             },
             {
               accnt_transaction_id: 2,
-              account_id: 7,
+              account_id: 12,
               transaction_id: 2,
               amount: -500000
             }
         ]
-          
+
         assert.deepEqual(accountsTable, expectedAccounts, 'The accounts table is not right.')
         assert.deepEqual(transactionsTable, expectedTransactions, 'The transactions table is not right.')
         assert.deepEqual(accnttransactionsTable, expectedAccntTransactions, 'The accnttrxns table is not right.')
         
+    })
+
+    it('Should transact in another ledger', async () => {
+
+        let thirduserContractAccounts = await eoslime.Contract.at(names.accounts, thirduser)
+
+        await thirduserContractAccounts.addaccount(thirduser.name, 0, 'Income2', 9, currency, 'Test description 14')              // id = 20
+        await thirduserContractAccounts.addaccount(thirduser.name, 0, 'Income3', 9, currency, 'Test description 14')              // id = 21
+        await thirduserContractAccounts.addaccount(thirduser.name, 0, 'Income4', 20, currency, 'Test description 14')              // id = 22
+        await thirduserContractAccounts.addaccount(thirduser.name, 0, 'Liabilities2', 10, currency, 'Test description 14')              // id = 23
+        await thirduserContractAccounts.addaccount(thirduser.name, 0, 'Liabilities3', 10, currency, 'Test description 14')              // id = 24
+
+        const amounts = [
+            {
+                'account_id': 22,
+                'amount': 3500000
+            }, {
+                'account_id': 23,
+                'amount': -3000000
+            }, {
+                'account_id': 21,
+                'amount': -500000
+            }
+        ]
+
+        await thirduserContract.transact(thirduser.name, 0, amounts, 1023020302, "Monthly expenses",
+                                        ['https://docs.telos.kitchen/tO6eoye_Td-76wBz7J3EZQ#','https://docs.telos.kitchen/jJq8d7dwSlCSvj42yZyBGg#'])
+
+
+        const provider = eoslime.Provider
+        let accountsTable = await provider.select('accounts').from(names.accounts).scope('0').limit(40).find()
+        let transactionsTable = await provider.select('transactions').from(names.transactions).scope('0').limit(20).find()
+        let accnttransactionsTable = await provider.select('accnttrx').from(names.transactions).scope('0').limit(20).find()
+
+        const expectedAccounts = [
+            {
+              account_id: 1,
+              parent_id: 0,
+              num_children: 2,
+              account_name: 'Assets',
+              account_subtype: 'Assets',
+              increase_balance: '0.00 USD',
+              decrease_balance: '45000.00 USD',
+              account_symbol: '2,USD',
+              ledger_id: 1,
+              description: '---'
+            },
+            {
+              account_id: 2,
+              parent_id: 0,
+              num_children: 1,
+              account_name: 'Equity',
+              account_subtype: 'Equity',
+              increase_balance: '45000.00 USD',
+              decrease_balance: '0.00 USD',
+              account_symbol: '2,USD',
+              ledger_id: 1,
+              description: '---'
+            },
+            {
+              account_id: 3,
+              parent_id: 0,
+              num_children: 4,
+              account_name: 'Expenses',
+              account_subtype: 'Expenses',
+              increase_balance: '0.00 USD',
+              decrease_balance: '0.00 USD',
+              account_symbol: '2,USD',
+              ledger_id: 1,
+              description: '---'
+            },
+            {
+              account_id: 4,
+              parent_id: 0,
+              num_children: 0,
+              account_name: 'Income',
+              account_subtype: 'Income',
+              increase_balance: '0.00 USD',
+              decrease_balance: '0.00 USD',
+              account_symbol: '2,USD',
+              ledger_id: 1,
+              description: '---'
+            },
+            {
+              account_id: 5,
+              parent_id: 0,
+              num_children: 0,
+              account_name: 'Liabilities',
+              account_subtype: 'Liabilities',
+              increase_balance: '0.00 USD',
+              decrease_balance: '0.00 USD',
+              account_symbol: '2,USD',
+              ledger_id: 1,
+              description: '---'
+            },
+            {
+              account_id: 6,
+              parent_id: 0,
+              num_children: 0,
+              account_name: 'Assets',
+              account_subtype: 'Assets',
+              increase_balance: '0.00 USD',
+              decrease_balance: '0.00 USD',
+              account_symbol: '2,USD',
+              ledger_id: 2,
+              description: '---'
+            },
+            {
+              account_id: 7,
+              parent_id: 0,
+              num_children: 0,
+              account_name: 'Equity',
+              account_subtype: 'Equity',
+              increase_balance: '0.00 USD',
+              decrease_balance: '0.00 USD',
+              account_symbol: '2,USD',
+              ledger_id: 2,
+              description: '---'
+            },
+            {
+              account_id: 8,
+              parent_id: 0,
+              num_children: 0,
+              account_name: 'Expenses',
+              account_subtype: 'Expenses',
+              increase_balance: '0.00 USD',
+              decrease_balance: '0.00 USD',
+              account_symbol: '2,USD',
+              ledger_id: 2,
+              description: '---'
+            },
+            {
+              account_id: 9,
+              parent_id: 0,
+              num_children: 2,
+              account_name: 'Income',
+              account_subtype: 'Income',
+              increase_balance: '35000.00 USD',
+              decrease_balance: '5000.00 USD',
+              account_symbol: '2,USD',
+              ledger_id: 2,
+              description: '---'
+            },
+            {
+              account_id: 10,
+              parent_id: 0,
+              num_children: 2,
+              account_name: 'Liabilities',
+              account_subtype: 'Liabilities',
+              increase_balance: '0.00 USD',
+              decrease_balance: '30000.00 USD',
+              account_symbol: '2,USD',
+              ledger_id: 2,
+              description: '---'
+            },
+            {
+              account_id: 11,
+              parent_id: 1,
+              num_children: 0,
+              account_name: 'Liquid Primary',
+              account_subtype: 'Assets',
+              increase_balance: '0.00 USD',
+              decrease_balance: '40000.00 USD',
+              account_symbol: '2,USD',
+              ledger_id: 1,
+              description: 'Test description 6'
+            },
+            {
+              account_id: 12,
+              parent_id: 1,
+              num_children: 0,
+              account_name: 'Reserve Account',
+              account_subtype: 'Assets',
+              increase_balance: '0.00 USD',
+              decrease_balance: '5000.00 USD',
+              account_symbol: '2,USD',
+              ledger_id: 1,
+              description: 'Test description 7'
+            },
+            {
+              account_id: 13,
+              parent_id: 2,
+              num_children: 2,
+              account_name: 'Investments',
+              account_subtype: 'Equity',
+              increase_balance: '45000.00 USD',
+              decrease_balance: '0.00 USD',
+              account_symbol: '2,USD',
+              ledger_id: 1,
+              description: 'Test description 8'
+            },
+            {
+              account_id: 14,
+              parent_id: 13,
+              num_children: 0,
+              account_name: 'Franklin Johnson',
+              account_subtype: 'Equity',
+              increase_balance: '0.00 USD',
+              decrease_balance: '0.00 USD',
+              account_symbol: '2,USD',
+              ledger_id: 1,
+              description: 'Test description 9'
+            },
+            {
+              account_id: 15,
+              parent_id: 13,
+              num_children: 0,
+              account_name: 'Michelle Wu',
+              account_subtype: 'Equity',
+              increase_balance: '45000.00 USD',
+              decrease_balance: '0.00 USD',
+              account_symbol: '2,USD',
+              ledger_id: 1,
+              description: 'Test description 10'
+            },
+            {
+              account_id: 16,
+              parent_id: 3,
+              num_children: 0,
+              account_name: 'Development',
+              account_subtype: 'Expenses',
+              increase_balance: '0.00 USD',
+              decrease_balance: '0.00 USD',
+              account_symbol: '2,USD',
+              ledger_id: 1,
+              description: 'Test description 11'
+            },
+            {
+              account_id: 17,
+              parent_id: 3,
+              num_children: 0,
+              account_name: 'Marketing',
+              account_subtype: 'Expenses',
+              increase_balance: '0.00 USD',
+              decrease_balance: '0.00 USD',
+              account_symbol: '2,USD',
+              ledger_id: 1,
+              description: 'Test description 12'
+            },
+            {
+              account_id: 18,
+              parent_id: 3,
+              num_children: 0,
+              account_name: 'Tech Infrastructure',
+              account_subtype: 'Expenses',
+              increase_balance: '0.00 USD',
+              decrease_balance: '0.00 USD',
+              account_symbol: '2,USD',
+              ledger_id: 1,
+              description: 'Test description 13'
+            },
+            {
+              account_id: 19,
+              parent_id: 3,
+              num_children: 0,
+              account_name: 'Travel',
+              account_subtype: 'Expenses',
+              increase_balance: '0.00 USD',
+              decrease_balance: '0.00 USD',
+              account_symbol: '2,USD',
+              ledger_id: 1,
+              description: 'Test description 14'
+            },
+            {
+              account_id: 20,
+              parent_id: 9,
+              num_children: 1,
+              account_name: 'Income2',
+              account_subtype: 'Income',
+              increase_balance: '35000.00 USD',
+              decrease_balance: '0.00 USD',
+              account_symbol: '2,USD',
+              ledger_id: 2,
+              description: 'Test description 14'
+            },
+            {
+              account_id: 21,
+              parent_id: 9,
+              num_children: 0,
+              account_name: 'Income3',
+              account_subtype: 'Income',
+              increase_balance: '0.00 USD',
+              decrease_balance: '5000.00 USD',
+              account_symbol: '2,USD',
+              ledger_id: 2,
+              description: 'Test description 14'
+            },
+            {
+              account_id: 22,
+              parent_id: 20,
+              num_children: 0,
+              account_name: 'Income4',
+              account_subtype: 'Income',
+              increase_balance: '35000.00 USD',
+              decrease_balance: '0.00 USD',
+              account_symbol: '2,USD',
+              ledger_id: 2,
+              description: 'Test description 14'
+            },
+            {
+              account_id: 23,
+              parent_id: 10,
+              num_children: 0,
+              account_name: 'Liabilities2',
+              account_subtype: 'Liabilities',
+              increase_balance: '0.00 USD',
+              decrease_balance: '30000.00 USD',
+              account_symbol: '2,USD',
+              ledger_id: 2,
+              description: 'Test description 14'
+            },
+            {
+              account_id: 24,
+              parent_id: 10,
+              num_children: 0,
+              account_name: 'Liabilities3',
+              account_subtype: 'Liabilities',
+              increase_balance: '0.00 USD',
+              decrease_balance: '0.00 USD',
+              account_symbol: '2,USD',
+              ledger_id: 2,
+              description: 'Test description 14'
+            }
+        ]
+
+        const expectedTransactions = [
+            {
+              transaction_id: 2,
+              actor: 'builderuser1',
+              timestamp: 1023020304,
+              description: 'Investment Remastered',
+              supporting_urls: [
+                'https://docs.telos.kitchen-2/tO6eoye_Td-76wBz7J3EZQ#',
+                'https://docs.telos.kitchen-2r/jJq8d7dwSlCSvj42yZyBGg#'
+              ]
+            },
+            {
+              transaction_id: 3,
+              actor: 'proxyadmin11',
+              timestamp: 1023020302,
+              description: 'Monthly expenses',
+              supporting_urls: [
+                'https://docs.telos.kitchen/tO6eoye_Td-76wBz7J3EZQ#',
+                'https://docs.telos.kitchen/jJq8d7dwSlCSvj42yZyBGg#'
+              ]
+            }
+        ]
+        
+        const expectedAccntTransactions = [
+            {
+              accnt_transaction_id: 0,
+              account_id: 15,
+              transaction_id: 2,
+              amount: 4500000
+            },
+            {
+              accnt_transaction_id: 1,
+              account_id: 11,
+              transaction_id: 2,
+              amount: -4000000
+            },
+            {
+              accnt_transaction_id: 2,
+              account_id: 12,
+              transaction_id: 2,
+              amount: -500000
+            },
+            {
+              accnt_transaction_id: 3,
+              account_id: 22,
+              transaction_id: 3,
+              amount: 3500000
+            },
+            {
+              accnt_transaction_id: 4,
+              account_id: 23,
+              transaction_id: 3,
+              amount: -3000000
+            },
+            {
+              accnt_transaction_id: 5,
+              account_id: 21,
+              transaction_id: 3,
+              amount: -500000
+            }
+        ]
+
+        assert.deepEqual(accountsTable, expectedAccounts, 'The accounts table is not right.')
+        assert.deepEqual(transactionsTable, expectedTransactions, 'The transactions table is not right.')
+        assert.deepEqual(accnttransactionsTable, expectedAccntTransactions, 'The accnttrxns table is not right.')
+
     })
 
 })

@@ -1,9 +1,9 @@
 #include <transactions.hpp>
 
 
-void transactions::make_transaction ( name & actor,
+void transactions::make_transaction ( name actor,
 									  uint64_t transaction_id,
-									  uint64_t & project_id, 
+									  uint64_t project_id, 
 									  vector<transaction_amount> & amounts,
 									  uint64_t & date,
 									  string & description,
@@ -17,6 +17,7 @@ void transactions::make_transaction ( name & actor,
 	auto itr_amounts = amounts.begin();
 	uint64_t trx_id = 0;
 	int64_t total = 0;
+	uint64_t ledger_id = 0;
 	name action_accnt;
 
 	if (transaction_id == 0) {
@@ -29,6 +30,11 @@ void transactions::make_transaction ( name & actor,
 	while (itr_amounts != amounts.end()) {
 		auto itr_account = accounts.find(itr_amounts -> account_id);
 		check(itr_account != accounts.end(), contract_names::transactions.to_string() + ": the account does not exist.");
+
+		if (ledger_id != itr_account -> ledger_id) {
+			check(ledger_id == 0, contract_names::transactions.to_string() + ": can not edit diferent ledgers in the same transaction.");
+			ledger_id = itr_account -> ledger_id;
+		}
 
 		accnttrxns.emplace(_self, [&](auto & atrx){
 			atrx.accnt_transaction_id = accnttrxns.available_primary_key();
@@ -55,6 +61,15 @@ void transactions::make_transaction ( name & actor,
 		itr_amounts++;
 	}
 
+	check(ledger_id > 0, contract_names::transactions.to_string() + ": no ledger will be modified.");
+
+	action (
+		permission_level(contract_names::permissions, "active"_n),
+		contract_names::permissions,
+		"checkledger"_n,
+		std::make_tuple(actor, project_id, ledger_id)
+	).send();
+
 	check(total == 0, contract_names::transactions.to_string() + ": the transaction total balance must be zero.");
 
 	transactions.emplace(_self, [&](auto & new_transaction){
@@ -70,7 +85,7 @@ void transactions::make_transaction ( name & actor,
 	
 }
 
-void transactions::delete_transaction (uint64_t project_id, uint64_t transaction_id) {
+void transactions::delete_transaction (name actor, uint64_t project_id, uint64_t transaction_id) {
 
 	transaction_tables transactions(_self, project_id);
 	account_transaction_tables accnttrxns(_self, project_id);
@@ -80,7 +95,21 @@ void transactions::delete_transaction (uint64_t project_id, uint64_t transaction
 
 	auto accnttrxns_by_transactions = accnttrxns.get_index<"bytrxns"_n>();
 	auto itr_amount = accnttrxns_by_transactions.begin();
+	uint64_t ledger_id = 0;
 	name action_cancel_amount;
+
+	if (itr_amount != accnttrxns_by_transactions.end()) {
+		account_tables accounts(contract_names::accounts, project_id);
+		auto itr_account = accounts.find(itr_amount -> account_id);
+		ledger_id = itr_account -> ledger_id;
+	}
+
+	action (
+		permission_level(contract_names::permissions, "active"_n),
+		contract_names::permissions,
+		"checkledger"_n,
+		std::make_tuple(actor, project_id, ledger_id)
+	).send();
 
 	while (itr_amount != accnttrxns_by_transactions.end() &&
 		   itr_amount -> transaction_id == transaction_id) {
@@ -138,12 +167,12 @@ ACTION transactions::transact ( name actor,
 
 	require_auth(actor);
 
-	action (
+	/* action (
         permission_level(contract_names::permissions, "active"_n),
         contract_names::permissions,
         "checkprmissn"_n,
         std::make_tuple(actor, project_id, ACTION_NAMES.TRANSACTIONS_ADD)
-    ).send();
+    ).send(); */
 
 	auto itr_project = projects.find(project_id);
 	check(itr_project != projects.end(), contract_names::transactions.to_string() + ": the project with the id = " + to_string(project_id) + " does not exist.");
@@ -154,14 +183,14 @@ ACTION transactions::transact ( name actor,
 ACTION transactions::deletetrxn (name actor, uint64_t project_id, uint64_t transaction_id) {
 	require_auth(actor);
 
-	action (
+	/* action (
         permission_level(contract_names::permissions, "active"_n),
         contract_names::permissions,
         "checkprmissn"_n,
         std::make_tuple(actor, project_id, ACTION_NAMES.TRANSACTIONS_REMOVE)
-    ).send();
+    ).send(); */
 
-	delete_transaction(project_id, transaction_id);
+	delete_transaction(actor, project_id, transaction_id);
 }
 
 ACTION transactions::edittrxn ( name actor, 
@@ -174,12 +203,12 @@ ACTION transactions::edittrxn ( name actor,
 	
 	require_auth(actor);
 
-	action (
+	/* action (
         permission_level(contract_names::permissions, "active"_n),
         contract_names::permissions,
         "checkprmissn"_n,
         std::make_tuple(actor, project_id, ACTION_NAMES.TRANSACTIONS_EDIT)
-    ).send();
+    ).send(); */
 
 	auto itr_project = projects.find(project_id);
 	check(itr_project != projects.end(), contract_names::transactions.to_string() + ": the project with the id = " + to_string(project_id) + " does not exist.");
@@ -189,7 +218,7 @@ ACTION transactions::edittrxn ( name actor,
 	auto itr_trxn = transactions.find(transaction_id);
 	check(itr_trxn != transactions.end(), contract_names::transactions.to_string() + ": the transaction does not exist.");
 
-	delete_transaction(project_id, transaction_id);
+	delete_transaction(actor, project_id, transaction_id);
 	make_transaction(actor, transaction_id, project_id, amounts, date, description, supporting_urls);
 }
 

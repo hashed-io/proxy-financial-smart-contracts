@@ -3,13 +3,13 @@
 
 using namespace std;
 
-class UserTypes {
+class EntityTypes {
     public:
         const string INVESTOR = "Investor";
         const string DEVELOPER = "Developer";
         const string FUND = "Fund";
 
-        UserTypes () {
+        EntityTypes () {
             constants.insert(INVESTOR);
             constants.insert(DEVELOPER);
             constants.insert(FUND);
@@ -21,4 +21,4 @@ class UserTypes {
         }
     private:
         set<string> constants;
-} USER_TYPES;
+} ENTITY_TYPES;

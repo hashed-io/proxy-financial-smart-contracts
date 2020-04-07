@@ -8,7 +8,7 @@
 #include <account_types.hpp>
 #include <account_subtypes.hpp>
 #include <project_status.hpp>
-#include <user_types.hpp>
+#include <entity_types.hpp>
 #include <investment_status.hpp>
 #include <project_class.hpp>
 #include <transfer_status.hpp>
@@ -25,9 +25,7 @@ CONTRACT projects : public contract {
             : contract(receiver, code, ds),
               projects_table(receiver, receiver.value),
               users(receiver, receiver.value),
-              investors(receiver, receiver.value),
-              developers(receiver, receiver.value),
-              funds(receiver, receiver.value),
+              entities(receiver, receiver.value),
               investments(receiver, receiver.value),
               transfers(receiver, receiver.value)
               {}
@@ -79,7 +77,9 @@ CONTRACT projects : public contract {
 
         ACTION checkuserdev (name user);
 
-        ACTION addtestuser (name user, string user_name, string type);
+        ACTION addtestuser (name user, string user_name, uint64_t entity_id);
+
+        ACTION addentity (name actor, string entity_name, string description, string type);
 
         ACTION approveprjct ( name actor, 
 							  uint64_t project_id, 
@@ -170,29 +170,16 @@ CONTRACT projects : public contract {
             string type;
 
             uint64_t primary_key() const { return account.value; }
+            uint64_t by_entity() const { return entity_id; }
         };
 
-        TABLE investor_table {
-            uint64_t investor_id;
+        TABLE entity_table {
+            uint64_t entity_id;
+            string entity_name;
             string description;
+            string type;
 
-            uint64_t primary_key() const { return investor_id; }
-        };
-
-        TABLE developer_table {
-            uint64_t developer_id;
-            string developer_name;
-            string description;
-
-            uint64_t primary_key() const { return developer_id; }
-        };
-
-        TABLE fund_table {
-            uint64_t fund_id;
-            string fund_name;
-            string description;
-
-            uint64_t primary_key() const { return fund_id; }
+            uint64_t primary_key() const { return entity_id; }
         };
 
         TABLE investment_table {
@@ -249,13 +236,12 @@ CONTRACT projects : public contract {
             const_mem_fun<project_table, uint64_t, &project_table::by_status>>
         > project_tables;
 
-        typedef eosio::multi_index <"users"_n, user_table> user_tables;
+        typedef eosio::multi_index <"users"_n, user_table,
+            indexed_by<"byentity"_n,
+            const_mem_fun<user_table, uint64_t, &user_table::by_entity>>
+        > user_tables;
 
-        typedef eosio::multi_index <"investors"_n, investor_table> investor_tables;
-
-        typedef eosio::multi_index <"developers"_n, developer_table> developer_tables;
-
-        typedef eosio::multi_index <"funds"_n, fund_table> fund_tables;
+        typedef eosio::multi_index <"entities"_n, entity_table> entity_tables;
 
         typedef eosio::multi_index <"investments"_n, investment_table,
             indexed_by<"byuser"_n,
@@ -276,9 +262,7 @@ CONTRACT projects : public contract {
 
         project_tables projects_table;
         user_tables users;
-        investor_tables investors;
-        developer_tables developers;
-        fund_tables funds;
+        entity_tables entities;
         investment_tables investments;
         fund_transfer_tables transfers;
 

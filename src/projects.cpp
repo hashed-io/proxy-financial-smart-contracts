@@ -23,26 +23,16 @@ void projects::delete_transfer_aux (uint64_t transfer_id) {
 }
 
 ACTION projects::reset () {
-    require_auth(_self);
+	require_auth(_self);
 
-    auto itr_p = projects_table.begin();
+	auto itr_p = projects_table.begin();
 	while (itr_p != projects_table.end()) {
 		itr_p = projects_table.erase(itr_p);
 	}
 
-	auto itr_investor = investors.begin();
-	while (itr_investor != investors.end()) {
-		itr_investor = investors.erase(itr_investor);
-	}
-
-	auto itr_developer = developers.begin();
-	while (itr_developer != developers.end()) {
-		itr_developer = developers.erase(itr_developer);
-	}
-
-	auto itr_fund = funds.begin();
-	while (itr_fund != funds.end()) {
-		itr_fund = funds.erase(itr_fund);
+	auto itr_e = entities.begin();
+	while (itr_e != entities.end()) {
+		itr_e = entities.erase(itr_e);
 	}
 
 	auto itr_investment = investments.begin();
@@ -69,48 +59,62 @@ ACTION projects::resetusers () {
 	while (itr_users != users.end()) {
 		itr_users = users.erase(itr_users);
 	}
-	// hardcoding some users for testnet
-	addtestuser("investoruser"_n, "James Smith", USER_TYPES.INVESTOR);
-	addtestuser("investorusr2"_n, "Sally Fields", USER_TYPES.INVESTOR);
-	addtestuser("builderuser1"_n, "Mary Williams", USER_TYPES.DEVELOPER);
-	addtestuser("proxyadmin11"_n, "John Miller", USER_TYPES.FUND);
+	// hardcoding some entities and users for testnet
+	addentity(_self, "Proxy Capital", "A test entity for Proxy Capital", ENTITY_TYPES.FUND);
+	addentity(_self, "Investor Entity 1", "A test entity for investors", ENTITY_TYPES.INVESTOR);
+	addentity(_self, "Investor Entity 2", "A test entity for investors", ENTITY_TYPES.INVESTOR);
+	addentity(_self, "Developer Entity 1", "A test entity for developer", ENTITY_TYPES.DEVELOPER);
+
+	uint64_t entity_id = 1;
+
+	addtestuser("proxyadmin11"_n, "John Miller", entity_id);
+	addtestuser("investoruser"_n, "James Smith", entity_id + 1);
+	addtestuser("investorusr2"_n, "Sally Fields", entity_id + 2);
+	addtestuser("builderuser1"_n, "Mary Williams", entity_id + 3);
 }
 
-ACTION projects::addtestuser (name user, string user_name, string type) {
-	uint64_t entity_id = 0;
+// who can do this?
+ACTION projects::addentity (name actor, string entity_name, string description, string type) {
+	require_auth(actor);
 
-	if (type == USER_TYPES.INVESTOR) {
-		entity_id = investors.available_primary_key();
-		investors.emplace(_self, [&](auto & new_investor){
-			new_investor.investor_id = entity_id;
-			new_investor.description = "Test description for investor " + user_name;
-		});
-	} else if (type == USER_TYPES.DEVELOPER) {
-		entity_id = developers.available_primary_key();
-		developers.emplace(_self, [&](auto & new_developer){
-			new_developer.developer_id = entity_id;
-			new_developer.developer_name = "Developer" + std::to_string(entity_id);
-			new_developer.description = "Test decription for developer " + user_name;
-		});
-	} else if (type == USER_TYPES.FUND) {
-		entity_id = funds.available_primary_key(),
-		funds.emplace(_self, [&](auto & new_fund){
-			new_fund.fund_id = entity_id;
-			new_fund.fund_name = "Fund" + std::to_string(entity_id);
-			new_fund.description = "Test description for fund " + user_name;
-		});
+	// ============================== //
+	// = check permissions here ??? = //
+	// ============================== //
+
+	auto itr_entity = entities.begin();
+	while (itr_entity != entities.end()) {
+		check(itr_entity -> entity_name != entity_name, contract_names::projects.to_string() + ": there is already an entity using that name.");
+		itr_entity++;
 	}
+
+	check(ENTITY_TYPES.is_valid_constant(type), contract_names::projects.to_string() + ": the type is not valid.");
+
+	uint64_t entity_id = entities.available_primary_key();
+	entity_id = (entity_id > 0) ? entity_id : 1;
+
+	entities.emplace(_self, [&](auto & new_entity){
+		new_entity.entity_id = entity_id;
+		new_entity.entity_name = entity_name;
+		new_entity.description = description;
+		new_entity.type = type;
+	});
+}
+
+
+ACTION projects::addtestuser (name user, string user_name, uint64_t entity_id) {
+	auto itr_entity = entities.find(entity_id);
+	check(itr_entity != entities.end(), contract_names::projects.to_string() + ": entity does not exist.");
 
 	users.emplace(_self, [&](auto & new_user){
 		new_user.account = user;
 		new_user.user_name = user_name;
-		new_user.type = type;
+		new_user.type = itr_entity -> type;
 		new_user.entity_id = entity_id;
 	});
 }
 
 ACTION projects::checkuserdev (name user) {
-	checkusrtype(user, USER_TYPES.DEVELOPER);
+	checkusrtype(user, ENTITY_TYPES.DEVELOPER);
 }
 
 ACTION projects::addproject ( name actor,
@@ -154,6 +158,12 @@ ACTION projects::addproject ( name actor,
 
     uint64_t new_project_id = projects_table.available_primary_key();
 	uint64_t role_id = 0; // the owner is always the index 0
+	uint64_t proxycap_entity_id = 1;
+
+	auto itr_usr = users.find(actor.value);
+	auto users_by_entity = users.get_index<"byentity"_n>();
+	auto itr_proxy_user = users_by_entity.find(proxycap_entity_id);
+	check(itr_proxy_user != users_by_entity.end(), contract_names::projects.to_string() + ": proxy cap user not found.");
 
 	projects_table.emplace(_self, [&](auto & new_project) {
 		
@@ -187,8 +197,15 @@ ACTION projects::addproject ( name actor,
     action (
         permission_level(contract_names::accounts, "active"_n),
         contract_names::accounts,
-        "initaccounts"_n,
-        std::make_tuple(new_project_id)
+        "addledger"_n,
+        std::make_tuple(new_project_id, itr_usr -> entity_id)
+    ).send();
+
+	action (
+        permission_level(contract_names::accounts, "active"_n),
+        contract_names::accounts,
+        "addledger"_n,
+        std::make_tuple(new_project_id, proxycap_entity_id)
     ).send();
 
 	action (
@@ -203,6 +220,13 @@ ACTION projects::addproject ( name actor,
 		contract_names::permissions,
 		"assignrole"_n,
 		std::make_tuple(contract_names::permissions, actor, new_project_id, role_id)
+	).send();
+
+	action (
+		permission_level(contract_names::permissions, "active"_n),
+		contract_names::permissions,
+		"assignrole"_n,
+		std::make_tuple(contract_names::permissions, itr_proxy_user -> account, new_project_id, role_id)
 	).send();
 }
 
@@ -321,7 +345,7 @@ ACTION projects::approveprjct ( name actor,
 	check_asset(total_fund_offering_amount, contract_names::projects);
 	check_asset(price_per_fund_unit, contract_names::projects);
 
-	checkusrtype(actor, USER_TYPES.FUND);
+	checkusrtype(actor, ENTITY_TYPES.FUND);
 
 	auto itr_project = projects_table.find(project_id);
 	check(itr_project != projects_table.end(), contract_names::projects.to_string() + ": the project does not exist.");
@@ -350,7 +374,7 @@ ACTION projects::invest ( name actor,
 
 	check_asset(total_investment_amount, contract_names::projects);
 
-	checkusrtype(actor, USER_TYPES.INVESTOR);
+	checkusrtype(actor, ENTITY_TYPES.INVESTOR);
 
 	auto itr_project = projects_table.find(project_id);
 	check(itr_project != projects_table.end(), contract_names::projects.to_string() + ": the project does not exist.");
@@ -421,7 +445,7 @@ ACTION projects::deleteinvest (name actor, uint64_t investment_id) {
 ACTION projects::approveinvst (name actor, uint64_t investment_id) {
 	require_auth(actor);
 
-	checkusrtype(actor, USER_TYPES.FUND);
+	checkusrtype(actor, ENTITY_TYPES.FUND);
 
 	auto itr_investment = investments.find(investment_id);
 	check(itr_investment != investments.end(), contract_names::projects.to_string() + ": the investment does not exist.");
@@ -437,7 +461,7 @@ ACTION projects::approveinvst (name actor, uint64_t investment_id) {
 ACTION projects::maketransfer (name actor, asset amount, uint64_t investment_id, string proof_of_transfer, uint64_t transfer_date) {
 	require_auth(actor);
 
-	checkusrtype(actor, USER_TYPES.INVESTOR);
+	checkusrtype(actor, ENTITY_TYPES.INVESTOR);
 	check_asset(amount, contract_names::projects);
 
 	auto itr_investment = investments.find(investment_id);
@@ -519,7 +543,7 @@ ACTION projects::deletetrnsfr (name actor, uint64_t transfer_id) {
 ACTION projects::confrmtrnsfr (name actor, uint64_t transfer_id, string proof_of_transfer) {
 	require_auth(actor);
 
-	checkusrtype(actor, USER_TYPES.FUND);
+	checkusrtype(actor, ENTITY_TYPES.FUND);
 
 	auto itr_transfer = transfers.find(transfer_id);
 	check(itr_transfer != transfers.end(), contract_names::projects.to_string() + ": the transfer does not exist.");
@@ -560,7 +584,7 @@ ACTION projects::confrmtrnsfr (name actor, uint64_t transfer_id, string proof_of
 
 
 
-EOSIO_DISPATCH(projects, (reset)(resetusers)(addproject)(approveprjct)(addtestuser)(invest)(approveinvst)(maketransfer)(editproject)(deleteprojct)(deleteinvest)(editinvest)(confrmtrnsfr)(edittransfer)(deletetrnsfr));
+EOSIO_DISPATCH(projects, (reset)(resetusers)(addproject)(approveprjct)(addentity)(addtestuser)(invest)(approveinvst)(maketransfer)(editproject)(deleteprojct)(deleteinvest)(editinvest)(confrmtrnsfr)(edittransfer)(deletetrnsfr));
 
 
 

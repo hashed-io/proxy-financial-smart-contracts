@@ -73,41 +73,41 @@ describe("Proxy Capital Accounts Contract", function (eoslime) {
         )
 
         // Assets children
-        await seconduserContractAccounts.addaccount(seconduser.name, 0, 'Liquid Primary', 1, currency)      // id = 6
-        await seconduserContractAccounts.addaccount(seconduser.name, 0, 'Reserve Account', 1, currency)     // id = 7
+        await seconduserContractAccounts.addaccount(seconduser.name, 0, 'Liquid Primary', 1, currency, 'Test description 6')      // id = 11
+        await seconduserContractAccounts.addaccount(seconduser.name, 0, 'Reserve Account', 1, currency, 'Test description 7')     // id = 12
 
         // Equity children
-        await seconduserContractAccounts.addaccount(seconduser.name, 0, 'Investments', 2, currency)         // id = 8
-        await seconduserContractAccounts.addaccount(seconduser.name, 0, 'Franklin Johnson', 8, currency)    // id = 9
-        await seconduserContractAccounts.addaccount(seconduser.name, 0, 'Michelle Wu', 8, currency)         // id = 10
+        await seconduserContractAccounts.addaccount(seconduser.name, 0, 'Investments', 2, currency, 'Test description 8')         // id = 13
+        await seconduserContractAccounts.addaccount(seconduser.name, 0, 'Franklin Johnson', 8, currency, 'Test description 9')    // id = 14
+        await seconduserContractAccounts.addaccount(seconduser.name, 0, 'Michelle Wu', 8, currency, 'Test description 10')         // id = 15
 
         // Expenses children
-        await seconduserContractAccounts.addaccount(seconduser.name, 0, 'Development', 3, currency)         // id = 11
-        await seconduserContractAccounts.addaccount(seconduser.name, 0, 'Marketing', 3, currency)           // id = 12
-        await seconduserContractAccounts.addaccount(seconduser.name, 0, 'Tech Infrastructure', 3, currency) // id = 13
-        await seconduserContractAccounts.addaccount(seconduser.name, 0, 'Travel', 3, currency)              // id = 14
+        await seconduserContractAccounts.addaccount(seconduser.name, 0, 'Development', 3, currency, 'Test description 11')         // id = 16
+        await seconduserContractAccounts.addaccount(seconduser.name, 0, 'Marketing', 3, currency, 'Test description 12')           // id = 17
+        await seconduserContractAccounts.addaccount(seconduser.name, 0, 'Tech Infrastructure', 3, currency, 'Test description 13') // id = 18
+        await seconduserContractAccounts.addaccount(seconduser.name, 0, 'Travel', 3, currency, 'Test description 14')              // id = 19
 
       // travel children
-      await seconduserContractAccounts.addaccount(seconduser.name, 0, 'Flights', 14, currency)  // id = 15
-      await seconduserContractAccounts.addaccount(seconduser.name, 0, 'Bus', 14, currency)      // id = 16
-      await seconduserContractAccounts.addaccount(seconduser.name, 0, 'Taxis', 14, currency)    // id = 17
+      await seconduserContractAccounts.addaccount(seconduser.name, 0, 'Flights', 19, currency, '---')  // id = 20
+      await seconduserContractAccounts.addaccount(seconduser.name, 0, 'Bus', 19, currency, '---')      // id = 21
+      await seconduserContractAccounts.addaccount(seconduser.name, 0, 'Taxis', 19, currency, '---')    // id = 22
 
-      await seconduserContract.addbudget(seconduser.name, 0, 17, "300.00 USD", 1, 1585762692, 1588354692, 1)
-      await seconduserContract.addbudget(seconduser.name, 0, 16, "200.00 USD", 1, 1585762692, 1588354692, 1)
+      await seconduserContract.addbudget(seconduser.name, 0, 22, "300.00 USD", 1, 1585762692, 1588354692, 1)
+      await seconduserContract.addbudget(seconduser.name, 0, 21, "200.00 USD", 1, 1585762692, 1588354692, 1)
 
       try {
-        await seconduserContract.addbudget(seconduser.name, 0, 15, "700.00 USD", 1, 1585762692, 1588354692, 0)
+        await seconduserContract.addbudget(seconduser.name, 0, 20, "700.00 USD", 1, 1585762692, 1588354692, 0)
       } catch (err) {
-        assert.deepEqual(getError(err), 'proxycapbdgt: the child can not have more budget than its parent, account_id = 15 parent_budget = 500.00 USD.', 'Something else went wrong.')
+        assert.deepEqual(getError(err), 'proxycapbdgt: the child can not have more budget than its parent, account_id = 20 parent_budget = 500.00 USD.', 'Something else went wrong.')
       }
 
-      await seconduserContractAccounts.addaccount(seconduser.name, 0, 'Backend', 11, currency)    // id = 18
-      await seconduserContractAccounts.addaccount(seconduser.name, 0, 'Frontend', 11, currency)   // id = 19
+      await seconduserContractAccounts.addaccount(seconduser.name, 0, 'Backend', 16, currency, '---')    // id = 23
+      await seconduserContractAccounts.addaccount(seconduser.name, 0, 'Frontend', 16, currency, '---')   // id = 24
 
-      await seconduserContract.addbudget(seconduser.name, 0, 18, "200.00 USD", 1, 1585762692, 1588354692, 0)
-      await seconduserContract.addbudget(seconduser.name, 0, 19, "200.00 USD", 1, 1585762692, 1588354692, 0)
+      await seconduserContract.addbudget(seconduser.name, 0, 23, "200.00 USD", 1, 1585762692, 1588354692, 0)
+      await seconduserContract.addbudget(seconduser.name, 0, 24, "200.00 USD", 1, 1585762692, 1588354692, 0)
 
-      await seconduserContract.addbudget(seconduser.name, 0, 11, "350.00 USD", 1, 1585762692, 1588354692, 1)
+      await seconduserContract.addbudget(seconduser.name, 0, 16, "350.00 USD", 1, 1585762692, 1588354692, 1)
 
       const provider = eoslime.Provider
       let budgetsDatesTable = await provider.select('budgetpriods').from(names.budgets).scope('0').limit(20).find()
@@ -120,14 +120,14 @@ describe("Proxy Capital Accounts Contract", function (eoslime) {
       const expectedBudgets = [
         {
           budget_id: 1,
-          account_id: 17,
+          account_id: 22,
           amount: '300.00 USD',
           budget_period_id: 1,
           budget_type_id: 1
         },
         {
           budget_id: 2,
-          account_id: 14,
+          account_id: 19,
           amount: '500.00 USD',
           budget_period_id: 1,
           budget_type_id: 1
@@ -141,28 +141,28 @@ describe("Proxy Capital Accounts Contract", function (eoslime) {
         },
         {
           budget_id: 4,
-          account_id: 16,
+          account_id: 21,
           amount: '200.00 USD',
           budget_period_id: 1,
           budget_type_id: 1
         },
         {
           budget_id: 5,
-          account_id: 18,
+          account_id: 23,
           amount: '200.00 USD',
           budget_period_id: 1,
           budget_type_id: 1
         },
         {
           budget_id: 6,
-          account_id: 19,
+          account_id: 24,
           amount: '200.00 USD',
           budget_period_id: 1,
           budget_type_id: 1
         },
         {
           budget_id: 7,
-          account_id: 11,
+          account_id: 16,
           amount: '400.00 USD',
           budget_period_id: 1,
           budget_type_id: 1
@@ -187,17 +187,17 @@ describe("Proxy Capital Accounts Contract", function (eoslime) {
 
     it('Should create any date budgets', async () => {
 
-      await seconduserContract.addbudget(seconduser.name, 0, 17, "300.00 USD", 2, 1585762692, 1588354692, 0)
-      await seconduserContract.addbudget(seconduser.name, 0, 16, "200.00 USD", 2, 1585762692, 1588354692, 0)
+      await seconduserContract.addbudget(seconduser.name, 0, 22, "300.00 USD", 2, 1585762692, 1588354692, 0)
+      await seconduserContract.addbudget(seconduser.name, 0, 21, "200.00 USD", 2, 1585762692, 1588354692, 0)
 
       try {
-        await seconduserContract.addbudget(seconduser.name, 0, 17, "300.00 USD", 2, 1585762692, 1588354392, 1)
+        await seconduserContract.addbudget(seconduser.name, 0, 22, "300.00 USD", 2, 1585762692, 1588354392, 1)
       } catch (err) {
         assert.deepEqual(getError(err), 'proxycapbdgt: the interval from begin to end overlaps with an existing budget.', 'Something else went wrong.')
       }
 
-      await seconduserContract.addbudget(seconduser.name, 0, 17, "300.00 USD", 2, 1588441092, 1591033092, 0)
-      await seconduserContract.addbudget(seconduser.name, 0, 17, "300.00 USD", 2, 1585762692, 1588354692, 1)
+      await seconduserContract.addbudget(seconduser.name, 0, 22, "300.00 USD", 2, 1588441092, 1591033092, 0)
+      await seconduserContract.addbudget(seconduser.name, 0, 22, "300.00 USD", 2, 1585762692, 1588354692, 1)
 
       const provider = eoslime.Provider
       let budgetsDatesTable = await provider.select('budgetpriods').from(names.budgets).scope('0').limit(20).find()
@@ -222,14 +222,14 @@ describe("Proxy Capital Accounts Contract", function (eoslime) {
       const expectedBudgets = [
         {
           budget_id: 1,
-          account_id: 17,
+          account_id: 22,
           amount: '300.00 USD',
           budget_period_id: 1,
           budget_type_id: 1
         },
         {
           budget_id: 2,
-          account_id: 14,
+          account_id: 19,
           amount: '500.00 USD',
           budget_period_id: 1,
           budget_type_id: 1
@@ -243,56 +243,56 @@ describe("Proxy Capital Accounts Contract", function (eoslime) {
         },
         {
           budget_id: 4,
-          account_id: 16,
+          account_id: 21,
           amount: '200.00 USD',
           budget_period_id: 1,
           budget_type_id: 1
         },
         {
           budget_id: 5,
-          account_id: 18,
+          account_id: 23,
           amount: '200.00 USD',
           budget_period_id: 1,
           budget_type_id: 1
         },
         {
           budget_id: 6,
-          account_id: 19,
+          account_id: 24,
           amount: '200.00 USD',
           budget_period_id: 1,
           budget_type_id: 1
         },
         {
           budget_id: 7,
-          account_id: 11,
+          account_id: 16,
           amount: '400.00 USD',
           budget_period_id: 1,
           budget_type_id: 1
         },
         {
           budget_id: 8,
-          account_id: 17,
+          account_id: 22,
           amount: '600.00 USD',
           budget_period_id: 2,
           budget_type_id: 2
         },
         {
           budget_id: 9,
-          account_id: 16,
+          account_id: 21,
           amount: '200.00 USD',
           budget_period_id: 2,
           budget_type_id: 2
         },
         {
           budget_id: 10,
-          account_id: 17,
+          account_id: 22,
           amount: '300.00 USD',
           budget_period_id: 3,
           budget_type_id: 2
         },
         {
           budget_id: 11,
-          account_id: 14,
+          account_id: 19,
           amount: '800.00 USD',
           budget_period_id: 2,
           budget_type_id: 2
@@ -324,7 +324,7 @@ describe("Proxy Capital Accounts Contract", function (eoslime) {
 
     it('Should delete budgets', async () => {
 
-      await seconduserContract.deletebudget(seconduser.name, 0, 2, 1) // account_id = 14
+      await seconduserContract.deletebudget(seconduser.name, 0, 2, 1) // account_id = 19
       await seconduserContract.deletebudget(seconduser.name, 0, 1, 1)
       await seconduserContract.deletebudget(seconduser.name, 0, 10, 1)
       await seconduserContract.deletebudget(seconduser.name, 0, 9, 1)
@@ -354,35 +354,35 @@ describe("Proxy Capital Accounts Contract", function (eoslime) {
         },
         {
           budget_id: 4,
-          account_id: 16,
+          account_id: 21,
           amount: '200.00 USD',
           budget_period_id: 1,
           budget_type_id: 1
         },
         {
           budget_id: 5,
-          account_id: 18,
+          account_id: 23,
           amount: '200.00 USD',
           budget_period_id: 1,
           budget_type_id: 1
         },
         {
           budget_id: 7,
-          account_id: 11,
+          account_id: 16,
           amount: '400.00 USD',
           budget_period_id: 1,
           budget_type_id: 1
         },
         {
           budget_id: 8,
-          account_id: 17,
+          account_id: 22,
           amount: '600.00 USD',
           budget_period_id: 2,
           budget_type_id: 2
         },
         {
           budget_id: 11,
-          account_id: 14,
+          account_id: 19,
           amount: '600.00 USD',
           budget_period_id: 2,
           budget_type_id: 2
@@ -414,7 +414,7 @@ describe("Proxy Capital Accounts Contract", function (eoslime) {
 
     it('Should edit budgets', async() => {
 
-      await seconduserContract.addbudget(seconduser.name, 0, 15, "100.00 USD", 2, 1585762692, 1588354692, 1)
+      await seconduserContract.addbudget(seconduser.name, 0, 20, "100.00 USD", 2, 1585762692, 1588354692, 1)
       await seconduserContract.editbudget(seconduser.name, 0, 8, "550.00 USD", 1, 1585762692, 1588354692, 1)
       await seconduserContract.editbudget(seconduser.name, 0, 5, "250.00 USD", 1, 1585762692, 1588354692, 1)
 
@@ -427,7 +427,7 @@ describe("Proxy Capital Accounts Contract", function (eoslime) {
       try {
         await seconduserContract.editbudget(seconduser.name, 0, 13, "350.00 USD", 2, 1585762692, 1588354692, 0)
       } catch (err) {
-        assert.deepEqual(getError(err), 'proxycapbdgt: the child can not have more budget than its parent, account_id = 15 parent_budget = 100.00 USD.', 'Something else went wrong.')
+        assert.deepEqual(getError(err), 'proxycapbdgt: the child can not have more budget than its parent, account_id = 20 parent_budget = 100.00 USD.', 'Something else went wrong.')
       }
 
       const provider = eoslime.Provider
@@ -454,21 +454,21 @@ describe("Proxy Capital Accounts Contract", function (eoslime) {
         },
         {
           budget_id: 4,
-          account_id: 16,
+          account_id: 21,
           amount: '200.00 USD',
           budget_period_id: 1,
           budget_type_id: 1
         },
         {
           budget_id: 7,
-          account_id: 11,
+          account_id: 16,
           amount: '250.00 USD',
           budget_period_id: 1,
           budget_type_id: 1
         },
         {
           budget_id: 11,
-          account_id: 14,
+          account_id: 19,
           amount: '100.00 USD',
           budget_period_id: 2,
           budget_type_id: 2
@@ -482,28 +482,28 @@ describe("Proxy Capital Accounts Contract", function (eoslime) {
         },
         {
           budget_id: 13,
-          account_id: 15,
+          account_id: 20,
           amount: '100.00 USD',
           budget_period_id: 2,
           budget_type_id: 2
         },
         {
           budget_id: 14,
-          account_id: 17,
+          account_id: 22,
           amount: '550.00 USD',
           budget_period_id: 1,
           budget_type_id: 1
         },
         {
           budget_id: 15,
-          account_id: 14,
+          account_id: 19,
           amount: '750.00 USD',
           budget_period_id: 1,
           budget_type_id: 1
         },
         {
           budget_id: 16,
-          account_id: 18,
+          account_id: 23,
           amount: '250.00 USD',
           budget_period_id: 1,
           budget_type_id: 1
@@ -529,12 +529,12 @@ describe("Proxy Capital Accounts Contract", function (eoslime) {
     it('Should delete all the budgets for all the accounts', async () => {
 
       await budgetsContract.delbdgtsacct(0, 3)
-      await budgetsContract.delbdgtsacct(0, 14)
-      await budgetsContract.delbdgtsacct(0, 17)
+      await budgetsContract.delbdgtsacct(0, 19)
+      await budgetsContract.delbdgtsacct(0, 22)
+      await budgetsContract.delbdgtsacct(0, 21)
+      await budgetsContract.delbdgtsacct(0, 20)
       await budgetsContract.delbdgtsacct(0, 16)
-      await budgetsContract.delbdgtsacct(0, 15)
-      await budgetsContract.delbdgtsacct(0, 11)
-      await budgetsContract.delbdgtsacct(0, 18)
+      await budgetsContract.delbdgtsacct(0, 23)
 
       const provider = eoslime.Provider
       let budgetsDatesTable = await provider.select('budgetpriods').from(names.budgets).scope('0').limit(20).find()

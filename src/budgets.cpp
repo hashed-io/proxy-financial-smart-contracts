@@ -17,13 +17,13 @@ bool budgets::match (uint64_t begin, uint64_t end, uint64_t new_begin, uint64_t 
 }
 
 void budgets::create_budget_aux ( name actor,
-                                   uint64_t project_id,
-                                   uint64_t account_id,
-                                   asset amount,
-                                   uint64_t budget_type_id,
-                                   uint64_t begin_date,
-                                   uint64_t end_date,
-                                   bool modify_parents ) {
+                                  uint64_t project_id,
+                                  uint64_t account_id,
+                                  asset amount,
+                                  uint64_t budget_type_id,
+                                  uint64_t begin_date,
+                                  uint64_t end_date,
+                                  bool modify_parents ) {
     
     account_tables accounts(contract_names::accounts, project_id);
     budget_tables budgets(_self, project_id);
@@ -219,18 +219,28 @@ ACTION budgets::rcalcbudgets (name actor, uint64_t project_id, uint64_t account_
 
     require_auth(actor);
 
-    if (actor != _self) {
+    /* if (actor != _self) {
         action (
             permission_level(contract_names::permissions, "active"_n),
             contract_names::permissions,
             "checkprmissn"_n,
             std::make_tuple(actor, project_id, ACTION_NAMES.BUDGETS_RECALCULATE)
         ).send();
-    }
+    } */
 
     budget_tables budgets(_self, project_id);
     budget_period_tables budget_periods(_self, project_id);
     account_tables accounts(contract_names::accounts, project_id);
+
+    auto accnt = accounts.find(account_id);
+    check(accnt != accounts.end(), contract_names::budgets.to_string() + ": the account does not exist.");
+
+    action (
+        permission_level(contract_names::permissions, "active"_n),
+        contract_names::permissions,
+        "checkledger"_n,
+        std::make_tuple(actor, project_id, accnt -> ledger_id)
+    ).send();
 
     auto itr_budget_period = budget_periods.find(budget_period_id);
     check(itr_budget_period != budget_periods.end(), contract_names::budgets.to_string() + ": the period does not exist.");
@@ -304,7 +314,7 @@ ACTION budgets::rcalcbudgets (name actor, uint64_t project_id, uint64_t account_
     }
 }
 
-ACTION budgets::addbudget ( name actor,
+ACTION budgets::addbudget (  name actor,
                              uint64_t project_id,
                              uint64_t account_id,
                              asset amount,
@@ -315,19 +325,26 @@ ACTION budgets::addbudget ( name actor,
 
     require_auth(actor);
     
-    if (actor != _self) {
+    /* if (actor != _self) {
         action (
             permission_level(contract_names::permissions, "active"_n),
             contract_names::permissions,
             "checkprmissn"_n,
             std::make_tuple(actor, project_id, ACTION_NAMES.BUDGETS_ADD)
         ).send();
-    }
+    } */
 
     account_tables accounts(contract_names::accounts, project_id);
 
     auto accnt_itr = accounts.find(account_id);
     check(accnt_itr != accounts.end(),contract_names::budgets.to_string() + ": the account does not exist.");
+
+    action (
+        permission_level(contract_names::permissions, "active"_n),
+        contract_names::permissions,
+        "checkledger"_n,
+        std::make_tuple(actor, project_id, accnt_itr -> ledger_id)
+    ).send();
 
     // the project type must be total
     if (budget_type_id != get_id_budget_type(BUDGET_TYPES.TOTAL)) {
@@ -354,21 +371,32 @@ ACTION budgets::editbudget ( name actor,
 
     require_auth(actor);
 
-    if (actor != _self) {
+    /* if (actor != _self) {
         action (
             permission_level(contract_names::permissions, "active"_n),
             contract_names::permissions,
             "checkprmissn"_n,
             std::make_tuple(actor, project_id, ACTION_NAMES.BUDGETS_EDIT)
         ).send();
-    }
+    } */
 
     budget_tables budgets(_self, project_id);
+    account_tables accounts(contract_names::accounts, project_id);
 
     auto budget_itr = budgets.find(budget_id);
-    check(budget_itr != budgets.end(),contract_names::budgets.to_string() + ": the account does not have a budget.");
+    check(budget_itr != budgets.end(),contract_names::budgets.to_string() + ": the budget does not exist.");
 
     check_asset(amount,contract_names::budgets);
+
+    auto accnt = accounts.find(budget_itr -> account_id);
+    check(accnt != accounts.end(), contract_names::budgets.to_string() + ": the account does not exist.");
+
+    action (
+        permission_level(contract_names::permissions, "active"_n),
+        contract_names::permissions,
+        "checkledger"_n,
+        std::make_tuple(actor, project_id, accnt -> ledger_id)
+    ).send();
 
      // the project type must be total
     if (budget_type_id != get_id_budget_type(BUDGET_TYPES.TOTAL)) {
@@ -386,20 +414,31 @@ ACTION budgets::editbudget ( name actor,
 ACTION budgets::deletebudget (name actor, uint64_t project_id, uint64_t budget_id, bool modify_parents) {
     require_auth(actor);
 
-    if (actor != _self) {
+    /* if (actor != _self) {
         action (
             permission_level(contract_names::permissions, "active"_n),
             contract_names::permissions,
             "checkprmissn"_n,
             std::make_tuple(actor, project_id, ACTION_NAMES.BUDGETS_REMOVE)
         ).send();
-    }
+    } */
 
     budget_tables budgets(_self, project_id);
+    account_tables accounts(contract_names::accounts, project_id);
 
     uint64_t budget_period_id = 0;
     auto budget_itr = budgets.find(budget_id);
     check(budget_itr != budgets.end(),contract_names::budgets.to_string() + ": the budget does not exist.");
+
+    auto accnt = accounts.find(budget_itr -> account_id);
+    check(accnt != accounts.end(), contract_names::budgets.to_string() + ": the account does not exist.");
+
+    action (
+        permission_level(contract_names::permissions, "active"_n),
+        contract_names::permissions,
+        "checkledger"_n,
+        std::make_tuple(actor, project_id, accnt -> ledger_id)
+    ).send();
 
     budget_period_id = budget_itr -> budget_period_id;
 

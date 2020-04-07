@@ -199,63 +199,61 @@ describe("Proxy Capital Projects Contract", function (eoslime) {
 
         let projectsTableBeforeApproval = await projectsContract.projects.limit(10).find()
         const usersTable = await projectsContract.users.limit(10).find()
-        const investorsTable = await projectsContract.investors.limit(10).find()
-        const developersTable = await projectsContract.developers.limit(10).find()
-        const fundsTable = await projectsContract.funds.limit(10).find()
+        const entitiesTable = await projectsContract.entities.limit(10).find()
 
         const expectedUsersTable = [
             {
                 account: 'builderuser1',
                 user_name: 'Mary Williams',
-                entity_id: 0,
+                entity_id: 4,
                 type: 'Developer'
             },
             {
                 account: 'investoruser',
                 user_name: 'James Smith',
-                entity_id: 0,
+                entity_id: 2,
                 type: 'Investor'
             },
             {
                 account: 'investorusr2',
                 user_name: 'Sally Fields',
-                entity_id: 1,
+                entity_id: 3,
                 type: 'Investor'
             },
             {
                 account: 'proxyadmin11',
                 user_name: 'John Miller',
-                entity_id: 0,
+                entity_id: 1,
                 type: 'Fund'
             }
         ]
 
-        const expectedInvestorsTable = [
+        const expectedEntities = [
             {
-                investor_id: 0,
-                description: 'Test description for investor James Smith'
+              entity_id: 1,
+              entity_name: 'Proxy Capital',
+              description: 'A test entity for Proxy Capital',
+              type: 'Fund'
             },
             {
-                investor_id: 1,
-                description: 'Test description for investor Sally Fields'
-            }
-        ]
-
-        const expectedDevelopersTable = [
+              entity_id: 2,
+              entity_name: 'Investor Entity 1',
+              description: 'A test entity for investors',
+              type: 'Investor'
+            },
             {
-                developer_id: 0,
-                developer_name: 'Developer0',
-                description: 'Test decription for developer Mary Williams'
-            }
-        ]
-
-        const expectedFundsTable = [
+              entity_id: 3,
+              entity_name: 'Investor Entity 2',
+              description: 'A test entity for investors',
+              type: 'Investor'
+            },
             {
-                fund_id: 0,
-                fund_name: 'Fund0',
-                description: 'Test description for fund John Miller'
+              entity_id: 4,
+              entity_name: 'Developer Entity 1',
+              description: 'A test entity for developer',
+              type: 'Developer'
             }
-        ]
+        ]          
 
         const expectedProjectsTable = [
             {
@@ -328,9 +326,7 @@ describe("Proxy Capital Projects Contract", function (eoslime) {
         })
 
         assert.deepEqual(usersTable, expectedUsersTable, 'The users table is not right.')
-        assert.deepEqual(investorsTable, expectedInvestorsTable, 'The investors table is not right.')
-        assert.deepEqual(developersTable, expectedDevelopersTable, 'The developers table is not right.')
-        assert.deepEqual(fundsTable, expectedFundsTable, 'The funds table is not right.')
+        assert.deepEqual(expectedEntities, entitiesTable, 'The entities table is not right.')
         assert.deepEqual(projectsTableBeforeApproval, expectedProjectsTable, 'The projects table is not right.')
 
     })

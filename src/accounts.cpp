@@ -30,7 +30,6 @@ void accounts::change_balance (uint64_t project_id, uint64_t account_id, asset a
     }
 }
 
-
 ACTION accounts::reset () {
     require_auth(_self);
 
@@ -39,6 +38,12 @@ ACTION accounts::reset () {
         auto itr_accounts = accounts.begin();
         while (itr_accounts != accounts.end()) {
             itr_accounts = accounts.erase(itr_accounts);
+        }
+
+        ledger_tables ledgers(_self, i);
+        auto itr_ledger = ledgers.begin();
+        while (itr_ledger != ledgers.end()) {
+            itr_ledger = ledgers.erase(itr_ledger);
         }
     }
 
@@ -56,13 +61,34 @@ ACTION accounts::reset () {
 	}
 }
 
-ACTION accounts::initaccounts (uint64_t project_id) {
+
+ACTION accounts::addledger (uint64_t project_id, uint64_t entity_id) {
     require_auth(_self);
 
     auto project = projects_table.find(project_id);
     check(project != projects_table.end(), contract_names::accounts.to_string() + ": project does not exist.");
-    
+
+    ledger_tables ledgers(_self, project_id);
     account_tables accounts(_self, project_id);
+
+    auto itr_entity = entities.find(entity_id);
+    check(itr_entity != entities.end(), contract_names::accounts.to_string() + ": the entity does not exist.");
+
+    auto itr_ledger = ledgers.begin();
+    while (itr_ledger != ledgers.end()) {
+        check(itr_ledger -> entity_id != entity_id, 
+            contract_names::accounts.to_string() + ": there is a ledger for the entity = " + to_string(entity_id) + ", project_id = " + to_string(project_id) + ".");
+        itr_ledger++;
+    }
+
+    uint64_t ledger_id = ledgers.available_primary_key();
+    ledger_id = (ledger_id > 0) ? ledger_id : 1;
+
+    ledgers.emplace(_self, [&](auto & new_ledger){
+        new_ledger.ledger_id = ledger_id;
+        new_ledger.entity_id = entity_id;
+        new_ledger.description = "Ledger for the " + (itr_entity -> type) + " " + itr_entity -> entity_name;
+    });
     
     auto itr_types = account_types.begin();
     while (itr_types != account_types.end()) {
@@ -72,16 +98,46 @@ ACTION accounts::initaccounts (uint64_t project_id) {
         accounts.emplace(_self, [&](auto & new_account){
             new_account.account_id = new_account_id; 
             new_account.parent_id = 0;
+            new_account.ledger_id = ledger_id;
             new_account.num_children = 0;
             new_account.account_name = itr_types -> type_name;
             new_account.account_subtype = itr_types -> type_name;
             new_account.increase_balance = asset(0, CURRENCY);
             new_account.decrease_balance = asset(0, CURRENCY);
             new_account.account_symbol = CURRENCY;
+            new_account.description = "---";
         });
         itr_types++;
     }
 }
+
+
+// ACTION accounts::initaccounts (uint64_t project_id) {
+//     require_auth(_self);
+
+//     auto project = projects_table.find(project_id);
+//     check(project != projects_table.end(), contract_names::accounts.to_string() + ": project does not exist.");
+    
+//     account_tables accounts(_self, project_id);
+    
+//     auto itr_types = account_types.begin();
+//     while (itr_types != account_types.end()) {
+//         uint64_t new_account_id = accounts.available_primary_key();
+//         new_account_id = (new_account_id > 0) ? new_account_id : 1;
+        
+//         accounts.emplace(_self, [&](auto & new_account){
+//             new_account.account_id = new_account_id; 
+//             new_account.parent_id = 0;
+//             new_account.num_children = 0;
+//             new_account.account_name = itr_types -> type_name;
+//             new_account.account_subtype = itr_types -> type_name;
+//             new_account.increase_balance = asset(0, CURRENCY);
+//             new_account.decrease_balance = asset(0, CURRENCY);
+//             new_account.account_symbol = CURRENCY;
+//         });
+//         itr_types++;
+//     }
+// }
 
 ACTION accounts::addbalance (uint64_t project_id, uint64_t account_id, asset amount) {
     require_auth(_self);
@@ -111,15 +167,15 @@ ACTION accounts::cancelsub (uint64_t project_id, uint64_t account_id, asset amou
     change_balance(project_id, account_id, amount, false, true);
 }
 
-ACTION accounts::editaccount (name actor, uint64_t project_id, uint64_t account_id, string account_name) {
+ACTION accounts::editaccount (name actor, uint64_t project_id, uint64_t account_id, string account_name, string description) {
     require_auth(actor);
 
-    action (
+    /* action (
         permission_level(contract_names::permissions, "active"_n),
         contract_names::permissions,
         "checkprmissn"_n,
         std::make_tuple(actor, project_id, ACTION_NAMES.ACCOUNTS_EDIT)
-    ).send();
+    ).send(); */
 
     check(account_name.length() > 0, contract_names::accounts.to_string() + ": the account name can not be an empty string.");
 
@@ -131,26 +187,36 @@ ACTION accounts::editaccount (name actor, uint64_t project_id, uint64_t account_
     auto itr_account = accounts.find(account_id);
     check(itr_account != accounts.end(), contract_names::accounts.to_string() + ": the account does not exist.");
 
-    auto itr_accounts = accounts.begin();
-    while (itr_accounts != accounts.end()) {
+    action (
+        permission_level(contract_names::permissions, "active"_n),
+        contract_names::permissions,
+        "checkledger"_n,
+        std::make_tuple(actor, project_id, itr_account -> ledger_id)
+    ).send();
+
+
+    auto accounts_by_ledger = accounts.get_index<"byledger"_n>();
+    auto itr_accounts = accounts_by_ledger.find(itr_account -> ledger_id);
+    while ((itr_accounts != accounts_by_ledger.end()) && (itr_accounts -> ledger_id == itr_account -> ledger_id)) {
         check(itr_accounts -> account_name != account_name, contract_names::accounts.to_string() + ": that name has been already taken.");
         itr_accounts++;
     }
 
     accounts.modify(itr_account, _self, [&](auto & modified_account){
         modified_account.account_name = account_name;
+        modified_account.description = description;
     });
 }
 
 ACTION accounts::deleteaccnt (name actor, uint64_t project_id, uint64_t account_id) {
     require_auth(actor);
 
-    action (
+    /* action (
         permission_level(contract_names::permissions, "active"_n),
         contract_names::permissions,
         "checkprmissn"_n,
         std::make_tuple(actor, project_id, ACTION_NAMES.ACCOUNTS_REMOVE)
-    ).send();
+    ).send(); */
 
     auto project = projects_table.find(project_id);
 	check(project != projects_table.end(), contract_names::accounts.to_string() + ": the project where the account is trying to be created does not exist.");
@@ -159,6 +225,13 @@ ACTION accounts::deleteaccnt (name actor, uint64_t project_id, uint64_t account_
 
     auto account = accounts.find(account_id);
     check(account != accounts.end(), contract_names::accounts.to_string() + ": the account does not exist.");
+
+    action (
+        permission_level(contract_names::permissions, "active"_n),
+        contract_names::permissions,
+        "checkledger"_n,
+        std::make_tuple(actor, project_id, account -> ledger_id)
+    ).send();
 
     check(account -> num_children == 0, contract_names::accounts.to_string() + ": the account has subaccounts and can not be deleted.");
     check(account -> increase_balance == asset(0, CURRENCY), contract_names::accounts.to_string() + ": the account has an increase balance grater than 0 and can not be deleted.");
@@ -179,24 +252,35 @@ ACTION accounts::addaccount ( name actor,
                               uint64_t project_id,
                               string account_name,
                               uint64_t parent_id,
-                              symbol account_currency ) {
+                              symbol account_currency,
+                              string description ) {
 
     require_auth(actor);
 
-    action (
+    /* action (
         permission_level(contract_names::permissions, "active"_n),
         contract_names::permissions,
         "checkprmissn"_n,
         std::make_tuple(actor, project_id, ACTION_NAMES.ACCOUNTS_ADD)
-    ).send();
+    ).send(); */
+
+    auto itr_usr = users.find(actor.value);
+    check(itr_usr != users.end(), contract_names::accounts.to_string() + ": the user does not exist.");
+
+    ledger_tables ledgers(_self, project_id);
+    auto ledgers_by_entity = ledgers.get_index<"byentity"_n>();
+    auto itr_ledger = ledgers_by_entity.find(itr_usr -> entity_id);
+    check(itr_ledger != ledgers_by_entity.end(), contract_names::accounts.to_string() + ": there is no ledger associated with that entity.");
 
     auto project_exists = projects_table.find(project_id);
 	check(project_exists != projects_table.end(), contract_names::accounts.to_string() + ": the project where the account is trying to be placed does not exist.");
 
 	account_tables accounts(_self, project_id);
 	
-	auto itr_accounts = accounts.begin();
-	while (itr_accounts != accounts.end()) {
+    auto accounts_by_ledger = accounts.get_index<"byledger"_n>();
+    auto itr_accounts = accounts_by_ledger.find(itr_ledger -> ledger_id);
+
+	while (itr_accounts != accounts_by_ledger.end() && itr_accounts -> ledger_id == itr_ledger -> ledger_id) {
 		check(itr_accounts -> account_name != account_name, contract_names::accounts.to_string() + ": the name of the account already exists.");
 		itr_accounts++;
 	}
@@ -218,11 +302,13 @@ ACTION accounts::addaccount ( name actor,
 	accounts.emplace(_self, [&](auto & new_account){
 		new_account.account_id = new_account_id; 
 		new_account.parent_id = parent_id;
+        new_account.ledger_id = itr_ledger -> ledger_id;
 		new_account.account_name = account_name;
 		new_account.account_subtype = parent -> account_subtype;
 		new_account.increase_balance = asset(0, CURRENCY);
 		new_account.decrease_balance = asset(0, CURRENCY);
 		new_account.account_symbol = CURRENCY;
+        new_account.description = description;
 	});
 
     accounts.modify(parent, _self, [&](auto & modified_account){
@@ -247,8 +333,14 @@ ACTION accounts::deleteaccnts (uint64_t project_id) {
         ).send();
         itr_account = accounts.erase(itr_account);
     }
+
+    ledger_tables ledgers(_self, project_id);
+    auto itr_ledger = ledgers.begin();
+    while (itr_ledger != ledgers.end()) {
+        itr_ledger = ledgers.erase(itr_ledger);
+    }
 }
 
 
-EOSIO_DISPATCH(accounts, (reset)(addaccount)(editaccount)(deleteaccnt)(initaccounts)(addbalance)(subbalance)(canceladd)(cancelsub)(deleteaccnts));
+EOSIO_DISPATCH(accounts, (reset)(addledger)(addaccount)(editaccount)(deleteaccnt)(addbalance)(subbalance)(canceladd)(cancelsub)(deleteaccnts));
 

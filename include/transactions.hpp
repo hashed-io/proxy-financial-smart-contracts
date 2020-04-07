@@ -88,9 +88,12 @@ CONTRACT transactions : public contract {
 			asset increase_balance;
 			asset decrease_balance;
 			symbol account_symbol;
+            uint64_t ledger_id;
+            string description;
 
 			uint64_t primary_key() const { return account_id; }
 			uint64_t by_parent() const { return parent_id; }
+            uint64_t by_ledger() const { return ledger_id; }
 		};
 
 		// table from projects contract
@@ -153,7 +156,9 @@ CONTRACT transactions : public contract {
 
 		typedef eosio::multi_index <"accounts"_n, account_table,
 			indexed_by<"byparent"_n,
-			const_mem_fun<account_table, uint64_t, &account_table::by_parent>>
+			const_mem_fun<account_table, uint64_t, &account_table::by_parent>>,
+            indexed_by<"byledger"_n,
+            const_mem_fun<account_table, uint64_t, &account_table::by_ledger>>
 		> account_tables;
 
 		typedef eosio::multi_index <"projects"_n, project_table> project_tables;
@@ -163,11 +168,11 @@ CONTRACT transactions : public contract {
 		project_tables projects;
 		type_tables account_types;
 
-		void delete_transaction (uint64_t project_id, uint64_t transaction_id);
+		void delete_transaction (name actor, uint64_t project_id, uint64_t transaction_id);
 		
-		void make_transaction ( name & actor,
+		void make_transaction ( name actor,
 								uint64_t transaction_id, 
-								uint64_t & project_id, 
+								uint64_t project_id, 
 								vector<transaction_amount> & amounts,
 								uint64_t & date,
 								string & description,

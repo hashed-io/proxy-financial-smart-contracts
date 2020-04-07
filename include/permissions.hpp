@@ -20,7 +20,8 @@ CONTRACT permissions : public contract {
         permissions(name receiver, name code, datastream<const char*> ds)
             : contract(receiver, code, ds),
               permissions_table(receiver, receiver.value),
-              projects_table(contract_names::projects, contract_names::projects.value)
+              projects_table(contract_names::projects, contract_names::projects.value),
+              users(contract_names::projects, contract_names::projects.value)
               {}
 
         ACTION reset();
@@ -31,7 +32,9 @@ CONTRACT permissions : public contract {
 
         ACTION removeprmssn (name actor, uint64_t project_id, name action_name, uint64_t role_id);
 
-        ACTION checkprmissn(name user, uint64_t project_id, name action_name);
+        ACTION checkprmissn (name user, uint64_t project_id, name action_name);
+
+        ACTION checkledger (name user, uint64_t project_id, uint64_t ledger_id);
 
         ACTION assignrole(name actor, name user, uint64_t project_id, uint64_t role_id);
 
@@ -98,6 +101,27 @@ CONTRACT permissions : public contract {
             uint64_t primary_key() const { return action_name.value; }
         };
 
+        TABLE user_table {
+            name account;
+            string user_name;
+            uint64_t entity_id;
+            string type;
+
+            uint64_t primary_key() const { return account.value; }
+            uint64_t by_entity() const { return entity_id; }
+        };
+
+        // scoped by projects
+        // taken from accounts
+        TABLE ledger_table {
+            uint64_t ledger_id;
+            uint64_t entity_id;
+            string description;
+
+            uint64_t primary_key() const { return ledger_id; }
+            uint64_t by_entity() const { return entity_id; }
+        };
+
         TABLE project_table {
 			uint64_t project_id;
             uint64_t developer_id;
@@ -153,8 +177,19 @@ CONTRACT permissions : public contract {
             const_mem_fun<project_table, uint64_t, &project_table::by_status>>
         > project_tables;
 
+        typedef eosio::multi_index <"users"_n, user_table,
+            indexed_by<"byentity"_n,
+            const_mem_fun<user_table, uint64_t, &user_table::by_entity>>
+        > user_tables;
+
+        typedef eosio::multi_index <"ledgers"_n, ledger_table,
+            indexed_by<"byentity"_n,
+            const_mem_fun<ledger_table, uint64_t, &ledger_table::by_entity>>
+        > ledger_tables;
+
         permission_tables permissions_table;
         project_tables projects_table;
+        user_tables users;
 
         void toggle_permission (bool add, uint64_t project_id, name action_name, uint64_t role_id);
         void validate_max_permissions (name user, uint64_t project_id, uint64_t permissions);
