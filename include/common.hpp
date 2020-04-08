@@ -11,8 +11,8 @@ const symbol CURRENCY = symbol("USD", 2);
 const uint32_t RESET_IDS = 100;
 
 struct url_information {
-	string url_name;
-	string url;
+	string filename;
+	string address;
 };
 
 namespace contract_names {

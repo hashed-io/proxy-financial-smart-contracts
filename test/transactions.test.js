@@ -119,12 +119,12 @@ describe("Proxy Capital Transactions Contract", function (eoslime) {
 
         const url_info = [
           {
-            'url_name': 'a document',
-            'url': 'https://docs.telos.kitchen/tO6eoye_Td-76wBz7J3EZQ#'
+            'filename': 'a document',
+            'address': 'https://docs.telos.kitchen/tO6eoye_Td-76wBz7J3EZQ#'
           },
           {
-            'url_name': 'a document 2',
-            'url': 'https://docs.telos.kitchen-2/jJq8d7dwSlCSvj42yZyBGg#'
+            'filename': 'a document 2',
+            'address': 'https://docs.telos.kitchen-2/jJq8d7dwSlCSvj42yZyBGg#'
           }
         ]
 
@@ -394,7 +394,8 @@ describe("Proxy Capital Transactions Contract", function (eoslime) {
               timestamp: 1023020302,
               description: 'Monthly expenses',
               drawdown_id: 0,
-              supporting_urls: [
+              total_amount: '3.00 USD',
+              supporting_files: [
                 ...url_info
               ]
             },
@@ -404,7 +405,8 @@ describe("Proxy Capital Transactions Contract", function (eoslime) {
               timestamp: 1023020304,
               description: 'Investment',
               drawdown_id: 0,
-              supporting_urls: [
+              total_amount: '40000.00 USD',
+              supporting_files: [
                 ...url_info
               ]
             }
@@ -709,12 +711,12 @@ describe("Proxy Capital Transactions Contract", function (eoslime) {
         
         const url_info = [
           {
-            'url_name': 'a document',
-            'url': 'https://docs.telos.kitchen/tO6eoye_Td-76wBz7J3EZQ#'
+            'filename': 'a document',
+            'address': 'https://docs.telos.kitchen/tO6eoye_Td-76wBz7J3EZQ#'
           },
           {
-            'url_name': 'a document 2',
-            'url': 'https://docs.telos.kitchen-2/jJq8d7dwSlCSvj42yZyBGg#'
+            'filename': 'a document 2',
+            'address': 'https://docs.telos.kitchen-2/jJq8d7dwSlCSvj42yZyBGg#'
           }
         ]
 
@@ -725,7 +727,8 @@ describe("Proxy Capital Transactions Contract", function (eoslime) {
               timestamp: 1023020304,
               description: 'Investment',
               drawdown_id: 0,
-              supporting_urls: [
+              total_amount: '40000.00 USD',
+              supporting_files: [
                 ...url_info
               ]
             }
@@ -770,12 +773,12 @@ describe("Proxy Capital Transactions Contract", function (eoslime) {
 
         const url_info = [
           {
-            'url_name': 'a document',
-            'url': 'https://docs.telos.kitchen/tO6eoye_Td-76wBz7J3EZQ#'
+            'filename': 'a document',
+            'address': 'https://docs.telos.kitchen/tO6eoye_Td-76wBz7J3EZQ#'
           },
           {
-            'url_name': 'a document 2',
-            'url': 'https://docs.telos.kitchen-2/jJq8d7dwSlCSvj42yZyBGg#'
+            'filename': 'a document 2',
+            'address': 'https://docs.telos.kitchen-2/jJq8d7dwSlCSvj42yZyBGg#'
           }
         ]
 
@@ -1043,7 +1046,8 @@ describe("Proxy Capital Transactions Contract", function (eoslime) {
               timestamp: 1023020304,
               description: 'Investment Remastered',
               drawdown_id: 0,
-              supporting_urls: [
+              total_amount: '45000.00 USD',
+              supporting_files: [
                 ...url_info
               ]
             }
@@ -1102,12 +1106,12 @@ describe("Proxy Capital Transactions Contract", function (eoslime) {
 
         const url_info = [
           {
-            'url_name': 'a document',
-            'url': 'https://docs.telos.kitchen/tO6eoye_Td-76wBz7J3EZQ#'
+            'filename': 'a document',
+            'address': 'https://docs.telos.kitchen/tO6eoye_Td-76wBz7J3EZQ#'
           },
           {
-            'url_name': 'a document 2',
-            'url': 'https://docs.telos.kitchen-2/jJq8d7dwSlCSvj42yZyBGg#'
+            'filename': 'a document 2',
+            'address': 'https://docs.telos.kitchen-2/jJq8d7dwSlCSvj42yZyBGg#'
           }
         ]
 
@@ -1441,7 +1445,8 @@ describe("Proxy Capital Transactions Contract", function (eoslime) {
               timestamp: 1023020304,
               description: 'Investment Remastered',
               drawdown_id: 0,
-              supporting_urls: [
+              total_amount: '45000.00 USD',
+              supporting_files: [
                 ...url_info
               ]
             },
@@ -1451,7 +1456,8 @@ describe("Proxy Capital Transactions Contract", function (eoslime) {
               timestamp: 1023020302,
               description: 'Monthly expenses',
               drawdown_id: 0,
-              supporting_urls: [
+              total_amount: '35000.00 USD',
+              supporting_files: [
                 ...url_info
               ]
             }
@@ -1506,12 +1512,12 @@ describe("Proxy Capital Transactions Contract", function (eoslime) {
 
       const url_info = [
         {
-          'url_name': 'a document',
-          'url': 'https://docs.telos.kitchen/drawdown1'
+          'filename': 'a document',
+          'address': 'https://docs.telos.kitchen/drawdown1'
         },
         {
-          'url_name': 'a document 2',
-          'url': 'https://docs.telos.kitchen-2/drawdown2'
+          'filename': 'a document 2',
+          'address': 'https://docs.telos.kitchen-2/drawdown2'
         }
       ]
 
@@ -1579,14 +1585,15 @@ describe("Proxy Capital Transactions Contract", function (eoslime) {
           actor: 'builderuser1',
           description: 'Investment Remastered',
           drawdown_id: 0,
-          supporting_urls: [
+          total_amount: '45000.00 USD',
+          supporting_files: [
             {
-              'url_name': 'a document',
-              'url': 'https://docs.telos.kitchen/tO6eoye_Td-76wBz7J3EZQ#'
+              'filename': 'a document',
+              'address': 'https://docs.telos.kitchen/tO6eoye_Td-76wBz7J3EZQ#'
             },
             {
-              'url_name': 'a document 2',
-              'url': 'https://docs.telos.kitchen-2/jJq8d7dwSlCSvj42yZyBGg#'
+              'filename': 'a document 2',
+              'address': 'https://docs.telos.kitchen-2/jJq8d7dwSlCSvj42yZyBGg#'
             }
           ]
         },
@@ -1595,14 +1602,15 @@ describe("Proxy Capital Transactions Contract", function (eoslime) {
           actor: 'proxyadmin11',
           description: 'Monthly expenses',
           drawdown_id: 0,
-          supporting_urls: [
+          total_amount: '35000.00 USD',
+          supporting_files: [
             {
-              'url_name': 'a document',
-              'url': 'https://docs.telos.kitchen/tO6eoye_Td-76wBz7J3EZQ#'
+              'filename': 'a document',
+              'address': 'https://docs.telos.kitchen/tO6eoye_Td-76wBz7J3EZQ#'
             },
             {
-              'url_name': 'a document 2',
-              'url': 'https://docs.telos.kitchen-2/jJq8d7dwSlCSvj42yZyBGg#'
+              'filename': 'a document 2',
+              'address': 'https://docs.telos.kitchen-2/jJq8d7dwSlCSvj42yZyBGg#'
             }
           ]
         },
@@ -1611,28 +1619,32 @@ describe("Proxy Capital Transactions Contract", function (eoslime) {
           actor: 'builderuser1',
           description: 'Drawdonw transaction',
           drawdown_id: 3,
-          supporting_urls: url_info
+          total_amount: '3.00 USD',
+          supporting_files: url_info
         },
         {
           transaction_id: 5,
           actor: 'builderuser1',
           description: 'Drawdonw transaction 1',
           drawdown_id: 3,
-          supporting_urls: url_info
+          total_amount: '3.00 USD',
+          supporting_files: url_info
         },
         {
           transaction_id: 6,
           actor: 'builderuser1',
           description: 'Drawdonw transaction',
           drawdown_id: 4,
-          supporting_urls: url_info
+          total_amount: '3.00 USD',
+          supporting_files: url_info
         },
         {
           transaction_id: 7,
           actor: 'builderuser1',
           description: 'Drawdonw transaction 1',
           drawdown_id: 4,
-          supporting_urls: url_info
+          total_amount: '3.00 USD',
+          supporting_files: url_info
         }
       ]
       
@@ -1656,7 +1668,8 @@ describe("Proxy Capital Transactions Contract", function (eoslime) {
           actor: r.actor,
           description: r.description,
           drawdown_id: r.drawdown_id,
-          supporting_urls: r.supporting_urls
+          supporting_files: r.supporting_files,
+          total_amount: r.total_amount
         }
       })
 

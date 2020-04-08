@@ -8,7 +8,7 @@ void transactions::make_transaction ( name actor,
 									  uint64_t & date,
 									  string & description,
 									  bool & is_drawdown,
-									  vector<url_information> & supporting_urls ) {
+									  vector<url_information> & supporting_files ) {
 
 	transaction_tables transactions(_self, project_id);
 	account_transaction_tables accnttrxns(_self, project_id);
@@ -99,9 +99,10 @@ void transactions::make_transaction ( name actor,
 		new_transaction.timestamp = date;
 		new_transaction.description = description;
 		new_transaction.drawdown_id = drawdown_id;
+		new_transaction.total_amount = asset(total_positive, CURRENCY);
 		
-		for (int i = 0; i < supporting_urls.size(); i++) {
-			new_transaction.supporting_urls.push_back(supporting_urls[i]);
+		for (int i = 0; i < supporting_files.size(); i++) {
+			new_transaction.supporting_files.push_back(supporting_files[i]);
 		}
 	});
 	
@@ -176,8 +177,6 @@ void transactions::delete_transaction (name actor, uint64_t project_id, uint64_t
 ACTION transactions::reset () {
 	require_auth(_self);
 
-	print("Hello");
-
 	for (int i = 0; i < RESET_IDS; i++) {
 		transaction_tables transactions(_self, i);
 		
@@ -207,7 +206,7 @@ ACTION transactions::transact ( name actor,
 								uint64_t date,
 								string description,
 								bool is_drawdown,
-								vector<url_information> supporting_urls ) {
+								vector<url_information> supporting_files ) {
 
 	require_auth(actor);
 
@@ -221,7 +220,7 @@ ACTION transactions::transact ( name actor,
 	auto itr_project = projects.find(project_id);
 	check(itr_project != projects.end(), contract_names::transactions.to_string() + ": the project with the id = " + to_string(project_id) + " does not exist.");
 
-	make_transaction(actor, 0, project_id, amounts, date, description, is_drawdown, supporting_urls);
+	make_transaction(actor, 0, project_id, amounts, date, description, is_drawdown, supporting_files);
 }
 
 ACTION transactions::deletetrxn (name actor, uint64_t project_id, uint64_t transaction_id) {
@@ -244,7 +243,7 @@ ACTION transactions::edittrxn ( name actor,
 								uint64_t date,
 								string description,
 								bool is_drawdown,
-								vector<url_information> supporting_urls ) {
+								vector<url_information> supporting_files ) {
 	
 	require_auth(actor);
 
@@ -264,7 +263,7 @@ ACTION transactions::edittrxn ( name actor,
 	check(itr_trxn != transactions.end(), contract_names::transactions.to_string() + ": the transaction does not exist.");
 
 	delete_transaction(actor, project_id, transaction_id);
-	make_transaction(actor, transaction_id, project_id, amounts, date, description, is_drawdown, supporting_urls);
+	make_transaction(actor, transaction_id, project_id, amounts, date, description, is_drawdown, supporting_files);
 }
 
 

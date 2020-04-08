@@ -40,7 +40,7 @@ CONTRACT transactions : public contract {
 						  uint64_t date,
 						  string description,
 						  bool is_drawdown,
-						  vector<url_information> supporting_urls );
+						  vector<url_information> supporting_files );
 
 		ACTION deletetrxn ( name actor, uint64_t project_id, uint64_t transaction_id );
 
@@ -51,7 +51,7 @@ CONTRACT transactions : public contract {
 						  uint64_t date,
 						  string description,
 						  bool is_drawdown,
-						  vector<url_information> supporting_urls );
+						  vector<url_information> supporting_files );
 
 		ACTION deletetrxns (uint64_t project_id);
 
@@ -70,7 +70,8 @@ CONTRACT transactions : public contract {
 			uint64_t timestamp;
 			string description;
 			uint64_t drawdown_id;
-			vector<url_information> supporting_urls;
+			asset total_amount;
+			vector<url_information> supporting_files;
 
 			uint64_t primary_key() const { return transaction_id; }
 		};
@@ -204,7 +205,7 @@ CONTRACT transactions : public contract {
 								uint64_t & date,
 								string & description,
 								bool & is_drawdown,
-								vector<url_information> & supporting_urls );
+								vector<url_information> & supporting_files );
 
 };
 
