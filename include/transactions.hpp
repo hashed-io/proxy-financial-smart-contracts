@@ -8,6 +8,7 @@
 #include <account_types.hpp>
 #include <account_subtypes.hpp>
 #include <action_names.hpp>
+#include <drawdown_states.hpp>
 #include <utility>
 #include <vector>
 #include <string>
@@ -19,7 +20,6 @@ struct transaction_amount {
 	uint64_t account_id;
 	int64_t amount;
 };
-
 
 CONTRACT transactions : public contract {
 
@@ -39,7 +39,8 @@ CONTRACT transactions : public contract {
 						  vector<transaction_amount> amounts,
 						  uint64_t date,
 						  string description,
-						  vector<string> supporting_urls );
+						  bool is_drawdown,
+						  vector<url_information> supporting_urls );
 
 		ACTION deletetrxn ( name actor, uint64_t project_id, uint64_t transaction_id );
 
@@ -49,9 +50,16 @@ CONTRACT transactions : public contract {
 						  vector<transaction_amount> amounts,
 						  uint64_t date,
 						  string description,
-						  vector<string> supporting_urls );
+						  bool is_drawdown,
+						  vector<url_information> supporting_urls );
 
 		ACTION deletetrxns (uint64_t project_id);
+
+		ACTION opendrawdown (name actor, uint64_t project_id, vector<url_information> files);
+
+		ACTION editdrawdown (name actor, uint64_t project_id, vector<url_information> files);
+
+		ACTION closedrwdown (name actor, uint64_t project_id);
 
 	private:
 
@@ -61,7 +69,8 @@ CONTRACT transactions : public contract {
 			name actor;
 			uint64_t timestamp;
 			string description;
-			vector<string> supporting_urls;
+			uint64_t drawdown_id;
+			vector<url_information> supporting_urls;
 
 			uint64_t primary_key() const { return transaction_id; }
 		};
@@ -145,6 +154,19 @@ CONTRACT transactions : public contract {
 			uint64_t primary_key() const { return type_id; }
 		};
 
+		// scoped by project_id
+		TABLE drawdown_table {
+			uint64_t drawdown_id;
+			asset total_amount;
+			vector<url_information> files;
+			uint64_t state;
+			uint64_t open_date;
+			uint64_t close_date;
+
+			uint64_t primary_key() const { return drawdown_id; }
+			uint64_t by_state() const { return state; }
+		};
+
 		typedef eosio::multi_index <"transactions"_n, transaction_table> transaction_tables;
 
 		typedef eosio::multi_index <"accnttrx"_n, account_transaction_table,
@@ -164,6 +186,11 @@ CONTRACT transactions : public contract {
 		typedef eosio::multi_index <"projects"_n, project_table> project_tables;
 
 		typedef eosio::multi_index <"accnttypes"_n, type_table> type_tables;
+
+		typedef eosio::multi_index <"drawdowns"_n, drawdown_table,
+			indexed_by<"bystate"_n,
+			const_mem_fun<drawdown_table, uint64_t, &drawdown_table::by_state>>
+		> drawdown_tables;
 		
 		project_tables projects;
 		type_tables account_types;
@@ -176,7 +203,8 @@ CONTRACT transactions : public contract {
 								vector<transaction_amount> & amounts,
 								uint64_t & date,
 								string & description,
-								vector<string> & supporting_urls );
+								bool & is_drawdown,
+								vector<url_information> & supporting_urls );
 
 };
 

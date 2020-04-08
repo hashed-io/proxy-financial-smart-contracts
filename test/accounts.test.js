@@ -67,21 +67,21 @@ describe("Proxy Capital Accounts Contract", function (eoslime) {
 
 
         // Assets children
-        await seconduserContract.addaccount(seconduser.name, 0, 'Liquid Primary', 1, currency, 'Test description 6')      // id = 11
-        await seconduserContract.addaccount(seconduser.name, 0, 'Reserve Account', 1, currency, 'Test description 7')     // id = 12
+        await seconduserContract.addaccount(seconduser.name, 0, 'Liquid Primary', 1, currency, 'Test description 6', 1)      // id = 11
+        await seconduserContract.addaccount(seconduser.name, 0, 'Reserve Account', 1, currency, 'Test description 7', 1)     // id = 12
 
         // Equity children
-        await seconduserContract.addaccount(seconduser.name, 0, 'Investments', 2, currency, 'Test description 8')         // id = 13
-        await seconduserContract.addaccount(seconduser.name, 0, 'Franklin Johnson', 8, currency, 'Test description 9')    // id = 14
-        await seconduserContract.addaccount(seconduser.name, 0, 'Michelle Wu', 8, currency, 'Test description 10')         // id = 15
+        await seconduserContract.addaccount(seconduser.name, 0, 'Investments', 2, currency, 'Test description 8', 3)         // id = 13
+        await seconduserContract.addaccount(seconduser.name, 0, 'Franklin Johnson', 8, currency, 'Test description 9', 3)    // id = 14
+        await seconduserContract.addaccount(seconduser.name, 0, 'Michelle Wu', 8, currency, 'Test description 10', 3)         // id = 15
 
         // Expenses children
-        await seconduserContract.addaccount(seconduser.name, 0, 'Development', 3, currency, 'Test description 11')         // id = 16
-        await seconduserContract.addaccount(seconduser.name, 0, 'Marketing', 3, currency, 'Test description 12')           // id = 17
-        await seconduserContract.addaccount(seconduser.name, 0, 'Tech Infrastructure', 3, currency, 'Test description 13') // id = 18
-        await seconduserContract.addaccount(seconduser.name, 0, 'Travel', 3, currency, 'Test description 14')              // id = 19
+        await seconduserContract.addaccount(seconduser.name, 0, 'Development', 3, currency, 'Test description 11', 3)         // id = 16
+        await seconduserContract.addaccount(seconduser.name, 0, 'Marketing', 3, currency, 'Test description 12', 2)           // id = 17
+        await seconduserContract.addaccount(seconduser.name, 0, 'Tech Infrastructure', 3, currency, 'Test description 13', 2) // id = 18
+        await seconduserContract.addaccount(seconduser.name, 0, 'Travel', 3, currency, 'Test description 14', 2)              // id = 19
 
-        await thirduserContract.addaccount(thirduser.name, 0, 'Liquid Primary', 6, currency, 'Test description')
+        await thirduserContract.addaccount(thirduser.name, 0, 'Liquid Primary', 6, currency, 'Test description', 1)
 
         const expected = [
           {
@@ -94,7 +94,8 @@ describe("Proxy Capital Accounts Contract", function (eoslime) {
             decrease_balance: '0.00 USD',
             account_symbol: '2,USD',
             ledger_id: 1,
-            description: '---'
+            description: '---',
+            account_category: 1
           },
           {
             account_id: 2,
@@ -106,7 +107,8 @@ describe("Proxy Capital Accounts Contract", function (eoslime) {
             decrease_balance: '0.00 USD',
             account_symbol: '2,USD',
             ledger_id: 1,
-            description: '---'
+            description: '---',
+            account_category: 1
           },
           {
             account_id: 3,
@@ -118,7 +120,8 @@ describe("Proxy Capital Accounts Contract", function (eoslime) {
             decrease_balance: '0.00 USD',
             account_symbol: '2,USD',
             ledger_id: 1,
-            description: '---'
+            description: '---',
+            account_category: 1
           },
           {
             account_id: 4,
@@ -130,7 +133,8 @@ describe("Proxy Capital Accounts Contract", function (eoslime) {
             decrease_balance: '0.00 USD',
             account_symbol: '2,USD',
             ledger_id: 1,
-            description: '---'
+            description: '---',
+            account_category: 1
           },
           {
             account_id: 5,
@@ -142,7 +146,8 @@ describe("Proxy Capital Accounts Contract", function (eoslime) {
             decrease_balance: '0.00 USD',
             account_symbol: '2,USD',
             ledger_id: 1,
-            description: '---'
+            description: '---',
+            account_category: 1
           },
           {
             account_id: 6,
@@ -154,7 +159,8 @@ describe("Proxy Capital Accounts Contract", function (eoslime) {
             decrease_balance: '0.00 USD',
             account_symbol: '2,USD',
             ledger_id: 2,
-            description: '---'
+            description: '---',
+            account_category: 1
           },
           {
             account_id: 7,
@@ -166,7 +172,8 @@ describe("Proxy Capital Accounts Contract", function (eoslime) {
             decrease_balance: '0.00 USD',
             account_symbol: '2,USD',
             ledger_id: 2,
-            description: '---'
+            description: '---',
+            account_category: 1
           },
           {
             account_id: 8,
@@ -178,7 +185,8 @@ describe("Proxy Capital Accounts Contract", function (eoslime) {
             decrease_balance: '0.00 USD',
             account_symbol: '2,USD',
             ledger_id: 2,
-            description: '---'
+            description: '---',
+            account_category: 1
           },
           {
             account_id: 9,
@@ -190,7 +198,8 @@ describe("Proxy Capital Accounts Contract", function (eoslime) {
             decrease_balance: '0.00 USD',
             account_symbol: '2,USD',
             ledger_id: 2,
-            description: '---'
+            description: '---',
+            account_category: 1
           },
           {
             account_id: 10,
@@ -202,7 +211,8 @@ describe("Proxy Capital Accounts Contract", function (eoslime) {
             decrease_balance: '0.00 USD',
             account_symbol: '2,USD',
             ledger_id: 2,
-            description: '---'
+            description: '---',
+            account_category: 1
           },
           {
             account_id: 11,
@@ -214,7 +224,8 @@ describe("Proxy Capital Accounts Contract", function (eoslime) {
             decrease_balance: '0.00 USD',
             account_symbol: '2,USD',
             ledger_id: 1,
-            description: 'Test description 6'
+            description: 'Test description 6',
+            account_category: 1
           },
           {
             account_id: 12,
@@ -226,7 +237,8 @@ describe("Proxy Capital Accounts Contract", function (eoslime) {
             decrease_balance: '0.00 USD',
             account_symbol: '2,USD',
             ledger_id: 1,
-            description: 'Test description 7'
+            description: 'Test description 7',
+            account_category: 1
           },
           {
             account_id: 13,
@@ -238,7 +250,8 @@ describe("Proxy Capital Accounts Contract", function (eoslime) {
             decrease_balance: '0.00 USD',
             account_symbol: '2,USD',
             ledger_id: 1,
-            description: 'Test description 8'
+            description: 'Test description 8',
+            account_category: 3
           },
           {
             account_id: 14,
@@ -250,7 +263,8 @@ describe("Proxy Capital Accounts Contract", function (eoslime) {
             decrease_balance: '0.00 USD',
             account_symbol: '2,USD',
             ledger_id: 1,
-            description: 'Test description 9'
+            description: 'Test description 9',
+            account_category: 3
           },
           {
             account_id: 15,
@@ -262,7 +276,8 @@ describe("Proxy Capital Accounts Contract", function (eoslime) {
             decrease_balance: '0.00 USD',
             account_symbol: '2,USD',
             ledger_id: 1,
-            description: 'Test description 10'
+            description: 'Test description 10',
+            account_category: 3
           },
           {
             account_id: 16,
@@ -274,7 +289,8 @@ describe("Proxy Capital Accounts Contract", function (eoslime) {
             decrease_balance: '0.00 USD',
             account_symbol: '2,USD',
             ledger_id: 1,
-            description: 'Test description 11'
+            description: 'Test description 11',
+            account_category: 3
           },
           {
             account_id: 17,
@@ -286,7 +302,8 @@ describe("Proxy Capital Accounts Contract", function (eoslime) {
             decrease_balance: '0.00 USD',
             account_symbol: '2,USD',
             ledger_id: 1,
-            description: 'Test description 12'
+            description: 'Test description 12',
+            account_category: 2
           },
           {
             account_id: 18,
@@ -298,7 +315,8 @@ describe("Proxy Capital Accounts Contract", function (eoslime) {
             decrease_balance: '0.00 USD',
             account_symbol: '2,USD',
             ledger_id: 1,
-            description: 'Test description 13'
+            description: 'Test description 13',
+            account_category: 2
           },
           {
             account_id: 19,
@@ -310,7 +328,8 @@ describe("Proxy Capital Accounts Contract", function (eoslime) {
             decrease_balance: '0.00 USD',
             account_symbol: '2,USD',
             ledger_id: 1,
-            description: 'Test description 14'
+            description: 'Test description 14',
+            account_category: 2
           },
           {
             account_id: 20,
@@ -322,7 +341,8 @@ describe("Proxy Capital Accounts Contract", function (eoslime) {
             decrease_balance: '0.00 USD',
             account_symbol: '2,USD',
             ledger_id: 2,
-            description: 'Test description'
+            description: 'Test description',
+            account_category: 1
           }
         ]               
 
@@ -335,7 +355,7 @@ describe("Proxy Capital Accounts Contract", function (eoslime) {
 
     it('Should edit and delete accounts', async () => {
 
-      await seconduserContract.editaccount(seconduser.name, 0, 11, 'Liquid Primary Test', "Account edited")
+      await seconduserContract.editaccount(seconduser.name, 0, 11, 'Liquid Primary Test', "Account edited", 1)
 
       const provider = eoslime.Provider
       let accountsTable = await provider.select('accounts').from(names.accounts).scope('0').limit(20).find()
@@ -357,7 +377,8 @@ describe("Proxy Capital Accounts Contract", function (eoslime) {
           decrease_balance: '0.00 USD',
           account_symbol: '2,USD',
           description: 'Account edited',
-          ledger_id: 1
+          ledger_id: 1,
+          account_category: 1
         }
       ]
       

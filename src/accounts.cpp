@@ -106,6 +106,7 @@ ACTION accounts::addledger (uint64_t project_id, uint64_t entity_id) {
             new_account.decrease_balance = asset(0, CURRENCY);
             new_account.account_symbol = CURRENCY;
             new_account.description = "---";
+            new_account.account_category = ACCOUNT_CATEGORIES.NONE;
         });
         itr_types++;
     }
@@ -167,7 +168,13 @@ ACTION accounts::cancelsub (uint64_t project_id, uint64_t account_id, asset amou
     change_balance(project_id, account_id, amount, false, true);
 }
 
-ACTION accounts::editaccount (name actor, uint64_t project_id, uint64_t account_id, string account_name, string description) {
+ACTION accounts::editaccount ( name actor, 
+                               uint64_t project_id, 
+                               uint64_t account_id, 
+                               string account_name,
+                               string description,
+                               uint64_t account_category ) {
+
     require_auth(actor);
 
     /* action (
@@ -178,6 +185,7 @@ ACTION accounts::editaccount (name actor, uint64_t project_id, uint64_t account_
     ).send(); */
 
     check(account_name.length() > 0, contract_names::accounts.to_string() + ": the account name can not be an empty string.");
+    check(ACCOUNT_CATEGORIES.is_valid_constant(account_category), contract_names::accounts.to_string() + ": the account category is invalid.");
 
     auto itr_project = projects_table.find(project_id);
     check(itr_project != projects_table.end(), contract_names::accounts.to_string() + ": the project does not exist.");
@@ -253,7 +261,8 @@ ACTION accounts::addaccount ( name actor,
                               string account_name,
                               uint64_t parent_id,
                               symbol account_currency,
-                              string description ) {
+                              string description,
+                              uint64_t account_category ) {
 
     require_auth(actor);
 
@@ -285,6 +294,8 @@ ACTION accounts::addaccount ( name actor,
 		itr_accounts++;
 	}
 
+    check(ACCOUNT_CATEGORIES.is_valid_constant(account_category), contract_names::accounts.to_string() + ": the account category is invalid.");
+
 	check(account_currency == CURRENCY, contract_names::accounts.to_string() + ": the currency must be the same.");
     check(parent_id != 0, contract_names::accounts.to_string() + ": the parent id must be grater than zero.");
 
@@ -309,6 +320,7 @@ ACTION accounts::addaccount ( name actor,
 		new_account.decrease_balance = asset(0, CURRENCY);
 		new_account.account_symbol = CURRENCY;
         new_account.description = description;
+        new_account.account_category = account_category;
 	});
 
     accounts.modify(parent, _self, [&](auto & modified_account){

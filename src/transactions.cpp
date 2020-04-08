@@ -7,7 +7,8 @@ void transactions::make_transaction ( name actor,
 									  vector<transaction_amount> & amounts,
 									  uint64_t & date,
 									  string & description,
-									  vector<string> & supporting_urls ) {
+									  bool & is_drawdown,
+									  vector<url_information> & supporting_urls ) {
 
 	transaction_tables transactions(_self, project_id);
 	account_transaction_tables accnttrxns(_self, project_id);
@@ -17,6 +18,7 @@ void transactions::make_transaction ( name actor,
 	auto itr_amounts = amounts.begin();
 	uint64_t trx_id = 0;
 	int64_t total = 0;
+	uint64_t total_positive = 0;
 	uint64_t ledger_id = 0;
 	name action_accnt;
 
@@ -45,10 +47,12 @@ void transactions::make_transaction ( name actor,
 
 		total += itr_amounts -> amount;
 
+
 		if (itr_amounts -> amount < 0) {
 			action_accnt = "subbalance"_n;
 		} else {
 			action_accnt = "addbalance"_n;
+			total_positive += itr_amounts -> amount;
 		}
 
 		action (
@@ -72,11 +76,29 @@ void transactions::make_transaction ( name actor,
 
 	check(total == 0, contract_names::transactions.to_string() + ": the transaction total balance must be zero.");
 
+	uint64_t drawdown_id = 0;
+
+	if (is_drawdown) {
+		drawdown_tables drawdowns(_self, project_id);
+
+		auto drawdowns_by_state = drawdowns.get_index<"bystate"_n>();
+		auto itr_drawdown = drawdowns_by_state.find(DRAWDOWN_STATES.OPEN);
+
+		check(itr_drawdown != drawdowns_by_state.end(), contract_names::transactions.to_string() + ": there are no open drawdowns.");
+		
+		drawdown_id = itr_drawdown -> drawdown_id;
+
+		drawdowns_by_state.modify(itr_drawdown, _self, [&](auto & modified_drawdown){
+			modified_drawdown.total_amount += asset(total_positive, CURRENCY);
+		});
+	}
+
 	transactions.emplace(_self, [&](auto & new_transaction){
 		new_transaction.transaction_id = trx_id;
 		new_transaction.actor = actor;
 		new_transaction.timestamp = date;
 		new_transaction.description = description;
+		new_transaction.drawdown_id = drawdown_id;
 		
 		for (int i = 0; i < supporting_urls.size(); i++) {
 			new_transaction.supporting_urls.push_back(supporting_urls[i]);
@@ -96,6 +118,7 @@ void transactions::delete_transaction (name actor, uint64_t project_id, uint64_t
 	auto accnttrxns_by_transactions = accnttrxns.get_index<"bytrxns"_n>();
 	auto itr_amount = accnttrxns_by_transactions.begin();
 	uint64_t ledger_id = 0;
+	asset total_amount = asset(0, CURRENCY);
 	name action_cancel_amount;
 
 	if (itr_amount != accnttrxns_by_transactions.end()) {
@@ -118,6 +141,7 @@ void transactions::delete_transaction (name actor, uint64_t project_id, uint64_t
 			action_cancel_amount = "cancelsub"_n;
 		} else {
 			action_cancel_amount = "canceladd"_n;
+			total_amount += asset(itr_amount -> amount, CURRENCY);
 		}
 
 		action (
@@ -128,6 +152,19 @@ void transactions::delete_transaction (name actor, uint64_t project_id, uint64_t
 		).send();
 
 		itr_amount = accnttrxns_by_transactions.erase(itr_amount);
+	}
+
+	if (itr_trxn -> drawdown_id) {
+		drawdown_tables drawdowns(_self, project_id);
+
+		auto drawdowns_by_state = drawdowns.get_index<"bystate"_n>();
+		auto itr_drawdown = drawdowns_by_state.find(DRAWDOWN_STATES.OPEN);
+
+		check(itr_drawdown != drawdowns_by_state.end(), contract_names::transactions.to_string() + ": there are no open drawdowns.");
+
+		drawdowns_by_state.modify(itr_drawdown, _self, [&](auto & modified_drawdown){
+			modified_drawdown.total_amount -= total_amount;
+		});
 	}
 
 	transactions.erase(itr_trxn);
@@ -155,6 +192,12 @@ ACTION transactions::reset () {
 		while (itr_at != accnttrxns.end()) {
 			itr_at = accnttrxns.erase(itr_at);
 		}
+
+		drawdown_tables drawdowns(_self, i);
+		auto itr_d = drawdowns.begin();
+		while (itr_d != drawdowns.end()) {
+			itr_d = drawdowns.erase(itr_d);
+		}
 	}
 }
 
@@ -163,7 +206,8 @@ ACTION transactions::transact ( name actor,
 								vector<transaction_amount> amounts,
 								uint64_t date,
 								string description,
-								vector<string> supporting_urls ) {
+								bool is_drawdown,
+								vector<url_information> supporting_urls ) {
 
 	require_auth(actor);
 
@@ -177,7 +221,7 @@ ACTION transactions::transact ( name actor,
 	auto itr_project = projects.find(project_id);
 	check(itr_project != projects.end(), contract_names::transactions.to_string() + ": the project with the id = " + to_string(project_id) + " does not exist.");
 
-	make_transaction(actor, 0, project_id, amounts, date, description, supporting_urls);
+	make_transaction(actor, 0, project_id, amounts, date, description, is_drawdown, supporting_urls);
 }
 
 ACTION transactions::deletetrxn (name actor, uint64_t project_id, uint64_t transaction_id) {
@@ -199,7 +243,8 @@ ACTION transactions::edittrxn ( name actor,
 								vector<transaction_amount> amounts,
 								uint64_t date,
 								string description,
-								vector<string> supporting_urls ) {
+								bool is_drawdown,
+								vector<url_information> supporting_urls ) {
 	
 	require_auth(actor);
 
@@ -219,7 +264,7 @@ ACTION transactions::edittrxn ( name actor,
 	check(itr_trxn != transactions.end(), contract_names::transactions.to_string() + ": the transaction does not exist.");
 
 	delete_transaction(actor, project_id, transaction_id);
-	make_transaction(actor, transaction_id, project_id, amounts, date, description, supporting_urls);
+	make_transaction(actor, transaction_id, project_id, amounts, date, description, is_drawdown, supporting_urls);
 }
 
 
@@ -241,4 +286,90 @@ ACTION transactions::deletetrxns (uint64_t project_id) {
 }
 
 
-EOSIO_DISPATCH(transactions, (reset)(transact)(deletetrxn)(edittrxn)(deletetrxns));
+ACTION transactions::opendrawdown (name actor, uint64_t project_id, vector<url_information> files) {
+	require_auth(actor);
+
+	if (actor != _self) {
+
+		// ======================================== //
+		// ======== CHECK PERMISSIONS HERE ======== //
+		// ======================================== //
+
+	}
+
+	closedrwdown(actor, project_id);
+
+	drawdown_tables drawdowns(_self, project_id);
+	uint64_t drawdown_id = get_valid_index(drawdowns.available_primary_key());
+
+	drawdowns.emplace(_self, [&](auto & new_drawdown){
+		new_drawdown.drawdown_id = drawdown_id;
+		new_drawdown.total_amount = asset(0, CURRENCY);
+		new_drawdown.state = DRAWDOWN_STATES.OPEN;
+		new_drawdown.open_date = eosio::current_time_point().sec_since_epoch();
+		new_drawdown.close_date = 0;
+
+		for (int i = 0; i < files.size(); i++) {
+			new_drawdown.files.push_back(files[i]);
+		}
+	});
+}
+
+
+ACTION transactions::editdrawdown (name actor, uint64_t project_id, vector<url_information> files) {
+	require_auth(actor);
+
+	if (actor != _self) {
+
+		// ======================================== //
+		// ======== CHECK PERMISSIONS HERE ======== //
+		// ======================================== //
+
+	}
+
+	drawdown_tables drawdowns(_self, project_id);
+
+	auto drawdowns_by_state = drawdowns.get_index<"bystate"_n>();
+	auto itr_drawdown = drawdowns_by_state.find(DRAWDOWN_STATES.OPEN);
+
+	drawdowns_by_state.modify(itr_drawdown, _self, [&](auto & modified_drawdown){
+		modified_drawdown.files.clear();
+
+		for (int i = 0; i < files.size(); i++) {
+			modified_drawdown.files.push_back(files[i]);
+		}
+	});
+
+}
+
+
+ACTION transactions::closedrwdown (name actor, uint64_t project_id) {
+
+	require_auth(actor);
+
+	if (actor != _self) {
+
+		// ======================================== //
+		// ======== CHECK PERMISSIONS HERE ======== //
+		// ======================================== //
+
+	}
+
+	drawdown_tables drawdowns(_self, project_id);
+
+	auto drawdowns_by_state = drawdowns.get_index<"bystate"_n>();
+	auto itr_drawdown = drawdowns_by_state.find(DRAWDOWN_STATES.OPEN);
+
+	if (itr_drawdown != drawdowns_by_state.end()) {
+		check(itr_drawdown -> state == DRAWDOWN_STATES.OPEN, contract_names::transactions.to_string() + ": there is no open drawdowns.");
+		drawdowns_by_state.modify(itr_drawdown, _self, [&](auto & modified_drawdown){
+			modified_drawdown.state = DRAWDOWN_STATES.CLOSE;
+			modified_drawdown.close_date = eosio::current_time_point().sec_since_epoch();
+		});
+	}
+}
+
+
+
+
+EOSIO_DISPATCH(transactions, (reset)(transact)(deletetrxn)(edittrxn)(deletetrxns)(opendrawdown)(editdrawdown)(closedrwdown));

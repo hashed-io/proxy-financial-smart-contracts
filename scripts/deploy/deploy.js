@@ -135,6 +135,8 @@ async function deployTestnet (eoslime) {
 
     const accounts_names = Object.keys(names)
 
+    console.log(accounts)
+
     for (let i = 0; i < accounts_names.length; i++) {
         console.log(accounts[accounts_names[i]].account)
 
@@ -177,6 +179,10 @@ let deploy = async function (eoslime, deployer) {
         await deployLocal(eoslime)
     } else if (process.env.EOSIO_NETWORK === networksNames.telosTestnet) {
         existing_accounts = require('../testnet_accounts.json')
+        await resetAllContracts(eoslime)
+        await deployTestnet(eoslime)
+    } else if (process.env.EOSIO_NETWORK === networksNames.telosTestnet2) {
+        existing_accounts = require('../testnet_accounts2.json')
         await resetAllContracts(eoslime)
         await deployTestnet(eoslime)
     }

@@ -7,7 +7,7 @@ function getError (err) {
   return JSON.parse(err).error.details[0].message.replace('assertion failure with message: ', '')
 }
 
-describe("Proxy Capital Accounts Contract", function (eoslime) {
+describe("Proxy Capital Budgets Contract", function (eoslime) {
 
     let firstuser = eoslime.Account.load(names.firstuser, accounts[names.firstuser].privateKey, 'active')
     let seconduser = eoslime.Account.load(names.seconduser, accounts[names.seconduser].privateKey, 'active')
@@ -73,24 +73,25 @@ describe("Proxy Capital Accounts Contract", function (eoslime) {
         )
 
         // Assets children
-        await seconduserContractAccounts.addaccount(seconduser.name, 0, 'Liquid Primary', 1, currency, 'Test description 6')      // id = 11
-        await seconduserContractAccounts.addaccount(seconduser.name, 0, 'Reserve Account', 1, currency, 'Test description 7')     // id = 12
+        await seconduserContractAccounts.addaccount(seconduser.name, 0, 'Liquid Primary', 1, currency, 'Test description 6', 1)      // id = 11
+        await seconduserContractAccounts.addaccount(seconduser.name, 0, 'Reserve Account', 1, currency, 'Test description 7', 1)     // id = 12
 
         // Equity children
-        await seconduserContractAccounts.addaccount(seconduser.name, 0, 'Investments', 2, currency, 'Test description 8')         // id = 13
-        await seconduserContractAccounts.addaccount(seconduser.name, 0, 'Franklin Johnson', 8, currency, 'Test description 9')    // id = 14
-        await seconduserContractAccounts.addaccount(seconduser.name, 0, 'Michelle Wu', 8, currency, 'Test description 10')         // id = 15
+        await seconduserContractAccounts.addaccount(seconduser.name, 0, 'Investments', 2, currency, 'Test description 8', 3)         // id = 13
+        await seconduserContractAccounts.addaccount(seconduser.name, 0, 'Franklin Johnson', 8, currency, 'Test description 9', 3)    // id = 14
+        await seconduserContractAccounts.addaccount(seconduser.name, 0, 'Michelle Wu', 8, currency, 'Test description 10', 3)         // id = 15
 
         // Expenses children
-        await seconduserContractAccounts.addaccount(seconduser.name, 0, 'Development', 3, currency, 'Test description 11')         // id = 16
-        await seconduserContractAccounts.addaccount(seconduser.name, 0, 'Marketing', 3, currency, 'Test description 12')           // id = 17
-        await seconduserContractAccounts.addaccount(seconduser.name, 0, 'Tech Infrastructure', 3, currency, 'Test description 13') // id = 18
-        await seconduserContractAccounts.addaccount(seconduser.name, 0, 'Travel', 3, currency, 'Test description 14')              // id = 19
+        await seconduserContractAccounts.addaccount(seconduser.name, 0, 'Development', 3, currency, 'Test description 11', 3)         // id = 16
+        await seconduserContractAccounts.addaccount(seconduser.name, 0, 'Marketing', 3, currency, 'Test description 12', 2)           // id = 17
+        await seconduserContractAccounts.addaccount(seconduser.name, 0, 'Tech Infrastructure', 3, currency, 'Test description 13', 2) // id = 18
+        await seconduserContractAccounts.addaccount(seconduser.name, 0, 'Travel', 3, currency, 'Test description 14', 2)              // id = 19
+        
 
       // travel children
-      await seconduserContractAccounts.addaccount(seconduser.name, 0, 'Flights', 19, currency, '---')  // id = 20
-      await seconduserContractAccounts.addaccount(seconduser.name, 0, 'Bus', 19, currency, '---')      // id = 21
-      await seconduserContractAccounts.addaccount(seconduser.name, 0, 'Taxis', 19, currency, '---')    // id = 22
+      await seconduserContractAccounts.addaccount(seconduser.name, 0, 'Flights', 19, currency, '---', 2)  // id = 20
+      await seconduserContractAccounts.addaccount(seconduser.name, 0, 'Bus', 19, currency, '---', 2)      // id = 21
+      await seconduserContractAccounts.addaccount(seconduser.name, 0, 'Taxis', 19, currency, '---', 2)    // id = 22
 
       await seconduserContract.addbudget(seconduser.name, 0, 22, "300.00 USD", 1, 1585762692, 1588354692, 1)
       await seconduserContract.addbudget(seconduser.name, 0, 21, "200.00 USD", 1, 1585762692, 1588354692, 1)
@@ -101,8 +102,8 @@ describe("Proxy Capital Accounts Contract", function (eoslime) {
         assert.deepEqual(getError(err), 'proxycapbdgt: the child can not have more budget than its parent, account_id = 20 parent_budget = 500.00 USD.', 'Something else went wrong.')
       }
 
-      await seconduserContractAccounts.addaccount(seconduser.name, 0, 'Backend', 16, currency, '---')    // id = 23
-      await seconduserContractAccounts.addaccount(seconduser.name, 0, 'Frontend', 16, currency, '---')   // id = 24
+      await seconduserContractAccounts.addaccount(seconduser.name, 0, 'Backend', 16, currency, '---', 3)    // id = 23
+      await seconduserContractAccounts.addaccount(seconduser.name, 0, 'Frontend', 16, currency, '---', 3)   // id = 24
 
       await seconduserContract.addbudget(seconduser.name, 0, 23, "200.00 USD", 1, 1585762692, 1588354692, 0)
       await seconduserContract.addbudget(seconduser.name, 0, 24, "200.00 USD", 1, 1585762692, 1588354692, 0)

@@ -8,6 +8,7 @@
 #include <account_types.hpp>
 #include <account_subtypes.hpp>
 #include <action_names.hpp>
+#include <account_categories.hpp>
 
 using namespace eosio;
 using namespace std;
@@ -36,9 +37,15 @@ CONTRACT accounts : public contract {
                             string account_name,
                             uint64_t parent_id,
                             symbol account_currency,
-                            string description );
+                            string description,
+                            uint64_t account_category );
 
-		ACTION editaccount (name actor, uint64_t project_id, uint64_t account_id, string account_name, string description);
+		ACTION editaccount ( name actor,
+                             uint64_t project_id,
+                             uint64_t account_id,
+                             string account_name,
+                             string description,
+                             uint64_t account_category );
 
 		ACTION deleteaccnt (name actor, uint64_t project_id, uint64_t account_id);
 
@@ -80,10 +87,12 @@ CONTRACT accounts : public contract {
 			symbol account_symbol;
             uint64_t ledger_id;
             string description;
+            uint64_t account_category;
 
 			uint64_t primary_key() const { return account_id; }
 			uint64_t by_parent() const { return parent_id; }
             uint64_t by_ledger() const { return ledger_id; }
+            uint64_t by_category() const { return account_category; }
 		};
 
         TABLE type_table {

@@ -19,23 +19,23 @@
         "privateKey": "5HycHpX9ZMdf8WPzp7c5rmE8VjYs5PNxt1ztSoXbVFbBA4uYwjb",
         "publicKey": "EOS6XQKSQJWS2a6tv1h3595JT1FC5mKXiPCUS5ky8UDUknEFP6kSk"
     },
-    "proxycaptrnx": {
+    "proxycaptrx1": {
         "privateKey": "5JBKsepD8bxSMWNE2Kau7hiBU3QCvbzrGioR9sW56WsxVP6LQQH",
         "publicKey": "EOS5xJJHkqsadnLb6P2fhFmd8e9aJXfBbhmuVJvQrcV2Nu3p5Edx5"
     },
-    "proxycapproj": {
+    "proxycappro1": {
         "privateKey": "5JbQ6smuDR7di8TMfG8FuSPPrUspgZvx56X2khXRSodgrZ3hrY5",
         "publicKey": "EOS6zczR8Z8AoGF8TiWKiqQ7Dnm6wLkmpL4KUzJVemA14FgvtRBnz"
     },
-    "proxycapacct": {
+    "proxycapacc1": {
         "privateKey": "5KYToGQjfNeeDZeoerjFt1tM2jkQggBUHg1ebaTFqMnQmKw18Ed",
         "publicKey": "EOS7PatB5o9Fjao7vv6gewL2q6k46Ezv4N2wxoopj3Q6QHJ2uAnkS"
     },
-    "proxycapperm": {
+    "proxycapper1": {
         "privateKey": "5JcSYGX1nLLCzCvxyribZLevwbo4r31WEFfwoZcgFqwXZws3NhH",
         "publicKey": "EOS8fZiThK85jvnw2omQtzCNit5nZATKKaXwuChJmboRp7ouu184E"
     },
-    "proxycapbdgt": {
+    "proxycapbdg1": {
         "privateKey": "5JBtKsnLz2Ts3xMLR3fRYXLriFFxRj41i6dYDMPuuifaV5MfmSs",
         "publicKey": "EOS7n46QuH8UbhM3NSpEhyRyPZowgKtfXBHceebBaudgoaM7z3FPt"
     }
