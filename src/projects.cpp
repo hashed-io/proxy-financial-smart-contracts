@@ -22,6 +22,14 @@ void projects::delete_transfer_aux (uint64_t transfer_id) {
 	transfers.erase(itr_transfer);
 }
 
+uint64_t projects::get_user_entity (name actor) {
+	auto itr_usr = users.find(actor.value);
+	check(itr_usr != users.end(), contract_names::projects.to_string() + ": proxy cap user not found.");
+
+	return itr_usr -> entity_id;
+}
+
+
 ACTION projects::reset () {
 	require_auth(_self);
 
@@ -157,16 +165,8 @@ ACTION projects::addproject ( name actor,
 	}
 
     uint64_t new_project_id = projects_table.available_primary_key();
-	uint64_t role_id = 0; // the owner is always the index 0
-	uint64_t proxycap_entity_id = 1;
-
-	auto itr_usr = users.find(actor.value);
-	auto users_by_entity = users.get_index<"byentity"_n>();
-	auto itr_proxy_user = users_by_entity.find(proxycap_entity_id);
-	check(itr_proxy_user != users_by_entity.end(), contract_names::projects.to_string() + ": proxy cap user not found.");
 
 	projects_table.emplace(_self, [&](auto & new_project) {
-		
 		new_project.project_id = new_project_id;
 		new_project.owner = actor;
 		new_project.project_class = project_class;
@@ -191,43 +191,7 @@ ACTION projects::addproject ( name actor,
 		new_project.projected_completion_date = projected_completion_date;
 		new_project.projected_stabilization_date = projected_stabilization_date;
 		new_project.anticipated_year_sale_refinance = anticipated_year_sale_refinance;
-
 	});
-
-    action (
-        permission_level(contract_names::accounts, "active"_n),
-        contract_names::accounts,
-        "addledger"_n,
-        std::make_tuple(new_project_id, itr_usr -> entity_id)
-    ).send();
-
-	action (
-        permission_level(contract_names::accounts, "active"_n),
-        contract_names::accounts,
-        "addledger"_n,
-        std::make_tuple(new_project_id, proxycap_entity_id)
-    ).send();
-
-	action (
-		permission_level(contract_names::permissions, "active"_n),
-		contract_names::permissions,
-		"initroles"_n,
-		std::make_tuple(new_project_id)
-	).send();
-
-	action (
-		permission_level(contract_names::permissions, "active"_n),
-		contract_names::permissions,
-		"assignrole"_n,
-		std::make_tuple(contract_names::permissions, actor, new_project_id, role_id)
-	).send();
-
-	action (
-		permission_level(contract_names::permissions, "active"_n),
-		contract_names::permissions,
-		"assignrole"_n,
-		std::make_tuple(contract_names::permissions, itr_proxy_user -> account, new_project_id, role_id)
-	).send();
 }
 
 ACTION projects::deleteprojct (name actor, uint64_t project_id) {
@@ -241,26 +205,26 @@ ACTION projects::deleteprojct (name actor, uint64_t project_id) {
 
 	projects_table.erase(itr_project);
 
-	action (
-		permission_level(contract_names::accounts, "active"_n),
-		contract_names::accounts,
-		"deleteaccnts"_n,
-		std::make_tuple(project_id)
-	).send();
+	// action (
+	// 	permission_level(contract_names::accounts, "active"_n),
+	// 	contract_names::accounts,
+	// 	"deleteaccnts"_n,
+	// 	std::make_tuple(project_id)
+	// ).send();
 
-	action (
-		permission_level(contract_names::transactions, "active"_n),
-		contract_names::transactions,
-		"deletetrxns"_n,
-		std::make_tuple(project_id)
-	).send();
+	// action (
+	// 	permission_level(contract_names::transactions, "active"_n),
+	// 	contract_names::transactions,
+	// 	"deletetrxns"_n,
+	// 	std::make_tuple(project_id)
+	// ).send();
 
-	action (
-		permission_level(contract_names::permissions, "active"_n),
-		contract_names::permissions,
-		"deletepmssns"_n,
-		std::make_tuple(project_id)
-	).send();
+	// action (
+	// 	permission_level(contract_names::permissions, "active"_n),
+	// 	contract_names::permissions,
+	// 	"deletepmssns"_n,
+	// 	std::make_tuple(project_id)
+	// ).send();
 }
 
 ACTION projects::editproject ( name actor,
@@ -334,6 +298,7 @@ ACTION projects::editproject ( name actor,
 	});
 }
 
+
 ACTION projects::approveprjct ( name actor, 
 								uint64_t project_id, 
 								string fund_lp,
@@ -351,6 +316,52 @@ ACTION projects::approveprjct ( name actor,
 	check(itr_project != projects_table.end(), contract_names::projects.to_string() + ": the project does not exist.");
 	check(itr_project -> status == PROJECT_STATUS.AWAITING_FUND_APPROVAL, contract_names::projects.to_string() + ": the project has been already approved.");
 
+	uint64_t role_id = 0;
+	uint64_t developer_entity = get_user_entity (itr_project -> owner);
+	uint64_t fund_entity = get_user_entity (actor);
+
+	action (
+        permission_level(contract_names::accounts, "active"_n),
+        contract_names::accounts,
+        "addledger"_n,
+        std::make_tuple(project_id, developer_entity)
+    ).send();
+
+	action (
+        permission_level(contract_names::accounts, "active"_n),
+        contract_names::accounts,
+        "addledger"_n,
+        std::make_tuple(project_id, fund_entity)
+    ).send();
+
+	action (
+		permission_level(contract_names::permissions, "active"_n),
+		contract_names::permissions,
+		"initroles"_n,
+		std::make_tuple(project_id)
+	).send();
+
+	action (
+		permission_level(contract_names::permissions, "active"_n),
+		contract_names::permissions,
+		"assignrole"_n,
+		std::make_tuple(contract_names::permissions, itr_project -> owner, project_id, role_id)
+	).send();
+
+	action (
+		permission_level(contract_names::permissions, "active"_n),
+		contract_names::permissions,
+		"assignrole"_n,
+		std::make_tuple(contract_names::permissions, actor, project_id, role_id)
+	).send();
+
+	action (
+		permission_level(contract_names::transactions, "active"_n),
+		contract_names::transactions,
+		"initdrawdown"_n,
+		std::make_tuple(project_id)
+	).send();
+
 	projects_table.modify(itr_project, _self, [&](auto & modified_project){
 		modified_project.fund_lp = fund_lp;
 		modified_project.total_fund_offering_amount = total_fund_offering_amount;
@@ -361,6 +372,7 @@ ACTION projects::approveprjct ( name actor,
 		modified_project.status = PROJECT_STATUS.READY_FOR_INVESTMENT;
 	});
 }
+
 
 ACTION projects::invest ( name actor, 
 						  uint64_t project_id, 
@@ -401,6 +413,7 @@ ACTION projects::invest ( name actor,
 	});	
 }
 
+
 ACTION projects::editinvest ( name actor, 
 							  uint64_t investment_id,
 							  asset total_investment_amount,
@@ -430,6 +443,7 @@ ACTION projects::editinvest ( name actor,
 	});
 }
 
+
 ACTION projects::deleteinvest (name actor, uint64_t investment_id) {
 	require_auth(actor);
 
@@ -441,6 +455,7 @@ ACTION projects::deleteinvest (name actor, uint64_t investment_id) {
 
 	investments.erase(itr_investment);
 }
+
 
 ACTION projects::approveinvst (name actor, uint64_t investment_id) {
 	require_auth(actor);
@@ -457,6 +472,7 @@ ACTION projects::approveinvst (name actor, uint64_t investment_id) {
 		modified_investment.approved_date = eosio::current_time_point().sec_since_epoch();
 	});
 }
+
 
 ACTION projects::maketransfer (name actor, asset amount, uint64_t investment_id, string proof_of_transfer, uint64_t transfer_date) {
 	require_auth(actor);
@@ -490,6 +506,7 @@ ACTION projects::maketransfer (name actor, asset amount, uint64_t investment_id,
 	});
 
 }
+
 
 ACTION projects::edittransfer ( name actor, 
 								uint64_t transfer_id,
@@ -540,6 +557,7 @@ ACTION projects::deletetrnsfr (name actor, uint64_t transfer_id) {
 	delete_transfer_aux(transfer_id);
 }
 
+
 ACTION projects::confrmtrnsfr (name actor, uint64_t transfer_id, string proof_of_transfer) {
 	require_auth(actor);
 
@@ -582,10 +600,5 @@ ACTION projects::confrmtrnsfr (name actor, uint64_t transfer_id, string proof_of
 }
 
 
-
-
 EOSIO_DISPATCH(projects, (reset)(resetusers)(addproject)(approveprjct)(addentity)(addtestuser)(invest)(approveinvst)(maketransfer)(editproject)(deleteprojct)(deleteinvest)(editinvest)(confrmtrnsfr)(edittransfer)(deletetrnsfr));
-
-
-
 

@@ -9,6 +9,7 @@
 #include <account_subtypes.hpp>
 #include <action_names.hpp>
 #include <account_categories.hpp>
+#include <budget_types.hpp>
 
 using namespace eosio;
 using namespace std;
@@ -38,14 +39,16 @@ CONTRACT accounts : public contract {
                             uint64_t parent_id,
                             symbol account_currency,
                             string description,
-                            uint64_t account_category );
+                            uint64_t account_category,
+                            asset budget_amount );
 
 		ACTION editaccount ( name actor,
                              uint64_t project_id,
                              uint64_t account_id,
                              string account_name,
                              string description,
-                             uint64_t account_category );
+                             uint64_t account_category,
+                             asset budget_amount );
 
 		ACTION deleteaccnt (name actor, uint64_t project_id, uint64_t account_id);
 
@@ -172,6 +175,22 @@ CONTRACT accounts : public contract {
             uint64_t primary_key() const { return entity_id; }
         };
 
+        // scoped by project_id
+        TABLE budget_table {
+            uint64_t budget_id;
+            uint64_t account_id;
+            asset amount;
+            uint64_t budget_creation_date;
+            uint64_t budget_update_date;
+            uint64_t budget_period_id;
+            uint64_t budget_type_id;
+            
+            uint64_t primary_key() const { return budget_id; }
+            uint64_t by_account() const { return account_id; }
+            uint64_t by_period() const { return budget_period_id; }
+            uint64_t by_type() const { return budget_type_id; }
+        };
+
         typedef eosio::multi_index <"accounts"_n, account_table,
 			indexed_by<"byparent"_n,
 			const_mem_fun<account_table, uint64_t, &account_table::by_parent>>,
@@ -191,6 +210,15 @@ CONTRACT accounts : public contract {
             indexed_by<"byentity"_n,
             const_mem_fun<ledger_table, uint64_t, &ledger_table::by_entity>>
         > ledger_tables;
+
+        typedef eosio::multi_index <"budgets"_n, budget_table,
+            indexed_by<"byaccount"_n,
+            const_mem_fun<budget_table, uint64_t, &budget_table::by_account>>,
+            indexed_by<"byperiod"_n,
+            const_mem_fun<budget_table, uint64_t, &budget_table::by_period>>,
+            indexed_by<"bytype"_n,
+            const_mem_fun<budget_table, uint64_t, &budget_table::by_type>>
+        > budget_tables;
 
         type_tables account_types;
         project_tables projects_table;

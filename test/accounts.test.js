@@ -14,12 +14,14 @@ describe("Proxy Capital Accounts Contract", function (eoslime) {
     let accountss = eoslime.Account.load(names.accounts, accounts[names.accounts].privateKey, 'active')
     let projects = eoslime.Account.load(names.projects, accounts[names.projects].privateKey, 'active')
     let permissions = eoslime.Account.load(names.permissions, accounts[names.permissions].privateKey, 'active')
+    let transactions = eoslime.Account.load(names.transactions, accounts[names.transactions].privateKey, 'active')
 
     let thirduserContract
     let seconduserContract
     let accountssContract
     let projectsContract
     let permissionsContract
+    let transactionsContract
 
     before(async () => {
 
@@ -28,12 +30,16 @@ describe("Proxy Capital Accounts Contract", function (eoslime) {
         accountssContract = await eoslime.Contract.at(names.accounts, accountss)
         projectsContract = await eoslime.Contract.at(names.projects, projects)
         permissionsContract = await eoslime.Contract.at(names.permissions, permissions)
+        transactionsContract = await eoslime.Contract.at(names.transactions, transactions)
 
         console.log('reset permissions contract')
         await permissionsContract.reset()
 
         console.log('reset accounts contract')
         await accountssContract.reset()
+
+        console.log('reset transactions')
+        await transactionsContract.reset()
 
         console.log('reset projects contract')
         await projectsContract.reset()
@@ -64,26 +70,35 @@ describe("Proxy Capital Accounts Contract", function (eoslime) {
             projectConfig.anticipated_year_sale_refinance
         )
 
+        let thirduserContractProjects = await eoslime.Contract.at(names.projects, thirduser)
 
+        await thirduserContractProjects.approveprjct(
+            thirduser.name,
+            0,
+            projectConfig.fund_lp,
+            projectConfig.total_fund_offering_amount,
+            projectConfig.total_number_fund_offering,
+            projectConfig.price_per_fund_unit
+        )
 
         // Assets children
-        await seconduserContract.addaccount(seconduser.name, 0, 'Liquid Primary', 1, currency, 'Test description 6', 1)      // id = 11
-        await seconduserContract.addaccount(seconduser.name, 0, 'Reserve Account', 1, currency, 'Test description 7', 1)     // id = 12
+        await seconduserContract.addaccount(seconduser.name, 0, 'Liquid Primary', 1, currency, 'Test description 6', 1, '0.00 USD')      // id = 11
+        await seconduserContract.addaccount(seconduser.name, 0, 'Reserve Account', 1, currency, 'Test description 7', 1, '0.00 USD')     // id = 12
 
         // Equity children
-        await seconduserContract.addaccount(seconduser.name, 0, 'Investments', 2, currency, 'Test description 8', 3)         // id = 13
-        await seconduserContract.addaccount(seconduser.name, 0, 'Franklin Johnson', 8, currency, 'Test description 9', 3)    // id = 14
-        await seconduserContract.addaccount(seconduser.name, 0, 'Michelle Wu', 8, currency, 'Test description 10', 3)         // id = 15
+        await seconduserContract.addaccount(seconduser.name, 0, 'Investments', 2, currency, 'Test description 8', 3, '0.00 USD')         // id = 13
+        await seconduserContract.addaccount(seconduser.name, 0, 'Franklin Johnson', 13, currency, 'Test description 9', 3, '0.00 USD')    // id = 14
+        await seconduserContract.addaccount(seconduser.name, 0, 'Michelle Wu', 13, currency, 'Test description 10', 3, '0.00 USD')         // id = 15
 
         // Expenses children
-        await seconduserContract.addaccount(seconduser.name, 0, 'Development', 3, currency, 'Test description 11', 3)         // id = 16
-        await seconduserContract.addaccount(seconduser.name, 0, 'Marketing', 3, currency, 'Test description 12', 2)           // id = 17
-        await seconduserContract.addaccount(seconduser.name, 0, 'Tech Infrastructure', 3, currency, 'Test description 13', 2) // id = 18
-        await seconduserContract.addaccount(seconduser.name, 0, 'Travel', 3, currency, 'Test description 14', 2)              // id = 19
+        await seconduserContract.addaccount(seconduser.name, 0, 'Development', 3, currency, 'Test description 11', 3, '0.00 USD')         // id = 16
+        await seconduserContract.addaccount(seconduser.name, 0, 'Marketing', 3, currency, 'Test description 12', 2, '0.00 USD')           // id = 17
+        await seconduserContract.addaccount(seconduser.name, 0, 'Tech Infrastructure', 3, currency, 'Test description 13', 2, '0.00 USD') // id = 18
+        await seconduserContract.addaccount(seconduser.name, 0, 'Travel', 3, currency, 'Test description 14', 2, '0.00 USD')              // id = 19
 
-        await thirduserContract.addaccount(thirduser.name, 0, 'Liquid Primary', 6, currency, 'Test description', 1)
+        await thirduserContract.addaccount(thirduser.name, 0, 'Liquid Primary', 6, currency, 'Test description', 1, '0.00 USD')
 
-        const expected = [
+        const expectedAccountsTable = [
           {
             account_id: 1,
             parent_id: 0,
@@ -178,7 +193,7 @@ describe("Proxy Capital Accounts Contract", function (eoslime) {
           {
             account_id: 8,
             parent_id: 0,
-            num_children: 2,
+            num_children: 0,
             account_name: 'Expenses',
             account_subtype: 'Expenses',
             increase_balance: '0.00 USD',
@@ -243,7 +258,7 @@ describe("Proxy Capital Accounts Contract", function (eoslime) {
           {
             account_id: 13,
             parent_id: 2,
-            num_children: 0,
+            num_children: 2,
             account_name: 'Investments',
             account_subtype: 'Equity',
             increase_balance: '0.00 USD',
@@ -255,10 +270,10 @@ describe("Proxy Capital Accounts Contract", function (eoslime) {
           },
           {
             account_id: 14,
-            parent_id: 8,
+            parent_id: 13,
             num_children: 0,
             account_name: 'Franklin Johnson',
-            account_subtype: 'Expenses',
+            account_subtype: 'Equity',
             increase_balance: '0.00 USD',
             decrease_balance: '0.00 USD',
             account_symbol: '2,USD',
@@ -268,10 +283,10 @@ describe("Proxy Capital Accounts Contract", function (eoslime) {
           },
           {
             account_id: 15,
-            parent_id: 8,
+            parent_id: 13,
             num_children: 0,
             account_name: 'Michelle Wu',
-            account_subtype: 'Expenses',
+            account_subtype: 'Equity',
             increase_balance: '0.00 USD',
             decrease_balance: '0.00 USD',
             account_symbol: '2,USD',
@@ -344,22 +359,24 @@ describe("Proxy Capital Accounts Contract", function (eoslime) {
             description: 'Test description',
             account_category: 1
           }
-        ]               
+      ]
 
         const provider = eoslime.Provider
         const accountsTable = await provider.select('accounts').from(names.accounts).scope('0').limit(20).find()
 
-        assert.deepEqual(accountsTable, expected, 'The accounts are not right.')
+        assert.deepEqual(accountsTable, expectedAccountsTable, 'The accounts are not right.')
         
     })
 
     it('Should edit and delete accounts', async () => {
 
-      await seconduserContract.editaccount(seconduser.name, 0, 11, 'Liquid Primary Test', "Account edited", 1)
+      let seconduserContractBudgets = await eoslime.Contract.at(names.budgets, seconduser)
+      await seconduserContractBudgets.addbudget(seconduser.name, 0, 11, "200.00 USD", 1, 1585762692, 1588354692, 1)
+      await seconduserContract.editaccount(seconduser.name, 0, 11, 'Liquid Primary Test', "Account edited", 1, '0.00 USD')
 
       const provider = eoslime.Provider
       let accountsTable = await provider.select('accounts').from(names.accounts).scope('0').limit(20).find()
-
+      
       accountsTable = accountsTable.map(account => {
         if (account.account_id === 11) {
           return account

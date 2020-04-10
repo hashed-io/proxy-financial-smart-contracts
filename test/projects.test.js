@@ -20,6 +20,7 @@ describe("Proxy Capital Projects Contract", function (eoslime) {
     let projects = eoslime.Account.load(names.projects, accounts[names.projects].privateKey, 'active')
     let accountss = eoslime.Account.load(names.accounts, accounts[names.accounts].privateKey, 'active')
     let permissions = eoslime.Account.load(names.permissions, accounts[names.permissions].privateKey, 'active')
+    let transactions = eoslime.Account.load(names.transactions, accounts[names.transactions].privateKey, 'active')
 
     let projectsContract
     let firstuserContract
@@ -28,6 +29,7 @@ describe("Proxy Capital Projects Contract", function (eoslime) {
     let accountssContract
     let permissionsContract
     let fourthuserContract
+    let transactionsContract
 
     before(async () => {
 
@@ -38,6 +40,7 @@ describe("Proxy Capital Projects Contract", function (eoslime) {
         fourthuserContract = await eoslime.Contract.at(names.projects, fourthuser)
         accountssContract = await eoslime.Contract.at(names.accounts, accountss)
         permissionsContract = await eoslime.Contract.at(names.permissions, permissions)
+        transactionsContract = await eoslime.Contract.at(names.transactions, transactions)
 
         console.log('reset permissions contract')
         await permissionsContract.reset()
@@ -47,6 +50,9 @@ describe("Proxy Capital Projects Contract", function (eoslime) {
 
         console.log('reset accounts contract')
         await accountssContract.reset()
+
+        console.log('reset transactions')
+        await transactionsContract.reset()
 
     })
 

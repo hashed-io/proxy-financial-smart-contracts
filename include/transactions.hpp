@@ -55,11 +55,9 @@ CONTRACT transactions : public contract {
 
 		ACTION deletetrxns (uint64_t project_id);
 
-		ACTION opendrawdown (name actor, uint64_t project_id, vector<url_information> files);
+		ACTION submitdrwdn (name actor, uint64_t project_id, vector<url_information> files);
 
-		ACTION editdrawdown (name actor, uint64_t project_id, vector<url_information> files);
-
-		ACTION closedrwdown (name actor, uint64_t project_id);
+		ACTION initdrawdown (uint64_t project_id);
 
 	private:
 
@@ -74,6 +72,7 @@ CONTRACT transactions : public contract {
 			vector<url_information> supporting_files;
 
 			uint64_t primary_key() const { return transaction_id; }
+			uint64_t by_drawdown() const { return drawdown_id; }
 		};
 
 		// scoped by project_id
@@ -168,7 +167,10 @@ CONTRACT transactions : public contract {
 			uint64_t by_state() const { return state; }
 		};
 
-		typedef eosio::multi_index <"transactions"_n, transaction_table> transaction_tables;
+		typedef eosio::multi_index <"transactions"_n, transaction_table,
+			indexed_by<"bydrawdown"_n,
+			const_mem_fun<transaction_table, uint64_t, &transaction_table::by_drawdown>>
+		> transaction_tables;
 
 		typedef eosio::multi_index <"accnttrx"_n, account_transaction_table,
 			indexed_by<"byaccount"_n,

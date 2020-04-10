@@ -268,6 +268,7 @@ CONTRACT projects : public contract {
 
         void checkusrtype (name user, string type);
         void delete_transfer_aux (uint64_t transfer_id);
+        uint64_t get_user_entity (name actor);
 
 };
 

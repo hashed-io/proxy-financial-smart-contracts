@@ -117,7 +117,7 @@ void transactions::delete_transaction (name actor, uint64_t project_id, uint64_t
 	check(itr_trxn != transactions.end(), contract_names::transactions.to_string() + ": the transaction you want to delete does not exist.");
 
 	auto accnttrxns_by_transactions = accnttrxns.get_index<"bytrxns"_n>();
-	auto itr_amount = accnttrxns_by_transactions.begin();
+	auto itr_amount = accnttrxns_by_transactions.find(transaction_id);
 	uint64_t ledger_id = 0;
 	asset total_amount = asset(0, CURRENCY);
 	name action_cancel_amount;
@@ -285,37 +285,9 @@ ACTION transactions::deletetrxns (uint64_t project_id) {
 }
 
 
-ACTION transactions::opendrawdown (name actor, uint64_t project_id, vector<url_information> files) {
-	require_auth(actor);
-
-	if (actor != _self) {
-
-		// ======================================== //
-		// ======== CHECK PERMISSIONS HERE ======== //
-		// ======================================== //
-
-	}
-
-	closedrwdown(actor, project_id);
-
-	drawdown_tables drawdowns(_self, project_id);
-	uint64_t drawdown_id = get_valid_index(drawdowns.available_primary_key());
-
-	drawdowns.emplace(_self, [&](auto & new_drawdown){
-		new_drawdown.drawdown_id = drawdown_id;
-		new_drawdown.total_amount = asset(0, CURRENCY);
-		new_drawdown.state = DRAWDOWN_STATES.OPEN;
-		new_drawdown.open_date = eosio::current_time_point().sec_since_epoch();
-		new_drawdown.close_date = 0;
-
-		for (int i = 0; i < files.size(); i++) {
-			new_drawdown.files.push_back(files[i]);
-		}
-	});
-}
 
 
-ACTION transactions::editdrawdown (name actor, uint64_t project_id, vector<url_information> files) {
+ACTION transactions::submitdrwdn (name actor, uint64_t project_id, vector<url_information> files) {
 	require_auth(actor);
 
 	if (actor != _self) {
@@ -331,44 +303,48 @@ ACTION transactions::editdrawdown (name actor, uint64_t project_id, vector<url_i
 	auto drawdowns_by_state = drawdowns.get_index<"bystate"_n>();
 	auto itr_drawdown = drawdowns_by_state.find(DRAWDOWN_STATES.OPEN);
 
+	check(itr_drawdown != drawdowns_by_state.end(), 
+		contract_names::transactions.to_string() + ": the project has no open drawdowns, the project may not exist.");
+
 	drawdowns_by_state.modify(itr_drawdown, _self, [&](auto & modified_drawdown){
-		modified_drawdown.files.clear();
+		modified_drawdown.state = DRAWDOWN_STATES.CLOSE;
+		modified_drawdown.close_date = eosio::current_time_point().sec_since_epoch();
 
 		for (int i = 0; i < files.size(); i++) {
 			modified_drawdown.files.push_back(files[i]);
 		}
 	});
 
+	drawdowns.emplace(_self, [&](auto & new_drawdown){
+		new_drawdown.drawdown_id = get_valid_index(drawdowns.available_primary_key());
+		new_drawdown.total_amount = asset(0, CURRENCY);
+		new_drawdown.state = DRAWDOWN_STATES.OPEN;
+		new_drawdown.open_date = eosio::current_time_point().sec_since_epoch();
+		new_drawdown.close_date = 0;
+	});
 }
 
 
-ACTION transactions::closedrwdown (name actor, uint64_t project_id) {
-
-	require_auth(actor);
-
-	if (actor != _self) {
-
-		// ======================================== //
-		// ======== CHECK PERMISSIONS HERE ======== //
-		// ======================================== //
-
-	}
+ACTION transactions::initdrawdown (uint64_t project_id) {
+	require_auth(_self);
 
 	drawdown_tables drawdowns(_self, project_id);
 
 	auto drawdowns_by_state = drawdowns.get_index<"bystate"_n>();
 	auto itr_drawdown = drawdowns_by_state.find(DRAWDOWN_STATES.OPEN);
 
-	if (itr_drawdown != drawdowns_by_state.end()) {
-		check(itr_drawdown -> state == DRAWDOWN_STATES.OPEN, contract_names::transactions.to_string() + ": there is no open drawdowns.");
-		drawdowns_by_state.modify(itr_drawdown, _self, [&](auto & modified_drawdown){
-			modified_drawdown.state = DRAWDOWN_STATES.CLOSE;
-			modified_drawdown.close_date = eosio::current_time_point().sec_since_epoch();
-		});
-	}
+	check(itr_drawdown == drawdowns_by_state.end(),
+		contract_names::transactions.to_string() + ": there is already an open drawdown in this project.");
+
+	drawdowns.emplace(_self, [&](auto & new_drawdown){
+		new_drawdown.drawdown_id = get_valid_index(drawdowns.available_primary_key());
+		new_drawdown.total_amount = asset(0, CURRENCY);
+		new_drawdown.state = DRAWDOWN_STATES.OPEN;
+		new_drawdown.open_date = eosio::current_time_point().sec_since_epoch();
+		new_drawdown.close_date = 0;
+	});
 }
 
 
 
-
-EOSIO_DISPATCH(transactions, (reset)(transact)(deletetrxn)(edittrxn)(deletetrxns)(opendrawdown)(editdrawdown)(closedrwdown));
+EOSIO_DISPATCH(transactions, (reset)(transact)(deletetrxn)(edittrxn)(deletetrxns)(submitdrwdn)(initdrawdown));

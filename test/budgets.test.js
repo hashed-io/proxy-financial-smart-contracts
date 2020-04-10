@@ -11,17 +11,21 @@ describe("Proxy Capital Budgets Contract", function (eoslime) {
 
     let firstuser = eoslime.Account.load(names.firstuser, accounts[names.firstuser].privateKey, 'active')
     let seconduser = eoslime.Account.load(names.seconduser, accounts[names.seconduser].privateKey, 'active')
+    let thirduser = eoslime.Account.load(names.thirduser, accounts[names.thirduser].privateKey, 'active')
     let budgets = eoslime.Account.load(names.budgets, accounts[names.budgets].privateKey, 'active')
     let accountss = eoslime.Account.load(names.accounts, accounts[names.accounts].privateKey, 'active')
     let projects = eoslime.Account.load(names.projects, accounts[names.projects].privateKey, 'active')
     let permissions = eoslime.Account.load(names.permissions, accounts[names.permissions].privateKey, 'active')
+    let transactions = eoslime.Account.load(names.transactions, accounts[names.transactions].privateKey, 'active')
 
     let firstuserContract
     let seconduserContract
+    let thirduserContractProjects
     let budgetsContract
     let accountssContract
     let projectsContract
     let permissionsContract
+    let transactionsContract
 
     before(async () => {
 
@@ -29,10 +33,12 @@ describe("Proxy Capital Budgets Contract", function (eoslime) {
         seconduserContract = await eoslime.Contract.at(names.budgets, seconduser)
         seconduserContractProjects = await eoslime.Contract.at(names.projects, seconduser)
         seconduserContractAccounts = await eoslime.Contract.at(names.accounts, seconduser)
+        thirduserContractProjects = await eoslime.Contract.at(names.projects, seconduser)
         budgetsContract = await eoslime.Contract.at(names.budgets, budgets)
         accountssContract = await eoslime.Contract.at(names.accounts, accountss)
         projectsContract = await eoslime.Contract.at(names.projects, projects)
         permissionsContract = await eoslime.Contract.at(names.permissions, permissions)
+        transactionsContract = await eoslime.Contract.at(names.transactions, transactions)
 
         console.log('reset permissions contract')
         await permissionsContract.reset()
@@ -42,6 +48,9 @@ describe("Proxy Capital Budgets Contract", function (eoslime) {
 
         console.log('reset accounts contract')
         await accountssContract.reset()
+
+        console.log('reset transactions')
+        await transactionsContract.reset()
 
         console.log('reset projects contract')
         await projectsContract.reset()
@@ -72,26 +81,37 @@ describe("Proxy Capital Budgets Contract", function (eoslime) {
             projectConfig.anticipated_year_sale_refinance
         )
 
+        let thirduserContractProjects = await eoslime.Contract.at(names.projects, thirduser)
+
+        await thirduserContractProjects.approveprjct(
+            thirduser.name,
+            0,
+            projectConfig.fund_lp,
+            projectConfig.total_fund_offering_amount,
+            projectConfig.total_number_fund_offering,
+            projectConfig.price_per_fund_unit
+        )
+
         // Assets children
-        await seconduserContractAccounts.addaccount(seconduser.name, 0, 'Liquid Primary', 1, currency, 'Test description 6', 1)      // id = 11
-        await seconduserContractAccounts.addaccount(seconduser.name, 0, 'Reserve Account', 1, currency, 'Test description 7', 1)     // id = 12
+        await seconduserContractAccounts.addaccount(seconduser.name, 0, 'Liquid Primary', 1, currency, 'Test description 6', 1, '0.00 USD')      // id = 11
+        await seconduserContractAccounts.addaccount(seconduser.name, 0, 'Reserve Account', 1, currency, 'Test description 7', 1, '0.00 USD')     // id = 12
 
         // Equity children
-        await seconduserContractAccounts.addaccount(seconduser.name, 0, 'Investments', 2, currency, 'Test description 8', 3)         // id = 13
-        await seconduserContractAccounts.addaccount(seconduser.name, 0, 'Franklin Johnson', 8, currency, 'Test description 9', 3)    // id = 14
-        await seconduserContractAccounts.addaccount(seconduser.name, 0, 'Michelle Wu', 8, currency, 'Test description 10', 3)         // id = 15
+        await seconduserContractAccounts.addaccount(seconduser.name, 0, 'Investments', 2, currency, 'Test description 8', 3, '0.00 USD')         // id = 13
+        await seconduserContractAccounts.addaccount(seconduser.name, 0, 'Franklin Johnson', 13, currency, 'Test description 9', 3, '0.00 USD')    // id = 14
+        await seconduserContractAccounts.addaccount(seconduser.name, 0, 'Michelle Wu', 13, currency, 'Test description 10', 3, '0.00 USD')         // id = 15
 
         // Expenses children
-        await seconduserContractAccounts.addaccount(seconduser.name, 0, 'Development', 3, currency, 'Test description 11', 3)         // id = 16
-        await seconduserContractAccounts.addaccount(seconduser.name, 0, 'Marketing', 3, currency, 'Test description 12', 2)           // id = 17
-        await seconduserContractAccounts.addaccount(seconduser.name, 0, 'Tech Infrastructure', 3, currency, 'Test description 13', 2) // id = 18
-        await seconduserContractAccounts.addaccount(seconduser.name, 0, 'Travel', 3, currency, 'Test description 14', 2)              // id = 19
+        await seconduserContractAccounts.addaccount(seconduser.name, 0, 'Development', 3, currency, 'Test description 11', 3, '0.00 USD')         // id = 16
+        await seconduserContractAccounts.addaccount(seconduser.name, 0, 'Marketing', 3, currency, 'Test description 12', 2, '0.00 USD')           // id = 17
+        await seconduserContractAccounts.addaccount(seconduser.name, 0, 'Tech Infrastructure', 3, currency, 'Test description 13', 2, '0.00 USD') // id = 18
+        await seconduserContractAccounts.addaccount(seconduser.name, 0, 'Travel', 3, currency, 'Test description 14', 2, '0.00 USD')              // id = 19
         
 
       // travel children
-      await seconduserContractAccounts.addaccount(seconduser.name, 0, 'Flights', 19, currency, '---', 2)  // id = 20
-      await seconduserContractAccounts.addaccount(seconduser.name, 0, 'Bus', 19, currency, '---', 2)      // id = 21
-      await seconduserContractAccounts.addaccount(seconduser.name, 0, 'Taxis', 19, currency, '---', 2)    // id = 22
+      await seconduserContractAccounts.addaccount(seconduser.name, 0, 'Flights', 19, currency, '---', 2, '0.00 USD')  // id = 20
+      await seconduserContractAccounts.addaccount(seconduser.name, 0, 'Bus', 19, currency, '---', 2, '0.00 USD')      // id = 21
+      await seconduserContractAccounts.addaccount(seconduser.name, 0, 'Taxis', 19, currency, '---', 2, '0.00 USD')    // id = 22
 
       await seconduserContract.addbudget(seconduser.name, 0, 22, "300.00 USD", 1, 1585762692, 1588354692, 1)
       await seconduserContract.addbudget(seconduser.name, 0, 21, "200.00 USD", 1, 1585762692, 1588354692, 1)
@@ -102,8 +122,8 @@ describe("Proxy Capital Budgets Contract", function (eoslime) {
         assert.deepEqual(getError(err), 'proxycapbdgt: the child can not have more budget than its parent, account_id = 20 parent_budget = 500.00 USD.', 'Something else went wrong.')
       }
 
-      await seconduserContractAccounts.addaccount(seconduser.name, 0, 'Backend', 16, currency, '---', 3)    // id = 23
-      await seconduserContractAccounts.addaccount(seconduser.name, 0, 'Frontend', 16, currency, '---', 3)   // id = 24
+      await seconduserContractAccounts.addaccount(seconduser.name, 0, 'Backend', 16, currency, '---', 3, '0.00 USD')    // id = 23
+      await seconduserContractAccounts.addaccount(seconduser.name, 0, 'Frontend', 16, currency, '---', 3, '0.00 USD')   // id = 24
 
       await seconduserContract.addbudget(seconduser.name, 0, 23, "200.00 USD", 1, 1585762692, 1588354692, 0)
       await seconduserContract.addbudget(seconduser.name, 0, 24, "200.00 USD", 1, 1585762692, 1588354692, 0)
@@ -434,6 +454,7 @@ describe("Proxy Capital Budgets Contract", function (eoslime) {
       const provider = eoslime.Provider
       let budgetsDatesTable = await provider.select('budgetpriods').from(names.budgets).scope('0').limit(20).find()
       let budgetsTable = await provider.select('budgets').from(names.budgets).scope('0').limit(20).find()
+      const accountsTable = await provider.select('accounts').from(names.accounts).scope('0').limit(20).find()
 
       const expectedDatesTable = [
         { budget_period_id: 1, begin_date: 0, end_date: 0, budget_type_id: 1 },
@@ -527,6 +548,155 @@ describe("Proxy Capital Budgets Contract", function (eoslime) {
 
     })
 
+    it('Should create a budget when adding an account', async () => {
+
+      await seconduserContractAccounts.addaccount(seconduser.name, 0, 'Frank Rossel', 13, currency, '---', 1, '120.00 USD')   // id = 25
+
+      const provider = eoslime.Provider
+      let budgetsTable = await provider.select('budgets').from(names.budgets).scope('0').limit(40).find()
+
+      budgetsTable = budgetsTable.map(r => {
+        if (r.budget_id >= 17) {
+          return {
+            budget_id: r.budget_id,
+            account_id: r.account_id,
+            amount: r.amount,
+            budget_period_id: r.budget_period_id,
+            budget_type_id: r.budget_type_id
+          }
+        }
+      })
+
+      const expectedBudgets = [
+        {
+          budget_id: 17,
+          account_id: 25,
+          amount: '120.00 USD',
+          budget_period_id: 1,
+          budget_type_id: 1
+        },
+        {
+          budget_id: 18,
+          account_id: 13,
+          amount: '120.00 USD',
+          budget_period_id: 1,
+          budget_type_id: 1
+        },
+        {
+          budget_id: 19,
+          account_id: 2,
+          amount: '120.00 USD',
+          budget_period_id: 1,
+          budget_type_id: 1
+        }
+      ]
+
+      assert.deepEqual(budgetsTable.filter(Boolean), expectedBudgets, 'The budgets table is not right.')
+
+    })
+
+    it('Should edit budget when editing an account', async () => {
+
+      await seconduserContractAccounts.editaccount(seconduser.name, 0, 25, 'Budget edited 1', "Account edited", 1, '100.00 USD')
+      await seconduserContractAccounts.editaccount(seconduser.name, 0, 14, 'Budget edited 2', "Account edited", 1, '50.00 USD')
+
+      const provider = eoslime.Provider
+      let budgetsTable = await provider.select('budgets').from(names.budgets).scope('0').limit(40).find()
+
+      const expectedBudgets = [
+        {
+          budget_id: 18,
+          account_id: 13,
+          amount: '150.00 USD',
+          budget_period_id: 1,
+          budget_type_id: 1
+        },
+        {
+          budget_id: 19,
+          account_id: 2,
+          amount: '150.00 USD',
+          budget_period_id: 1,
+          budget_type_id: 1
+        },
+        {
+          budget_id: 20,
+          account_id: 25,
+          amount: '100.00 USD',
+          budget_period_id: 1,
+          budget_type_id: 1
+        },
+        {
+          budget_id: 21,
+          account_id: 14,
+          amount: '50.00 USD',
+          budget_period_id: 1,
+          budget_type_id: 1
+        }      
+      ]
+
+      budgetsTable = budgetsTable.map(r => {
+        if (r.budget_id > 17) {
+          return {
+            budget_id: r.budget_id,
+            account_id: r.account_id,
+            amount: r.amount,
+            budget_period_id: r.budget_period_id,
+            budget_type_id: r.budget_type_id
+          }
+        }
+      })
+
+      assert.deepEqual(budgetsTable.filter(Boolean), expectedBudgets, 'The budgets table is not right.')
+
+    })
+
+    it('Should delete budgets when editing accounts', async () => {
+
+      await seconduserContractAccounts.editaccount(seconduser.name, 0, 25, 'Budget edited 1.1', "Account edited", 1, '0.00 USD')
+
+      const provider = eoslime.Provider
+      let budgetsTable = await provider.select('budgets').from(names.budgets).scope('0').limit(40).find()
+
+      budgetsTable = budgetsTable.map(r => {
+        if (r.budget_id > 17) {
+          return {
+            budget_id: r.budget_id,
+            account_id: r.account_id,
+            amount: r.amount,
+            budget_period_id: r.budget_period_id,
+            budget_type_id: r.budget_type_id
+          }
+        }
+      })
+
+      const expectedBudgets = [
+        {
+          budget_id: 18,
+          account_id: 13,
+          amount: '50.00 USD',
+          budget_period_id: 1,
+          budget_type_id: 1
+        },
+        {
+          budget_id: 19,
+          account_id: 2,
+          amount: '50.00 USD',
+          budget_period_id: 1,
+          budget_type_id: 1
+        },
+        {
+          budget_id: 21,
+          account_id: 14,
+          amount: '50.00 USD',
+          budget_period_id: 1,
+          budget_type_id: 1
+        }      
+      ]
+
+      assert.deepEqual(budgetsTable.filter(Boolean), expectedBudgets, 'The budgets table is not right.')
+
+    })
+
     it('Should delete all the budgets for all the accounts', async () => {
 
       await budgetsContract.delbdgtsacct(0, 3)
@@ -536,6 +706,9 @@ describe("Proxy Capital Budgets Contract", function (eoslime) {
       await budgetsContract.delbdgtsacct(0, 20)
       await budgetsContract.delbdgtsacct(0, 16)
       await budgetsContract.delbdgtsacct(0, 23)
+      await budgetsContract.delbdgtsacct(0, 14)
+      await budgetsContract.delbdgtsacct(0, 13)
+      await budgetsContract.delbdgtsacct(0, 2)
 
       const provider = eoslime.Provider
       let budgetsDatesTable = await provider.select('budgetpriods').from(names.budgets).scope('0').limit(20).find()

@@ -77,22 +77,33 @@ describe("Proxy Capital Transactions Contract", function (eoslime) {
             projectConfig.anticipated_year_sale_refinance
         )
 
+        let thirduserContractProjects = await eoslime.Contract.at(names.projects, thirduser)
+
+        await thirduserContractProjects.approveprjct(
+            thirduser.name,
+            0,
+            projectConfig.fund_lp,
+            projectConfig.total_fund_offering_amount,
+            projectConfig.total_number_fund_offering,
+            projectConfig.price_per_fund_unit
+        )
+
         let seconduserContractAccounts = await eoslime.Contract.at(names.accounts, seconduser)
 
         // Assets children
-        await seconduserContractAccounts.addaccount(seconduser.name, 0, 'Liquid Primary', 1, currency, 'Test description 6', 1)      // id = 11
-        await seconduserContractAccounts.addaccount(seconduser.name, 0, 'Reserve Account', 1, currency, 'Test description 7', 1)     // id = 12
+        await seconduserContractAccounts.addaccount(seconduser.name, 0, 'Liquid Primary', 1, currency, 'Test description 6', 1, '0.00 USD')      // id = 11
+        await seconduserContractAccounts.addaccount(seconduser.name, 0, 'Reserve Account', 1, currency, 'Test description 7', 1, '0.00 USD')     // id = 12
 
         // Equity children
-        await seconduserContractAccounts.addaccount(seconduser.name, 0, 'Investments', 2, currency, 'Test description 8', 3)         // id = 13
-        await seconduserContractAccounts.addaccount(seconduser.name, 0, 'Franklin Johnson', 13, currency, 'Test description 9', 3)    // id = 14
-        await seconduserContractAccounts.addaccount(seconduser.name, 0, 'Michelle Wu', 13, currency, 'Test description 10', 3)         // id = 15
+        await seconduserContractAccounts.addaccount(seconduser.name, 0, 'Investments', 2, currency, 'Test description 8', 3, '0.00 USD')         // id = 13
+        await seconduserContractAccounts.addaccount(seconduser.name, 0, 'Franklin Johnson', 13, currency, 'Test description 9', 3, '0.00 USD')    // id = 14
+        await seconduserContractAccounts.addaccount(seconduser.name, 0, 'Michelle Wu', 13, currency, 'Test description 10', 3, '0.00 USD')         // id = 15
 
         // Expenses children
-        await seconduserContractAccounts.addaccount(seconduser.name, 0, 'Development', 3, currency, 'Test description 11', 3)         // id = 16
-        await seconduserContractAccounts.addaccount(seconduser.name, 0, 'Marketing', 3, currency, 'Test description 12', 2)           // id = 17
-        await seconduserContractAccounts.addaccount(seconduser.name, 0, 'Tech Infrastructure', 3, currency, 'Test description 13', 2) // id = 18
-        await seconduserContractAccounts.addaccount(seconduser.name, 0, 'Travel', 3, currency, 'Test description 14', 2)              // id = 19
+        await seconduserContractAccounts.addaccount(seconduser.name, 0, 'Development', 3, currency, 'Test description 11', 3, '0.00 USD')         // id = 16
+        await seconduserContractAccounts.addaccount(seconduser.name, 0, 'Marketing', 3, currency, 'Test description 12', 2, '0.00 USD')           // id = 17
+        await seconduserContractAccounts.addaccount(seconduser.name, 0, 'Tech Infrastructure', 3, currency, 'Test description 13', 2, '0.00 USD') // id = 18
+        await seconduserContractAccounts.addaccount(seconduser.name, 0, 'Travel', 3, currency, 'Test description 14', 2, '0.00 USD')              // id = 19
         
         const amounts1 = [
             {
@@ -1085,11 +1096,11 @@ describe("Proxy Capital Transactions Contract", function (eoslime) {
 
         let thirduserContractAccounts = await eoslime.Contract.at(names.accounts, thirduser)
 
-        await thirduserContractAccounts.addaccount(thirduser.name, 0, 'Income2', 9, currency, 'Test description 14', 3)              // id = 20
-        await thirduserContractAccounts.addaccount(thirduser.name, 0, 'Income3', 9, currency, 'Test description 14', 3)              // id = 21
-        await thirduserContractAccounts.addaccount(thirduser.name, 0, 'Income4', 20, currency, 'Test description 14', 3)              // id = 22
-        await thirduserContractAccounts.addaccount(thirduser.name, 0, 'Liabilities2', 10, currency, 'Test description 14', 3)              // id = 23
-        await thirduserContractAccounts.addaccount(thirduser.name, 0, 'Liabilities3', 10, currency, 'Test description 14', 3)              // id = 24
+        await thirduserContractAccounts.addaccount(thirduser.name, 0, 'Income2', 9, currency, 'Test description 14', 3, '0.00 USD')              // id = 20
+        await thirduserContractAccounts.addaccount(thirduser.name, 0, 'Income3', 9, currency, 'Test description 14', 3, '0.00 USD')              // id = 21
+        await thirduserContractAccounts.addaccount(thirduser.name, 0, 'Income4', 20, currency, 'Test description 14', 3, '0.00 USD')              // id = 22
+        await thirduserContractAccounts.addaccount(thirduser.name, 0, 'Liabilities2', 10, currency, 'Test description 14', 3, '0.00 USD')              // id = 23
+        await thirduserContractAccounts.addaccount(thirduser.name, 0, 'Liabilities3', 10, currency, 'Test description 14', 3, '0.00 USD')              // id = 24
 
         const amounts = [
             {
@@ -1508,54 +1519,69 @@ describe("Proxy Capital Transactions Contract", function (eoslime) {
 
     })
 
-    it('Should open drawdowns', async () => {
+    it('Should add a transaction to the drawdown', async () => {
+
+      const amounts = [
+          {
+              'account_id': 15,
+              'amount': 1000
+          }, {
+              'account_id': 11,
+              'amount': -1000
+          }
+      ]
 
       const url_info = [
         {
           'filename': 'a document',
-          'address': 'https://docs.telos.kitchen/drawdown1'
+          'address': 'https://docs.telos.kitchen/tO6eoye_Td-76wBz7J3EZQ#'
         },
         {
           'filename': 'a document 2',
-          'address': 'https://docs.telos.kitchen-2/drawdown2'
+          'address': 'https://docs.telos.kitchen-2/jJq8d7dwSlCSvj42yZyBGg#'
         }
       ]
 
-      const amounts1 = [
-        {
-            'account_id': 16,
-            'amount': 200
-        }, {
-            'account_id': 11,
-            'amount': -300
-        }, {
-            'account_id': 17,
-            'amount': 100
+      await sleep(300)
+      await seconduserContract.transact(seconduser.name, 0, amounts, 1023020302, "Monthly drawdown expenses", 1, url_info)
+      await sleep(300)
+      await seconduserContract.transact(seconduser.name, 0, amounts, 1023020302, "Monthly drawdown expenses", 1, url_info)
+
+      await sleep(300)
+      await seconduserContract.submitdrwdn(seconduser.name, 0, url_info)
+      await sleep(300)
+      await seconduserContract.submitdrwdn(seconduser.name, 0, url_info)
+      await sleep(300)
+      await seconduserContract.submitdrwdn(seconduser.name, 0, url_info)
+
+      await sleep(300)
+      await seconduserContract.transact(seconduser.name, 0, amounts, 1023020302, "Monthly drawdown expenses", 1, url_info)
+      await sleep(300)
+      await seconduserContract.transact(seconduser.name, 0, amounts, 1023020302, "Monthly drawdown expenses", 1, url_info)
+
+      await sleep(300)
+      await seconduserContract.deletetrxn(seconduser.name, 0, 7);
+
+      await sleep(300)
+      await seconduserContract.submitdrwdn(seconduser.name, 0, url_info)
+
+      const provider = eoslime.Provider
+      let transactionsTable = await provider.select('transactions').from(names.transactions).scope('0').limit(20).find()
+      let drawdowns = await provider.select('drawdowns').from(names.transactions).scope('0').limit(20).find()
+
+      drawdowns = drawdowns.map(r => {
+        return {
+          drawdown_id: r.drawdown_id,
+          total_amount: r.total_amount,
+          files: r.files,
+          state: r.state
         }
-      ] 
-
-      await seconduserContract.opendrawdown(seconduser.name, 0, url_info)
-      await sleep(300);
-      await seconduserContract.opendrawdown(seconduser.name, 0, url_info)
-      await sleep(300);
-      await seconduserContract.opendrawdown(seconduser.name, 0, url_info)
-
-      await seconduserContract.transact(seconduser.name, 0, amounts1, 1023020302, "Drawdonw transaction", 1, url_info)
-      await sleep(300);
-      await seconduserContract.transact(seconduser.name, 0, amounts1, 1023020302, "Drawdonw transaction 1", 1, url_info)
-
-      await sleep(300);
-      await seconduserContract.opendrawdown(seconduser.name, 0, url_info)
-
-      await sleep(300);
-      await seconduserContract.transact(seconduser.name, 0, amounts1, 1023020302, "Drawdonw transaction", 1, url_info)
-      await sleep(300);
-      await seconduserContract.transact(seconduser.name, 0, amounts1, 1023020302, "Drawdonw transaction 1", 1, url_info)
+      })
 
       const expectedDrawdown = [
         {
           drawdown_id: 1,
-          total_amount: '0.00 USD',
+          total_amount: '20.00 USD',
           files: url_info,
           state: 2
         },
@@ -1567,114 +1593,26 @@ describe("Proxy Capital Transactions Contract", function (eoslime) {
         },
         {
           drawdown_id: 3,
-          total_amount: '6.00 USD',
+          total_amount: '0.00 USD',
           files: url_info,
           state: 2
         },
         {
           drawdown_id: 4,
-          total_amount: '6.00 USD',
+          total_amount: '10.00 USD',
           files: url_info,
+          state: 2
+        },
+        {
+          drawdown_id: 5,
+          total_amount: '0.00 USD',
+          files: [],
           state: 1
         }
       ]
 
-      const expectedTransactions = [
-        {
-          transaction_id: 2,
-          actor: 'builderuser1',
-          description: 'Investment Remastered',
-          drawdown_id: 0,
-          total_amount: '45000.00 USD',
-          supporting_files: [
-            {
-              'filename': 'a document',
-              'address': 'https://docs.telos.kitchen/tO6eoye_Td-76wBz7J3EZQ#'
-            },
-            {
-              'filename': 'a document 2',
-              'address': 'https://docs.telos.kitchen-2/jJq8d7dwSlCSvj42yZyBGg#'
-            }
-          ]
-        },
-        {
-          transaction_id: 3,
-          actor: 'proxyadmin11',
-          description: 'Monthly expenses',
-          drawdown_id: 0,
-          total_amount: '35000.00 USD',
-          supporting_files: [
-            {
-              'filename': 'a document',
-              'address': 'https://docs.telos.kitchen/tO6eoye_Td-76wBz7J3EZQ#'
-            },
-            {
-              'filename': 'a document 2',
-              'address': 'https://docs.telos.kitchen-2/jJq8d7dwSlCSvj42yZyBGg#'
-            }
-          ]
-        },
-        {
-          transaction_id: 4,
-          actor: 'builderuser1',
-          description: 'Drawdonw transaction',
-          drawdown_id: 3,
-          total_amount: '3.00 USD',
-          supporting_files: url_info
-        },
-        {
-          transaction_id: 5,
-          actor: 'builderuser1',
-          description: 'Drawdonw transaction 1',
-          drawdown_id: 3,
-          total_amount: '3.00 USD',
-          supporting_files: url_info
-        },
-        {
-          transaction_id: 6,
-          actor: 'builderuser1',
-          description: 'Drawdonw transaction',
-          drawdown_id: 4,
-          total_amount: '3.00 USD',
-          supporting_files: url_info
-        },
-        {
-          transaction_id: 7,
-          actor: 'builderuser1',
-          description: 'Drawdonw transaction 1',
-          drawdown_id: 4,
-          total_amount: '3.00 USD',
-          supporting_files: url_info
-        }
-      ]
-      
+      assert.deepEqual(drawdowns, expectedDrawdown, 'The drawdowns table is not right.')
 
-      const provider = eoslime.Provider
-      let drawdownTable = await provider.select('drawdowns').from(names.transactions).scope('0').limit(10).find()
-      let transactionsTable = await provider.select('transactions').from(names.transactions).scope('0').limit(20).find()
-
-      drawdownTable = drawdownTable.map(r => {
-        return {
-          drawdown_id: r.drawdown_id,
-          total_amount: r.total_amount,
-          files: r.files,
-          state: r.state
-        }
-      })
-
-      transactionsTable = transactionsTable.map(r => {
-        return {
-          transaction_id: r.transaction_id,
-          actor: r.actor,
-          description: r.description,
-          drawdown_id: r.drawdown_id,
-          supporting_files: r.supporting_files,
-          total_amount: r.total_amount
-        }
-      })
-
-      assert.deepEqual(drawdownTable, expectedDrawdown, 'The drawdowns table is not right.')
-      assert.deepEqual(transactionsTable, expectedTransactions, 'The transactions table is not right.')
     })
 
 })

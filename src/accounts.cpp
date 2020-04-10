@@ -168,12 +168,14 @@ ACTION accounts::cancelsub (uint64_t project_id, uint64_t account_id, asset amou
     change_balance(project_id, account_id, amount, false, true);
 }
 
+
 ACTION accounts::editaccount ( name actor, 
                                uint64_t project_id, 
                                uint64_t account_id, 
                                string account_name,
                                string description,
-                               uint64_t account_category ) {
+                               uint64_t account_category,
+                               asset budget_amount) {
 
     require_auth(actor);
 
@@ -213,8 +215,53 @@ ACTION accounts::editaccount ( name actor,
     accounts.modify(itr_account, _self, [&](auto & modified_account){
         modified_account.account_name = account_name;
         modified_account.description = description;
+        modified_account.account_category = account_category;
     });
+
+    budget_tables budgets(contract_names::budgets, project_id);
+    auto budgets_by_account = budgets.get_index<"byaccount"_n>();
+    auto itr_budget = budgets_by_account.find(account_id);
+    uint64_t budget_id = 0;
+
+    while (itr_budget != budgets_by_account.end() && itr_budget -> account_id == account_id) {
+        if (itr_budget -> budget_type_id == 1) {
+            budget_id = itr_budget -> budget_id;
+            break;
+        }
+        itr_budget++;
+    }
+
+    uint64_t date = 0;
+    uint64_t budget_type_id = 1;
+
+    if (budget_amount > asset(0, CURRENCY)) {
+        if (budget_id > 0) {
+            action(
+                permission_level(contract_names::budgets, "active"_n),
+                contract_names::budgets,
+                "editbudget"_n,
+                std::make_tuple(contract_names::budgets, project_id, budget_id, budget_amount, budget_type_id, date, date, true)
+            ).send();
+        } else {
+            action(
+                permission_level(contract_names::budgets, "active"_n),
+                contract_names::budgets,
+                "addbudget"_n,
+                std::make_tuple(contract_names::budgets, project_id, account_id, budget_amount, budget_type_id, date, date, true)
+            ).send();
+        }
+    } else {
+        if (budget_id > 0) {
+            action(
+                permission_level(contract_names::budgets, "active"_n),
+                contract_names::budgets,
+                "deletebudget"_n,
+                std::make_tuple(contract_names::budgets, project_id, budget_id, true)
+            ).send();
+        }
+    }
 }
+
 
 ACTION accounts::deleteaccnt (name actor, uint64_t project_id, uint64_t account_id) {
     require_auth(actor);
@@ -252,6 +299,13 @@ ACTION accounts::deleteaccnt (name actor, uint64_t project_id, uint64_t account_
         modified_account.num_children -= 1;
     });
 
+    action (
+        permission_level(contract_names::budgets, "active"_n),
+        contract_names::budgets,
+        "delbdgtsacct"_n,
+        std::make_tuple(project_id, account_id)
+    ).send();
+
     accounts.erase(account);
 }
 
@@ -262,7 +316,8 @@ ACTION accounts::addaccount ( name actor,
                               uint64_t parent_id,
                               symbol account_currency,
                               string description,
-                              uint64_t account_category ) {
+                              uint64_t account_category,
+                              asset budget_amount) {
 
     require_auth(actor);
 
@@ -306,6 +361,8 @@ ACTION accounts::addaccount ( name actor,
         check(parent -> increase_balance == asset(0, CURRENCY) && parent -> decrease_balance == asset(0, CURRENCY), 
                 contract_names::accounts.to_string() + ": the parent's balance is not zero.");
     }
+
+    check(parent -> ledger_id == itr_ledger -> ledger_id, contract_names::accounts.to_string() + ": the ledger must be the same as the parent account.");
     
     uint64_t new_account_id = accounts.available_primary_key();
     new_account_id = (new_account_id > 0) ? new_account_id : 1;
@@ -326,6 +383,17 @@ ACTION accounts::addaccount ( name actor,
     accounts.modify(parent, _self, [&](auto & modified_account){
         modified_account.num_children += 1;
     });
+
+    if (budget_amount > asset(0, CURRENCY)) {
+        uint64_t budget_type_id = 1;
+        uint64_t date = 0;
+        action(
+            permission_level(contract_names::budgets, "active"_n),
+            contract_names::budgets,
+            "addbudget"_n,
+            std::make_tuple(contract_names::budgets, project_id, new_account_id, budget_amount, budget_type_id, date, date, true)
+        ).send();
+    }
     
 }
 
