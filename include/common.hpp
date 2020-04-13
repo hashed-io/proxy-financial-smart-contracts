@@ -16,13 +16,22 @@ struct url_information {
 };
 
 namespace contract_names {
-    name projects = "proxycapproj"_n;
-    name accounts = "proxycapacct"_n;
-    name transactions = "proxycaptrnx"_n;
-    name permissions = "proxycapperm"_n;
+    name projects = "proxycappro1"_n;
+    name accounts = "proxycapacc1"_n;
+    name transactions = "proxycaptrx1"_n;
+    name permissions = "proxycapper1"_n;
     name contracts = "proxycapcont"_n;
-    name budgets = "proxycapbdgt"_n;
+    name budgets = "proxycapbdg1"_n;
 }
+
+// namespace contract_names {
+//     name projects = "proxycapproj"_n;
+//     name accounts = "proxycapacct"_n;
+//     name transactions = "proxycaptrnx"_n;
+//     name permissions = "proxycapperm"_n;
+//     name contracts = "proxycapcont"_n;
+//     name budgets = "proxycapbdgt"_n;
+// }
 
 void check_asset(asset amount, name contract_name) {
 	check(amount.symbol == CURRENCY, contract_name.to_string() + ": the symbols must be the same. " + amount.to_string() + ". amount symbol:" + amount.symbol.code().to_string() + "!=" + CURRENCY.code().to_string());

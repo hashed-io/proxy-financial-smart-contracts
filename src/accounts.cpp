@@ -208,7 +208,9 @@ ACTION accounts::editaccount ( name actor,
     auto accounts_by_ledger = accounts.get_index<"byledger"_n>();
     auto itr_accounts = accounts_by_ledger.find(itr_account -> ledger_id);
     while ((itr_accounts != accounts_by_ledger.end()) && (itr_accounts -> ledger_id == itr_account -> ledger_id)) {
-        check(itr_accounts -> account_name != account_name, contract_names::accounts.to_string() + ": that name has been already taken.");
+        if (itr_accounts -> account_id != account_id) {
+            check(itr_accounts -> account_name != account_name, contract_names::accounts.to_string() + ": that name has been already taken.");
+        }
         itr_accounts++;
     }
 

@@ -406,6 +406,7 @@ describe("Proxy Capital Transactions Contract", function (eoslime) {
               description: 'Monthly expenses',
               drawdown_id: 0,
               total_amount: '3.00 USD',
+              transaction_category: 3,
               supporting_files: [
                 ...url_info
               ]
@@ -416,6 +417,7 @@ describe("Proxy Capital Transactions Contract", function (eoslime) {
               timestamp: 1023020304,
               description: 'Investment',
               drawdown_id: 0,
+              transaction_category: 3,
               total_amount: '40000.00 USD',
               supporting_files: [
                 ...url_info
@@ -739,6 +741,7 @@ describe("Proxy Capital Transactions Contract", function (eoslime) {
               description: 'Investment',
               drawdown_id: 0,
               total_amount: '40000.00 USD',
+              transaction_category: 3,
               supporting_files: [
                 ...url_info
               ]
@@ -1058,6 +1061,7 @@ describe("Proxy Capital Transactions Contract", function (eoslime) {
               description: 'Investment Remastered',
               drawdown_id: 0,
               total_amount: '45000.00 USD',
+              transaction_category: 3,
               supporting_files: [
                 ...url_info
               ]
@@ -1457,6 +1461,7 @@ describe("Proxy Capital Transactions Contract", function (eoslime) {
               description: 'Investment Remastered',
               drawdown_id: 0,
               total_amount: '45000.00 USD',
+              transaction_category: 3,
               supporting_files: [
                 ...url_info
               ]
@@ -1468,6 +1473,7 @@ describe("Proxy Capital Transactions Contract", function (eoslime) {
               description: 'Monthly expenses',
               drawdown_id: 0,
               total_amount: '35000.00 USD',
+              transaction_category: 3,
               supporting_files: [
                 ...url_info
               ]

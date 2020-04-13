@@ -20,6 +20,7 @@ void transactions::make_transaction ( name actor,
 	int64_t total = 0;
 	uint64_t total_positive = 0;
 	uint64_t ledger_id = 0;
+	uint64_t transaction_category = ACCOUNT_CATEGORIES.NONE;
 	name action_accnt;
 
 	if (transaction_id == 0) {
@@ -36,6 +37,10 @@ void transactions::make_transaction ( name actor,
 		if (ledger_id != itr_account -> ledger_id) {
 			check(ledger_id == 0, contract_names::transactions.to_string() + ": can not edit diferent ledgers in the same transaction.");
 			ledger_id = itr_account -> ledger_id;
+		}
+
+		if (transaction_category == ACCOUNT_CATEGORIES.NONE) {
+			transaction_category = itr_account -> account_category;
 		}
 
 		accnttrxns.emplace(_self, [&](auto & atrx){
@@ -99,6 +104,7 @@ void transactions::make_transaction ( name actor,
 		new_transaction.timestamp = date;
 		new_transaction.description = description;
 		new_transaction.drawdown_id = drawdown_id;
+		new_transaction.transaction_category = transaction_category;
 		new_transaction.total_amount = asset(total_positive, CURRENCY);
 		
 		for (int i = 0; i < supporting_files.size(); i++) {

@@ -372,7 +372,7 @@ describe("Proxy Capital Accounts Contract", function (eoslime) {
 
       let seconduserContractBudgets = await eoslime.Contract.at(names.budgets, seconduser)
       await seconduserContractBudgets.addbudget(seconduser.name, 0, 11, "200.00 USD", 1, 1585762692, 1588354692, 1)
-      await seconduserContract.editaccount(seconduser.name, 0, 11, 'Liquid Primary Test', "Account edited", 1, '0.00 USD')
+      await seconduserContract.editaccount(seconduser.name, 0, 11, 'Liquid Primary', "Account edited", 1, '0.00 USD')
 
       const provider = eoslime.Provider
       let accountsTable = await provider.select('accounts').from(names.accounts).scope('0').limit(20).find()
@@ -388,7 +388,7 @@ describe("Proxy Capital Accounts Contract", function (eoslime) {
           account_id: 11,
           parent_id: 1,
           num_children: 0,
-          account_name: 'Liquid Primary Test',
+          account_name: 'Liquid Primary',
           account_subtype: 'Assets',
           increase_balance: '0.00 USD',
           decrease_balance: '0.00 USD',

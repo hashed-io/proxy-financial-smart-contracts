@@ -111,10 +111,12 @@ CONTRACT budgets : public contract {
 			symbol account_symbol;
             uint64_t ledger_id;
             string description;
+            uint64_t account_category;
 
 			uint64_t primary_key() const { return account_id; }
 			uint64_t by_parent() const { return parent_id; }
             uint64_t by_ledger() const { return ledger_id; }
+            uint64_t by_category() const { return account_category; }
 		};
         
 

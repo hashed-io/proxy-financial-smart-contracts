@@ -9,6 +9,7 @@
 #include <account_subtypes.hpp>
 #include <action_names.hpp>
 #include <drawdown_states.hpp>
+#include <account_categories.hpp>
 #include <utility>
 #include <vector>
 #include <string>
@@ -69,10 +70,12 @@ CONTRACT transactions : public contract {
 			string description;
 			uint64_t drawdown_id;
 			asset total_amount;
+			uint64_t transaction_category;
 			vector<url_information> supporting_files;
 
 			uint64_t primary_key() const { return transaction_id; }
 			uint64_t by_drawdown() const { return drawdown_id; }
+			uint64_t by_category() const { return transaction_category; }
 		};
 
 		// scoped by project_id
@@ -99,10 +102,12 @@ CONTRACT transactions : public contract {
 			symbol account_symbol;
             uint64_t ledger_id;
             string description;
+            uint64_t account_category;
 
 			uint64_t primary_key() const { return account_id; }
 			uint64_t by_parent() const { return parent_id; }
             uint64_t by_ledger() const { return ledger_id; }
+            uint64_t by_category() const { return account_category; }
 		};
 
 		// table from projects contract
@@ -169,7 +174,9 @@ CONTRACT transactions : public contract {
 
 		typedef eosio::multi_index <"transactions"_n, transaction_table,
 			indexed_by<"bydrawdown"_n,
-			const_mem_fun<transaction_table, uint64_t, &transaction_table::by_drawdown>>
+			const_mem_fun<transaction_table, uint64_t, &transaction_table::by_drawdown>>,
+			indexed_by<"bycategory"_n,
+			const_mem_fun<transaction_table, uint64_t, &transaction_table::by_category>>
 		> transaction_tables;
 
 		typedef eosio::multi_index <"accnttrx"_n, account_transaction_table,
