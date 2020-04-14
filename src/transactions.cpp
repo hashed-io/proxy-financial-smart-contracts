@@ -268,6 +268,13 @@ ACTION transactions::edittrxn ( name actor,
 	auto itr_trxn = transactions.find(transaction_id);
 	check(itr_trxn != transactions.end(), contract_names::transactions.to_string() + ": the transaction does not exist.");
 
+	if (itr_trxn -> drawdown_id != 0) {
+		drawdown_tables drawdowns(_self, project_id);
+		auto itr_drawdown = drawdowns.find(itr_trxn -> drawdown_id);
+		check(itr_drawdown != drawdowns.end(), contract_names::transactions.to_string() + ": the drawdown does not exist.");
+		check(itr_drawdown -> state == DRAWDOWN_STATES.OPEN, contract_names::transactions.to_string() + ": can not modify a transaction within a closed drawdown.");
+	}
+	
 	delete_transaction(actor, project_id, transaction_id);
 	make_transaction(actor, transaction_id, project_id, amounts, date, description, is_drawdown, supporting_files);
 }
@@ -351,6 +358,30 @@ ACTION transactions::initdrawdown (uint64_t project_id) {
 	});
 }
 
+ACTION transactions::toggledrdwn (uint64_t project_id, uint64_t drawdown_id) {
+	require_auth(_self);
+
+	print("drawdown toggled");
+
+	drawdown_tables drawdowns(_self, project_id);
+
+	auto drawdown_by_state = drawdowns.get_index<"bystate"_n>();
+	auto itr_drawdown_by_state = drawdown_by_state.find(DRAWDOWN_STATES.OPEN);
+
+	drawdown_by_state.modify(itr_drawdown_by_state, _self, [&](auto & md){
+		md.state = DRAWDOWN_STATES.CLOSE;
+	});
+
+	auto itr_drawdown = drawdowns.find(drawdown_id);
+	check(itr_drawdown != drawdowns.end(), "no drawdown found.");
+
+	drawdowns.modify(itr_drawdown, _self, [&](auto & mdrawdown){
+		if (mdrawdown.state == DRAWDOWN_STATES.CLOSE) {
+			mdrawdown.state = DRAWDOWN_STATES.OPEN;
+		}
+	});
+}
 
 
-EOSIO_DISPATCH(transactions, (reset)(transact)(deletetrxn)(edittrxn)(deletetrxns)(submitdrwdn)(initdrawdown));
+
+EOSIO_DISPATCH(transactions, (reset)(transact)(deletetrxn)(edittrxn)(deletetrxns)(submitdrwdn)(initdrawdown)(toggledrdwn));

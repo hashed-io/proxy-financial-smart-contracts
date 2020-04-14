@@ -105,7 +105,7 @@ ACTION accounts::addledger (uint64_t project_id, uint64_t entity_id) {
             new_account.increase_balance = asset(0, CURRENCY);
             new_account.decrease_balance = asset(0, CURRENCY);
             new_account.account_symbol = CURRENCY;
-            new_account.description = "---";
+            new_account.description = itr_types -> type_name;
             new_account.account_category = ACCOUNT_CATEGORIES.NONE;
         });
         itr_types++;

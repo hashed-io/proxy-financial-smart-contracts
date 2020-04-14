@@ -120,6 +120,8 @@ CONTRACT projects : public contract {
 
         ACTION confrmtrnsfr (name actor, uint64_t transfer_id, string proof_of_transfer);
 
+        ACTION changestatus (uint64_t project_id, uint64_t status);
+
 
     private:
 

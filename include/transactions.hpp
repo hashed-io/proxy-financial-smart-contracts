@@ -60,6 +60,8 @@ CONTRACT transactions : public contract {
 
 		ACTION initdrawdown (uint64_t project_id);
 
+		ACTION toggledrdwn (uint64_t project_id, uint64_t drawdown_id);
+
 	private:
 
 		// scoped by project_id

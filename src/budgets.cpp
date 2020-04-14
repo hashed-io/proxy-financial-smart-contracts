@@ -467,6 +467,8 @@ ACTION budgets::deletebudget (name actor, uint64_t project_id, uint64_t budget_i
 ACTION budgets::delbdgtsacct (uint64_t project_id, uint64_t account_id) {
     require_auth(_self);
 
+    print("delbudgets");
+
     account_tables accounts(contract_names::accounts, project_id);
     budget_tables budgets(_self, project_id);
 

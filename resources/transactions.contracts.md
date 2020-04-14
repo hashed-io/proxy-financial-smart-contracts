@@ -23,7 +23,7 @@ icon: https://prxfi.com/statics/app-logo-128x128.png#343fc624791d20b3594a5d9dcff
 - Amounts: {{amounts}}
 - Date: {{date}}
 - Description: {{description}}
-- Supporting URLs: {{supporting_urls}}
+- Supporting URLs: {{supporting_files}}
 
 
 <h1 class="contract">deletetrxn</h1>
@@ -51,7 +51,7 @@ icon: https://prxfi.com/statics/app-logo-128x128.png#343fc624791d20b3594a5d9dcff
 - Amounts: {{amounts}}
 - Date: {{date}}
 - Description: {{description}}
-- Supporting URLs: {{supporting_urls}}
+- Supporting URLs: {{supporting_files}}
 
 
 <h1 class="contract">deletetrxns</h1>
@@ -64,6 +64,42 @@ icon: https://prxfi.com/statics/app-logo-128x128.png#343fc624791d20b3594a5d9dcff
 ---
 
 {{$action.authorization.[0].actor}} deletes all transactions within the project with id {{project_id}}.
+
+
+<h1 class="contract">submitdrwdn</h1>
+
+---
+spec_version: "0.2.0"
+title: Submit Drawdown
+summary: 'This action will submit a drawdown'
+icon: https://prxfi.com/statics/app-logo-128x128.png#343fc624791d20b3594a5d9dcff22f07e840b9df87e4d02de62c32b73bbdf4ad
+---
+
+{{$action.authorization.[0].actor}} closes the last drawdown and opens a new one within the project with id {{project_id}}.
+
+
+<h1 class="contract">initdrawdown</h1>
+
+---
+spec_version: "0.2.0"
+title: Init Drawdown
+summary: 'Init Drawdown'
+icon: https://prxfi.com/statics/app-logo-128x128.png#343fc624791d20b3594a5d9dcff22f07e840b9df87e4d02de62c32b73bbdf4ad
+---
+
+{{$action.authorization.[0].actor}} inits the first drawdown within the project with id {{project_id}}.
+
+
+<h1 class="contract">toggledrdwn</h1>
+
+---
+spec_version: "0.2.0"
+title: Toggle Drawdown
+summary: 'toggle Drawdown'
+icon: https://prxfi.com/statics/app-logo-128x128.png#343fc624791d20b3594a5d9dcff22f07e840b9df87e4d02de62c32b73bbdf4ad
+---
+
+{{$action.authorization.[0].actor}} opens or closes a drawdown {{project_id}}.
 
 
 

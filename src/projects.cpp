@@ -600,5 +600,19 @@ ACTION projects::confrmtrnsfr (name actor, uint64_t transfer_id, string proof_of
 }
 
 
-EOSIO_DISPATCH(projects, (reset)(resetusers)(addproject)(approveprjct)(addentity)(addtestuser)(invest)(approveinvst)(maketransfer)(editproject)(deleteprojct)(deleteinvest)(editinvest)(confrmtrnsfr)(edittransfer)(deletetrnsfr));
+ACTION projects::changestatus (uint64_t project_id, uint64_t status) {
+
+	require_auth(_self);
+
+	auto itr = projects_table.find(project_id);
+	check(itr != projects_table.end(), contract_names::projects.to_string() + ": project not found.");
+
+	projects_table.modify(itr, _self, [&](auto & mp){
+		mp.status = status;
+	});
+
+}
+
+
+EOSIO_DISPATCH(projects, (reset)(resetusers)(addproject)(approveprjct)(addentity)(addtestuser)(invest)(approveinvst)(maketransfer)(editproject)(deleteprojct)(deleteinvest)(editinvest)(confrmtrnsfr)(edittransfer)(deletetrnsfr)(changestatus));
 
