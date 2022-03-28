@@ -1,0 +1,23 @@
+{
+    "project_name": "Test Project",
+    "project_class": "NNN",
+    "description": "This is a test project.",
+    "total_project_cost": "435000.00 USD",
+    "debt_financing": "2000.00 USD",
+    "term": 3,
+    "interest_rate": 100,
+    "loan_agreement": "https://loan-agreement.com",
+    "total_equity_financing": "3000.00 USD",
+    "total_gp_equity": "2100.00 USD",
+    "private_equity": "5000.00 USD",
+    "annual_return": 500,
+    "project_co_lp": "https://project-co-lp.com",
+    "project_co_lp_date": 1583864481,
+    "projected_completion_date": 1683864481,
+    "projected_stabilization_date": 1593864481,
+    "anticipated_year_sale_refinance": 2023,
+    "fund_lp": "https://fund-lp.com",
+    "total_fund_offering_amount": "400000.00 USD",
+    "total_number_fund_offering": 40000,
+    "price_per_fund_unit": "300.00 USD"
+}
