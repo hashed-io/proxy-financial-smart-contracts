@@ -1,6 +1,5 @@
 
-set contract hello ./hello hello.wasm hello.abi -p hello@active
-
+# Commands to deploy the smart contracts into the TLOS mainnet
 ## budget contract
 
 cleos -u https://api.telosfoundation.io set contract pxbud.sh ./artifacts budgets.wasm budgets.abi -p pxbud.sh@active
