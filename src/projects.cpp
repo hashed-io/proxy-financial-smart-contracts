@@ -68,17 +68,17 @@ ACTION projects::resetusers () {
 		itr_users = users.erase(itr_users);
 	}
 	// hardcoding some entities and users for testnet
-	addentity(_self, "Proxy Capital", "A test entity for Proxy Capital", ENTITY_TYPES.FUND);
-	addentity(_self, "Investor Entity 1", "A test entity for investors", ENTITY_TYPES.INVESTOR);
-	addentity(_self, "Investor Entity 2", "A test entity for investors", ENTITY_TYPES.INVESTOR);
-	addentity(_self, "Developer Entity 1", "A test entity for developer", ENTITY_TYPES.DEVELOPER);
+	// addentity(_self, "Proxy Capital", "A test entity for Proxy Capital", ENTITY_TYPES.FUND);
+	// addentity(_self, "Investor Entity 1", "A test entity for investors", ENTITY_TYPES.INVESTOR);
+	// addentity(_self, "Investor Entity 2", "A test entity for investors", ENTITY_TYPES.INVESTOR);
+	// addentity(_self, "Developer Entity 1", "A test entity for developer", ENTITY_TYPES.DEVELOPER);
 
-	uint64_t entity_id = 1;
+	// uint64_t entity_id = 1;
 
-	addtestuser("proxyadmin11"_n, "John Miller", entity_id);
-	addtestuser("investoruser"_n, "James Smith", entity_id + 1);
-	addtestuser("investorusr2"_n, "Sally Fields", entity_id + 2);
-	addtestuser("builderuser1"_n, "Mary Williams", entity_id + 3);
+	// addtestuser("proxyadmin11"_n, "John Miller", entity_id);
+	// addtestuser("investoruser"_n, "James Smith", entity_id + 1);
+	// addtestuser("investorusr2"_n, "Sally Fields", entity_id + 2);
+	// addtestuser("builderuser1"_n, "Mary Williams", entity_id + 3);
 }
 
 // who can do this?
