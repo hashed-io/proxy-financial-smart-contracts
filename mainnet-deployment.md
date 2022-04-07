@@ -31,3 +31,13 @@ cleos -u https://api.telosfoundation.io set contract pxtrx.sh ./artifacts transa
 cleos -u https://api.telosfoundation.io push action eosio buyrambytes '{"payer":"pxbud.sh", "receiver":"pxtrx.sh", "bytes":1025768 }' -p pxbud.sh@active
 
 cleos -u https://api.telosfoundation.io get abi pxtrx.sh
+
+## projects contract
+
+cleos -u https://api.telosfoundation.io set contract pxprj.sh ./artifacts projects.wasm projects.abi -p pxprj.sh@active
+
+cleos -u https://api.telosfoundation.io push action eosio buyrambytes '{"payer":"pxbud.sh", "receiver":"pxprj.sh", "bytes":1620893 }' -p pxbud.sh@active
+
+cleos -u https://api.telosfoundation.io get abi pxprj.sh
+
+1642769 - 21876
