@@ -34,7 +34,7 @@ cleos -u https://api.telosfoundation.io get abi pxtrx.sh
 
 ## projects contract
 
-cleos -u https://api.telosfoundation.io push action eosio buyrambytes '{"payer":"pxact.sh", "receiver":"pxprj.sh", "bytes":1620993 }' -p pxact.sh@active
+cleos -u https://api.telosfoundation.io set contract pxprj.sh ./artifacts projects.wasm projects.abi -p pxprj.sh@active
 
 cleos -u https://api.telosfoundation.io push action eosio buyrambytes '{"payer":"pxact.sh", "receiver":"pxprj.sh", "bytes":1620993 }' -p pxact.sh@active
 
