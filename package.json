@@ -26,7 +26,7 @@
     "@types/node": "^13.7.6",
     "dotenv": "^8.2.0",
     "eosjs": "^20.0.3",
-    "eoslime": "^2.0.0",
+    "eoslime": "^2.0.1",
     "mocha": "^9.2.2",
     "promisify": "0.0.3",
     "ramda": "^0.27.0",
