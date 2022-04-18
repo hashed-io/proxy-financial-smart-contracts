@@ -19,7 +19,11 @@ summary: 'This action will add a new project'
 icon: https://prxfi.com/statics/app-logo-128x128.png#343fc624791d20b3594a5d9dcff22f07e840b9df87e4d02de62c32b73bbdf4ad
 ---
 
-{{$action.authorization.[0].actor}} adds a new project with the following paramteres: \nClass: {{project_class}}\nName: {{project_name}}\nDescription: {{description}}\nTotal cost: {{total_project_cost}}\nDebt financing: {{debt_financing}}\nTerm: {{term}}\nInteres rate: {{interest_rate}}\nLoan Agreement: {{loan_agreement}}\n Total equity financing: {{total_equity_financing}}\nTotal GP equity: {{total_gp_equity}}\nPrivate equity: {{private_equity}}\n Annual return: {{annual_return}}\n Project CO LP: {{project_co_lp}}\n CO LP date: {{project_co_lp_date}}\nProjected completion date: {{projected_completion_date}}\nProjected stabilization date: {{projected_stabilization_date}}\nAnticipated year sale refinance: {{anticipated_year_sale_refinance}}.
+{{$action.authorization.[0].actor}} adds a new project with the following paramteres: \nClass: {{project_class}}\nName: {{project_name}}
+
+\nDescription: {{description}}\nTotal cost: {{total_project_cost}}\nDebt financing: {{debt_financing}}\nTerm: {{term}}\nInteres rate: {{interest_rate}}\nLoan Agreement: {{loan_agreement}
+
+\n Total equity financing: {{total_equity_financing}}\nTotal GP equity: {{total_gp_equity}}\nPrivate equity: {{private_equity}}\n Annual return: {{annual_return}}\n Project CO LP: {{project_co_lp}}\n CO LP date: {{project_co_lp_date}}\nProjected completion date: {{projected_completion_date}}\nProjected stabilization date: {{projected_stabilization_date}}\nAnticipated year sale refinance: {{anticipated_year_sale_refinance}}.
 
 
 <h1 class="contract">deleteprojct</h1>

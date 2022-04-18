@@ -207,7 +207,7 @@ ACTION transactions::reset () {
 }
 
 ACTION transactions::transact ( name actor, 
-						  		uint64_t project_id, 
+						  	uint64_t project_id, 
 								vector<transaction_amount> amounts,
 								uint64_t date,
 								string description,
@@ -309,7 +309,7 @@ ACTION transactions::submitdrwdn (name actor, uint64_t project_id, vector<url_in
 		// ======== CHECK PERMISSIONS HERE ======== //
 		// ======================================== //
 
-	}
+}
 
 	drawdown_tables drawdowns(_self, project_id);
 

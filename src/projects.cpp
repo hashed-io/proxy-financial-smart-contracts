@@ -61,7 +61,7 @@ ACTION projects::reset () {
 }
 
 ACTION projects::resetusers () {
-    require_auth(_self);
+  require_auth(_self);
 
 	auto itr_users = users.begin();
 	while (itr_users != users.end()) {
@@ -144,12 +144,12 @@ ACTION projects::addproject ( name actor,
 							  uint64_t projected_stabilization_date,
 							  uint64_t anticipated_year_sale_refinance ) {
 
-    require_auth(actor);
+  require_auth(actor);
 	checkuserdev(actor);
 
 	check(PROJECT_CLASS.is_valid_constant(project_class), contract_names::projects.to_string() + ": that project class does not exist.");
 
-    check_asset(total_project_cost, contract_names::projects);
+  check_asset(total_project_cost, contract_names::projects);
 	check_asset(debt_financing, contract_names::projects);
 	check_asset(total_equity_financing, contract_names::projects);
 	check_asset(total_gp_equity, contract_names::projects);
@@ -164,7 +164,7 @@ ACTION projects::addproject ( name actor,
         itr_p++;
 	}
 
-    uint64_t new_project_id = projects_table.available_primary_key();
+  uint64_t new_project_id = projects_table.available_primary_key();
 
 	projects_table.emplace(_self, [&](auto & new_project) {
 		new_project.project_id = new_project_id;
