@@ -130,7 +130,7 @@ ACTION accounts::initaccounts (uint64_t project_id) {
             new_account.account_id = new_account_id; 
             new_account.parent_id = 0;
             new_account.num_children = 0;
-            new_account.account_name = itr_typ es -> type_name;
+            new_account.account_name = itr_types -> type_name;
             new_account.account_subtype = itr_types -> type_name;
             new_account.increase_balance = asset(0, CURRENCY);
             new_account.decrease_balance = asset(0, CURRENCY);

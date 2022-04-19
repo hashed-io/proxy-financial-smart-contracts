@@ -29,6 +29,7 @@ spec_version: "0.2.0"
 title: Assign Roles
 summary: 'This action will assign a role to a user'
 icon: https://prxfi.com/statics/app-logo-128x128.png#343fc624791d20b3594a5d9dcff22f07e840b9df87e4d02de62c32b73bbdf4ad
+
 ---
 
 {{$action.authorization.[0].actor}} assigns the role {{role_id}} to the user {{user}}.
