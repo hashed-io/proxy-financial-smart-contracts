@@ -15,14 +15,23 @@ struct url_information {
 	string address;
 };
 
+// MAINNET DEPLOYMENT 
 namespace contract_names {
-    name projects = "proxycappro1"_n;
-    name accounts = "proxycapacc1"_n;
-    name transactions = "proxycaptrx1"_n;
-    name permissions = "proxycapper1"_n;
-    name contracts = "proxycapcont"_n;
-    name budgets = "proxycapbdg1"_n;
+    name projects = "pxprj.sh"_n;
+    name accounts = "pxact.sh"_n;
+    name transactions = "pxtrx.sh"_n;
+    name permissions = "pxperm.sh"_n;
+    name budgets = "pxbud.sh"_n;
 }
+
+// TEST NET ACCOUNTS
+// namespace contract_names {
+//     name projects = "proxycappro1"_n;
+//     name accounts = "proxycapacc1"_n;
+//     name transactions = "proxycaptrx1"_n;
+//     name permissions = "proxycapper1"_n;
+//     name budgets = "proxycapbdg1"_n;
+// }
 
 // namespace contract_names {
 //     name projects = "proxycapproj"_n;
