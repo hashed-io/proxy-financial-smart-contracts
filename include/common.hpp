@@ -16,12 +16,12 @@ struct url_information {
 };
 
 namespace contract_names {
-    name projects = "proxycappro1"_n;
-    name accounts = "proxycapacc1"_n;
-    name transactions = "proxycaptrx1"_n;
-    name permissions = "proxycapper1"_n;
-    name contracts = "proxycapcont"_n;
-    name budgets = "proxycapbdg1"_n;
+    name projects = "proxyv1prjct"_n;
+    name accounts = "proxyv1accnt"_n;
+    name transactions = "proxyv1trnsc"_n;
+    name permissions = "proxyv1prmss"_n;
+    name contracts = "proxyv1bdgts"_n;
+    name budgets = "proxyv1cntrc"_n;
 }
 
 // namespace contract_names {
