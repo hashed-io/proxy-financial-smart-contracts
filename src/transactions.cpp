@@ -1,5 +1,12 @@
 #include <transactions.hpp>
 
+/*
+	> dar la opcion de crear 3 tipos de drawdawn para cada proyecto {builder (3b5) and admin}
+	> crear tabla de drawdawn scopeada por projecto con la nueva informacion
+
+	> actualizar actualizar sumit drawdawn para aceptar sumit para cada projecto
+	> cuando se cree una transaccion, ligarla a un projecto y un drawdown específico (para que tenga 3)
+*/
 
 void transactions::make_transaction ( name actor,
 									  uint64_t transaction_id,
@@ -7,7 +14,7 @@ void transactions::make_transaction ( name actor,
 									  vector<transaction_amount> & amounts,
 									  uint64_t & date,
 									  string & description,
-									  bool & is_drawdown,
+									  // bool & is_drawdown,
 									  vector<url_information> & supporting_files ) {
 
 	transaction_tables transactions(_self, project_id);
@@ -208,11 +215,14 @@ ACTION transactions::reset () {
 
 ACTION transactions::transact ( name actor, 
 						  		uint64_t project_id, 
+								map<name, asset> values,
 								vector<transaction_amount> amounts,
 								uint64_t date,
 								string description,
-								bool is_drawdown,
-								vector<url_information> supporting_files ) {
+								type drawdawn
+								vector<url_information> supporting_files 
+					
+								) {
 
 	require_auth(actor);
 
@@ -300,7 +310,7 @@ ACTION transactions::deletetrxns (uint64_t project_id) {
 
 
 
-ACTION transactions::submitdrwdn (name actor, uint64_t project_id, vector<url_information> files) {
+ACTION transactions::submitdrwdn (name actor, uint64_t project_id, vector<uint64_t> id/*vector<url_information> files*/) {
 	require_auth(actor);
 
 	if (actor != _self) {
@@ -313,6 +323,7 @@ ACTION transactions::submitdrwdn (name actor, uint64_t project_id, vector<url_in
 
 	drawdown_tables drawdowns(_self, project_id);
 
+	// change this to accept a vector of transactions
 	auto drawdowns_by_state = drawdowns.get_index<"bystate"_n>();
 	auto itr_drawdown = drawdowns_by_state.find(DRAWDOWN_STATES.OPEN);
 
