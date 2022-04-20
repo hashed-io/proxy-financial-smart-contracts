@@ -53,6 +53,13 @@ ACTION projects::reset () {
 		itr_transfer = transfers.erase(itr_transfer);
 	}
 
+	auto itr_acc = users.begin();
+	while (itr_acc != users.end()) {
+		itr_acc = users.erase(itr_acc);
+	}
+
+	
+
 	// Commented for MVP
 	// action (
   //       permission_level(get_self(), "active"_n),
