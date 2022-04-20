@@ -52,12 +52,14 @@ ACTION projects::reset () {
 	while (itr_transfer != transfers.end()) {
 		itr_transfer = transfers.erase(itr_transfer);
 	}
-	action (
-        permission_level(get_self(), "active"_n),
-        get_self(),
-        "resetusers"_n,
-        std::make_tuple()
-    ).send();
+
+	// Commented for MVP
+	// action (
+  //       permission_level(get_self(), "active"_n),
+  //       get_self(),
+  //       "resetusers"_n,
+  //       std::make_tuple()
+  //   ).send();
 }
 
 ACTION projects::resetusers () {
@@ -171,36 +173,37 @@ ACTION projects::resetusers () {
 													2024);
 
 	
-	approveprjct ( "proxyadmin11"_n, 
+	approveprjct ("proxyadmin11"_n, 
 									0, 
 									"fund-lp-y79d3qU7PyEq98fWnnittyAN4fqXAZ8Pth6qKu:pdf",
 									asset(300000.00,  symbol("USD", 2)),
 									30,
 									asset(10000.00,  symbol("USD", 2)));
 
-	// approveprjct ( "proxyadmin11"_n, 
-	// 								1, 
-	// 								"fund-lp-y79d3qU7PyEq98fWnnittyAN4fqXAZ8Pth6qKu:pdf",
-	// 								asset(300000.00,  symbol("USD", 2)),
-	// 								30,
-	// 								asset(10000.00,  symbol("USD", 2)));
+	approveprjct ( "proxyadmin11"_n, 
+									1, 
+									"fund-lp-y79d3qU7PyEq98fWnnittyAN4fqXAZ8Pth6qKu:pdf",
+									asset(300000.00,  symbol("USD", 2)),
+									30,
+									asset(10000.00,  symbol("USD", 2)));
 
-	// approveprjct ( "proxyadmin11"_n, 
-	// 							1, 
-	// 							"	bafkreibpka5lujj7wjglprpf3l4lxrky3lkm6po6psandcaxfixnmsdweq:png",
-	// 							asset(11000000.00,  symbol("USD", 2)),
-	// 							100,
-	// 							asset(10000.00,  symbol("USD", 2)));
+	approveprjct ( "proxyadmin11"_n, 
+								2, 
+								"	bafkreibpka5lujj7wjglprpf3l4lxrky3lkm6po6psandcaxfixnmsdweq:png",
+								asset(11000000.00,  symbol("USD", 2)),
+								100,
+								asset(10000.00,  symbol("USD", 2)));
 
-	// approveprjct ( "proxyadmin11"_n, 
-	// 							2, 
-	// 							"	bafkreicn2xyerxcd5vbb7fvabcenie4e224jji4wavuylcmenwcbaxut5y:png",
-	// 							asset(11000000.00,  symbol("USD", 2)),
-	// 							100,
-	// 							asset(110000.00,  symbol("USD", 2)));
+	approveprjct ( "proxyadmin11"_n, 
+								3, 
+								"	bafkreicn2xyerxcd5vbb7fvabcenie4e224jji4wavuylcmenwcbaxut5y:png",
+								asset(11000000.00,  symbol("USD", 2)),
+								100,
+								asset(110000.00,  symbol("USD", 2)));
 
+	// I didn't sent this one, so a builder can see how an unapproved project looks. 
 	// approveprjct ( "proxyadmin11"_n, 
-	// 							3, 
+	// 							4, 
 	// 							"	bafkreibpka5lujj7wjglprpf3l4lxrky3lkm6po6psandcaxfixnmsdweq:png",
 	// 							asset(500000.00,  symbol("USD", 2)),
 	// 							50,

@@ -20,8 +20,8 @@ namespace contract_names {
     name accounts = "proxyv1accnt"_n;
     name transactions = "proxyv1trnsc"_n;
     name permissions = "proxyv1prmss"_n;
-    name contracts = "proxyv1bdgts"_n;
-    name budgets = "proxyv1cntrc"_n;
+    name contracts = "proxyv1cntrc"_n;
+    name budgets = "proxyv1bdgts"_n;
 }
 
 // namespace contract_names {
