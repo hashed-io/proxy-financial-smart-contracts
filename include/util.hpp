@@ -7,40 +7,6 @@
 using namespace eosio;
 using namespace std;
 
-const symbol CURRENCY = symbol("USD", 2);
-const uint32_t RESET_IDS = 100;
-
-struct url_information {
-	string filename;
-	string address;
-};
-
-// MAINNET DEPLOYMENT 
-namespace contract_names {
-    name projects = "pxprj.sh"_n;
-    name accounts = "pxact.sh"_n;
-    name transactions = "pxtrx.sh"_n;
-    name permissions = "pxperm.sh"_n;
-    name budgets = "pxbud.sh"_n;
-}
-
-// TEST NET ACCOUNTS
-// namespace contract_names {
-//     name projects = "proxycappro1"_n;
-//     name accounts = "proxycapacc1"_n;
-//     name transactions = "proxycaptrx1"_n;
-//     name permissions = "proxycapper1"_n;
-//     name budgets = "proxycapbdg1"_n;
-// }
-
-// namespace contract_names {
-//     name projects = "proxycapproj"_n;
-//     name accounts = "proxycapacct"_n;
-//     name transactions = "proxycaptrnx"_n;
-//     name permissions = "proxycapperm"_n;
-//     name contracts = "proxycapcont"_n;
-//     name budgets = "proxycapbdgt"_n;
-// }
 
 void check_asset(asset amount, name contract_name) {
 	check(amount.symbol == CURRENCY, contract_name.to_string() + ": the symbols must be the same. " + amount.to_string() + ". amount symbol:" + amount.symbol.code().to_string() + "!=" + CURRENCY.code().to_string());

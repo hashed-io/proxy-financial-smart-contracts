@@ -4,10 +4,16 @@
 #include <eosio/system.hpp>
 #include <eosio/asset.hpp>
 #include <eosio/symbol.hpp>
+
+#include <common/constants.hpp>
+#include <common/data_types.hpp>
+#include <common/action_names.hpp>
+
 #include <common.hpp>
+
+#include <permissions/roles.hpp>
+
 #include <utility>
-#include <roles.hpp>
-#include <action_names.hpp>
 
 using namespace eosio;
 using namespace std;

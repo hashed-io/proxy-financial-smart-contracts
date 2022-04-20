@@ -4,11 +4,16 @@
 #include <eosio/system.hpp>
 #include <eosio/asset.hpp>
 #include <eosio/symbol.hpp>
+
+#include <common/constants.hpp>
+#include <common/data_types.hpp>
+#include <common/action_names.hpp>
+
 #include <common.hpp>
-#include <account_types.hpp>
-#include <account_subtypes.hpp>
-#include <action_names.hpp>
-#include <budget_types.hpp>
+
+#include <accounts/account_types.hpp>
+#include <accounts/account_subtypes.hpp>
+#include <budgets/budget_types.hpp>
 
 using namespace eosio;
 using namespace std;

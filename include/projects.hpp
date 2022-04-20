@@ -4,14 +4,21 @@
 #include <eosio/system.hpp>
 #include <eosio/asset.hpp>
 #include <eosio/symbol.hpp>
+
 #include <common.hpp>
-#include <account_types.hpp>
-#include <account_subtypes.hpp>
-#include <project_status.hpp>
-#include <entity_types.hpp>
-#include <investment_status.hpp>
-#include <project_class.hpp>
-#include <transfer_status.hpp>
+
+#include <common/constants.hpp>
+#include <common/data_types.hpp>
+#include <common/action_names.hpp>
+
+#include <accounts/account_types.hpp>
+#include <accounts/account_subtypes.hpp>
+
+#include <projects/project_status.hpp>
+#include <projects/entity_types.hpp>
+#include <projects/investment_status.hpp>
+#include <projects/project_class.hpp>
+#include <projects/transfer_status.hpp>
 
 using namespace eosio;
 using namespace std;
