@@ -58,15 +58,7 @@ ACTION projects::reset () {
 		itr_acc = users.erase(itr_acc);
 	}
 
-	
 
-	// Commented for MVP
-	// action (
-  //       permission_level(get_self(), "active"_n),
-  //       get_self(),
-  //       "resetusers"_n,
-  //       std::make_tuple()
-  //   ).send();
 }
 
 ACTION projects::resetusers () {
@@ -94,7 +86,7 @@ ACTION projects::resetusers () {
 	//addtestuser (name user, string user_name, uint64_t entity_id
 
 	// //Add projects
-	addproject ("builderuser1"_n, "OFFICE", "Hashed's office",
+	addproject ("develop.gm"_n, "OFFICE", "Hashed's office",
 													"48,000 sf of office space in Minnesota continues to grow as a hub for businesses and Edina is where corporations that want access to the talent pool of Minneapolis and the surrounding without paying exorbitant prices for office space are setting their headquarters. We are building a beautiful building to will provide office space to 200-300 people at an exceptional location near the mall and connected via mass transit to Minneapolis downtown",
 													asset(10000000.00, symbol("USD", 2)),
 													asset(6000000.00,  symbol("USD", 2)),
@@ -111,7 +103,7 @@ ACTION projects::resetusers () {
 													1682485200,
 													2023);
 
-	addproject ("builderuser1"_n, "NNN", "1100 N Trinit",
+	addproject ("develop.gm"_n, "NNN", "1100 N Trinit",
 													"1100 N Trinity Street is a 6,000-square-foot, freestanding retail building positioned along the main thoroughfare and retail corridor in Whitney, Texas.",
 													asset(435000.00, symbol("USD", 2)),
 													asset(2000.00,  symbol("USD", 2)),
@@ -128,7 +120,7 @@ ACTION projects::resetusers () {
 													1682485200,
 													2023);
 	
-	addproject ("builderuser1"_n, "MASTER PLANNED COMMUNITY", "Soo Line, Minneapolis, MN",
+	addproject ("develop.gm"_n, "MASTER PLANNED COMMUNITY", "Soo Line, Minneapolis, MN",
 													"Soo Line, Minneapolis, MN	150 Apartment building located in Minneapolis, the 5th fastest growing city in the country with a high demand for apartments near downtown. Research shows demand exceeds supply by 5% which explains why prices keep going up. This building’s facilities will include a pool, gym and an events room which only 20% of the apartments in the area provide.",
 													asset(60000000.00, symbol("USD", 2)),
 													asset(40000000.00,  symbol("USD", 2)),
@@ -145,7 +137,7 @@ ACTION projects::resetusers () {
 													1682485200,
 													2024);
 	
-	addproject ("builderuser1"_n, "MULTIFAMILY", "Ashmore, St. Paul, MN",
+	addproject ("develop.gm"_n, "MULTIFAMILY", "Ashmore, St. Paul, MN",
 													"Ashmore, St. Paul, MN	165 Apartment building in Ashmore heights is one of the most beautiful and desired areas in St. Paul. We are building an exclusive apartment complex to serve the population segment with an increasing disposable income in the area. Our amenities will include a dog park, gym and meditation center.",
 													asset(3000000.00, symbol("USD", 2)),
 													asset(1000000.00,  symbol("USD", 2)),
@@ -162,7 +154,7 @@ ACTION projects::resetusers () {
 													1682485200,
 													2022);
 	
-	addproject ("builderuser1"_n, "OFFICE", "Blue Tower, Edina, MN",
+	addproject ("develop.gm"_n, "OFFICE", "Blue Tower, Edina, MN",
 													"Blue Tower, Edina, MN	48,000 sf of office space in Minnesota continues to grow as a hub for businesses and Edina is where corporations that want access to the talent pool of Minneapolis and the surrounding without paying exorbitant prices for office space are setting their headquarters. We are building a beautiful building to will provide office space to 200-300 people at an exceptional location near the mall and connected via mass transit to Minneapolis downtown",
 													asset(89000000.00, symbol("USD", 2)),
 													asset(50000000.00,  symbol("USD", 2)),
@@ -180,41 +172,34 @@ ACTION projects::resetusers () {
 													2024);
 
 	
-	approveprjct ("proxyadmin11"_n, 
+	approveprjct ("proxy.gm"_n, 
 									0, 
 									"fund-lp-y79d3qU7PyEq98fWnnittyAN4fqXAZ8Pth6qKu:pdf",
 									asset(300000.00,  symbol("USD", 2)),
 									30,
 									asset(10000.00,  symbol("USD", 2)));
 
-	approveprjct ( "proxyadmin11"_n, 
+	approveprjct ( "proxy.gm"_n, 
 									1, 
 									"fund-lp-y79d3qU7PyEq98fWnnittyAN4fqXAZ8Pth6qKu:pdf",
 									asset(300000.00,  symbol("USD", 2)),
 									30,
 									asset(10000.00,  symbol("USD", 2)));
 
-	approveprjct ( "proxyadmin11"_n, 
+	approveprjct ( "proxy.gm"_n, 
 								2, 
 								"	bafkreibpka5lujj7wjglprpf3l4lxrky3lkm6po6psandcaxfixnmsdweq:png",
 								asset(11000000.00,  symbol("USD", 2)),
 								100,
 								asset(10000.00,  symbol("USD", 2)));
 
-	approveprjct ( "proxyadmin11"_n, 
+	approveprjct ( "proxy.gm"_n, 
 								3, 
 								"	bafkreicn2xyerxcd5vbb7fvabcenie4e224jji4wavuylcmenwcbaxut5y:png",
 								asset(11000000.00,  symbol("USD", 2)),
 								100,
 								asset(110000.00,  symbol("USD", 2)));
 
-	// I didn't sent this one, so a builder can see how an unapproved project looks. 
-	// approveprjct ( "proxyadmin11"_n, 
-	// 							4, 
-	// 							"	bafkreibpka5lujj7wjglprpf3l4lxrky3lkm6po6psandcaxfixnmsdweq:png",
-	// 							asset(500000.00,  symbol("USD", 2)),
-	// 							50,
-	// 							asset(10000.00,  symbol("USD", 2)));
 }
 
 // who can do this?
