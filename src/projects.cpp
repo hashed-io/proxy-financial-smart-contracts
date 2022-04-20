@@ -87,9 +87,9 @@ ACTION projects::resetusers () {
 
 	uint64_t entity_id = 1;
 
-	addtestuser("proxyadmin11"_n, "Sam Fund", entity_id);
-	addtestuser("investoruser"_n, "Sam Investor", entity_id + 1);
-	addtestuser("builderuser1"_n, "Sam Developer", entity_id + 2);
+	addtestuser("proxy.gm"_n, "Sam Fund", entity_id);
+	addtestuser("investor.gm"_n, "Sam Investor", entity_id + 1);
+	addtestuser("develop.gm"_n, "Sam Developer", entity_id + 2);
 	//addtestuser("proxyadmin11"_n, "Max Fund", entity_id + 4);
 	//addtestuser (name user, string user_name, uint64_t entity_id
 
