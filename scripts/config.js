@@ -13,6 +13,7 @@ const contract = (name, nameOnChain) => {
   }
 }
 
+const devKey = process.env.LOCAL_PUBLIC_KEY
 
 const supportedChains = {
   local: 'local',
@@ -43,15 +44,16 @@ const ownerPublicKeysByChain = {
 
 const publicKeysByChain = {
   [supportedChains.local]: {
-    owner: devKey,
-    active: devKey
+    owner: process.env.LOCAL_PUBLIC_KEY,
+    active: process.env.LOCAL_PUBLIC_KEY
   },
   [supportedChains.telosTestnet]: {
-    owner: devTelosKey,
-    active: devTelosKey
+    owner: process.env.TLOSTESTNET_PUBLIC_KEY,
+    active: process.env.TLOSTESTNET_PUBLIC_KEY
   },
   [supportedChains.telosMainnet]: {
-
+    owner: process.env.TLOSMAINNET_PUBLIC_KEY,
+    active: process.env.TLOSMAINNET_PUBLIC_KEY
   }
 }
 
