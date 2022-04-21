@@ -65,6 +65,10 @@ CONTRACT accounts : public contract {
 
         DEFINE_USER_TABLE_MULTI_INDEX
 
+        DEFINE_TYPE_TABLE
+
+	    DEFINE_TYPE_TABLE_MULTI_INDEX
+
         ACTION reset ();
 
         ACTION addledger (uint64_t project_id, uint64_t ledger_id);

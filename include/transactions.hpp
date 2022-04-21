@@ -21,6 +21,7 @@
 #include <common/tables/account.hpp>
 #include <common/tables/transaction.hpp>
 #include <common/tables/drawdown.hpp>
+#include <common/tables/type.hpp>
 
 #include <common/tables/project.hpp>
 
@@ -69,6 +70,10 @@ public:
 
 	DEFINE_DRAWDOWN_TABLE_MULTI_INDEX
 
+	DEFINE_TYPE_TABLE
+
+	DEFINE_TYPE_TABLE_MULTI_INDEX
+
 	ACTION reset();
 
 	ACTION transact(name actor,
@@ -105,17 +110,7 @@ public:
 										 uint64_t drawdown_id);
 
 private:
-	TABLE type_table
-	{
-		uint64_t type_id;
-		string type_name;
-		string account_class;
 
-		uint64_t primary_key() const { return type_id; }
-	};
-
-	
-	typedef eosio::multi_index<"accnttypes"_n, type_table> type_tables;
 	
 	type_tables account_types;
 
