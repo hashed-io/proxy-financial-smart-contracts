@@ -83,7 +83,7 @@ ACTION projects::resetusers () {
 	addentity(_self, "Investor Entity 1", "A test entity for Investor", ENTITY_TYPES.INVESTOR);
 	addentity(_self, "Developer Entity 1", "A test entity for Developer", ENTITY_TYPES.DEVELOPER);
 	//addentity(_self, "Fund Entity 2", "A test entity for Fund", ENTITY_TYPES.FUND);
-	//addentity (name actor, string entity_name, string description, string type)
+
 
 	uint64_t entity_id = 1;
 
@@ -91,7 +91,6 @@ ACTION projects::resetusers () {
 	addtestuser("investoruser"_n, "Sam Investor", entity_id + 1);
 	addtestuser("builderuser1"_n, "Sam Developer", entity_id + 2);
 	//addtestuser("proxyadmin11"_n, "Max Fund", entity_id + 4);
-	//addtestuser (name user, string user_name, uint64_t entity_id
 
 	// //Add projects
 	addproject ("builderuser1"_n, "OFFICE", "Hashed's office",
