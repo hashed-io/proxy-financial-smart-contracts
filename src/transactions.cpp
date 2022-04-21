@@ -20,7 +20,7 @@ void transactions::make_transaction(name actor,
 																		vector<transaction_amount> &amounts,
 																		uint64_t &date,
 																		string &description,
-																		std::string &drawdown_type,
+																		bool &is_drawdown,
 																		vector<common::types::url_information> &supporting_files)
 {
 
@@ -135,7 +135,9 @@ void transactions::make_transaction(name actor,
 		} });
 }
 
-void transactions::delete_transaction(name actor, uint64_t project_id, uint64_t transaction_id)
+void transactions::delete_transaction(name actor,
+																			uint64_t project_id,
+																			uint64_t transaction_id)
 {
 
 	transaction_tables transactions(_self, project_id);
@@ -236,16 +238,13 @@ ACTION transactions::reset()
 }
 
 ACTION transactions::transact(name actor,
+															uint64_t transaction_id,
 															uint64_t project_id,
-															map<name, asset> values,
-															vector<transaction_amount> amounts,
-															uint64_t date,
-															string description,
-															type drawdawn
-																	vector<common::types::url_information>
-																			supporting_files
-
-)
+															vector<transaction_amount> &amounts,
+															uint64_t &date,
+															string &description,
+															bool &is_drawdown,
+															vector<common::types::url_information> &supporting_files)
 {
 
 	require_auth(actor);
@@ -336,7 +335,10 @@ ACTION transactions::deletetrxns(uint64_t project_id)
 	}
 }
 
-ACTION transactions::submitdrwdn(name actor, uint64_t project_id, vector<uint64_t> id /*vector<common::types::url_information> files*/)
+ACTION transactions::submitdrwdn(name actor,
+																 uint64_t project_id,
+																 vector<common::types::url_information> files
+																 /*vector<common::types::url_information> files*/)
 {
 	require_auth(actor);
 
@@ -396,7 +398,8 @@ ACTION transactions::initdrawdown(uint64_t project_id)
 		new_drawdown.close_date = 0; });
 }
 
-ACTION transactions::toggledrdwn(uint64_t project_id, uint64_t drawdown_id)
+ACTION transactions::toggledrdwn(uint64_t project_id,
+																 uint64_t drawdown_id)
 {
 	require_auth(_self);
 
