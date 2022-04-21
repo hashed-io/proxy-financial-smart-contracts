@@ -40,9 +40,9 @@ namespace common
       constexpr int64_t status_open = 1;
       constexpr int64_t status_close = 2;
 
-      constexpr std::string type_EB5 = "EB-5";
-      constexpr std::string type_construction_loan = "Construction Loan";
-      constexpr std::string type_developer_equity = "Developer Equity";
+      const std::string type_EB5 = "EB-5";
+      const std::string type_construction_loan = "Construction Loan";
+      const std::string type_developer_equity = "Developer Equity";
     } // namespace drawdown
 
   } // namespace transactions
@@ -58,17 +58,17 @@ namespace common
 
     namespace types
     {
-      constexpr std::string debit = "Debit";
-      constexpr std::string credit = "Credit";
+      const std::string debit = "Debit";
+      const std::string credit = "Credit";
     } // namespace types
 
     namespace subtypes
     {
-      constexpr std::string assets = "Assets";
-      constexpr std::string equity = "Equity";
-      constexpr std::string expenses = "Expenses";
-      constexpr std::string income = "Income";
-      constexpr std::string liabilities = "Liabilities";
+      const std::string assets = "Assets";
+      const std::string equity = "Equity";
+      const std::string expenses = "Expenses";
+      const std::string income = "Income";
+      const std::string liabilities = "Liabilities";
     } // namespace subtypes
 
   } // namespace accouts
@@ -77,28 +77,28 @@ namespace common
   {
     namespace types
     {
-      constexpr std::string total = "Total";
-      constexpr std::string annually = "Annually";
-      constexpr std::string monthly = "Monthly";
-      constexpr std::string weekly = "Weekly";
-      constexpr std::string daily = "Daily";
-      constexpr std::string custom = "Custom";
+      const std::string total = "Total";
+      const std::string annually = "Annually";
+      const std::string monthly = "Monthly";
+      const std::string weekly = "Weekly";
+      const std::string daily = "Daily";
+      const std::string custom = "Custom";
     } // namespace types
 
   } // namespace budget
 
   namespace projects
   {
-    namespace class
+    namespace type
     {
-      constexpr std::string nnn = "NNN";
-      constexpr std::string multifamily = "MULTIFAMILY";
-      constexpr std::string office = "OFFICE";
-      constexpr std::string industrial = "INDUSTRIAL";
-      constexpr std::string master_planned_community = "MASTER PLANNED COMMUNITY";
-      constexpr std::string medical = "MEDICAL";
-      constexpr std::string hotel = "HOTEL";
-    } // namespace class
+      const std::string nnn = "NNN";
+      const std::string multifamily = "MULTIFAMILY";
+      const std::string office = "OFFICE";
+      const std::string industrial = "INDUSTRIAL";
+      const std::string master_planned_community = "MASTER PLANNED COMMUNITY";
+      const std::string medical = "MEDICAL";
+      const std::string hotel = "HOTEL";
+    } // namespace type
 
     namespace status
     {
@@ -110,9 +110,9 @@ namespace common
 
     namespace entity
     {
-      constexpr std::string investor = "Investor";
-      constexpr std::string developer = "Developer";
-      constexpr std::string fund = "Fund";
+      const std::string investor = "Investor";
+      const std::string developer = "Developer";
+      const std::string fund = "Fund";
     } // namespace entity
 
     namespace investment
@@ -134,9 +134,9 @@ namespace common
   {
     namespace roles
     {
-      constexpr std::string owner = "Owner";
-      constexpr std::string manager = "Manager";
-      constexpr std::string accountant = "Accountant";
+      const std::string owner = "Owner";
+      const std::string manager = "Manager";
+      const std::string accountant = "Accountant";
     } // namespace roles
 
   } // namespace permissions

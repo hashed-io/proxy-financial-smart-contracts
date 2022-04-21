@@ -12,14 +12,14 @@ namespace common
 
     struct url_information
     {
-      string filename;
-      string address;
+      std::string filename;
+      std::string address;
     };
 
     struct expenses
     {
-      name account;
-      asset amount;
+      eosio::name account;
+      eosio::asset amount;
     };
 
   }

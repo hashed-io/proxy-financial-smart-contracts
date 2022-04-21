@@ -9,7 +9,7 @@
 #include <common/data_types.hpp>
 #include <common/action_names.hpp>
 
-#include <common.hpp>
+#include <util.hpp>
 
 #include <accounts/account_types.hpp>
 #include <accounts/account_subtypes.hpp>

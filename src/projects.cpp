@@ -3,8 +3,8 @@
 
 void projects::checkusrtype (name user, string type) {
 	auto itr_user = users.find(user.value);
-	check(itr_user != users.end(), contract_names::projects.to_string() + ": the user does not exist.");
-	check(itr_user -> type == type, contract_names::projects.to_string() + ": the user type must be " + type + " to do this.");
+	check(itr_user != users.end(), common::contracts::projects.to_string() + ": the user does not exist.");
+	check(itr_user -> type == type, common::contracts::projects.to_string() + ": the user type must be " + type + " to do this.");
 }
 
 void projects::delete_transfer_aux (uint64_t transfer_id) {
@@ -12,7 +12,7 @@ void projects::delete_transfer_aux (uint64_t transfer_id) {
 	auto itr_transfer = transfers.find(transfer_id);
 	auto itr_investment = investments.find(itr_transfer -> investment_id);
 
-	check(itr_investment != investments.end(), contract_names::projects.to_string() + ": the investment does not exist.");
+	check(itr_investment != investments.end(), common::contracts::projects.to_string() + ": the investment does not exist.");
 
 	investments.modify(itr_investment, _self, [&](auto & modified_investment){
 		modified_investment.total_unconfirmed_transfered_amount -= itr_transfer -> amount;
@@ -24,7 +24,7 @@ void projects::delete_transfer_aux (uint64_t transfer_id) {
 
 uint64_t projects::get_user_entity (name actor) {
 	auto itr_usr = users.find(actor.value);
-	check(itr_usr != users.end(), contract_names::projects.to_string() + ": proxy cap user not found.");
+	check(itr_usr != users.end(), common::contracts::projects.to_string() + ": proxy cap user not found.");
 
 	return itr_usr -> entity_id;
 }
@@ -91,11 +91,11 @@ ACTION projects::addentity (name actor, string entity_name, string description, 
 
 	auto itr_entity = entities.begin();
 	while (itr_entity != entities.end()) {
-		check(itr_entity -> entity_name != entity_name, contract_names::projects.to_string() + ": there is already an entity using that name.");
+		check(itr_entity -> entity_name != entity_name, common::contracts::projects.to_string() + ": there is already an entity using that name.");
 		itr_entity++;
 	}
 
-	check(ENTITY_TYPES.is_valid_constant(type), contract_names::projects.to_string() + ": the type is not valid.");
+	check(ENTITY_TYPES.is_valid_constant(type), common::contracts::projects.to_string() + ": the type is not valid.");
 
 	uint64_t entity_id = entities.available_primary_key();
 	entity_id = (entity_id > 0) ? entity_id : 1;
@@ -111,7 +111,7 @@ ACTION projects::addentity (name actor, string entity_name, string description, 
 
 ACTION projects::addtestuser (name user, string user_name, uint64_t entity_id) {
 	auto itr_entity = entities.find(entity_id);
-	check(itr_entity != entities.end(), contract_names::projects.to_string() + ": entity does not exist.");
+	check(itr_entity != entities.end(), common::contracts::projects.to_string() + ": entity does not exist.");
 
 	users.emplace(_self, [&](auto & new_user){
 		new_user.account = user;
@@ -147,20 +147,20 @@ ACTION projects::addproject ( name actor,
     require_auth(actor);
 	checkuserdev(actor);
 
-	check(PROJECT_CLASS.is_valid_constant(project_class), contract_names::projects.to_string() + ": that project class does not exist.");
+	check(PROJECT_CLASS.is_valid_constant(project_class), common::contracts::projects.to_string() + ": that project class does not exist.");
 
-    check_asset(total_project_cost, contract_names::projects);
-	check_asset(debt_financing, contract_names::projects);
-	check_asset(total_equity_financing, contract_names::projects);
-	check_asset(total_gp_equity, contract_names::projects);
-	check_asset(private_equity, contract_names::projects);
+    check_asset(total_project_cost, common::contracts::projects);
+	check_asset(debt_financing, common::contracts::projects);
+	check_asset(total_equity_financing, common::contracts::projects);
+	check_asset(total_gp_equity, common::contracts::projects);
+	check_asset(private_equity, common::contracts::projects);
 
-	check(projected_completion_date >= eosio::current_time_point().sec_since_epoch(), contract_names::projects.to_string() + ": the date can not be earlier than now.");
-	check(projected_stabilization_date >= eosio::current_time_point().sec_since_epoch(), contract_names::projects.to_string() + ": the date can not be earlier than now.");
+	check(projected_completion_date >= eosio::current_time_point().sec_since_epoch(), common::contracts::projects.to_string() + ": the date can not be earlier than now.");
+	check(projected_stabilization_date >= eosio::current_time_point().sec_since_epoch(), common::contracts::projects.to_string() + ": the date can not be earlier than now.");
 
 	auto itr_p = projects_table.begin();
 	while (itr_p != projects_table.end()) {
-		check(project_name != itr_p -> project_name, contract_names::projects.to_string() + ": there is already a project with that name.");
+		check(project_name != itr_p -> project_name, common::contracts::projects.to_string() + ": there is already a project with that name.");
         itr_p++;
 	}
 
@@ -198,30 +198,30 @@ ACTION projects::deleteprojct (name actor, uint64_t project_id) {
 	require_auth(actor);
 
 	auto itr_project = projects_table.find(project_id);
-	check(itr_project != projects_table.end(), contract_names::projects.to_string() + ": the project does not exist.");
-	check(itr_project -> owner == actor, contract_names::projects.to_string() + ": only the project owner can do this.");
+	check(itr_project != projects_table.end(), common::contracts::projects.to_string() + ": the project does not exist.");
+	check(itr_project -> owner == actor, common::contracts::projects.to_string() + ": only the project owner can do this.");
 	check(itr_project -> status == PROJECT_STATUS.AWAITING_FUND_APPROVAL, 
-				contract_names::projects.to_string() + ": the project can not be deleted as it has been already approved by one fund.");
+				common::contracts::projects.to_string() + ": the project can not be deleted as it has been already approved by one fund.");
 
 	projects_table.erase(itr_project);
 
 	// action (
-	// 	permission_level(contract_names::accounts, "active"_n),
-	// 	contract_names::accounts,
+	// 	permission_level(common::contracts::accounts, "active"_n),
+	// 	common::contracts::accounts,
 	// 	"deleteaccnts"_n,
 	// 	std::make_tuple(project_id)
 	// ).send();
 
 	// action (
-	// 	permission_level(contract_names::transactions, "active"_n),
-	// 	contract_names::transactions,
+	// 	permission_level(common::contracts::transactions, "active"_n),
+	// 	common::contracts::transactions,
 	// 	"deletetrxns"_n,
 	// 	std::make_tuple(project_id)
 	// ).send();
 
 	// action (
-	// 	permission_level(contract_names::permissions, "active"_n),
-	// 	contract_names::permissions,
+	// 	permission_level(common::contracts::permissions, "active"_n),
+	// 	common::contracts::permissions,
 	// 	"deletepmssns"_n,
 	// 	std::make_tuple(project_id)
 	// ).send();
@@ -250,24 +250,24 @@ ACTION projects::editproject ( name actor,
 	require_auth(actor);
 
 	auto itr_project = projects_table.find(project_id);
-	check(itr_project != projects_table.end(), contract_names::projects.to_string() + ": the project does not exist.");
-	check(itr_project -> owner == actor, contract_names::projects.to_string() + ": only the project owner can do this.");
+	check(itr_project != projects_table.end(), common::contracts::projects.to_string() + ": the project does not exist.");
+	check(itr_project -> owner == actor, common::contracts::projects.to_string() + ": only the project owner can do this.");
 	check(itr_project -> status == PROJECT_STATUS.AWAITING_FUND_APPROVAL, 
-				contract_names::projects.to_string() + ": the project can not be modified as it has been already approved by one fund.");
+				common::contracts::projects.to_string() + ": the project can not be modified as it has been already approved by one fund.");
 
-	check_asset(total_project_cost, contract_names::projects);
-	check_asset(debt_financing, contract_names::projects);
-	check_asset(total_equity_financing, contract_names::projects);
-	check_asset(total_gp_equity, contract_names::projects);
-	check_asset(private_equity, contract_names::projects);
+	check_asset(total_project_cost, common::contracts::projects);
+	check_asset(debt_financing, common::contracts::projects);
+	check_asset(total_equity_financing, common::contracts::projects);
+	check_asset(total_gp_equity, common::contracts::projects);
+	check_asset(private_equity, common::contracts::projects);
 
-	check(projected_completion_date >= eosio::current_time_point().sec_since_epoch(), contract_names::projects.to_string() + ": the date can not be earlier than now.");
-	check(projected_stabilization_date >= eosio::current_time_point().sec_since_epoch(), contract_names::projects.to_string() + ": the date can not be earlier than now.");
+	check(projected_completion_date >= eosio::current_time_point().sec_since_epoch(), common::contracts::projects.to_string() + ": the date can not be earlier than now.");
+	check(projected_stabilization_date >= eosio::current_time_point().sec_since_epoch(), common::contracts::projects.to_string() + ": the date can not be earlier than now.");
 
 	auto itr_p = projects_table.begin();
 	while (itr_p != projects_table.end()) {
 		if (itr_p -> project_id != project_id) {
-			check(project_name != itr_p -> project_name, contract_names::projects.to_string() + ": there is already a project with that name.");
+			check(project_name != itr_p -> project_name, common::contracts::projects.to_string() + ": there is already a project with that name.");
 		}
         itr_p++;
 	}
@@ -307,57 +307,57 @@ ACTION projects::approveprjct ( name actor,
 								asset price_per_fund_unit ) {
 	require_auth(actor);
 
-	check_asset(total_fund_offering_amount, contract_names::projects);
-	check_asset(price_per_fund_unit, contract_names::projects);
+	check_asset(total_fund_offering_amount, common::contracts::projects);
+	check_asset(price_per_fund_unit, common::contracts::projects);
 
 	checkusrtype(actor, ENTITY_TYPES.FUND);
 
 	auto itr_project = projects_table.find(project_id);
-	check(itr_project != projects_table.end(), contract_names::projects.to_string() + ": the project does not exist.");
-	check(itr_project -> status == PROJECT_STATUS.AWAITING_FUND_APPROVAL, contract_names::projects.to_string() + ": the project has been already approved.");
+	check(itr_project != projects_table.end(), common::contracts::projects.to_string() + ": the project does not exist.");
+	check(itr_project -> status == PROJECT_STATUS.AWAITING_FUND_APPROVAL, common::contracts::projects.to_string() + ": the project has been already approved.");
 
 	uint64_t role_id = 0;
 	uint64_t developer_entity = get_user_entity (itr_project -> owner);
 	uint64_t fund_entity = get_user_entity (actor);
 
 	action (
-        permission_level(contract_names::accounts, "active"_n),
-        contract_names::accounts,
+        permission_level(common::contracts::accounts, "active"_n),
+        common::contracts::accounts,
         "addledger"_n,
         std::make_tuple(project_id, developer_entity)
     ).send();
 
 	action (
-        permission_level(contract_names::accounts, "active"_n),
-        contract_names::accounts,
+        permission_level(common::contracts::accounts, "active"_n),
+        common::contracts::accounts,
         "addledger"_n,
         std::make_tuple(project_id, fund_entity)
     ).send();
 
 	action (
-		permission_level(contract_names::permissions, "active"_n),
-		contract_names::permissions,
+		permission_level(common::contracts::permissions, "active"_n),
+		common::contracts::permissions,
 		"initroles"_n,
 		std::make_tuple(project_id)
 	).send();
 
 	action (
-		permission_level(contract_names::permissions, "active"_n),
-		contract_names::permissions,
+		permission_level(common::contracts::permissions, "active"_n),
+		common::contracts::permissions,
 		"assignrole"_n,
-		std::make_tuple(contract_names::permissions, itr_project -> owner, project_id, role_id)
+		std::make_tuple(common::contracts::permissions, itr_project -> owner, project_id, role_id)
 	).send();
 
 	action (
-		permission_level(contract_names::permissions, "active"_n),
-		contract_names::permissions,
+		permission_level(common::contracts::permissions, "active"_n),
+		common::contracts::permissions,
 		"assignrole"_n,
-		std::make_tuple(contract_names::permissions, actor, project_id, role_id)
+		std::make_tuple(common::contracts::permissions, actor, project_id, role_id)
 	).send();
 
 	action (
-		permission_level(contract_names::transactions, "active"_n),
-		contract_names::transactions,
+		permission_level(common::contracts::transactions, "active"_n),
+		common::contracts::transactions,
 		"initdrawdown"_n,
 		std::make_tuple(project_id)
 	).send();
@@ -384,16 +384,16 @@ ACTION projects::invest ( name actor,
 	
 	require_auth(actor);
 
-	check_asset(total_investment_amount, contract_names::projects);
+	check_asset(total_investment_amount, common::contracts::projects);
 
 	checkusrtype(actor, ENTITY_TYPES.INVESTOR);
 
 	auto itr_project = projects_table.find(project_id);
-	check(itr_project != projects_table.end(), contract_names::projects.to_string() + ": the project does not exist.");
+	check(itr_project != projects_table.end(), common::contracts::projects.to_string() + ": the project does not exist.");
 	check(itr_project -> status == PROJECT_STATUS.READY_FOR_INVESTMENT || itr_project -> status == PROJECT_STATUS.INVESTMENT_GOAL_REACHED, 
-			contract_names::projects.to_string() + ": the project can not accept any investment.");
+			common::contracts::projects.to_string() + ": the project can not accept any investment.");
 	
-	check(subscription_package.length() > 0, contract_names::projects.to_string() + ": the signed subscription page can not be empty.");
+	check(subscription_package.length() > 0, common::contracts::projects.to_string() + ": the signed subscription page can not be empty.");
 
 	investments.emplace(_self, [&](auto & new_investment){
 		new_investment.investment_id = investments.available_primary_key();
@@ -406,8 +406,8 @@ ACTION projects::invest ( name actor,
 		new_investment.subscription_package = subscription_package;
 		new_investment.status = INVESTMENT_STATUS.PENDING;
 		new_investment.investment_date = eosio::current_time_point().sec_since_epoch();
-		new_investment.total_confirmed_transfered_amount = asset(0, CURRENCY);
-		new_investment.total_unconfirmed_transfered_amount = asset(0, CURRENCY);
+		new_investment.total_confirmed_transfered_amount = asset(0, common::currency);
+		new_investment.total_unconfirmed_transfered_amount = asset(0, common::currency);
 		new_investment.total_confirmed_transfers = 0;
 		new_investment.total_unconfirmed_transfers = 0;
 	});	
@@ -424,14 +424,14 @@ ACTION projects::editinvest ( name actor,
 
 	require_auth(actor);
 
-	check_asset(total_investment_amount, contract_names::projects);
+	check_asset(total_investment_amount, common::contracts::projects);
 
 	auto itr_investment = investments.find(investment_id);
-	check(itr_investment != investments.end(), contract_names::projects.to_string() + ": the investment does not exist.");
-	check(itr_investment -> status == INVESTMENT_STATUS.PENDING, contract_names::projects.to_string() + ": the investment can not be modified anymore.");
-	check(itr_investment -> user == actor, contract_names::projects.to_string() + ": only the investment issuer can modify it.");
+	check(itr_investment != investments.end(), common::contracts::projects.to_string() + ": the investment does not exist.");
+	check(itr_investment -> status == INVESTMENT_STATUS.PENDING, common::contracts::projects.to_string() + ": the investment can not be modified anymore.");
+	check(itr_investment -> user == actor, common::contracts::projects.to_string() + ": only the investment issuer can modify it.");
 
-	check(subscription_package.length() > 0, contract_names::projects.to_string() + ": the signed subscription page can not be empty.");
+	check(subscription_package.length() > 0, common::contracts::projects.to_string() + ": the signed subscription page can not be empty.");
 
 	investments.modify(itr_investment, _self, [&](auto & modified_investment){
 		modified_investment.total_investment_amount = total_investment_amount;
@@ -448,10 +448,10 @@ ACTION projects::deleteinvest (name actor, uint64_t investment_id) {
 	require_auth(actor);
 
 	auto itr_investment = investments.find(investment_id);
-	check(itr_investment != investments.end(), contract_names::projects.to_string() + ": the investment request does not exist.");
+	check(itr_investment != investments.end(), common::contracts::projects.to_string() + ": the investment request does not exist.");
 	check(itr_investment -> status == INVESTMENT_STATUS.PENDING, 
-			contract_names::projects.to_string() + ": the investment request can not be modified anymore as it has been already approved by a fund.");
-	check(itr_investment -> user == actor, contract_names::projects.to_string() + ": only the investment issuer can do this.");
+			common::contracts::projects.to_string() + ": the investment request can not be modified anymore as it has been already approved by a fund.");
+	check(itr_investment -> user == actor, common::contracts::projects.to_string() + ": only the investment issuer can do this.");
 
 	investments.erase(itr_investment);
 }
@@ -463,8 +463,8 @@ ACTION projects::approveinvst (name actor, uint64_t investment_id) {
 	checkusrtype(actor, ENTITY_TYPES.FUND);
 
 	auto itr_investment = investments.find(investment_id);
-	check(itr_investment != investments.end(), contract_names::projects.to_string() + ": the investment does not exist.");
-	check(itr_investment -> status == INVESTMENT_STATUS.PENDING, contract_names::projects.to_string() + ": the invesment has been already approved.");
+	check(itr_investment != investments.end(), common::contracts::projects.to_string() + ": the investment does not exist.");
+	check(itr_investment -> status == INVESTMENT_STATUS.PENDING, common::contracts::projects.to_string() + ": the invesment has been already approved.");
 
 	investments.modify(itr_investment, _self, [&](auto & modified_investment){
 		modified_investment.status = INVESTMENT_STATUS.FUNDING;
@@ -478,16 +478,16 @@ ACTION projects::maketransfer (name actor, asset amount, uint64_t investment_id,
 	require_auth(actor);
 
 	checkusrtype(actor, ENTITY_TYPES.INVESTOR);
-	check_asset(amount, contract_names::projects);
+	check_asset(amount, common::contracts::projects);
 
 	auto itr_investment = investments.find(investment_id);
-	check(itr_investment != investments.end(), contract_names::projects.to_string() + ": the investment does not exist.");
-	check(itr_investment -> user == actor, contract_names::projects.to_string() + ": the user can only make a transfer in an investment created by itself.");
+	check(itr_investment != investments.end(), common::contracts::projects.to_string() + ": the investment does not exist.");
+	check(itr_investment -> user == actor, common::contracts::projects.to_string() + ": the user can only make a transfer in an investment created by itself.");
 	check(itr_investment -> status == INVESTMENT_STATUS.FUNDING,
-			contract_names::projects.to_string() + ": the investment has not been approved yet or it could have been closed.");
+			common::contracts::projects.to_string() + ": the investment has not been approved yet or it could have been closed.");
 
 	check(itr_investment -> total_confirmed_transfered_amount + amount <= itr_investment -> total_investment_amount,
-			contract_names::projects.to_string() + ": the payments can not exceed the total investment amount.");
+			common::contracts::projects.to_string() + ": the payments can not exceed the total investment amount.");
 
 	transfers.emplace(_self, [&](auto & new_transfer){
 		new_transfer.fund_transfer_id = transfers.available_primary_key();
@@ -516,12 +516,12 @@ ACTION projects::edittransfer ( name actor,
 	
 	require_auth(actor);
 
-	check_asset(amount, contract_names::projects);
+	check_asset(amount, common::contracts::projects);
 
 	auto itr_transfer = transfers.find(transfer_id);
-	check(itr_transfer != transfers.end(), contract_names::projects.to_string() + ": the transfer does not exist.");
-	check(itr_transfer -> status == TRANSFER_STATUS.AWAITING_CONFIRMATION, contract_names::projects.to_string() + ": the transfer can not be edited anymore.");
-	check(itr_transfer -> user == actor, contract_names::projects.to_string() + ": only the transfer issuer can do this.");
+	check(itr_transfer != transfers.end(), common::contracts::projects.to_string() + ": the transfer does not exist.");
+	check(itr_transfer -> status == TRANSFER_STATUS.AWAITING_CONFIRMATION, common::contracts::projects.to_string() + ": the transfer can not be edited anymore.");
+	check(itr_transfer -> user == actor, common::contracts::projects.to_string() + ": only the transfer issuer can do this.");
 
 	uint64_t investment_id = itr_transfer -> investment_id;
 	auto itr_investment = investments.find(investment_id);
@@ -529,7 +529,7 @@ ACTION projects::edittransfer ( name actor,
 	asset old_amount = itr_transfer -> amount;
 
 	check(itr_investment -> total_confirmed_transfered_amount + amount <= itr_investment -> total_investment_amount,
-			contract_names::projects.to_string() + ": the payments can not exceed the total investment amount.");
+			common::contracts::projects.to_string() + ": the payments can not exceed the total investment amount.");
 
 	transfers.modify(itr_transfer, _self, [&](auto & modified_transfer){
 		modified_transfer.amount = amount;
@@ -550,9 +550,9 @@ ACTION projects::deletetrnsfr (name actor, uint64_t transfer_id) {
 	require_auth(actor);
 
 	auto itr_transfer = transfers.find(transfer_id);
-	check(itr_transfer != transfers.end(), contract_names::projects.to_string() + ": the transfer does not exist.");
-	check(itr_transfer -> user == actor, contract_names::projects.to_string() + ": only the transfer issuer can do this.");
-	check(itr_transfer -> status == TRANSFER_STATUS.AWAITING_CONFIRMATION, contract_names::projects.to_string() + ": the transfer can not be modified anymore.");
+	check(itr_transfer != transfers.end(), common::contracts::projects.to_string() + ": the transfer does not exist.");
+	check(itr_transfer -> user == actor, common::contracts::projects.to_string() + ": only the transfer issuer can do this.");
+	check(itr_transfer -> status == TRANSFER_STATUS.AWAITING_CONFIRMATION, common::contracts::projects.to_string() + ": the transfer can not be modified anymore.");
 
 	delete_transfer_aux(transfer_id);
 }
@@ -564,8 +564,8 @@ ACTION projects::confrmtrnsfr (name actor, uint64_t transfer_id, string proof_of
 	checkusrtype(actor, ENTITY_TYPES.FUND);
 
 	auto itr_transfer = transfers.find(transfer_id);
-	check(itr_transfer != transfers.end(), contract_names::projects.to_string() + ": the transfer does not exist.");
-	check(itr_transfer -> status == TRANSFER_STATUS.AWAITING_CONFIRMATION, contract_names::projects.to_string() + ": the transfer has been already confirmed.");
+	check(itr_transfer != transfers.end(), common::contracts::projects.to_string() + ": the transfer does not exist.");
+	check(itr_transfer -> status == TRANSFER_STATUS.AWAITING_CONFIRMATION, common::contracts::projects.to_string() + ": the transfer has been already confirmed.");
 
 	uint64_t investment_id = itr_transfer -> investment_id;
 	asset amount = itr_transfer -> amount;
@@ -575,7 +575,7 @@ ACTION projects::confrmtrnsfr (name actor, uint64_t transfer_id, string proof_of
 	asset total_amount = itr_investment -> total_confirmed_transfered_amount + amount;
 	asset total_investment = itr_investment -> total_investment_amount;
 
-	check(total_amount <= total_investment, contract_names::projects.to_string() + ": the payments can not exceed the total investment amount.");
+	check(total_amount <= total_investment, common::contracts::projects.to_string() + ": the payments can not exceed the total investment amount.");
 
 	transfers.modify(itr_transfer, _self, [&](auto & modified_transfer){
 		modified_transfer.status = TRANSFER_STATUS.CONFIRMED;
@@ -605,7 +605,7 @@ ACTION projects::changestatus (uint64_t project_id, uint64_t status) {
 	require_auth(_self);
 
 	auto itr = projects_table.find(project_id);
-	check(itr != projects_table.end(), contract_names::projects.to_string() + ": project not found.");
+	check(itr != projects_table.end(), common::contracts::projects.to_string() + ": project not found.");
 
 	projects_table.modify(itr, _self, [&](auto & mp){
 		mp.status = status;

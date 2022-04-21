@@ -5,7 +5,7 @@
 #include <eosio/asset.hpp>
 #include <eosio/symbol.hpp>
 
-#include <common.hpp>
+#include <util.hpp>
 
 #include <common/constants.hpp>
 #include <common/data_types.hpp>

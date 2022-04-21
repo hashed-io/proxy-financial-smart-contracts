@@ -9,7 +9,7 @@
 #include <common/data_types.hpp>
 #include <common/action_names.hpp>
 
-#include <common.hpp>
+#include <util.hpp>
 
 #include <accounts/account_types.hpp>
 #include <accounts/account_subtypes.hpp>
@@ -28,9 +28,9 @@ CONTRACT accounts : public contract {
         accounts(name receiver, name code, datastream<const char*> ds)
             : contract(receiver, code, ds),
               account_types(receiver, receiver.value),
-              projects_table(contract_names::projects, contract_names::projects.value),
-              users(contract_names::projects, contract_names::projects.value),
-              entities(contract_names::projects, contract_names::projects.value)
+              projects_table(common::contracts::projects, common::contracts::projects.value),
+              users(common::contracts::projects, common::contracts::projects.value),
+              entities(common::contracts::projects, common::contracts::projects.value)
               {}
         
         ACTION reset ();
@@ -41,18 +41,18 @@ CONTRACT accounts : public contract {
 
         ACTION addaccount ( name actor,
                             uint64_t project_id,
-                            string account_name,
+                            std::string account_name,
                             uint64_t parent_id,
                             symbol account_currency,
-                            string description,
+                            std::string description,
                             uint64_t account_category,
                             asset budget_amount );
 
 		ACTION editaccount ( name actor,
                              uint64_t project_id,
                              uint64_t account_id,
-                             string account_name,
-                             string description,
+                             std::string account_name,
+                             std::string description,
                              uint64_t account_category,
                              asset budget_amount );
 
@@ -71,7 +71,7 @@ CONTRACT accounts : public contract {
 
     private:
 
-        const vector< pair<string, string> > account_types_v = {
+        const vector< pair<std::string, std::string> > account_types_v = {
 			make_pair(ACCOUNT_SUBTYPES.ASSETS, ACCOUNT_TYPES.DEBIT),
 			make_pair(ACCOUNT_SUBTYPES.EQUITY, ACCOUNT_TYPES.CREDIT),
 			make_pair(ACCOUNT_SUBTYPES.EXPENSES, ACCOUNT_TYPES.DEBIT),
@@ -79,7 +79,7 @@ CONTRACT accounts : public contract {
 			make_pair(ACCOUNT_SUBTYPES.LIABILITIES, ACCOUNT_TYPES.CREDIT)
 		};
 
-        const vector <string> ledger_v = {
+        const vector <std::string> ledger_v = {
             "Developer ledger",
             "Fund ledger"
         };
@@ -89,13 +89,13 @@ CONTRACT accounts : public contract {
 			uint64_t account_id;
 			uint64_t parent_id;
 			uint16_t num_children;
-			string account_name;
-			string account_subtype;
+			std::string account_name;
+			std::string account_subtype;
 			asset increase_balance;
 			asset decrease_balance;
 			symbol account_symbol;
             uint64_t ledger_id;
-            string description;
+            std::string description;
             uint64_t account_category;
 
 			uint64_t primary_key() const { return account_id; }
@@ -106,8 +106,8 @@ CONTRACT accounts : public contract {
 
         TABLE type_table {
 			uint64_t type_id;
-			string type_name;
-			string account_class;
+			std::string type_name;
+			std::string account_class;
 
 			uint64_t primary_key() const { return type_id; }
 		};
@@ -116,7 +116,7 @@ CONTRACT accounts : public contract {
         TABLE ledger_table {
             uint64_t ledger_id;
             uint64_t entity_id;
-            string description;
+            std::string description;
 
             uint64_t primary_key() const { return ledger_id; }
             uint64_t by_entity() const { return entity_id; }
@@ -127,9 +127,9 @@ CONTRACT accounts : public contract {
 			uint64_t project_id;
             uint64_t developer_id;
 			name owner; // who is a project owner?
-            string project_class;
-            string project_name;
-			string description;
+            std::string project_class;
+            std::string project_name;
+			std::string description;
             uint64_t created_date;
             uint64_t status;
 
@@ -137,20 +137,20 @@ CONTRACT accounts : public contract {
             asset debt_financing;
             uint8_t term;
             uint16_t interest_rate; // decimal 2
-            string loan_agreement; // url
+            std::string loan_agreement; // url
 
 			asset total_equity_financing;
             asset total_gp_equity;
             asset private_equity;
             uint16_t annual_return; // decimal 2
-            string project_co_lp; // url
+            std::string project_co_lp; // url
             uint64_t project_co_lp_date;
 
             uint64_t projected_completion_date;
             uint64_t projected_stabilization_date;
             uint64_t anticipated_year_sale;
 
-            string fund_lp; // url
+            std::string fund_lp; // url
             asset total_fund_offering_amount;
             uint64_t total_number_fund_offering;
             asset price_per_fund_unit;
@@ -165,18 +165,18 @@ CONTRACT accounts : public contract {
 
         TABLE user_table {
             name account;
-            string user_name;
+            std::string user_name;
             uint64_t entity_id;
-            string type;
+            std::string type;
 
             uint64_t primary_key() const { return account.value; }
         };
 
         TABLE entity_table {
             uint64_t entity_id;
-            string entity_name;
-            string description;
-            string type;
+            std::string entity_name;
+            std::string description;
+            std::string type;
 
             uint64_t primary_key() const { return entity_id; }
         };

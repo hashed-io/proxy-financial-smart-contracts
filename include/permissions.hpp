@@ -9,7 +9,7 @@
 #include <common/data_types.hpp>
 #include <common/action_names.hpp>
 
-#include <common.hpp>
+#include <util.hpp>
 
 #include <permissions/roles.hpp>
 
@@ -26,8 +26,8 @@ CONTRACT permissions : public contract {
         permissions(name receiver, name code, datastream<const char*> ds)
             : contract(receiver, code, ds),
               permissions_table(receiver, receiver.value),
-              projects_table(contract_names::projects, contract_names::projects.value),
-              users(contract_names::projects, contract_names::projects.value)
+              projects_table(common::contracts::projects, common::contracts::projects.value),
+              users(common::contracts::projects, common::contracts::projects.value)
               {}
 
         ACTION reset();

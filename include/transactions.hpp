@@ -9,13 +9,14 @@
 #include <common/data_types.hpp>
 #include <common/action_names.hpp>
 
-#include <common.hpp>
+#include <util.hpp>
 
 #include <accounts/account_types.hpp>
 #include <accounts/account_subtypes.hpp>
 #include <accounts/account_categories.hpp>
 
-#include <drawdown_states.hpp>
+#include <transactions/drawdown_states.hpp>
+
 #include <utility>
 #include <vector>
 #include <string>
@@ -36,8 +37,8 @@ public:
 	using contract::contract;
 	transactions(name receiver, name code, datastream<const char *> ds)
 			: contract(receiver, code, ds),
-				projects(contract_names::projects, contract_names::projects.value),
-				account_types(contract_names::accounts, contract_names::accounts.value)
+				projects(common::contracts::projects, common::contracts::projects.value),
+				account_types(common::contracts::accounts, common::contracts::accounts.value)
 	{
 	}
 
@@ -50,7 +51,7 @@ public:
 									uint64_t & date,
 									string & description,
 									std::string & drawdown_type,
-									vector<url_information> & supporting_files);
+									vector<common::types::url_information> & supporting_files);
 
 	ACTION deletetrxn(name actor, uint64_t project_id, uint64_t transaction_id);
 
@@ -61,11 +62,11 @@ public:
 									uint64_t date,
 									string description,
 									bool is_drawdown,
-									vector<url_information> supporting_files);
+									vector<common::types::url_information> supporting_files);
 
 	ACTION deletetrxns(uint64_t project_id);
 
-	ACTION submitdrwdn(name actor, uint64_t project_id, vector<url_information> files);
+	ACTION submitdrwdn(name actor, uint64_t project_id, vector<common::types::url_information> files);
 
 	ACTION initdrawdown(uint64_t project_id);
 
@@ -82,7 +83,7 @@ private:
 		uint64_t drawdown_id;
 		asset total_amount;
 		uint64_t transaction_category;
-		vector<url_information> supporting_files;
+		vector<common::types::url_information> supporting_files;
 
 		uint64_t primary_key() const { return transaction_id; }
 		uint64_t by_drawdown() const { return drawdown_id; }
@@ -179,7 +180,7 @@ private:
 	{
 		uint64_t drawdown_id;
 		asset total_amount;
-		vector<url_information> files;
+		vector<common::types::url_information> files;
 		uint64_t state;
 		uint64_t open_date;
 		uint64_t close_date;
@@ -230,5 +231,5 @@ private:
 												uint64_t & date,
 												string & description,
 												bool &is_drawdown,
-												vector<url_information> &supporting_files);
+												vector<common::types::url_information> &supporting_files);
 };
