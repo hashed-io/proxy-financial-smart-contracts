@@ -1,36 +1,39 @@
 {
   "name": "proxy-capital-real-estate-transparency-smart-contracts",
   "version": "1.0.0",
-  "description": "",
+  "description": "Smart contracts for the proxy capital real estate transparency application",
   "main": "index.js",
-  "directories": {
-    "test": "test"
-  },
-  "scripts": {
-    "compile": "node ./scripts/compile.js",
-    "test": "eoslime test --path=\"./test\"",
-    "deploy": "node ./scripts/deploy_scripts.js",
-    "deploylocal": "eoslime deploy --path=\"./scripts/deploy/\""
-  },
   "repository": {
     "type": "git",
-    "url": "git+https://gitlab.com/smontero1/proxy-capital-real-estate-transparency-smart-contracts.git"
+    "url": "git+https://github.com/hashed-io/proxy-financial-smart-contracts"
+  },
+  "scripts": {
+    "initAll": "node scripts/commands.js init",
+    "initContract": "node scripts/commands.js run $1",
+    "compileAll": "node scripts/commands.js compile",
+    "compileContract": "node scripts/commands.js compile $1",
+    "setParams": "node scripts/commands.js set params",
+    "setPermissions": "node scripts/commands.js set permissions",
+    "test": "mocha --timeout 0"
   },
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://gitlab.com/smontero1/proxy-capital-real-estate-transparency-smart-contracts/issues"
+    "url": "https://github.com/hashed-io/proxy-financial-smart-contracts/issues"
   },
-  "homepage": "https://gitlab.com/smontero1/proxy-capital-real-estate-transparency-smart-contracts#readme",
+  "homepage": "https://github.com/hashed-io/proxy-financial-smart-contracts#readme",
   "dependencies": {
-    "@types/node": "^13.7.6",
+    "chai": "^4.3.4",
     "dotenv": "^8.2.0",
-    "eosjs": "^20.0.3",
-    "eoslime": "^2.0.0",
-    "mocha": "^9.2.2",
-    "promisify": "0.0.3",
-    "ramda": "^0.27.0",
-    "readline": "^1.3.0",
-    "util": "^0.12.2"
+    "elliptic": "^6.5.4",
+    "eosjs": "^21.0.3",
+    "fs-extra": "^9.1.0",
+    "handlebars": "^4.7.6",
+    "node-fetch": "^2.6.1",
+    "promisify": "^0.0.3",
+    "prompt-sync": "^4.2.0"
+  },
+  "devDependencies": {
+    "mocha": "^8.3.2"
   }
 }

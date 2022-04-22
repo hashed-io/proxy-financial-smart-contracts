@@ -21,7 +21,8 @@ venv.bak/
 
 # dev baks
 *.bak
-
+*-old
+*didier*
 # images
 media/images/
 media/image/

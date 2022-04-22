@@ -2,88 +2,44 @@ require('dotenv').config()
 
 const { exec } = require('child_process')
 const { promisify } = require('util')
-var fs = require('fs');
+const fs = require('fs')
+const { join } = require('path')
 
-const execAsync = promisify(exec)
-const mkdirAsync = promisify(fs.mkdir)
-const unlinkAsync = promisify(fs.unlink)
 const existsAsync = promisify(fs.exists)
+const fse = require('fs-extra')
 
-const contracts = [
-	'projects',
-	'accounts',
-	'transactions',
-	'permissions',
-	'budgets'
-].sort()
+const execCommand = promisify(exec)
 
-const command = ({ contract, source, dir }) => {
-	const volume = dir
-	let cmd = ''
-	if (process.env.COMPILER === 'local') {
-		cmd = 'eosio-cpp -abigen -I ./include -R ./resources -contract ' + contract + ' -o ./artifacts/' + contract + '.wasm ' + source
-	} else {
-		cmd = `docker run --rm --name eosio.cdt_v1.6.1 --volume ${volume}:/project -w /project eostudio/eosio.cdt:v1.6.1 /bin/bash -c "echo 'starting';eosio-cpp -abigen -I ./include -R ./resources -contract ${contract} -o ./artifacts/${contract}.wasm ${source}"`
-	}
-	console.log('compiler command: ' + cmd)
-	return cmd
+async function deleteFile (filePath) {
+  if (fs.existsSync(filePath)) {
+    fs.unlinkSync(filePath)
+  }
 }
 
-const compile = async ({ contract, source }) => {
-	try {
+async function compileContract ({
+  contract,
+  path
+}) {
 
-		const contractFound = await existsAsync(source)
-		if (!contractFound) {
-			throw new Error('contract not found: ' + contract + ' No source file: ' + source)
-		}
+  const compiled = join(__dirname, '../compiled')
+  let cmd = ""
+  
+  if (process.env.COMPILER === 'local') {
+    cmd = `eosio-cpp -abigen -I ./include -contract ${contract} -o ./compiled/${contract}.wasm ${path}`
+  } else {
+    cmd = `docker run --rm --name eosio.cdt_v1.7.0-rc1 --volume ${join(__dirname, '../')}:/project -w /project eostudio/eosio.cdt:v1.7.0-rc1 /bin/bash -c "echo 'starting';eosio-cpp -abigen -I ./include -contract ${contract} -o ./compiled/${contract}.wasm ${path}"`
+  }
+  console.log("compiler command: " + cmd, '\n')
 
-		const dir = process.cwd() + '/'
-		const artifacts = dir + 'artifacts'
+  if (!fs.existsSync(compiled)) {
+    fs.mkdirSync(compiled)
+  }
 
-		const artifactsFound = await existsAsync(artifacts)
-		if (!artifactsFound) {
-			console.log('creating artifacts directory...')
-			await mkdirAsync(artifacts)
-		}
+  await deleteFile(join(compiled, `${contract}.wasm`))
+  await deleteFile(join(compiled, `${contract}.abi`))
 
-		await deleteIfExists(artifacts + '/' + contract + '.wasm')
-		await deleteIfExists(artifacts + '/' + contract + '.abi')
+  await execCommand(cmd)
 
-		const execCommand = command({ contract, source, dir })
-		await execAsync(execCommand)
-		console.log(`${contract} compiled`)
-	} catch (error) {
-		console.error(`Error compiling ${contract}`, error)
-		throw error
-	}
 }
 
-const deleteIfExists = async (file) => {
-	const fileExists = await existsAsync(file)
-	if (fileExists) {
-		try {
-			await unlinkAsync(file)
-		} catch (err) {
-			console.log('delete file error: ' + err)
-		}
-	}
-}
-
-async function compileAll() {
-	for (const contract of contracts) {
-		try {
-			const promise = compile({
-				contract: contract,
-				source: `./src/${contract}.cpp`
-			})
-			if (process.env.COMPILER === 'docker') {
-				await promise
-			}
-		} catch (err) {
-			console.log('compile failed for ' + contract + ' error: ' + err)
-		}
-	}
-}
-
-
-compileAll()
+module.exports = { compileContract }
