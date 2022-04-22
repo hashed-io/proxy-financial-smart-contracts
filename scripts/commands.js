@@ -7,7 +7,7 @@ const { updatePermissions } = require('./permissions')
 const prompt = require('prompt-sync')()
 
 
-async function manageDeployment (contract) {
+async function manageDeployment(contract) {
   console.log('create account:', contract.nameOnChain)
   try {
     await createAccount({
@@ -28,7 +28,7 @@ async function manageDeployment (contract) {
   console.log('done\n')
 }
 
-async function init () {
+async function init() {
 
   // compile contracts
   console.log('COMPILING CONTRACTS\n')
@@ -36,7 +36,7 @@ async function init () {
   await Promise.all(contracts.map(contract => {
     return compileContract({
       contract: contract.name,
-      path: `./src/${contract.name}.cpp`      
+      path: `./src/${contract.name}.cpp`
     })
   }))
 
@@ -62,7 +62,7 @@ async function init () {
 
 }
 
-async function run (contractName) {
+async function run(contractName) {
 
   let contract = contracts.filter(c => c.name == contractName)
   if (contract.length > 0) {
@@ -74,14 +74,14 @@ async function run (contractName) {
 
   await compileContract({
     contract: contract.name,
-    path: `./src/${contract.name}.cpp`      
+    path: `./src/${contract.name}.cpp`
   })
 
   await manageDeployment(contract)
 
 }
 
-async function compile () {
+async function compile() {
 
   // compile contracts
   console.log('COMPILING CONTRACTS\n')
@@ -89,7 +89,7 @@ async function compile () {
   await Promise.all(contracts.map(contract => {
     return compileContract({
       contract: contract.name,
-      path: `./src/${contract.name}.cpp`      
+      path: `./src/${contract.name}.cpp`
     })
   }))
 
@@ -98,7 +98,7 @@ async function compile () {
 }
 
 
-async function compile_contract (contractName) {
+async function compile_contract(contractName) {
 
   let contract = contracts.filter(c => c.name == contractName)
   if (contract.length > 0) {
@@ -110,14 +110,14 @@ async function compile_contract (contractName) {
 
   await compileContract({
     contract: contract.name,
-    path: `./src/${contract.name}.cpp`      
+    path: `./src/${contract.name}.cpp`
   })
 
   console.log('compilation finished\n\n')
 
 }
 
-async function main () {
+async function main() {
 
   if (!isLocalNode()) {
     const option = prompt(`You are about to run a command on ${chain}, are you sure? [y/n] `)
@@ -126,7 +126,7 @@ async function main () {
 
   const args = process.argv.slice(2)
 
-  switch(args[0]) {
+  switch (args[0]) {
 
     case 'init':
       await init()
@@ -151,14 +151,18 @@ async function main () {
         await setParamsValue()
 
       } else if (args[1] == 'permissions') {
+        console.log('UPDATE PERMISSIONS\n')
         await updatePermissions()
+        console.log('update permissions finished\n\n')
 
+      } else {
+        console.log('Invalid input')
       }
       break;
 
     default:
       console.log('Invalid input.')
-  } 
+  }
 
 }
 
