@@ -59,6 +59,7 @@ const publicKeysByChain = {
 
 const contractsConfig = {
   [supportedChains.local]: [
+    contract('nullcontract', 'm1nulldaos'),
     contract('accounts', 'proxyact'),
     contract('budgets', 'proxybud'),
     contract('permissions', 'proxyperm'),
