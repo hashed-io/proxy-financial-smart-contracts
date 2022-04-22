@@ -15,7 +15,7 @@ void projects::delete_transfer_aux (uint64_t transfer_id) {
 	check(itr_investment != investments.end(), common::contracts::projects.to_string() + ": the investment does not exist.");
 
 	investments.modify(itr_investment, _self, [&](auto & modified_investment){
-		modified_investment.total_unconfirmed_transfered_amount -= itr_transfer -> amount;
+		modified_investment.total_unconfirmed_transferred_amount -= itr_transfer -> amount;
 		modified_investment.total_unconfirmed_transfers -= 1;
 	});
 
@@ -406,8 +406,8 @@ ACTION projects::invest ( name actor,
 		new_investment.subscription_package = subscription_package;
 		new_investment.status = INVESTMENT_STATUS.PENDING;
 		new_investment.investment_date = eosio::current_time_point().sec_since_epoch();
-		new_investment.total_confirmed_transfered_amount = asset(0, common::currency);
-		new_investment.total_unconfirmed_transfered_amount = asset(0, common::currency);
+		new_investment.total_confirmed_transferred_amount = asset(0, common::currency);
+		new_investment.total_unconfirmed_transferred_amount = asset(0, common::currency);
 		new_investment.total_confirmed_transfers = 0;
 		new_investment.total_unconfirmed_transfers = 0;
 	});	
@@ -486,7 +486,7 @@ ACTION projects::maketransfer (name actor, asset amount, uint64_t investment_id,
 	check(itr_investment -> status == INVESTMENT_STATUS.FUNDING,
 			common::contracts::projects.to_string() + ": the investment has not been approved yet or it could have been closed.");
 
-	check(itr_investment -> total_confirmed_transfered_amount + amount <= itr_investment -> total_investment_amount,
+	check(itr_investment -> total_confirmed_transferred_amount + amount <= itr_investment -> total_investment_amount,
 			common::contracts::projects.to_string() + ": the payments can not exceed the total investment amount.");
 
 	transfers.emplace(_self, [&](auto & new_transfer){
@@ -501,7 +501,7 @@ ACTION projects::maketransfer (name actor, asset amount, uint64_t investment_id,
 	});
 
 	investments.modify(itr_investment, _self, [&](auto & modified_investment){
-		modified_investment.total_unconfirmed_transfered_amount += amount;
+		modified_investment.total_unconfirmed_transferred_amount += amount;
 		modified_investment.total_unconfirmed_transfers += 1;
 	});
 
@@ -528,7 +528,7 @@ ACTION projects::edittransfer ( name actor,
 
 	asset old_amount = itr_transfer -> amount;
 
-	check(itr_investment -> total_confirmed_transfered_amount + amount <= itr_investment -> total_investment_amount,
+	check(itr_investment -> total_confirmed_transferred_amount + amount <= itr_investment -> total_investment_amount,
 			common::contracts::projects.to_string() + ": the payments can not exceed the total investment amount.");
 
 	transfers.modify(itr_transfer, _self, [&](auto & modified_transfer){
@@ -539,8 +539,8 @@ ACTION projects::edittransfer ( name actor,
 	});
 
 	investments.modify(itr_investment, _self, [&](auto & modified_investment){
-		modified_investment.total_unconfirmed_transfered_amount -= old_amount;
-		modified_investment.total_unconfirmed_transfered_amount += amount;
+		modified_investment.total_unconfirmed_transferred_amount -= old_amount;
+		modified_investment.total_unconfirmed_transferred_amount += amount;
 	});
 
 }
@@ -572,7 +572,7 @@ ACTION projects::confrmtrnsfr (name actor, uint64_t transfer_id, string proof_of
 
 	auto itr_investment = investments.find(investment_id);
 
-	asset total_amount = itr_investment -> total_confirmed_transfered_amount + amount;
+	asset total_amount = itr_investment -> total_confirmed_transferred_amount + amount;
 	asset total_investment = itr_investment -> total_investment_amount;
 
 	check(total_amount <= total_investment, common::contracts::projects.to_string() + ": the payments can not exceed the total investment amount.");
@@ -592,8 +592,8 @@ ACTION projects::confrmtrnsfr (name actor, uint64_t transfer_id, string proof_of
 		if (total_amount == total_investment) {
 			modified_investment.status = INVESTMENT_STATUS.FUNDED;
 		}
-		modified_investment.total_unconfirmed_transfered_amount -= amount;
-		modified_investment.total_confirmed_transfered_amount += amount;
+		modified_investment.total_unconfirmed_transferred_amount -= amount;
+		modified_investment.total_confirmed_transferred_amount += amount;
 		modified_investment.total_confirmed_transfers += 1;
 		modified_investment.total_unconfirmed_transfers -= 1;
 	});

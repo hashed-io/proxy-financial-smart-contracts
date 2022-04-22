@@ -11,8 +11,8 @@ using namespace eosio;
     uint16_t annual_preferred_return;  /* decimal */       \
     uint64_t signed_agreement_date;                        \
                                                            \
-    asset total_confirmed_transfered_amount;               \
-    asset total_unconfirmed_transfered_amount;             \
+    asset total_confirmed_transferred_amount;               \
+    asset total_unconfirmed_transferred_amount;             \
     uint16_t total_confirmed_transfers;                    \
     uint16_t total_unconfirmed_transfers;                  \
                                                            \
