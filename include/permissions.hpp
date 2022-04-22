@@ -4,10 +4,23 @@
 #include <eosio/system.hpp>
 #include <eosio/asset.hpp>
 #include <eosio/symbol.hpp>
-#include <common.hpp>
+
+#include <common/constants.hpp>
+#include <common/data_types.hpp>
+#include <common/action_names.hpp>
+
+#include <util.hpp>
+
+#include <permissions/roles.hpp>
+
+#include <common/tables/project.hpp>
+#include <common/tables/user.hpp>
+#include <common/tables/role.hpp>
+#include <common/tables/user_role.hpp>
+#include <common/tables/permission.hpp>
+#include <common/tables/ledger.hpp>
+
 #include <utility>
-#include <roles.hpp>
-#include <action_names.hpp>
 
 using namespace eosio;
 using namespace std;
@@ -20,9 +33,34 @@ CONTRACT permissions : public contract {
         permissions(name receiver, name code, datastream<const char*> ds)
             : contract(receiver, code, ds),
               permissions_table(receiver, receiver.value),
-              projects_table(contract_names::projects, contract_names::projects.value),
-              users(contract_names::projects, contract_names::projects.value)
+              projects_table(common::contracts::projects, common::contracts::projects.value),
+              users(common::contracts::projects, common::contracts::projects.value)
               {}
+
+        DEFINE_PROJECT_TABLE
+        
+        DEFINE_PROJECT_TABLE_MULTI_INDEX
+
+        DEFINE_USER_TABLE
+
+        DEFINE_USER_TABLE_MULTI_INDEX
+
+        DEFINE_ROLE_TABLE
+
+        DEFINE_ROLE_TABLE_MULTI_INDEX
+
+        DEFINE_USER_ROLE_TABLE
+
+        DEFINE_USER_ROLE_TABLE_MULTI_INDEX
+
+        DEFINE_PERMISSION_TABLE
+
+        DEFINE_PERMISSION_TABLE_MULTI_INDEX
+
+        DEFINE_LEDGER_TABLE
+
+        DEFINE_LEDGER_TABLE_MULTI_INDEX
+
 
         ACTION reset();
 
@@ -73,119 +111,6 @@ CONTRACT permissions : public contract {
             make_pair(ROLES.MANAGER, 130879),       // 11111111100111111
             make_pair(ROLES.ACCOUNTANT, 122943)     // 11110000000111111
         };
-
-
-        // scoped by project
-        TABLE role_table {
-            uint64_t role_id;
-            string role_name;
-            uint64_t permissions; // 1 1 1 1 0 0 0 0
-
-            uint64_t primary_key() const { return role_id; }
-        };
-
-        // scoped by project
-        TABLE user_role_table {
-            name user;
-            uint64_t role_id;
-
-            uint64_t primary_key() const { return user.value; }
-        };
-
-
-        // scoped by contract
-        TABLE permission_table {
-            name action_name;
-            uint64_t permissions; // 0 0 0 0 0 1 0 0 0
-
-            uint64_t primary_key() const { return action_name.value; }
-        };
-
-        TABLE user_table {
-            name account;
-            string user_name;
-            uint64_t entity_id;
-            string type;
-
-            uint64_t primary_key() const { return account.value; }
-            uint64_t by_entity() const { return entity_id; }
-        };
-
-        // scoped by projects
-        // taken from accounts
-        TABLE ledger_table {
-            uint64_t ledger_id;
-            uint64_t entity_id;
-            string description;
-
-            uint64_t primary_key() const { return ledger_id; }
-            uint64_t by_entity() const { return entity_id; }
-        };
-
-        TABLE project_table {
-			uint64_t project_id;
-            uint64_t developer_id;
-			name owner;
-            string project_class;
-            string project_name;
-			string description;
-            uint64_t created_date;
-            uint64_t status;
-
-            asset total_project_cost;
-            asset debt_financing;
-            uint8_t term;
-            uint16_t interest_rate; // decimal 2
-            string loan_agreement; // url
-
-			asset total_equity_financing;
-            asset total_gp_equity;
-            asset private_equity;
-            uint16_t annual_return; // decimal 2
-            string project_co_lp; // url
-            uint64_t project_co_lp_date;
-
-            uint64_t projected_completion_date;
-            uint64_t projected_stabilization_date;
-            uint64_t anticipated_year_sale_refinance;
-
-            string fund_lp; // url
-            asset total_fund_offering_amount;
-            uint64_t total_number_fund_offering;
-            asset price_per_fund_unit;
-            uint64_t approved_date;
-            name approved_by;
-
-			uint64_t primary_key() const { return project_id; }
-            uint64_t by_owner() const { return owner.value; }
-            uint64_t by_developer() const { return developer_id; }
-            uint64_t by_status() const { return status; }
-		};
-
-        typedef eosio::multi_index <"roles"_n, role_table> role_tables;
-
-        typedef eosio::multi_index <"userroles"_n, user_role_table> user_role_tables;
-
-        typedef eosio::multi_index <"permissions"_n, permission_table> permission_tables;
-
-        typedef eosio::multi_index <"projects"_n, project_table,
-            indexed_by<"byowner"_n,
-            const_mem_fun<project_table, uint64_t, &project_table::by_owner>>,
-            indexed_by<"bydeveloper"_n,
-            const_mem_fun<project_table, uint64_t, &project_table::by_developer>>,
-            indexed_by<"bystatus"_n,
-            const_mem_fun<project_table, uint64_t, &project_table::by_status>>
-        > project_tables;
-
-        typedef eosio::multi_index <"users"_n, user_table,
-            indexed_by<"byentity"_n,
-            const_mem_fun<user_table, uint64_t, &user_table::by_entity>>
-        > user_tables;
-
-        typedef eosio::multi_index <"ledgers"_n, ledger_table,
-            indexed_by<"byentity"_n,
-            const_mem_fun<ledger_table, uint64_t, &ledger_table::by_entity>>
-        > ledger_tables;
 
         permission_tables permissions_table;
         project_tables projects_table;
