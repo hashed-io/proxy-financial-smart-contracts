@@ -60,7 +60,9 @@ ACTION projects::reset () {
 
 }
 
+
 ACTION projects::resetusers () {
+  require_auth(_self);
 
 	auto itr_users = users.begin();
 	while (itr_users != users.end()) {
@@ -70,21 +72,21 @@ ACTION projects::resetusers () {
 
 	// hardcoding some entities and users for testnet
 	addentity(_self, "Fund Entity 1", "A test entity for Fund", ENTITY_TYPES.FUND);
+	addentity(_self, "Fund Entity 2", "A test entity for Fund", ENTITY_TYPES.FUND);
 	addentity(_self, "Investor Entity 1", "A test entity for Investor", ENTITY_TYPES.INVESTOR);
 	addentity(_self, "Developer Entity 1", "A test entity for Developer", ENTITY_TYPES.DEVELOPER);
-	//addentity(_self, "Fund Entity 2", "A test entity for Fund", ENTITY_TYPES.FUND);
-	//addentity (name actor, string entity_name, string description, string type)
+
 
 	uint64_t entity_id = 1;
 
 	addtestuser("proxy.gm"_n, "Sam Fund", entity_id);
-	addtestuser("investor.gm"_n, "Sam Investor", entity_id + 1);
-	addtestuser("develop.gm"_n, "Sam Developer", entity_id + 2);
+	addtestuser("proxyadmin11"_n, "Sam Fund", entity_id + 1);
+	addtestuser("proxyinvestr"_n, "Sam Investor", entity_id + 2);
+	addtestuser("proxybuilder"_n, "Sam Developer", entity_id + 3);
 	//addtestuser("proxyadmin11"_n, "Max Fund", entity_id + 4);
-	//addtestuser (name user, string user_name, uint64_t entity_id
 
 	// //Add projects
-	addproject ("develop.gm"_n, "OFFICE", "Hashed's office",
+	addproject ("proxybuilder"_n, "OFFICE", "Hashed's office",
 													"48,000 sf of office space in Minnesota continues to grow as a hub for businesses and Edina is where corporations that want access to the talent pool of Minneapolis and the surrounding without paying exorbitant prices for office space are setting their headquarters. We are building a beautiful building to will provide office space to 200-300 people at an exceptional location near the mall and connected via mass transit to Minneapolis downtown",
 													asset(10000000.00, symbol("USD", 2)),
 													asset(6000000.00,  symbol("USD", 2)),
@@ -199,6 +201,7 @@ ACTION projects::resetusers () {
 								asset(110000.00,  symbol("USD", 2)));
 
 }
+
 
 // who can do this?
 ACTION projects::addentity (name actor, string entity_name, string description, string type) {
