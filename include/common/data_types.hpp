@@ -17,7 +17,7 @@ namespace common
       std::string address;
     };
 
-    struct expenses
+    struct transaction_subtypes
     {
       eosio::name account;
       eosio::asset amount;

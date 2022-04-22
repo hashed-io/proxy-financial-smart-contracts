@@ -244,6 +244,7 @@ ACTION transactions::transact(name actor,
 															uint64_t &date,
 															string &description,
 															bool &is_drawdown,
+															vector<common::types::transaction_subtypes> &transactions,
 															vector<common::types::url_information> &supporting_files)
 {
 
