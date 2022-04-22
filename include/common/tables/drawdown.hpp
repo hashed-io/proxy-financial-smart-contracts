@@ -7,6 +7,7 @@ using namespace eosio;
   TABLE drawdown_table                                   \
   {                                                      \
     uint64_t drawdown_id;                                \
+    std::string type;                                    \
     eosio::asset total_amount;                           \
     vector<common::types::url_information> files;        \
     uint64_t state;                                      \
