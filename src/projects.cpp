@@ -52,159 +52,38 @@ ACTION projects::reset () {
 	while (itr_transfer != transfers.end()) {
 		itr_transfer = transfers.erase(itr_transfer);
 	}
-
-	auto itr_acc = users.begin();
-	while (itr_acc != users.end()) {
-		itr_acc = users.erase(itr_acc);
-	}
-
-
+	action (
+        permission_level(get_self(), "active"_n),
+        get_self(),
+        "resetusers"_n,
+        std::make_tuple()
+    ).send();
 }
 
 ACTION projects::resetusers () {
-  require_auth(_self);
+    require_auth(_self);
 
 	auto itr_users = users.begin();
 	while (itr_users != users.end()) {
 		itr_users = users.erase(itr_users);
 	}
-
-
 	// hardcoding some entities and users for testnet
-	addentity(_self, "Fund Entity 1", "A test entity for Fund", ENTITY_TYPES.FUND);
-	addentity(_self, "Investor Entity 1", "A test entity for Investor", ENTITY_TYPES.INVESTOR);
-	addentity(_self, "Developer Entity 1", "A test entity for Developer", ENTITY_TYPES.DEVELOPER);
-	//addentity(_self, "Fund Entity 2", "A test entity for Fund", ENTITY_TYPES.FUND);
-	//addentity (name actor, string entity_name, string description, string type)
+	// addentity(_self, "Proxy Capital", "A test entity for Proxy Capital", ENTITY_TYPES.FUND);
+	// addentity(_self, "Investor Entity 1", "A test entity for investors", ENTITY_TYPES.INVESTOR);
+	// addentity(_self, "Investor Entity 2", "A test entity for investors", ENTITY_TYPES.INVESTOR);
+	// addentity(_self, "Developer Entity 1", "A test entity for developer", ENTITY_TYPES.DEVELOPER);
 
-	uint64_t entity_id = 1;
+	// uint64_t entity_id = 1;
 
-	addtestuser("proxy.gm"_n, "Sam Fund", entity_id);
-	addtestuser("investor.gm"_n, "Sam Investor", entity_id + 1);
-	addtestuser("develop.gm"_n, "Sam Developer", entity_id + 2);
-	//addtestuser("proxyadmin11"_n, "Max Fund", entity_id + 4);
-	//addtestuser (name user, string user_name, uint64_t entity_id
-
-	// //Add projects
-	addproject ("develop.gm"_n, "OFFICE", "Hashed's office",
-													"48,000 sf of office space in Minnesota continues to grow as a hub for businesses and Edina is where corporations that want access to the talent pool of Minneapolis and the surrounding without paying exorbitant prices for office space are setting their headquarters. We are building a beautiful building to will provide office space to 200-300 people at an exceptional location near the mall and connected via mass transit to Minneapolis downtown",
-													asset(10000000.00, symbol("USD", 2)),
-													asset(6000000.00,  symbol("USD", 2)),
-													5,
-													600,
-													"QmZ18Uj9y79d3qU7PyEq98fWnnittyAN4fqXAZ8Pth6qKu:pdf",
-													asset(4000000.00,  symbol("USD", 2)),
-													asset(2000000.00,  symbol("USD", 2)),
-													asset(2000000.00,  symbol("USD", 2)),
-													600,
-													"QmZ18Uj9y79d3qU7PyEq98fWnnittyAN4fqXAZ8Pth6qKu:pdf",
-													1682053200,
-													1682398800,
-													1682485200,
-													2023);
-
-	addproject ("develop.gm"_n, "NNN", "1100 N Trinit",
-													"1100 N Trinity Street is a 6,000-square-foot, freestanding retail building positioned along the main thoroughfare and retail corridor in Whitney, Texas.",
-													asset(435000.00, symbol("USD", 2)),
-													asset(2000.00,  symbol("USD", 2)),
-													3,
-													100,
-													"loan-8Uj9y79d3qU7PyEq98fWnnittyAN4fqXAZ8Pth6qKu:pdf",
-													asset(3000.00,  symbol("USD", 2)),
-													asset(2100.00,  symbol("USD", 2)),
-													asset(5000.00,  symbol("USD", 2)),
-													500,
-													"co-lp-j9y79d3qU7PyEq98fWnnittyAN4fqXAZ8Pth6qKu:pdf",
-													1682053200,
-													1682398800,
-													1682485200,
-													2023);
-	
-	addproject ("develop.gm"_n, "MASTER PLANNED COMMUNITY", "Soo Line, Minneapolis, MN",
-													"Soo Line, Minneapolis, MN	150 Apartment building located in Minneapolis, the 5th fastest growing city in the country with a high demand for apartments near downtown. Research shows demand exceeds supply by 5% which explains why prices keep going up. This building’s facilities will include a pool, gym and an events room which only 20% of the apartments in the area provide.",
-													asset(60000000.00, symbol("USD", 2)),
-													asset(40000000.00,  symbol("USD", 2)),
-													10,
-													900,
-													"loan-8Uj9y79d3qU7PyEq98fWnnittyAN4fqXAZ8Pth6qKu:pdf",
-													asset(20000000.00,  symbol("USD", 2)),
-													asset(9000000.00,  symbol("USD", 2)),
-													asset(11000000.00,  symbol("USD", 2)),
-													600,
-													"co-lp-j9y79d3qU7PyEq98fWnnittyAN4fqXAZ8Pth6qKu:pdf",
-													1682053200,
-													1682398800,
-													1682485200,
-													2024);
-	
-	addproject ("develop.gm"_n, "MULTIFAMILY", "Ashmore, St. Paul, MN",
-													"Ashmore, St. Paul, MN	165 Apartment building in Ashmore heights is one of the most beautiful and desired areas in St. Paul. We are building an exclusive apartment complex to serve the population segment with an increasing disposable income in the area. Our amenities will include a dog park, gym and meditation center.",
-													asset(3000000.00, symbol("USD", 2)),
-													asset(1000000.00,  symbol("USD", 2)),
-													9,
-													800,
-													"loan-8Uj9y79d3qU7PyEq98fWnnittyAN4fqXAZ8Pth6qKu:pdf",
-													asset(2000000.00,  symbol("USD", 2)),
-													asset(1500000.00,  symbol("USD", 2)),
-													asset(500000.00,  symbol("USD", 2)),
-													900,
-													"co-lp-j9y79d3qU7PyEq98fWnnittyAN4fqXAZ8Pth6qKu:pdf",
-													1682053200,
-													1682398800,
-													1682485200,
-													2022);
-	
-	addproject ("develop.gm"_n, "OFFICE", "Blue Tower, Edina, MN",
-													"Blue Tower, Edina, MN	48,000 sf of office space in Minnesota continues to grow as a hub for businesses and Edina is where corporations that want access to the talent pool of Minneapolis and the surrounding without paying exorbitant prices for office space are setting their headquarters. We are building a beautiful building to will provide office space to 200-300 people at an exceptional location near the mall and connected via mass transit to Minneapolis downtown",
-													asset(89000000.00, symbol("USD", 2)),
-													asset(50000000.00,  symbol("USD", 2)),
-													9,
-													1500,
-													"loan-8Uj9y79d3qU7PyEq98fWnnittyAN4fqXAZ8Pth6qKu:pdf",
-													asset(39000000.00,  symbol("USD", 2)),
-													asset(20000000.00,  symbol("USD", 2)),
-													asset(19000000.00,  symbol("USD", 2)),
-													900,
-													"co-lp-j9y79d3qU7PyEq98fWnnittyAN4fqXAZ8Pth6qKu:pdf",
-													1682053200,
-													1682398800,
-													1682485200,
-													2024);
-
-	
-	approveprjct ("proxy.gm"_n, 
-									0, 
-									"fund-lp-y79d3qU7PyEq98fWnnittyAN4fqXAZ8Pth6qKu:pdf",
-									asset(300000.00,  symbol("USD", 2)),
-									30,
-									asset(10000.00,  symbol("USD", 2)));
-
-	approveprjct ( "proxy.gm"_n, 
-									1, 
-									"fund-lp-y79d3qU7PyEq98fWnnittyAN4fqXAZ8Pth6qKu:pdf",
-									asset(300000.00,  symbol("USD", 2)),
-									30,
-									asset(10000.00,  symbol("USD", 2)));
-
-	approveprjct ( "proxy.gm"_n, 
-								2, 
-								"	bafkreibpka5lujj7wjglprpf3l4lxrky3lkm6po6psandcaxfixnmsdweq:png",
-								asset(11000000.00,  symbol("USD", 2)),
-								100,
-								asset(10000.00,  symbol("USD", 2)));
-
-	approveprjct ( "proxy.gm"_n, 
-								3, 
-								"	bafkreicn2xyerxcd5vbb7fvabcenie4e224jji4wavuylcmenwcbaxut5y:png",
-								asset(11000000.00,  symbol("USD", 2)),
-								100,
-								asset(110000.00,  symbol("USD", 2)));
-
+	// addtestuser("proxyadmin11"_n, "John Miller", entity_id);
+	// addtestuser("investoruser"_n, "James Smith", entity_id + 1);
+	// addtestuser("investorusr2"_n, "Sally Fields", entity_id + 2);
+	// addtestuser("builderuser1"_n, "Mary Williams", entity_id + 3);
 }
 
 // who can do this?
 ACTION projects::addentity (name actor, string entity_name, string description, string type) {
-	require_auth( has_auth(actor) ? actor : get_self() );
+	require_auth(actor);
 
 	// ============================== //
 	// = check permissions here ??? = //
@@ -265,24 +144,16 @@ ACTION projects::addproject ( name actor,
 							  uint64_t projected_stabilization_date,
 							  uint64_t anticipated_year_sale_refinance ) {
 
-  require_auth( has_auth(actor) ? actor : get_self() );
+    require_auth(actor);
 	checkuserdev(actor);
 
 	check(PROJECT_CLASS.is_valid_constant(project_class), common::contracts::projects.to_string() + ": that project class does not exist.");
 
-<<<<<<< HEAD
-  check_asset(total_project_cost, contract_names::projects);
-	check_asset(debt_financing, contract_names::projects);
-	check_asset(total_equity_financing, contract_names::projects);
-	check_asset(total_gp_equity, contract_names::projects);
-	check_asset(private_equity, contract_names::projects);
-=======
     check_asset(total_project_cost, common::contracts::projects);
 	check_asset(debt_financing, common::contracts::projects);
 	check_asset(total_equity_financing, common::contracts::projects);
 	check_asset(total_gp_equity, common::contracts::projects);
 	check_asset(private_equity, common::contracts::projects);
->>>>>>> migration/unittest-v1
 
 	check(projected_completion_date >= eosio::current_time_point().sec_since_epoch(), common::contracts::projects.to_string() + ": the date can not be earlier than now.");
 	check(projected_stabilization_date >= eosio::current_time_point().sec_since_epoch(), common::contracts::projects.to_string() + ": the date can not be earlier than now.");
@@ -293,7 +164,7 @@ ACTION projects::addproject ( name actor,
         itr_p++;
 	}
 
-  uint64_t new_project_id = projects_table.available_primary_key();
+    uint64_t new_project_id = projects_table.available_primary_key();
 
 	projects_table.emplace(_self, [&](auto & new_project) {
 		new_project.project_id = new_project_id;
@@ -324,7 +195,7 @@ ACTION projects::addproject ( name actor,
 }
 
 ACTION projects::deleteprojct (name actor, uint64_t project_id) {
-	require_auth( has_auth(actor) ? actor : get_self() );
+	require_auth(actor);
 
 	auto itr_project = projects_table.find(project_id);
 	check(itr_project != projects_table.end(), common::contracts::projects.to_string() + ": the project does not exist.");
@@ -376,7 +247,7 @@ ACTION projects::editproject ( name actor,
 							   uint64_t projected_stabilization_date,
 							   uint64_t anticipated_year_sale_refinance ) {
 
-	require_auth( has_auth(actor) ? actor : get_self() );
+	require_auth(actor);
 
 	auto itr_project = projects_table.find(project_id);
 	check(itr_project != projects_table.end(), common::contracts::projects.to_string() + ": the project does not exist.");
@@ -434,8 +305,7 @@ ACTION projects::approveprjct ( name actor,
 								asset total_fund_offering_amount,
 								uint64_t total_number_fund_offering,
 								asset price_per_fund_unit ) {
-									
-	require_auth( has_auth(actor) ? actor : get_self() );
+	require_auth(actor);
 
 	check_asset(total_fund_offering_amount, common::contracts::projects);
 	check_asset(price_per_fund_unit, common::contracts::projects);
@@ -512,7 +382,7 @@ ACTION projects::invest ( name actor,
 						  uint64_t signed_agreement_date,
 						  string subscription_package ) {
 	
-	require_auth( has_auth(actor) ? actor : get_self() );
+	require_auth(actor);
 
 	check_asset(total_investment_amount, common::contracts::projects);
 
@@ -552,7 +422,7 @@ ACTION projects::editinvest ( name actor,
 							  uint64_t signed_agreement_date,
 							  string subscription_package ) {
 
-	require_auth( has_auth(actor) ? actor : get_self() );
+	require_auth(actor);
 
 	check_asset(total_investment_amount, common::contracts::projects);
 
@@ -575,7 +445,7 @@ ACTION projects::editinvest ( name actor,
 
 
 ACTION projects::deleteinvest (name actor, uint64_t investment_id) {
-	require_auth( has_auth(actor) ? actor : get_self() );
+	require_auth(actor);
 
 	auto itr_investment = investments.find(investment_id);
 	check(itr_investment != investments.end(), common::contracts::projects.to_string() + ": the investment request does not exist.");
@@ -588,7 +458,7 @@ ACTION projects::deleteinvest (name actor, uint64_t investment_id) {
 
 
 ACTION projects::approveinvst (name actor, uint64_t investment_id) {
-	require_auth( has_auth(actor) ? actor : get_self() );
+	require_auth(actor);
 
 	checkusrtype(actor, ENTITY_TYPES.FUND);
 
@@ -605,7 +475,7 @@ ACTION projects::approveinvst (name actor, uint64_t investment_id) {
 
 
 ACTION projects::maketransfer (name actor, asset amount, uint64_t investment_id, string proof_of_transfer, uint64_t transfer_date) {
-	require_auth( has_auth(actor) ? actor : get_self() );
+	require_auth(actor);
 
 	checkusrtype(actor, ENTITY_TYPES.INVESTOR);
 	check_asset(amount, common::contracts::projects);
@@ -644,7 +514,7 @@ ACTION projects::edittransfer ( name actor,
 								string proof_of_transfer, 
 								uint64_t date ) {
 	
-	require_auth( has_auth(actor) ? actor : get_self() );
+	require_auth(actor);
 
 	check_asset(amount, common::contracts::projects);
 
@@ -677,7 +547,7 @@ ACTION projects::edittransfer ( name actor,
 
 
 ACTION projects::deletetrnsfr (name actor, uint64_t transfer_id) {
-	require_auth( has_auth(actor) ? actor : get_self() );
+	require_auth(actor);
 
 	auto itr_transfer = transfers.find(transfer_id);
 	check(itr_transfer != transfers.end(), common::contracts::projects.to_string() + ": the transfer does not exist.");
@@ -689,7 +559,7 @@ ACTION projects::deletetrnsfr (name actor, uint64_t transfer_id) {
 
 
 ACTION projects::confrmtrnsfr (name actor, uint64_t transfer_id, string proof_of_transfer) {
-	require_auth( has_auth(actor) ? actor : get_self() );
+	require_auth(actor);
 
 	checkusrtype(actor, ENTITY_TYPES.FUND);
 
@@ -745,3 +615,4 @@ ACTION projects::changestatus (uint64_t project_id, uint64_t status) {
 
 
 EOSIO_DISPATCH(projects, (reset)(resetusers)(addproject)(approveprjct)(addentity)(addtestuser)(invest)(approveinvst)(maketransfer)(editproject)(deleteprojct)(deleteinvest)(editinvest)(confrmtrnsfr)(edittransfer)(deletetrnsfr)(changestatus));
+

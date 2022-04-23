@@ -41,57 +41,32 @@ describe('Tests for projects smart contract', async function () {
 
   })
 
-  it('Add an identity', async function () {
+  it('Add entities', async function () {
 
     // Arrange
-    const entity = await EntityFactory.createWithDefaults({actor:projects})
-    const entityParams = entity.getActionParams()
-
-
-    // const account = await rpc.get_account('proxyact');
-    // console.log('account is: ', account)
+    const developerEntity = await EntityFactory.createWithDefaults();
+    // const developerParams = developerEntity.getActionParams()
+    // console.log(developerParams)
 
     //Act
-    // await ProjectsUtil.addentity({
-    //   actor: entityParams[0],
-    //   entity_name: entityParams[1],
-    //   description: entityParams[2],
-    //   type: entityParams[3],
-    //   contract: contracts.projects
+    //await contracts.projects.addentity(...developerParams, { authorization: `${projects}@active`})
+
+    // const projectsTable = await rpc.get_table_rows({
+    //   code: projects,
+    //   scope: projects,
+    //   table: 'entities',
+    //   json: true
     // })
-    //await contracts.projects.reset({authorization:'derp'})
-    try{
-      await contracts.projects.addentity(...entityParams, { authorization: `${projects}@active`})
-
-      await contracts.projects.addentity(...entityParams)
-
-    }catch(err){
-      console.log('ERROR IS: ', JSON.stringify(err, null, ' '), '\n')
-    }
-
-    // await transact({
-    //   actions: [
-    //   {
-    //     account: projects,
-    //     name: 'reset',
-    //     authorization: [{
-    //       actor: projects,
-    //       permission: 'active',
-    //     }],
-    //     data: {
-    //     },
-    //   }]
-    // })
-    
-    const projectsTable = await rpc.get_table_rows({
-      code: projects,
-      scope: projects,
-      table: 'entities',
-      json: true
-    })
+    // console.log('Projects table : ', projectsTable)
 
     // // Assert
-    console.log(projectsTable)
+    // expect(projectsTable.rows).to.deep.equals([{
+    //   entity_id: 1,
+    //   entity_name: developerParams[1],
+    //   description: developerParams[1],
+    //   type: 'Developer'
+
+    // }])
 
   })
 
