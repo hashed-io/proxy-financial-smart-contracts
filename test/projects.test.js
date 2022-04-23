@@ -44,29 +44,29 @@ describe('Tests for projects smart contract', async function () {
   it('Add entities', async function () {
 
     // Arrange
-    const developerEntity = await EntityFactory.createWithDefaults();
-    // const developerParams = developerEntity.getActionParams()
-    // console.log(developerParams)
+    const developerEntity = await EntityFactory.createWithDefaults({});
+    const developerParams = developerEntity.getActionParams()
+    console.log(developerParams)
 
     //Act
-    //await contracts.projects.addentity(...developerParams, { authorization: `${projects}@active`})
+    await contracts.projects.addentity(...developerParams, { authorization: `${projects}@active`})
 
-    // const projectsTable = await rpc.get_table_rows({
-    //   code: projects,
-    //   scope: projects,
-    //   table: 'entities',
-    //   json: true
-    // })
-    // console.log('Projects table : ', projectsTable)
+    const projectsTable = await rpc.get_table_rows({
+      code: projects,
+      scope: projects,
+      table: 'entities',
+      json: true
+    })
+    console.log('Projects table : ', projectsTable)
 
-    // // Assert
-    // expect(projectsTable.rows).to.deep.equals([{
-    //   entity_id: 1,
-    //   entity_name: developerParams[1],
-    //   description: developerParams[1],
-    //   type: 'Developer'
+    // Assert
+    expect(projectsTable.rows).to.deep.equals([{
+      entity_id: 1,
+      entity_name: developerParams[1],
+      description: developerParams[1],
+      type: 'Developer'
 
-    // }])
+    }])
 
   })
 
