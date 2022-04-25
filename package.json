@@ -10,7 +10,7 @@
   "scripts": {
     "initAll": "node scripts/commands.js init",
     "initContract": "node scripts/commands.js run $1",
-    "compileAll": "node scripts/commands.js compile",
+    "build": "node scripts/commands.js compile",
     "compileContract": "node scripts/commands.js compile $1",
     "setParams": "node scripts/commands.js set params",
     "setPermissions": "node scripts/commands.js set permissions",
