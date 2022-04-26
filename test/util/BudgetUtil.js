@@ -37,6 +37,67 @@ class BudgetUtil{
       end_date,
       modify_parents, { authorization: `${contractAccount}@active` })
   }
+
+  static async editbudget({
+    actor,
+    project_id,
+    budget_id,
+    amount,
+    budget_type_id,
+    begin_date,
+    end_date,
+    modify_parents,
+    contract, 
+    contractAccount}){
+    await contract.editbudget( 
+      actor,
+      project_id,
+      budget_id,
+      amount,
+      budget_type_id,
+      begin_date,
+      end_date,
+      modify_parents, { authorization: `${contractAccount}@active` })
+  }
+
+  static async deletebudget({
+    actor,
+    project_id,
+    budget_id,
+    modify_parents,
+    contract, 
+    contractAccount}){
+    await contract.deletebudget( 
+      actor,
+      project_id,
+      budget_id,
+      modify_parents, { authorization: `${contractAccount}@active` })
+  }
+
+  static async rcalcbudgets({
+    actor,
+    project_id,
+    account_id,
+    budget_period_id,
+    contract, 
+    contractAccount}){
+    await contract.rcalcbudgets( 
+      actor,
+      project_id,
+      account_id,
+      budget_period_id, { authorization: `${contractAccount}@active` })
+  }
+
+  static async delbdgtsacct({
+    project_id,
+    account_id,
+    contract, 
+    contractAccount}){
+    await contract.delbdgtsacct( 
+      project_id,
+      account_id,{ authorization: `${contractAccount}@active` })
+  }
+
 }
 
 

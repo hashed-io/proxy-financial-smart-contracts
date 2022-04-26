@@ -30,18 +30,18 @@ describe('Tests for budgets smart contract', async function () {
   })
 
   beforeEach(async function () {
-   await EnvironmentUtil.initNode()
-   await sleep(4000)
-   await EnvironmentUtil.deployContracts(configContracts)
+    await EnvironmentUtil.initNode()
+    await sleep(4000)
+    await EnvironmentUtil.deployContracts(configContracts)
 
-   contracts = await getContracts([accounts, projects, budgets, permissions, transactions ])
-   await contracts.permissions.reset({authorization: `${permissions}@active`})
-   await contracts.transactions.reset({authorization: `${transactions}@active`})
-   await contracts.accounts.reset({authorization: `${accounts}@active`})
-   await contracts.budgets.reset({authorization: `${budgets}@active`})
-   await contracts.projects.reset({authorization: `${projects}@active`})
-   await updatePermissions()
-   console.log('\n')
+    contracts = await getContracts([accounts, projects, budgets, permissions, transactions])
+    await contracts.permissions.reset({ authorization: `${permissions}@active` })
+    await contracts.transactions.reset({ authorization: `${transactions}@active` })
+    await contracts.accounts.reset({ authorization: `${accounts}@active` })
+    await contracts.budgets.reset({ authorization: `${budgets}@active` })
+    await contracts.projects.reset({ authorization: `${projects}@active` })
+    await updatePermissions()
+    console.log('\n')
 
   })
 
@@ -114,52 +114,52 @@ describe('Tests for budgets smart contract', async function () {
 
   // })
 
-  it('Add an account', async function(){
+  it('Add an account', async function () {
     //Arrange
     //await contracts.accounts.reset({authorization: `${accounts}@active`})
-    const developerEntity = await EntityFactory.createWithDefaults({type: EntityConstants.developer});
+    const developerEntity = await EntityFactory.createWithDefaults({ type: EntityConstants.developer });
     const developerParams = developerEntity.getActionParams()
 
-    const investorEntity = await EntityFactory.createWithDefaults({type: EntityConstants.investor});
+    const investorEntity = await EntityFactory.createWithDefaults({ type: EntityConstants.investor });
     const investorParams = investorEntity.getActionParams()
 
-    const fundEntity = await EntityFactory.createWithDefaults({type: EntityConstants.fund});
+    const fundEntity = await EntityFactory.createWithDefaults({ type: EntityConstants.fund });
     const fundParams = fundEntity.getActionParams()
     console.log('developer is: ', developerParams[0])
     console.log('investor is: ', investorParams[0])
     console.log('fund is: ', fundParams[0])
 
 
-    await contracts.projects.addentity(...developerParams, { authorization: `${developerParams[0]}@active`})
-    await contracts.projects.addtestuser(developerParams[0], developerParams[1], 1, { authorization: `${developerParams[0]}@active`})
-    await contracts.projects.addentity(...investorParams, { authorization: `${investorParams[0]}@active`})
-    await contracts.projects.addtestuser(investorParams[0], investorParams[1], 2, { authorization: `${investorParams[0]}@active`})
-    await contracts.projects.addentity(...fundParams, { authorization: `${fundParams[0]}@active`})
-    await contracts.projects.addtestuser(fundParams[0], fundParams[1], 3, { authorization: `${fundParams[0]}@active`})
+    await contracts.projects.addentity(...developerParams, { authorization: `${developerParams[0]}@active` })
+    await contracts.projects.addtestuser(developerParams[0], developerParams[1], 1, { authorization: `${developerParams[0]}@active` })
+    await contracts.projects.addentity(...investorParams, { authorization: `${investorParams[0]}@active` })
+    await contracts.projects.addtestuser(investorParams[0], investorParams[1], 2, { authorization: `${investorParams[0]}@active` })
+    await contracts.projects.addentity(...fundParams, { authorization: `${fundParams[0]}@active` })
+    await contracts.projects.addtestuser(fundParams[0], fundParams[1], 3, { authorization: `${fundParams[0]}@active` })
 
-    const newProject = await ProjectFactory.createWithDefaults({actor: developerParams[0]});
+    const newProject = await ProjectFactory.createWithDefaults({ actor: developerParams[0] });
     const projectParams = newProject.getActionParams()
 
-    const newProject2 = await ProjectFactory.createWithDefaults({actor: developerParams[0]});
+    const newProject2 = await ProjectFactory.createWithDefaults({ actor: developerParams[0] });
     const projectParams2 = newProject2.getActionParams()
 
-    const newProject3 = await ProjectFactory.createWithDefaults({actor: developerParams[0]});
+    const newProject3 = await ProjectFactory.createWithDefaults({ actor: developerParams[0] });
     const projectParams3 = newProject3.getActionParams()
 
-    const newProject4 = await ProjectFactory.createWithDefaults({actor: developerParams[0]});
+    const newProject4 = await ProjectFactory.createWithDefaults({ actor: developerParams[0] });
     const projectParams4 = newProject4.getActionParams()
 
-    await contracts.projects.addproject(...projectParams, { authorization: `${projectParams[0]}@active`})
-    await contracts.projects.addproject(...projectParams2, { authorization: `${projectParams[0]}@active`})
-    await contracts.projects.addproject(...projectParams3, { authorization: `${projectParams[0]}@active`})
-    await contracts.projects.addproject(...projectParams4, { authorization: `${projectParams[0]}@active`})
+    await contracts.projects.addproject(...projectParams, { authorization: `${projectParams[0]}@active` })
+    await contracts.projects.addproject(...projectParams2, { authorization: `${projectParams[0]}@active` })
+    await contracts.projects.addproject(...projectParams3, { authorization: `${projectParams[0]}@active` })
+    await contracts.projects.addproject(...projectParams4, { authorization: `${projectParams[0]}@active` })
 
-    const approveParameters = [fundParams[0], 0,"https://fund-lp.com", "400000.00 USD",40000,"300.00 USD"]
-    const approveParameters2 = [fundParams[0], 1,"https://fund-lp.com", "400000.00 USD",40000,"300.00 USD"]
-    const approveParameters3 = [fundParams[0], 2,"https://fund-lp.com", "400000.00 USD",40000,"300.00 USD"]
-    const approveParameters4 = [fundParams[0], 3,"https://fund-lp.com", "400000.00 USD",40000,"300.00 USD"]
+    const approveParameters = [fundParams[0], 0, "https://fund-lp.com", "400000.00 USD", 40000, "300.00 USD"]
+    const approveParameters2 = [fundParams[0], 1, "https://fund-lp.com", "400000.00 USD", 40000, "300.00 USD"]
+    const approveParameters3 = [fundParams[0], 2, "https://fund-lp.com", "400000.00 USD", 40000, "300.00 USD"]
+    const approveParameters4 = [fundParams[0], 3, "https://fund-lp.com", "400000.00 USD", 40000, "300.00 USD"]
 
-    await contracts.projects.approveprjct(...approveParameters,{ authorization: `${fundParams[0]}@active`});
+    await contracts.projects.approveprjct(...approveParameters, { authorization: `${fundParams[0]}@active` });
     // await contracts.projects.approveprjct(...approveParameters2,{ authorization: `${fundParams[0]}@active`});
     // await contracts.projects.approveprjct(...approveParameters3,{ authorization: `${fundParams[0]}@active`});
     // await contracts.projects.approveprjct(...approveParameters4,{ authorization: `${fundParams[0]}@active`});
@@ -179,22 +179,24 @@ describe('Tests for budgets smart contract', async function () {
     // }catch(err){
     //   console.error(err)
     // }
-    const newAccount =  await AccountFactory.createWithDefaults({
-      actor: projectParams[0], 
+    const newAccount = await AccountFactory.createWithDefaults({
+      actor: projectParams[0],
       project_id: 0,
       parent_id: 1,
-      account_category:1, 
-     budget_amount: '0.00 USD'})
+      account_category: 1,
+      budget_amount: '0.00 USD'
+    })
     const accountParams = newAccount.getActionParams()
 
-    const newAccount2 =  await AccountFactory.createWithDefaults({
-      actor: projectParams[0]})
+    const newAccount2 = await AccountFactory.createWithDefaults({
+      actor: projectParams[0]
+    })
     const accountParams2 = newAccount2.getActionParams()
 
     //console.log('accountParams is: ', accountParams)
 
     //Act
-    
+
     await AccountUtil.addaccount({
       actor: accountParams[0],
       project_id: 0,
@@ -203,8 +205,8 @@ describe('Tests for budgets smart contract', async function () {
       account_currency: accountParams[4],
       description: accountParams[5],
       account_category: accountParams[6],
-      budget_amount: accountParams[7], 
-      contract: contracts.accounts, 
+      budget_amount: accountParams[7],
+      contract: contracts.accounts,
       contractAccount: accountParams[0]
     })
 
@@ -216,8 +218,8 @@ describe('Tests for budgets smart contract', async function () {
       account_currency: accountParams2[4],
       description: accountParams2[5],
       account_category: accountParams2[6],
-      budget_amount: '100.00 USD', 
-      contract: contracts.accounts, 
+      budget_amount: '100.00 USD',
+      contract: contracts.accounts,
       contractAccount: accountParams2[0]
     })
 
@@ -240,7 +242,7 @@ describe('Tests for budgets smart contract', async function () {
       json: true
     })
     console.log('\n\n Entities table : ', entitiesTable.rows)
-        
+
     const usersTable = await rpc.get_table_rows({
       code: projects,
       scope: projects,
@@ -267,7 +269,7 @@ describe('Tests for budgets smart contract', async function () {
     console.log('\n\n Ledgers table : ', ledgerTable.rows)
 
     const typesTable = await rpc.get_table_rows({
-      code: accounts, 
+      code: accounts,
       scope: accounts,
       table: 'accnttypes',
       json: true
@@ -275,7 +277,7 @@ describe('Tests for budgets smart contract', async function () {
     console.log('\n\n types table : ', typesTable.rows)
 
     const budgetsTable = await rpc.get_table_rows({
-      code: budgets, 
+      code: budgets,
       scope: 0,
       table: 'budgets',
       json: true
@@ -283,15 +285,15 @@ describe('Tests for budgets smart contract', async function () {
     console.log('\n\n budgets table : ', budgetsTable.rows)
 
 
-  //   assert.deepStrictEqual(ledgerTable.rows,[{
-  //     ledger_id: 1,
-  //     entity_id: 2,
-  //     description: 'Ledger for the ' + EntityConstants.investor +' '+ investorParams[1]
-  //   }])
+    //   assert.deepStrictEqual(ledgerTable.rows,[{
+    //     ledger_id: 1,
+    //     entity_id: 2,
+    //     description: 'Ledger for the ' + EntityConstants.investor +' '+ investorParams[1]
+    //   }])
 
   })
 
-  
+
 
 
 })
