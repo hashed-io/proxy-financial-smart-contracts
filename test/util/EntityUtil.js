@@ -1,4 +1,4 @@
-const { createRandomAccount } = require('../../scripts/eosio-util')
+const { createRandomAccount, createRandomName } = require('../../scripts/eosio-util')
 
 const EntityConstants = {
   investor: "Investor",
@@ -59,12 +59,12 @@ class EntityFactory {
       actor = await createRandomAccount()
     }
 
-    if (!entity_name) {
-      entity_name = "Test Entity"
+    if (!entity_name) { 
+      entity_name = createRandomName() 
     }
 
     if (!description) {
-      description = "A test entity"
+      description = "A test entity for " + type.toString()
     }
 
     if (!type) {

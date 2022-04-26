@@ -113,32 +113,32 @@ ACTION accounts::addledger (uint64_t project_id, uint64_t entity_id) {
 }
 
 
-// ACTION accounts::initaccounts (uint64_t project_id) {
-//     require_auth(_self);
+ACTION accounts::initaccounts (uint64_t project_id) {
+    require_auth(_self);
 
-//     auto project = projects_table.find(project_id);
-//     check(project != projects_table.end(), common::contracts::accounts.to_string() + ": project does not exist.");
+    auto project = projects_table.find(project_id);
+    check(project != projects_table.end(), common::contracts::accounts.to_string() + ": project does not exist.");
     
-//     account_tables accounts(_self, project_id);
+    account_tables accounts(_self, project_id);
     
-//     auto itr_types = account_types.begin();
-//     while (itr_types != account_types.end()) {
-//         uint64_t new_account_id = accounts.available_primary_key();
-//         new_account_id = (new_account_id > 0) ? new_account_id : 1;
+    auto itr_types = account_types.begin();
+    while (itr_types != account_types.end()) {
+        uint64_t new_account_id = accounts.available_primary_key();
+        new_account_id = (new_account_id > 0) ? new_account_id : 1;
         
-//         accounts.emplace(_self, [&](auto & new_account){
-//             new_account.account_id = new_account_id; 
-//             new_account.parent_id = 0;
-//             new_account.num_children = 0;
-//             new_account.account_name = itr_types -> type_name;
-//             new_account.account_subtype = itr_types -> type_name;
-//             new_account.increase_balance = asset(0, common::currency);
-//             new_account.decrease_balance = asset(0, common::currency);
-//             new_account.account_symbol = common::currency;
-//         });
-//         itr_types++;
-//     }
-// }
+        accounts.emplace(_self, [&](auto & new_account){
+            new_account.account_id = new_account_id; 
+            new_account.parent_id = 0;
+            new_account.num_children = 0;
+            new_account.account_name = itr_types -> type_name;
+            new_account.account_subtype = itr_types -> type_name;
+            new_account.increase_balance = asset(0, common::currency);
+            new_account.decrease_balance = asset(0, common::currency);
+            new_account.account_symbol = common::currency;
+        });
+        itr_types++;
+    }
+}
 
 ACTION accounts::addbalance (uint64_t project_id, uint64_t account_id, asset amount) {
     require_auth(_self);
