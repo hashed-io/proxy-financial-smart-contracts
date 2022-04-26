@@ -12,8 +12,31 @@ const BudgetConstants ={
   }
 }
 
-class BudgetUtil{
 
+
+
+class BudgetUtil{
+  static async addbudget({
+    actor,
+    project_id,
+    account_id,
+    amount,
+    budget_type_id,
+    begin_date,
+    end_date,
+    modify_parents,
+    contract, 
+    contractAccount}){
+    await contract.addbudget( 
+      actor,
+      project_id,
+      account_id,
+      amount,
+      budget_type_id,
+      begin_date,
+      end_date,
+      modify_parents, { authorization: `${contractAccount}@active` })
+  }
 }
 
 
@@ -139,5 +162,5 @@ class BudgetFactory {
 }
 
 
-module.exports = { Budget, BudgetFactory, BudgetConstants }
+module.exports = { Budget, BudgetUtil, BudgetFactory, BudgetConstants }
 
