@@ -12,6 +12,12 @@ const BudgetConstants ={
   }
 }
 
+class BudgetUtil{
+
+}
+
+
+
 class Budget {
   constructor(
     actor,

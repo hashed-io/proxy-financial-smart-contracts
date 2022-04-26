@@ -8,7 +8,7 @@ const { updatePermissions } = require('../scripts/permissions')
 const { EnvironmentUtil } = require('./util/EnvironmentUtil')
 const { BudgetFactory, BudgetConstants } = require('./util/BudgetUtil')
 const { EntityFactory, EntityConstants } = require('./util/EntityUtil')
-const { ProjectFactory, ProjectConstants } = require('./util/ProjectUtil')
+const { ProjectFactory, ProjectConstants, ProjectUtil } = require('./util/ProjectUtil')
 const { AccountFactory, AccountConstants, AccountUtil } = require('./util/AccountUtil')
 const { func } = require('promisify')
 const assert = require('assert')
@@ -16,7 +16,7 @@ const { Console } = require('console')
 
 const expect = require('chai').expect
 
-const { accounts, projects } = contractNames
+const { accounts, projects, budgets, permissions, transactions } = contractNames
 
 describe('Tests for budgets smart contract', async function () {
 
@@ -34,8 +34,12 @@ describe('Tests for budgets smart contract', async function () {
    await sleep(4000)
    await EnvironmentUtil.deployContracts(configContracts)
 
-   contracts = await getContracts([accounts, projects])
-
+   contracts = await getContracts([accounts, projects, budgets, permissions, transactions ])
+   await contracts.permissions.reset({authorization: `${permissions}@active`})
+   await contracts.transactions.reset({authorization: `${transactions}@active`})
+   await contracts.accounts.reset({authorization: `${accounts}@active`})
+   await contracts.budgets.reset({authorization: `${budgets}@active`})
+   await contracts.projects.reset({authorization: `${projects}@active`})
    await updatePermissions()
    console.log('\n')
 
@@ -112,6 +116,7 @@ describe('Tests for budgets smart contract', async function () {
 
   it('Add an account', async function(){
     //Arrange
+    //await contracts.accounts.reset({authorization: `${accounts}@active`})
     const developerEntity = await EntityFactory.createWithDefaults({type: EntityConstants.developer});
     const developerParams = developerEntity.getActionParams()
 
@@ -120,6 +125,10 @@ describe('Tests for budgets smart contract', async function () {
 
     const fundEntity = await EntityFactory.createWithDefaults({type: EntityConstants.fund});
     const fundParams = fundEntity.getActionParams()
+    console.log('developer is: ', developerParams[0])
+    console.log('investor is: ', investorParams[0])
+    console.log('fund is: ', fundParams[0])
+
 
     await contracts.projects.addentity(...developerParams, { authorization: `${developerParams[0]}@active`})
     await contracts.projects.addtestuser(developerParams[0], developerParams[1], 1, { authorization: `${developerParams[0]}@active`})
@@ -131,26 +140,97 @@ describe('Tests for budgets smart contract', async function () {
     const newProject = await ProjectFactory.createWithDefaults({actor: developerParams[0]});
     const projectParams = newProject.getActionParams()
 
-    await contracts.projects.addproject(...projectParams, { authorization: `${projectParams[0]}@active`})
-    const approveParameters = [fundParams[0], 0,"https://fund-lp.com", "400000.00 USD",40000,"300.00 USD"]
-    await contracts.projects.approveprjct(...approveParameters,{ authorization: `${fundParams[0]}@active`});
-    await contracts.accounts.initaccounts(0,{ authorization: `${accounts}@active`})
+    const newProject2 = await ProjectFactory.createWithDefaults({actor: developerParams[0]});
+    const projectParams2 = newProject2.getActionParams()
 
-    const newAccount =  await AccountFactory.createWithDefaults({actor: projectParams[0], parent_id: 1})
+    const newProject3 = await ProjectFactory.createWithDefaults({actor: developerParams[0]});
+    const projectParams3 = newProject3.getActionParams()
+
+    const newProject4 = await ProjectFactory.createWithDefaults({actor: developerParams[0]});
+    const projectParams4 = newProject4.getActionParams()
+
+    await contracts.projects.addproject(...projectParams, { authorization: `${projectParams[0]}@active`})
+    await contracts.projects.addproject(...projectParams2, { authorization: `${projectParams[0]}@active`})
+    await contracts.projects.addproject(...projectParams3, { authorization: `${projectParams[0]}@active`})
+    await contracts.projects.addproject(...projectParams4, { authorization: `${projectParams[0]}@active`})
+
+    const approveParameters = [fundParams[0], 0,"https://fund-lp.com", "400000.00 USD",40000,"300.00 USD"]
+    const approveParameters2 = [fundParams[0], 1,"https://fund-lp.com", "400000.00 USD",40000,"300.00 USD"]
+    const approveParameters3 = [fundParams[0], 2,"https://fund-lp.com", "400000.00 USD",40000,"300.00 USD"]
+    const approveParameters4 = [fundParams[0], 3,"https://fund-lp.com", "400000.00 USD",40000,"300.00 USD"]
+
+    await contracts.projects.approveprjct(...approveParameters,{ authorization: `${fundParams[0]}@active`});
+    // await contracts.projects.approveprjct(...approveParameters2,{ authorization: `${fundParams[0]}@active`});
+    // await contracts.projects.approveprjct(...approveParameters3,{ authorization: `${fundParams[0]}@active`});
+    // await contracts.projects.approveprjct(...approveParameters4,{ authorization: `${fundParams[0]}@active`});
+
+
+    // await contracts.projects.changestatus(3, ProjectConstants.status.investment, { authorization: `${projects}@active`})
+    // await contracts.projects.changestatus(3, ProjectConstants.status.completed,  { authorization: `${projects}@active`})
+
+    //await contracts.accounts.initaccounts(0, {authorization: `${accounts}@active`})
+    // await contracts.accounts.initaccounts(1, {authorization: `${accounts}@active`})
+    // await contracts.accounts.initaccounts(2, {authorization: `${accounts}@active`})
+    // await contracts.accounts.initaccounts(3, {authorization: `${accounts}@active`})
+
+
+    // try{ 
+    //   await contracts.accounts.initaccounts(5,{ authorization: `${accounts}@active`})
+    // }catch(err){
+    //   console.error(err)
+    // }
+    const newAccount =  await AccountFactory.createWithDefaults({
+      actor: projectParams[0], 
+      project_id: 0,
+      parent_id: 1,
+      account_category:1, 
+     budget_amount: '0.00 USD'})
     const accountParams = newAccount.getActionParams()
 
+    const newAccount2 =  await AccountFactory.createWithDefaults({
+      actor: projectParams[0]})
+    const accountParams2 = newAccount2.getActionParams()
+
+    //console.log('accountParams is: ', accountParams)
+
     //Act
+    //await contracts.accounts.forceaccount(...accountParams, {authorization: `${accountParams[0]}@active`})
     //await contracts.accounts.addaccount(...accountParams, {authorization: `${accountParams[0]}@active`})
+    await AccountUtil.addaccount({
+      actor: accountParams[0],
+      project_id: 0,
+      account_name: accountParams[2],
+      parent_id: accountParams[3],
+      account_currency: accountParams[4],
+      description: accountParams[5],
+      account_category: accountParams[6],
+      budget_amount: accountParams[7], 
+      contract: contracts.accounts, 
+      contractAccount: accountParams[0]
+    })
+
+    await AccountUtil.addaccount({
+      actor: accountParams2[0],
+      project_id: 0,
+      account_name: 'Liquid Primary',
+      parent_id: 1,
+      account_currency: accountParams2[4],
+      description: accountParams2[5],
+      account_category: accountParams2[6],
+      budget_amount: '100.00 USD', 
+      contract: contracts.accounts, 
+      contractAccount: accountParams2[0]
+    })
 
     //Assert
-    // const projectsTable = await rpc.get_table_rows({
-    //   code: projects,
-    //   scope: projects,
-    //   table: 'projects',
-    //   json: true
-    // })
+    const projectsTable = await rpc.get_table_rows({
+      code: projects,
+      scope: projects,
+      table: 'projects',
+      json: true
+    })
 
-    // console.log('\n\n Projects table : ', projectsTable)
+    console.log('\n\n Projects table : ', projectsTable)
 
 
 
@@ -170,6 +250,14 @@ describe('Tests for budgets smart contract', async function () {
     })
     console.log('\n\n Users table : ', usersTable)
 
+    const accountsTable = await rpc.get_table_rows({
+      code: accounts,
+      scope: 0,
+      table: 'accounts',
+      json: true,
+      limit: 20
+    })
+    console.log('\n\n Accounts table : ', accountsTable.rows)
 
     const ledgerTable = await rpc.get_table_rows({
       code: accounts,
@@ -179,13 +267,21 @@ describe('Tests for budgets smart contract', async function () {
     })
     console.log('\n\n Ledgers table : ', ledgerTable.rows)
 
-    const accountsTable = await rpc.get_table_rows({
-      code: accounts,
-      scope: 1,
-      table: 'accounts',
+    const typesTable = await rpc.get_table_rows({
+      code: accounts, 
+      scope: accounts,
+      table: 'accnttypes',
       json: true
     })
-    console.log('\n\n Accounts table : ', accountsTable.rows)
+    console.log('\n\n types table : ', typesTable.rows)
+
+    const budgetsTable = await rpc.get_table_rows({
+      code: budgets, 
+      scope: 0,
+      table: 'budgets',
+      json: true
+    })
+    console.log('\n\n budgets table : ', budgetsTable.rows)
 
 
   //   assert.deepStrictEqual(ledgerTable.rows,[{

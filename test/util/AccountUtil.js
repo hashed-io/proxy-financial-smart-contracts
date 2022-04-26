@@ -29,7 +29,34 @@ class AccountUtil{
     await contract.addledger(project_id, entity_id, { authorization: `${contractAccount}@active` })
   }
 
+  static async addaccount({
+    actor,
+    project_id,
+    account_name,
+    parent_id,
+    account_currency,
+    description,
+    account_category,
+    budget_amount, 
+    contract, 
+    contractAccount}){
+    await contract.addaccount(
+      actor,
+      project_id,
+      account_name,
+      parent_id,
+      account_currency,
+      description,
+      account_category,
+      budget_amount, { authorization: `${contractAccount}@active` })
+  }
+
+
+
+
 }
+
+
 
 class Account {
   constructor(
@@ -133,7 +160,7 @@ class AccountFactory {
     }
 
     if (!budget_amount) {
-      budget_amount = "0.00 USD";
+      budget_amount = '0.00 USD';
     }
 
     return AccountFactory.createEntry({

@@ -140,6 +140,33 @@ ACTION accounts::initaccounts (uint64_t project_id) {
     }
 }
 
+ACTION accounts::forceaccount ( name actor,
+                              uint64_t project_id,
+                              string account_name,
+                              uint64_t parent_id,
+                              symbol account_currency,
+                              string description,
+                              uint64_t account_category,
+                              asset budget_amount){
+    require_auth(_self);
+    account_tables accounts(_self, project_id);
+    uint64_t new_account_id = accounts.available_primary_key();
+    new_account_id = (new_account_id > 0) ? new_account_id : 1;
+    
+    accounts.emplace(_self, [&](auto & new_account){
+        new_account.account_id = new_account_id; 
+        new_account.parent_id = 0;
+        new_account.num_children = 0;
+        new_account.account_name = 'minaonda';
+        new_account.account_subtype = 'mirifrs';
+        new_account.increase_balance = asset(0, common::currency);
+        new_account.decrease_balance = asset(0, common::currency);
+        new_account.account_symbol = common::currency;
+    });
+
+
+ }
+
 ACTION accounts::addbalance (uint64_t project_id, uint64_t account_id, asset amount) {
     require_auth(_self);
     check_asset(amount, common::contracts::accounts);
