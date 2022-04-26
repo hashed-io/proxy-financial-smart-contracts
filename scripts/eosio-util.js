@@ -39,8 +39,12 @@ async function initContract (account) {
       const data = {}
 
       if ((action.fields.length + 1) != arguments.length) {
+        // console.log('action.fields. is:', action.fields)
+        // console.log('actions +1 is:', action.fields.length + 1)
+        // console.log('lenght is:', arguments.length)
         throw new Error(`Not enough arguments to call ${action.name} action in ${account} contract`)
       }
+      
       for (let i = 0; i < action.fields.length; i++) {
         const { name } = action.fields[i]
         data[name] = arguments[i]
@@ -95,6 +99,22 @@ function randomAccountName() {
   return result
 }
 
+function createRandomName() {
+  const capitalize = (s) => s.charAt(0).toUpperCase() + s.slice(1).toLowerCase();
+  let length = 7
+  let name  = ''
+  let surname = ''
+  var result = ''
+  var characters = 'abuacdefgohijkulmenopoqrestuviwxiyza'
+  var charactersLength = characters.length
+  for (var i = 0; i < length; i++) {
+    name += characters.charAt(Math.floor(Math.random() * charactersLength)) 
+    surname += characters.charAt(Math.floor(Math.random() * charactersLength)) 
+  }
+  result = capitalize(name) + ' ' + capitalize(surname)
+  return result
+}
+
 async function createRandomAccount () {
   const accountName = randomAccountName()
   await createAccount({ 
@@ -133,5 +153,5 @@ class Asset {
 
 module.exports = {
   getContracts, initContract, getAccountBalance, randomAccountName,
-  createRandomAccount, Asset
+  createRandomAccount, createRandomName, Asset
 }

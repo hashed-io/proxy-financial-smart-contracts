@@ -11,11 +11,18 @@ namespace common
   namespace contracts
   {
     // MAINNET CONTRACTS
-    constexpr eosio::name projects = "pxprj.sh"_n;
-    constexpr eosio::name accounts = "pxact.sh"_n;
-    constexpr eosio::name transactions = "pxtrx.sh"_n;
-    constexpr eosio::name permissions = "pxperm.sh"_n;
-    constexpr eosio::name budgets = "pxbud.sh"_n;
+    // constexpr eosio::name projects = "pxprj.sh"_n;
+    // constexpr eosio::name accounts = "pxact.sh"_n;
+    // constexpr eosio::name transactions = "pxtrx.sh"_n;
+    // constexpr eosio::name permissions = "pxperm.sh"_n;
+    // constexpr eosio::name budgets = "pxbud.sh"_n;
+
+    // LOCAL CONTRACTS
+    constexpr eosio::name projects = "proxyprj"_n;
+    constexpr eosio::name accounts = "proxyact"_n;
+    constexpr eosio::name transactions = "proxytrx"_n;
+    constexpr eosio::name permissions = "proxyperm"_n;
+    constexpr eosio::name budgets = "proxybud"_n;
 
     // TESTNET CONTRACTS
     // constexpr eosio::name projects = "proxycappro1"_n;

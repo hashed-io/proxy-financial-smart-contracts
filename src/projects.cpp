@@ -144,12 +144,12 @@ ACTION projects::addproject ( name actor,
 							  uint64_t projected_stabilization_date,
 							  uint64_t anticipated_year_sale_refinance ) {
 
-    require_auth(actor);
+  require_auth(actor);
 	checkuserdev(actor);
 
 	check(PROJECT_CLASS.is_valid_constant(project_class), common::contracts::projects.to_string() + ": that project class does not exist.");
 
-    check_asset(total_project_cost, common::contracts::projects);
+  check_asset(total_project_cost, common::contracts::projects);
 	check_asset(debt_financing, common::contracts::projects);
 	check_asset(total_equity_financing, common::contracts::projects);
 	check_asset(total_gp_equity, common::contracts::projects);

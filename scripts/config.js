@@ -23,7 +23,7 @@ const supportedChains = {
 
 const ownerByChain = {
   [supportedChains.local]: 'eosio',
-  [supportedChains.telosTestnet]: 'proxyowner',
+  [supportedChains.telosTestnet]: 'tlaclocmant2',
   [supportedChains.telosMainnet]: 'tlalocman.sh'
 }
 
@@ -59,6 +59,7 @@ const publicKeysByChain = {
 
 const contractsConfig = {
   [supportedChains.local]: [
+    contract('nullcontract', 'm1nulldaos'),
     contract('accounts', 'proxyact'),
     contract('budgets', 'proxybud'),
     contract('permissions', 'proxyperm'),
@@ -119,6 +120,10 @@ const permissionsConfig = [
     target: `${contractNames.accounts}@active`,
     actor: `${contractNames.transactions}@active`
   },
+  {
+    target: `${contractNames.accounts}@active`,
+    actor: `${owner}@active`
+  },
   { // permissions for budgets
     target: `${contractNames.budgets}@active`,
     actor: `${contractNames.budgets}@eosio.code`
@@ -126,6 +131,10 @@ const permissionsConfig = [
   {
     target: `${contractNames.budgets}@active`,
     actor: `${contractNames.accounts}@active`
+  },
+  {
+    target: `${contractNames.accounts}@active`,
+    actor: `${owner}@active`
   },
   { // for permissions
     target: `${contractNames.permissions}@active`,
@@ -143,9 +152,17 @@ const permissionsConfig = [
     target: `${contractNames.permissions}@active`,
     actor: `${contractNames.transactions}@active`
   },
+  {
+    target: `${contractNames.accounts}@active`,
+    actor: `${owner}@active`
+  },
   { // permissions for projects
     target: `${contractNames.projects}@active`,
     actor: `${contractNames.projects}@eosio.code`
+  },
+  {
+    target: `${contractNames.accounts}@active`,
+    actor: `${owner}@active`
   },
   { // permissions for transactions
     target: `${contractNames.transactions}@active`,
@@ -154,6 +171,10 @@ const permissionsConfig = [
   {
     target: `${contractNames.transactions}@active`,
     actor: `${contractNames.projects}@active`
+  },
+  {
+    target: `${contractNames.accounts}@active`,
+    actor: `${owner}@active`
   }
 ]
 
