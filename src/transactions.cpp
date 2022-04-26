@@ -423,5 +423,3 @@ ACTION transactions::toggledrdwn(uint64_t project_id,
 			mdrawdown.state = DRAWDOWN_STATES.OPEN;
 		} });
 }
-
-EOSIO_DISPATCH(transactions, (reset)(transact)(deletetrxn)(edittrxn)(deletetrxns)(submitdrwdn)(initdrawdown)(toggledrdwn));

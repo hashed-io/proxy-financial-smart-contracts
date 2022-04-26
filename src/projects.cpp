@@ -61,7 +61,7 @@ ACTION projects::reset () {
 }
 
 ACTION projects::resetusers () {
-    require_auth(_self);
+  require_auth(_self);
 
 	auto itr_users = users.begin();
 	while (itr_users != users.end()) {
@@ -612,7 +612,4 @@ ACTION projects::changestatus (uint64_t project_id, uint64_t status) {
 	});
 
 }
-
-
-EOSIO_DISPATCH(projects, (reset)(resetusers)(addproject)(approveprjct)(addentity)(addtestuser)(invest)(approveinvst)(maketransfer)(editproject)(deleteprojct)(deleteinvest)(editinvest)(confrmtrnsfr)(edittransfer)(deletetrnsfr)(changestatus));
 

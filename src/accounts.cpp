@@ -422,7 +422,3 @@ ACTION accounts::deleteaccnts (uint64_t project_id) {
         itr_ledger = ledgers.erase(itr_ledger);
     }
 }
-
-
-EOSIO_DISPATCH(accounts, (reset)(addledger)(addaccount)(editaccount)(deleteaccnt)(addbalance)(subbalance)(canceladd)(cancelsub)(deleteaccnts));
-
