@@ -20,7 +20,7 @@ void transactions::make_transaction(name actor,
 																		vector<transaction_amount> &amounts,
 																		uint64_t &date,
 																		string &description,
-																		bool &is_drawdown,
+																		std::string &drawdown_type,
 																		vector<common::types::url_information> &supporting_files)
 {
 
@@ -64,7 +64,7 @@ void transactions::make_transaction(name actor,
 		}
 
 		account_transacion_t.emplace(_self, [&](auto &item)
-											 {
+																 {
 			item.accnt_transaction_id = account_transacion_t.available_primary_key();
 			item.transaction_id = trx_id;
 			item.account_id = itr_amounts -> account_id;
@@ -105,19 +105,20 @@ void transactions::make_transaction(name actor,
 
 	uint64_t drawdown_id = 0;
 
-	// if (is_drawdown) {
-	// 	drawdown_tables drawdowns(_self, project_id);
+	check(DRAWDOWN_TYPES.is_valid_constant(drawdown_type), common::contracts::transactions.to_string() + ": Unkown drawdown type");
 
-	// 	auto drawdowns_by_state = drawdowns.get_index<"bystate"_n>();
-	// 	auto itr_drawdown = drawdowns_by_state.find(DRAWDOWN_STATES.OPEN);
+	// if (drawdown_type) {
+	drawdown_tables drawdowns(_self, project_id);
 
-	// 	check(itr_drawdown != drawdowns_by_state.end(), common::contracts::transactions.to_string() + ": there are no open drawdowns.");
+	auto drawdowns_by_state = drawdowns.get_index<"bystate"_n>();
+	auto itr_drawdown = drawdowns_by_state.find(DRAWDOWN_STATES.OPEN);
 
-	// 	drawdown_id = itr_drawdown -> drawdown_id;
+	check(itr_drawdown != drawdowns_by_state.end(), common::contracts::transactions.to_string() + ": there are no open drawdowns.");
 
-	// 	drawdowns_by_state.modify(itr_drawdown, _self, [&](auto & modified_drawdown){
-	// 		modified_drawdown.total_amount += asset(total_positive, common::currency);
-	// 	});
+	drawdown_id = itr_drawdown->drawdown_id;
+
+	drawdowns_by_state.modify(itr_drawdown, _self, [&](auto &modified_drawdown)
+														{ modified_drawdown.total_amount += asset(total_positive, common::currency); });
 	// }
 
 	transactions.emplace(_self, [&](auto &new_transaction)
@@ -243,7 +244,7 @@ ACTION transactions::transact(name actor,
 															vector<transaction_amount> &amounts,
 															uint64_t &date,
 															string &description,
-															bool &is_drawdown,
+															std::string &drawdown_type,
 															vector<common::types::transaction_subtypes> &transactions,
 															vector<common::types::url_information> &supporting_files)
 {
@@ -260,7 +261,7 @@ ACTION transactions::transact(name actor,
 	auto itr_project = projects.find(project_id);
 	check(itr_project != projects.end(), common::contracts::transactions.to_string() + ": the project with the id = " + to_string(project_id) + " does not exist.");
 
-	make_transaction(actor, 0, project_id, amounts, date, description, is_drawdown, supporting_files);
+	make_transaction(actor, 0, project_id, amounts, date, description, drawdown_type, supporting_files);
 }
 
 ACTION transactions::deletetrxn(name actor, uint64_t project_id, uint64_t transaction_id)
@@ -283,11 +284,13 @@ ACTION transactions::edittrxn(name actor,
 															vector<transaction_amount> amounts,
 															uint64_t date,
 															string description,
-															bool is_drawdown,
+															std::string &drawdown_type,
 															vector<common::types::url_information> supporting_files)
 {
 
 	require_auth(actor);
+
+	check(DRAWDOWN_TYPES.is_valid_constant(drawdown_type), "Unkown drawdown type");
 
 	/* action (
 				permission_level(common::contracts::permissions, "active"_n),
@@ -313,7 +316,7 @@ ACTION transactions::edittrxn(name actor,
 	}
 
 	delete_transaction(actor, project_id, transaction_id);
-	make_transaction(actor, transaction_id, project_id, amounts, date, description, is_drawdown, supporting_files);
+	make_transaction(actor, transaction_id, project_id, amounts, date, description, drawdown_type, supporting_files);
 }
 
 ACTION transactions::deletetrxns(uint64_t project_id)
@@ -369,16 +372,16 @@ ACTION transactions::submitdrwdn(name actor,
 			modified_drawdown.files.push_back(files[i]);
 		} });
 
-	drawdowns.emplace(_self, [&](auto &new_drawdown)
+	drawdowns.emplace(_self, [&](auto &item)
 										{
-		new_drawdown.drawdown_id = get_valid_index(drawdowns.available_primary_key());
-		new_drawdown.total_amount = asset(0, common::currency);
-		new_drawdown.state = DRAWDOWN_STATES.OPEN;
-		new_drawdown.open_date = eosio::current_time_point().sec_since_epoch();
-		new_drawdown.close_date = 0; });
+		item.drawdown_id = get_valid_index(drawdowns.available_primary_key());
+		item.total_amount = asset(0, common::currency);
+		item.state = DRAWDOWN_STATES.OPEN;
+		item.open_date = eosio::current_time_point().sec_since_epoch();
+		item.close_date = 0; });
 }
 
-ACTION transactions::initdrawdown(uint64_t project_id)
+ACTION transactions::initdrawdown(uint64_t project_id, std::string drawdown_type)
 {
 	require_auth(_self);
 
@@ -387,16 +390,30 @@ ACTION transactions::initdrawdown(uint64_t project_id)
 	auto drawdowns_by_state = drawdowns.get_index<"bystate"_n>();
 	auto itr_drawdown = drawdowns_by_state.find(DRAWDOWN_STATES.OPEN);
 
-	check(itr_drawdown == drawdowns_by_state.end(),
-				common::contracts::transactions.to_string() + ": there is already an open drawdown in this project.");
+	bool existing_drawdown = false;
 
-	drawdowns.emplace(_self, [&](auto &new_drawdown)
+	while (itr_drawdown != drawdowns_by_state.end())
+	{
+		/* code */
+		if (itr_drawdown->type == drawdown_type)
+		{
+			existing_drawdown = true;
+			break;
+		}
+
+		itr_drawdown++;
+	}
+
+	check(!existing_drawdown, "Drawdown already exists!");
+
+	drawdowns.emplace(_self, [&](auto &item)
 										{
-		new_drawdown.drawdown_id = get_valid_index(drawdowns.available_primary_key());
-		new_drawdown.total_amount = asset(0, common::currency);
-		new_drawdown.state = DRAWDOWN_STATES.OPEN;
-		new_drawdown.open_date = eosio::current_time_point().sec_since_epoch();
-		new_drawdown.close_date = 0; });
+		item.drawdown_id = get_valid_index(drawdowns.available_primary_key());
+		item.type = drawdown_type;
+		item.total_amount = asset(0, common::currency);
+		item.state = DRAWDOWN_STATES.OPEN;
+		item.open_date = eosio::current_time_point().sec_since_epoch();
+		item.close_date = 0; });
 }
 
 ACTION transactions::toggledrdwn(uint64_t project_id,

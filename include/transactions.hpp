@@ -17,6 +17,8 @@
 #include <accounts/account_categories.hpp>
 
 #include <transactions/drawdown_states.hpp>
+#include <transactions/drawdown_types.hpp>
+
 
 #include <common/tables/account_transaction.hpp>
 #include <common/tables/account.hpp>
@@ -83,9 +85,9 @@ public:
 									vector<transaction_amount> & amounts,
 									uint64_t & date,
 									string & description,
-									bool &is_drawdown,
-									vector<common::types::transaction_subtypes> &transactions,
-									vector<common::types::url_information> &supporting_files);
+									std::string & drawdown_type,
+									vector<common::types::transaction_subtypes> & transactions,
+									vector<common::types::url_information> & supporting_files);
 
 	ACTION deletetrxn(name actor,
 										uint64_t project_id,
@@ -97,7 +99,7 @@ public:
 									vector<transaction_amount> amounts,
 									uint64_t date,
 									string description,
-									bool is_drawdown,
+									std::string & drawdown_type,
 									vector<common::types::url_information> supporting_files);
 
 	ACTION deletetrxns(uint64_t project_id);
@@ -106,14 +108,12 @@ public:
 										 uint64_t project_id,
 										 vector<common::types::url_information> files);
 
-	ACTION initdrawdown(uint64_t project_id);
+	ACTION initdrawdown(uint64_t project_id, std::string drawdown_type);
 
 	ACTION toggledrdwn(uint64_t project_id,
 										 uint64_t drawdown_id);
 
 private:
-
-	
 	type_tables account_types;
 
 	project_tables projects;
@@ -126,6 +126,6 @@ private:
 												vector<transaction_amount> & amounts,
 												uint64_t & date,
 												string & description,
-												bool &is_drawdown,
+												std::string &drawdown_type,
 												vector<common::types::url_information> &supporting_files);
 };

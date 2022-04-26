@@ -7,6 +7,7 @@ using namespace eosio;
     string user_name;                                      \
     uint64_t entity_id;                                    \
     string type;                                           \
+    vector<uint64_t> projects;                             \
                                                            \
     uint64_t primary_key() const { return account.value; } \
     uint64_t by_entity() const { return entity_id; }       \
