@@ -84,14 +84,6 @@ CONTRACT accounts : public contract {
                             uint64_t account_category,
                             asset budget_amount );
 
-        ACTION forceaccount ( name actor,
-                              uint64_t project_id,
-                              string account_name,
-                              uint64_t parent_id,
-                              symbol account_currency,
-                              string description,
-                              uint64_t account_category,
-                              asset budget_amount);
 
 		ACTION editaccount ( name actor,
                              uint64_t project_id,
