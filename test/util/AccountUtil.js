@@ -2,30 +2,30 @@ const { dateToBlockTimestamp } = require('eosjs/dist/eosjs-serialize')
 const { contractNames } = require('../../scripts/config')
 const { createRandomAccount, createRandomName } = require('../../scripts/eosio-util')
 
- 
-const AccountConstants ={
-  category:{
+
+const AccountConstants = {
+  category: {
     none: 1,
     hard_cost: 2,
     soft_cost: 3,
   },
-  type:{
+  type: {
     debit: "Debit",
     credit: "Credit"
   },
-  subtype:{
+  subtype: {
     assets: "Assets",
     equity: "Equity",
     expenses: "Expenses",
     income: "Income",
-    liabilities: "Liabilities" 
+    liabilities: "Liabilities"
   }
 }
 
-class AccountUtil{
+class AccountUtil {
   static tokenSymbol = '2,USD'
 
-  static async addledger({project_id, entity_id, contract, contractAccount}){
+  static async addledger({ project_id, entity_id, contract, contractAccount }) {
     await contract.addledger(project_id, entity_id, { authorization: `${contractAccount}@active` })
   }
 
@@ -37,9 +37,9 @@ class AccountUtil{
     account_currency,
     description,
     account_category,
-    budget_amount, 
-    contract, 
-    contractAccount}){
+    budget_amount,
+    contract,
+    contractAccount }) {
     await contract.addaccount(
       actor,
       project_id,
@@ -51,7 +51,93 @@ class AccountUtil{
       budget_amount, { authorization: `${contractAccount}@active` })
   }
 
+  static async editaccount({
+    actor,
+    project_id,
+    account_id,
+    account_name,
+    description,
+    account_category,
+    budget_amount,
+    contract,
+    contractAccount }) {
+    await contract.editaccount(
+      actor,
+      project_id,
+      account_id,
+      account_name,
+      description,
+      account_category,
+      budget_amount, { authorization: `${contractAccount}@active` })
+  }
 
+  static async deleteaccnt({
+    actor,
+    project_id,
+    account_id,
+    contract,
+    contractAccount }) {
+    await contract.deleteaccnt(
+      actor,
+      project_id,
+      account_id, { authorization: `${contractAccount}@active` })
+  }
+
+  static async addbalance({
+    project_id,
+    account_id,
+    amount,
+    contract,
+    contractAccount }) {
+    await contract.addbalance(
+      project_id,
+      account_id,
+      amount, { authorization: `${contractAccount}@active` })
+  }
+
+  static async subbalance({
+    project_id,
+    account_id,
+    amount,
+    contract,
+    contractAccount }) {
+    await contract.subbalance(
+      project_id,
+      account_id,
+      amount, { authorization: `${contractAccount}@active` })
+  }
+
+  static async canceladd({
+    project_id,
+    account_id,
+    amount,
+    contract,
+    contractAccount }) {
+    await contract.canceladd(
+      project_id,
+      account_id,
+      amount, { authorization: `${contractAccount}@active` })
+  }
+
+  static async cancelsub({
+    project_id,
+    account_id,
+    amount,
+    contract,
+    contractAccount }) {
+    await contract.cancelsub(
+      project_id,
+      account_id,
+      amount, { authorization: `${contractAccount}@active` })
+  }
+
+  static async deleteaccnts({
+    project_id,
+    contract,
+    contractAccount }) {
+    await contract.deleteaccnts(
+      project_id, { authorization: `${contractAccount}@active` })
+  }
 
 
 }
@@ -67,7 +153,7 @@ class Account {
     account_currency,
     description,
     account_category,
-    budget_amount 
+    budget_amount
   ) {
     this.params = {
       actor,
@@ -77,7 +163,7 @@ class Account {
       account_currency,
       description,
       account_category,
-      budget_amount 
+      budget_amount
     }
   }
 
@@ -91,7 +177,7 @@ class Account {
       this.params.account_currency,
       this.params.description,
       this.params.account_category,
-      this.params.budget_amount 
+      this.params.budget_amount
     ]
   }
 
@@ -106,9 +192,9 @@ class AccountFactory {
     account_currency,
     description,
     account_category,
-    budget_amount 
+    budget_amount
   }) {
-    return new Account (
+    return new Account(
       actor,
       project_id,
       account_name,
@@ -116,7 +202,7 @@ class AccountFactory {
       account_currency,
       description,
       account_category,
-      budget_amount 
+      budget_amount
     )
   }
 
@@ -128,18 +214,18 @@ class AccountFactory {
     account_currency,
     description,
     account_category,
-    budget_amount 
+    budget_amount
   }) {
 
     if (!actor) {
       actor = await createRandomAccount()
     }
 
-    if (!project_id) { 
+    if (!project_id) {
       project_id = isFinite(project_id) ? project_id : 0
     }
 
-    if (!account_name) { 
+    if (!account_name) {
       account_name = createRandomName()
     }
 
@@ -171,7 +257,7 @@ class AccountFactory {
       account_currency,
       description,
       account_category,
-      budget_amount 
+      budget_amount
     })
   }
 }
