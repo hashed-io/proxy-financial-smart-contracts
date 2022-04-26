@@ -28,14 +28,14 @@ describe('Tests for projects smart contract', async function () {
   })
 
   beforeEach(async function () {
-   await EnvironmentUtil.initNode()
-   await sleep(4000)
-   await EnvironmentUtil.deployContracts(configContracts)
+    await EnvironmentUtil.initNode()
+    await sleep(4000)
+    await EnvironmentUtil.deployContracts(configContracts)
 
-   contracts = await getContracts([projects])
+    contracts = await getContracts([projects])
 
-   await updatePermissions()
-   console.log('\n')
+    await updatePermissions()
+    console.log('\n')
 
   })
 
@@ -46,22 +46,22 @@ describe('Tests for projects smart contract', async function () {
 
   it('Add test entities', async function () {
     // Arrange
-    const developerEntity = await EntityFactory.createWithDefaults({type: EntityConstants.developer});
+    const developerEntity = await EntityFactory.createWithDefaults({ type: EntityConstants.developer });
     const developerParams = developerEntity.getActionParams()
 
-    const investorEntity = await EntityFactory.createWithDefaults({type: EntityConstants.investor});
+    const investorEntity = await EntityFactory.createWithDefaults({ type: EntityConstants.investor });
     const investorParams = investorEntity.getActionParams()
 
-    const fundEntity = await EntityFactory.createWithDefaults({type: EntityConstants.fund});
+    const fundEntity = await EntityFactory.createWithDefaults({ type: EntityConstants.fund });
     const fundParams = fundEntity.getActionParams()
 
 
     //Act
-    await contracts.projects.addentity(...developerParams, { authorization: `${developerParams[0]}@active`})
+    await contracts.projects.addentity(...developerParams, { authorization: `${developerParams[0]}@active` })
 
-    await contracts.projects.addentity(...investorParams, { authorization: `${investorParams[0]}@active`})
+    await contracts.projects.addentity(...investorParams, { authorization: `${investorParams[0]}@active` })
 
-    await contracts.projects.addentity(...fundParams, { authorization: `${fundParams[0]}@active`})
+    await contracts.projects.addentity(...fundParams, { authorization: `${fundParams[0]}@active` })
 
     const entitiesTable = await rpc.get_table_rows({
       code: projects,
@@ -77,12 +77,12 @@ describe('Tests for projects smart contract', async function () {
       entity_name: developerParams[1],
       description: developerParams[2],
       type: EntityConstants.developer
-    },{
+    }, {
       entity_id: 2,
       entity_name: investorParams[1],
       description: investorParams[2],
       type: EntityConstants.investor
-    },{
+    }, {
       entity_id: 3,
       entity_name: fundParams[1],
       description: fundParams[2],
@@ -90,32 +90,32 @@ describe('Tests for projects smart contract', async function () {
     }])
 
   })
-  
 
 
-  it('Add test users', async function(){
+
+  it('Add test users', async function () {
     // Arrange
-    const developerEntity = await EntityFactory.createWithDefaults({type: EntityConstants.developer});
+    const developerEntity = await EntityFactory.createWithDefaults({ type: EntityConstants.developer });
     const developerParams = developerEntity.getActionParams()
 
-    const investorEntity = await EntityFactory.createWithDefaults({type: EntityConstants.investor});
+    const investorEntity = await EntityFactory.createWithDefaults({ type: EntityConstants.investor });
     const investorParams = investorEntity.getActionParams()
 
-    const fundEntity = await EntityFactory.createWithDefaults({type: EntityConstants.fund});
+    const fundEntity = await EntityFactory.createWithDefaults({ type: EntityConstants.fund });
     const fundParams = fundEntity.getActionParams()
 
-    await contracts.projects.addentity(...developerParams, { authorization: `${developerParams[0]}@active`})
+    await contracts.projects.addentity(...developerParams, { authorization: `${developerParams[0]}@active` })
 
-    await contracts.projects.addentity(...investorParams, { authorization: `${investorParams[0]}@active`})
+    await contracts.projects.addentity(...investorParams, { authorization: `${investorParams[0]}@active` })
 
-    await contracts.projects.addentity(...fundParams, { authorization: `${fundParams[0]}@active`})
+    await contracts.projects.addentity(...fundParams, { authorization: `${fundParams[0]}@active` })
 
     //Act 
-    await contracts.projects.addtestuser(developerParams[0], developerParams[1], 1, { authorization: `${developerParams[0]}@active`})
+    await contracts.projects.addtestuser(developerParams[0], developerParams[1], 1, { authorization: `${developerParams[0]}@active` })
 
-    await contracts.projects.addtestuser(investorParams[0], investorParams[1], 2, { authorization: `${investorParams[0]}@active`})
+    await contracts.projects.addtestuser(investorParams[0], investorParams[1], 2, { authorization: `${investorParams[0]}@active` })
 
-    await contracts.projects.addtestuser(fundParams[0], fundParams[1], 3, { authorization: `${fundParams[0]}@active`})
+    await contracts.projects.addtestuser(fundParams[0], fundParams[1], 3, { authorization: `${fundParams[0]}@active` })
 
     const entitiesTable = await rpc.get_table_rows({
       code: projects,
@@ -124,7 +124,7 @@ describe('Tests for projects smart contract', async function () {
       json: true
     })
     console.log('\n\n Entities table : ', entitiesTable)
-    
+
     const usersTable = await rpc.get_table_rows({
       code: projects,
       scope: projects,
@@ -139,36 +139,36 @@ describe('Tests for projects smart contract', async function () {
       user_name: developerParams[1],
       entity_id: 1,
       type: EntityConstants.developer
-    },{
+    }, {
       account: investorParams[0],
       user_name: investorParams[1],
       entity_id: 2,
       type: EntityConstants.investor
-    },{
+    }, {
       account: fundParams[0],
       user_name: fundParams[1],
       entity_id: 3,
       type: EntityConstants.fund
     }]);
   })
-  
-  
-  it("Creates a new project", async function (){
-    //Arrange
-    const developerEntity = await EntityFactory.createWithDefaults({type: EntityConstants.developer});
-    const developerParams = developerEntity.getActionParams()
-    await contracts.projects.addentity(...developerParams, { authorization: `${developerParams[0]}@active`})
-    await contracts.projects.addtestuser(developerParams[0], developerParams[1], 1, { authorization: `${developerParams[0]}@active`})
 
-    const newProject = await ProjectFactory.createWithDefaults({actor: developerParams[0]});
+
+  it("Creates a new project", async function () {
+    //Arrange
+    const developerEntity = await EntityFactory.createWithDefaults({ type: EntityConstants.developer });
+    const developerParams = developerEntity.getActionParams()
+    await contracts.projects.addentity(...developerParams, { authorization: `${developerParams[0]}@active` })
+    await contracts.projects.addtestuser(developerParams[0], developerParams[1], 1, { authorization: `${developerParams[0]}@active` })
+
+    const newProject = await ProjectFactory.createWithDefaults({ actor: developerParams[0] });
     const projectParams = newProject.getActionParams()
 
     //Act
-    await contracts.projects.addproject(...projectParams, { authorization: `${projectParams[0]}@active`})
+    await contracts.projects.addproject(...projectParams, { authorization: `${projectParams[0]}@active` })
 
 
     //Assert
-        
+
     const projectsTable = await rpc.get_table_rows({
       code: projects,
       scope: projects,
@@ -178,67 +178,67 @@ describe('Tests for projects smart contract', async function () {
 
     console.log('\n\n Projects table : ', projectsTable)
 
-    assert.deepStrictEqual(projectsTable.rows,[{
-        project_id: 0,
-        developer_id: 0,
-        owner: projectParams[0],
-        project_class: 'NNN',
-        project_name: projectParams[2],
-        description: 'This is a default project',
-        created_date: projectsTable.rows[0].created_date,
-        status: 1,
-        total_project_cost: '435000.00 USD',
-        debt_financing: '2000.00 USD',
-        term: 2,
-        interest_rate: 25,
-        loan_agreement: 'https://loan-agreement.com',
-        total_equity_financing: '3000.00 USD',
-        total_gp_equity: '2100.00 USD',
-        private_equity: '5000.00 USD',
-        annual_return: 600,
-        project_co_lp: 'https://project-co-lp.com',
-        project_co_lp_date: 1583864481,
-        projected_completion_date: 1682400175,
-        projected_stabilization_date: 1714022575,
-        anticipated_year_sale_refinance: 2023,
-        fund_lp: '',
-        total_fund_offering_amount: '0 ',
-        total_number_fund_offering: 0,
-        price_per_fund_unit: '0 ',
-        approved_date: 0,
-        approved_by: ''
-      }
+    assert.deepStrictEqual(projectsTable.rows, [{
+      project_id: 0,
+      developer_id: 0,
+      owner: projectParams[0],
+      project_class: 'NNN',
+      project_name: projectParams[2],
+      description: 'This is a default project',
+      created_date: projectsTable.rows[0].created_date,
+      status: 1,
+      total_project_cost: '435000.00 USD',
+      debt_financing: '2000.00 USD',
+      term: 2,
+      interest_rate: 25,
+      loan_agreement: 'https://loan-agreement.com',
+      total_equity_financing: '3000.00 USD',
+      total_gp_equity: '2100.00 USD',
+      private_equity: '5000.00 USD',
+      annual_return: 600,
+      project_co_lp: 'https://project-co-lp.com',
+      project_co_lp_date: 1583864481,
+      projected_completion_date: 1682400175,
+      projected_stabilization_date: 1714022575,
+      anticipated_year_sale_refinance: 2023,
+      fund_lp: '',
+      total_fund_offering_amount: '0 ',
+      total_number_fund_offering: 0,
+      price_per_fund_unit: '0 ',
+      approved_date: 0,
+      approved_by: ''
+    }
     ])
 
   })
-  
 
-  it('Approve a project', async function(){
+
+  it('Approve a project', async function () {
     //Arrange
-    const developerEntity = await EntityFactory.createWithDefaults({type: EntityConstants.developer});
+    const developerEntity = await EntityFactory.createWithDefaults({ type: EntityConstants.developer });
     const developerParams = developerEntity.getActionParams()
 
-    const fundEntity = await EntityFactory.createWithDefaults({type: EntityConstants.fund});
+    const fundEntity = await EntityFactory.createWithDefaults({ type: EntityConstants.fund });
     const fundParams = fundEntity.getActionParams()
 
-    await contracts.projects.addentity(...developerParams, { authorization: `${developerParams[0]}@active`})
-    await contracts.projects.addtestuser(developerParams[0], developerParams[1], 1, { authorization: `${developerParams[0]}@active`})
-    await contracts.projects.addentity(...fundParams, { authorization: `${fundParams[0]}@active`})
-    await contracts.projects.addtestuser(fundParams[0], fundParams[1], 2, { authorization: `${fundParams[0]}@active`})
+    await contracts.projects.addentity(...developerParams, { authorization: `${developerParams[0]}@active` })
+    await contracts.projects.addtestuser(developerParams[0], developerParams[1], 1, { authorization: `${developerParams[0]}@active` })
+    await contracts.projects.addentity(...fundParams, { authorization: `${fundParams[0]}@active` })
+    await contracts.projects.addtestuser(fundParams[0], fundParams[1], 2, { authorization: `${fundParams[0]}@active` })
 
-    const newProject = await ProjectFactory.createWithDefaults({actor: developerParams[0]});
+    const newProject = await ProjectFactory.createWithDefaults({ actor: developerParams[0] });
     const projectParams = newProject.getActionParams()
 
-    await contracts.projects.addproject(...projectParams, { authorization: `${projectParams[0]}@active`})
+    await contracts.projects.addproject(...projectParams, { authorization: `${projectParams[0]}@active` })
 
 
     //Act
     await ProjectUtil.approveprjct({
-      actor: fundParams[0], 
-      project_id: 0, 
-      fund_lp: "https://fund-lp.com", 
-      total_fund_offering_amount: "400000.00 USD", 
-      total_number_fund_offering: 40000, 
+      actor: fundParams[0],
+      project_id: 0,
+      fund_lp: "https://fund-lp.com",
+      total_fund_offering_amount: "400000.00 USD",
+      total_number_fund_offering: 40000,
       price_per_fund_unit: "300.00 USD",
       contract: contracts.projects,
       account: fundParams[0]
@@ -253,8 +253,8 @@ describe('Tests for projects smart contract', async function () {
       json: true
     })
     console.log('\n\n Projects table is: ', projectsTable)
-    
-    assert.deepStrictEqual(projectsTable.rows,[{
+
+    assert.deepStrictEqual(projectsTable.rows, [{
       project_id: 0,
       developer_id: 0,
       owner: projectParams[0],
@@ -284,33 +284,33 @@ describe('Tests for projects smart contract', async function () {
       approved_date: projectsTable.rows[0].approved_date,
       approved_by: projectsTable.rows[0].approved_by
     }
-  ])
+    ])
 
   })
 
 
-  it('Edits description of project with project_id: 0', async function(){
+  it('Edits description of project with project_id: 0', async function () {
     //Arrange
-    const developerEntity = await EntityFactory.createWithDefaults({type: EntityConstants.developer});
+    const developerEntity = await EntityFactory.createWithDefaults({ type: EntityConstants.developer });
     const developerParams = developerEntity.getActionParams()
 
-    const fundEntity = await EntityFactory.createWithDefaults({type: EntityConstants.fund});
+    const fundEntity = await EntityFactory.createWithDefaults({ type: EntityConstants.fund });
     const fundParams = fundEntity.getActionParams()
-    
 
-    await contracts.projects.addentity(...developerParams, { authorization: `${developerParams[0]}@active`})
-    await contracts.projects.addtestuser(developerParams[0], developerParams[1], 1, { authorization: `${developerParams[0]}@active`})
-    await contracts.projects.addentity(...fundParams, { authorization: `${fundParams[0]}@active`})
-    await contracts.projects.addtestuser(fundParams[0], fundParams[1], 2, { authorization: `${fundParams[0]}@active`})
 
-    const newProject = await ProjectFactory.createWithDefaults({actor: developerParams[0]});
+    await contracts.projects.addentity(...developerParams, { authorization: `${developerParams[0]}@active` })
+    await contracts.projects.addtestuser(developerParams[0], developerParams[1], 1, { authorization: `${developerParams[0]}@active` })
+    await contracts.projects.addentity(...fundParams, { authorization: `${fundParams[0]}@active` })
+    await contracts.projects.addtestuser(fundParams[0], fundParams[1], 2, { authorization: `${fundParams[0]}@active` })
+
+    const newProject = await ProjectFactory.createWithDefaults({ actor: developerParams[0] });
     const projectParams = newProject.getActionParams()
 
-    await contracts.projects.addproject(...projectParams, { authorization: `${projectParams[0]}@active`})
-    
+    await contracts.projects.addproject(...projectParams, { authorization: `${projectParams[0]}@active` })
+
     //Act
     await ProjectUtil.editproject({
-      actor: projectParams[0], 
+      actor: projectParams[0],
       project_id: 0,
       project_class: projectParams[1],
       project_name: projectParams[2],
@@ -319,26 +319,26 @@ describe('Tests for projects smart contract', async function () {
       debt_financing: projectParams[5],
       term: projectParams[6],
       interest_rate: projectParams[7],
-      loan_agreement: projectParams[8], 
+      loan_agreement: projectParams[8],
       total_equity_financing: projectParams[9],
       total_gp_equity: projectParams[10],
       private_equity: projectParams[11],
       annual_return: projectParams[12],
-      project_co_lp: projectParams[13], 
+      project_co_lp: projectParams[13],
       project_co_lp_date: projectParams[14],
       projected_completion_date: projectParams[15],
       projected_stabilization_date: projectParams[16],
-      anticipated_year_sale_refinance: projectParams[17], 
-      contract: contracts.projects, 
+      anticipated_year_sale_refinance: projectParams[17],
+      contract: contracts.projects,
       account: projectParams[0]
     })
 
     await ProjectUtil.approveprjct({
-      actor: fundParams[0], 
-      project_id: 0, 
-      fund_lp: "https://fund-lp.com", 
-      total_fund_offering_amount: "400000.00 USD", 
-      total_number_fund_offering: 40000, 
+      actor: fundParams[0],
+      project_id: 0,
+      fund_lp: "https://fund-lp.com",
+      total_fund_offering_amount: "400000.00 USD",
+      total_number_fund_offering: 40000,
       price_per_fund_unit: "300.00 USD",
       contract: contracts.projects,
       account: fundParams[0]
@@ -353,7 +353,7 @@ describe('Tests for projects smart contract', async function () {
     })
     console.log('\n\n Projects table is: ', projectsTable)
 
-    assert.deepStrictEqual(projectsTable.rows,[{
+    assert.deepStrictEqual(projectsTable.rows, [{
       project_id: 0,
       developer_id: 0,
       owner: projectParams[0],
@@ -383,32 +383,32 @@ describe('Tests for projects smart contract', async function () {
       approved_date: projectsTable.rows[0].approved_date,
       approved_by: projectsTable.rows[0].approved_by
     }
-  ])
+    ])
 
   })
 
-  it('Deletes a project', async function(){
+  it('Deletes a project', async function () {
     //Arrange
-    const developerEntity = await EntityFactory.createWithDefaults({type: EntityConstants.developer});
+    const developerEntity = await EntityFactory.createWithDefaults({ type: EntityConstants.developer });
     const developerParams = developerEntity.getActionParams()
 
-    const fundEntity = await EntityFactory.createWithDefaults({type: EntityConstants.fund});
+    const fundEntity = await EntityFactory.createWithDefaults({ type: EntityConstants.fund });
     const fundParams = fundEntity.getActionParams()
 
-    await contracts.projects.addentity(...developerParams, { authorization: `${developerParams[0]}@active`})
-    await contracts.projects.addtestuser(developerParams[0], developerParams[1], 1, { authorization: `${developerParams[0]}@active`})
-    await contracts.projects.addentity(...fundParams, { authorization: `${fundParams[0]}@active`})
-    await contracts.projects.addtestuser(fundParams[0], fundParams[1], 2, { authorization: `${fundParams[0]}@active`})
+    await contracts.projects.addentity(...developerParams, { authorization: `${developerParams[0]}@active` })
+    await contracts.projects.addtestuser(developerParams[0], developerParams[1], 1, { authorization: `${developerParams[0]}@active` })
+    await contracts.projects.addentity(...fundParams, { authorization: `${fundParams[0]}@active` })
+    await contracts.projects.addtestuser(fundParams[0], fundParams[1], 2, { authorization: `${fundParams[0]}@active` })
 
-    const newProject = await ProjectFactory.createWithDefaults({actor: developerParams[0]});
+    const newProject = await ProjectFactory.createWithDefaults({ actor: developerParams[0] });
     const projectParams = newProject.getActionParams()
 
-    await contracts.projects.addproject(...projectParams, { authorization: `${projectParams[0]}@active`})
-    
+    await contracts.projects.addproject(...projectParams, { authorization: `${projectParams[0]}@active` })
+
     //Act
     await ProjectUtil.deleteprojct({
       actor: developerParams[0],
-      project_id: 0, 
+      project_id: 0,
       contract: contracts.projects,
       account: projectParams[0]
     })
@@ -421,37 +421,37 @@ describe('Tests for projects smart contract', async function () {
       json: true
     })
     console.log('\n\n Projects table is: ', projectsTable)
-    
+
     assert.deepStrictEqual(projectsTable.rows, [])
 
 
   })
 
-  it('Change status', async function(){
+  it('Change status', async function () {
     //Arrange
-    const developerEntity = await EntityFactory.createWithDefaults({type: EntityConstants.developer});
+    const developerEntity = await EntityFactory.createWithDefaults({ type: EntityConstants.developer });
     const developerParams = developerEntity.getActionParams()
 
-    const fundEntity = await EntityFactory.createWithDefaults({type: EntityConstants.fund});
+    const fundEntity = await EntityFactory.createWithDefaults({ type: EntityConstants.fund });
     const fundParams = fundEntity.getActionParams()
 
-    await contracts.projects.addentity(...developerParams, { authorization: `${developerParams[0]}@active`})
-    await contracts.projects.addtestuser(developerParams[0], developerParams[1], 1, { authorization: `${developerParams[0]}@active`})
-    await contracts.projects.addentity(...fundParams, { authorization: `${fundParams[0]}@active`})
-    await contracts.projects.addtestuser(fundParams[0], fundParams[1], 2, { authorization: `${fundParams[0]}@active`})
+    await contracts.projects.addentity(...developerParams, { authorization: `${developerParams[0]}@active` })
+    await contracts.projects.addtestuser(developerParams[0], developerParams[1], 1, { authorization: `${developerParams[0]}@active` })
+    await contracts.projects.addentity(...fundParams, { authorization: `${fundParams[0]}@active` })
+    await contracts.projects.addtestuser(fundParams[0], fundParams[1], 2, { authorization: `${fundParams[0]}@active` })
 
-    const newProject = await ProjectFactory.createWithDefaults({actor: developerParams[0]});
+    const newProject = await ProjectFactory.createWithDefaults({ actor: developerParams[0] });
     const projectParams = newProject.getActionParams()
 
-    await contracts.projects.addproject(...projectParams, { authorization: `${projectParams[0]}@active`})
-    
+    await contracts.projects.addproject(...projectParams, { authorization: `${projectParams[0]}@active` })
+
     //Act
     //change status to completed
     await ProjectUtil.changestatus({
       project_id: 0,
       status: ProjectConstants.status.completed,
-      contract: contracts.projects, 
-      account:projects
+      contract: contracts.projects,
+      account: projects
     })
     //await contracts.projects.changestatus(0, ProjectConstants.status.completed, { authorization: `${projects}@active`})
 
@@ -465,7 +465,7 @@ describe('Tests for projects smart contract', async function () {
     })
     console.log('\n\n Projects table is: ', projectsTable)
 
-    assert.deepStrictEqual(projectsTable.rows,[{
+    assert.deepStrictEqual(projectsTable.rows, [{
       project_id: 0,
       developer_id: 0,
       owner: projectParams[0],
@@ -499,34 +499,34 @@ describe('Tests for projects smart contract', async function () {
   })
 
 
-  it('Create an investment', async function(){
+  it('Create an investment', async function () {
     //Arrange
-    const developerEntity = await EntityFactory.createWithDefaults({type: EntityConstants.developer});
+    const developerEntity = await EntityFactory.createWithDefaults({ type: EntityConstants.developer });
     const developerParams = developerEntity.getActionParams()
 
-    const investorEntity = await EntityFactory.createWithDefaults({type: EntityConstants.investor});
+    const investorEntity = await EntityFactory.createWithDefaults({ type: EntityConstants.investor });
     const investorParams = investorEntity.getActionParams()
 
-    const fundEntity = await EntityFactory.createWithDefaults({type: EntityConstants.fund});
+    const fundEntity = await EntityFactory.createWithDefaults({ type: EntityConstants.fund });
     const fundParams = fundEntity.getActionParams()
 
-    await contracts.projects.addentity(...developerParams, { authorization: `${developerParams[0]}@active`})
-    await contracts.projects.addtestuser(developerParams[0], developerParams[1], 1, { authorization: `${developerParams[0]}@active`})
-    await contracts.projects.addentity(...investorParams, { authorization: `${investorParams[0]}@active`})
-    await contracts.projects.addtestuser(investorParams[0], investorParams[1], 2, { authorization: `${investorParams[0]}@active`})
-    await contracts.projects.addentity(...fundParams, { authorization: `${fundParams[0]}@active`})
-    await contracts.projects.addtestuser(fundParams[0], fundParams[1], 3, { authorization: `${fundParams[0]}@active`})
+    await contracts.projects.addentity(...developerParams, { authorization: `${developerParams[0]}@active` })
+    await contracts.projects.addtestuser(developerParams[0], developerParams[1], 1, { authorization: `${developerParams[0]}@active` })
+    await contracts.projects.addentity(...investorParams, { authorization: `${investorParams[0]}@active` })
+    await contracts.projects.addtestuser(investorParams[0], investorParams[1], 2, { authorization: `${investorParams[0]}@active` })
+    await contracts.projects.addentity(...fundParams, { authorization: `${fundParams[0]}@active` })
+    await contracts.projects.addtestuser(fundParams[0], fundParams[1], 3, { authorization: `${fundParams[0]}@active` })
 
-    const newProject = await ProjectFactory.createWithDefaults({actor: developerParams[0]});
+    const newProject = await ProjectFactory.createWithDefaults({ actor: developerParams[0] });
     const projectParams = newProject.getActionParams()
 
-    await contracts.projects.addproject(...projectParams, { authorization: `${projectParams[0]}@active`})
+    await contracts.projects.addproject(...projectParams, { authorization: `${projectParams[0]}@active` })
     await ProjectUtil.approveprjct({
-      actor: fundParams[0], 
-      project_id: 0, 
-      fund_lp: "https://fund-lp.com", 
-      total_fund_offering_amount: "400000.00 USD", 
-      total_number_fund_offering: 40000, 
+      actor: fundParams[0],
+      project_id: 0,
+      fund_lp: "https://fund-lp.com",
+      total_fund_offering_amount: "400000.00 USD",
+      total_number_fund_offering: 40000,
       price_per_fund_unit: "300.00 USD",
       contract: contracts.projects,
       account: fundParams[0]
@@ -534,15 +534,15 @@ describe('Tests for projects smart contract', async function () {
 
     //Act
     await ProjectUtil.invest({
-      actor: investorParams[0], 
-      project_id: 0, 
+      actor: investorParams[0],
+      project_id: 0,
       total_investment_amount: "5000000.00 USD",
       quantity_units_purchased: "20",
       annual_preferred_return: "500",
       signed_agreement_date: 1666675375,
       subscription_package: 'subscription package',
-      contract: contracts.projects, 
-      account: investorParams[0] 
+      contract: contracts.projects,
+      account: investorParams[0]
     })
 
     //Assert
@@ -583,54 +583,54 @@ describe('Tests for projects smart contract', async function () {
 
   })
 
-    it('Modify an investment', async function(){
+  it('Modify an investment', async function () {
     //Arrange
-    const developerEntity = await EntityFactory.createWithDefaults({type: EntityConstants.developer});
+    const developerEntity = await EntityFactory.createWithDefaults({ type: EntityConstants.developer });
     const developerParams = developerEntity.getActionParams()
 
-    const investorEntity = await EntityFactory.createWithDefaults({type: EntityConstants.investor});
+    const investorEntity = await EntityFactory.createWithDefaults({ type: EntityConstants.investor });
     const investorParams = investorEntity.getActionParams()
 
-    const fundEntity = await EntityFactory.createWithDefaults({type: EntityConstants.fund});
+    const fundEntity = await EntityFactory.createWithDefaults({ type: EntityConstants.fund });
     const fundParams = fundEntity.getActionParams()
 
-    await contracts.projects.addentity(...developerParams, { authorization: `${developerParams[0]}@active`})
-    await contracts.projects.addtestuser(developerParams[0], developerParams[1], 1, { authorization: `${developerParams[0]}@active`})
-    await contracts.projects.addentity(...investorParams, { authorization: `${investorParams[0]}@active`})
-    await contracts.projects.addtestuser(investorParams[0], investorParams[1], 2, { authorization: `${investorParams[0]}@active`})
-    await contracts.projects.addentity(...fundParams, { authorization: `${fundParams[0]}@active`})
-    await contracts.projects.addtestuser(fundParams[0], fundParams[1], 3, { authorization: `${fundParams[0]}@active`})
+    await contracts.projects.addentity(...developerParams, { authorization: `${developerParams[0]}@active` })
+    await contracts.projects.addtestuser(developerParams[0], developerParams[1], 1, { authorization: `${developerParams[0]}@active` })
+    await contracts.projects.addentity(...investorParams, { authorization: `${investorParams[0]}@active` })
+    await contracts.projects.addtestuser(investorParams[0], investorParams[1], 2, { authorization: `${investorParams[0]}@active` })
+    await contracts.projects.addentity(...fundParams, { authorization: `${fundParams[0]}@active` })
+    await contracts.projects.addtestuser(fundParams[0], fundParams[1], 3, { authorization: `${fundParams[0]}@active` })
 
-    const newProject = await ProjectFactory.createWithDefaults({actor: developerParams[0]});
+    const newProject = await ProjectFactory.createWithDefaults({ actor: developerParams[0] });
     const projectParams = newProject.getActionParams()
 
-    await contracts.projects.addproject(...projectParams, { authorization: `${projectParams[0]}@active`})
-    const approveParameters = [fundParams[0],0,"https://fund-lp.com", "400000.00 USD",40000,"300.00 USD"]
-    await contracts.projects.approveprjct(...approveParameters,{ authorization: `${fundParams[0]}@active`});
+    await contracts.projects.addproject(...projectParams, { authorization: `${projectParams[0]}@active` })
+    const approveParameters = [fundParams[0], 0, "https://fund-lp.com", "400000.00 USD", 40000, "300.00 USD"]
+    await contracts.projects.approveprjct(...approveParameters, { authorization: `${fundParams[0]}@active` });
 
     const investParameters = [
-    investorParams[0], 
-    0, 
-    "5000000.00 USD",
-    "20",
-    "500",
-    1666675375,
-    'subscription package'
+      investorParams[0],
+      0,
+      "5000000.00 USD",
+      "20",
+      "500",
+      1666675375,
+      'subscription package'
     ]
 
     const editInvestParameters = [
-      investorParams[0], 
-      0, 
+      investorParams[0],
+      0,
       "5000000.00 USD",
       "20",
       "500",
       1666675375,
       'subscription package modified'
     ]
-    await contracts.projects.invest(...investParameters, { authorization: `${investorParams[0]}@active`})
+    await contracts.projects.invest(...investParameters, { authorization: `${investorParams[0]}@active` })
 
     //Act 
-    await contracts.projects.editinvest(...editInvestParameters, { authorization: `${investorParams[0]}@active`})
+    await contracts.projects.editinvest(...editInvestParameters, { authorization: `${investorParams[0]}@active` })
 
 
     //Assert
@@ -671,45 +671,45 @@ describe('Tests for projects smart contract', async function () {
 
   })
 
-  it('Delete an investment', async function(){
+  it('Delete an investment', async function () {
     //Arrange
-    const developerEntity = await EntityFactory.createWithDefaults({type: EntityConstants.developer});
+    const developerEntity = await EntityFactory.createWithDefaults({ type: EntityConstants.developer });
     const developerParams = developerEntity.getActionParams()
 
-    const investorEntity = await EntityFactory.createWithDefaults({type: EntityConstants.investor});
+    const investorEntity = await EntityFactory.createWithDefaults({ type: EntityConstants.investor });
     const investorParams = investorEntity.getActionParams()
 
-    const fundEntity = await EntityFactory.createWithDefaults({type: EntityConstants.fund});
+    const fundEntity = await EntityFactory.createWithDefaults({ type: EntityConstants.fund });
     const fundParams = fundEntity.getActionParams()
 
-    await contracts.projects.addentity(...developerParams, { authorization: `${developerParams[0]}@active`})
-    await contracts.projects.addtestuser(developerParams[0], developerParams[1], 1, { authorization: `${developerParams[0]}@active`})
-    await contracts.projects.addentity(...investorParams, { authorization: `${investorParams[0]}@active`})
-    await contracts.projects.addtestuser(investorParams[0], investorParams[1], 2, { authorization: `${investorParams[0]}@active`})
-    await contracts.projects.addentity(...fundParams, { authorization: `${fundParams[0]}@active`})
-    await contracts.projects.addtestuser(fundParams[0], fundParams[1], 3, { authorization: `${fundParams[0]}@active`})
+    await contracts.projects.addentity(...developerParams, { authorization: `${developerParams[0]}@active` })
+    await contracts.projects.addtestuser(developerParams[0], developerParams[1], 1, { authorization: `${developerParams[0]}@active` })
+    await contracts.projects.addentity(...investorParams, { authorization: `${investorParams[0]}@active` })
+    await contracts.projects.addtestuser(investorParams[0], investorParams[1], 2, { authorization: `${investorParams[0]}@active` })
+    await contracts.projects.addentity(...fundParams, { authorization: `${fundParams[0]}@active` })
+    await contracts.projects.addtestuser(fundParams[0], fundParams[1], 3, { authorization: `${fundParams[0]}@active` })
 
-    const newProject = await ProjectFactory.createWithDefaults({actor: developerParams[0]});
+    const newProject = await ProjectFactory.createWithDefaults({ actor: developerParams[0] });
     const projectParams = newProject.getActionParams()
 
-    await contracts.projects.addproject(...projectParams, { authorization: `${projectParams[0]}@active`})
-    const approveParameters = [fundParams[0],0,"https://fund-lp.com", "400000.00 USD",40000,"300.00 USD"]
-    await contracts.projects.approveprjct(...approveParameters,{ authorization: `${fundParams[0]}@active`});
+    await contracts.projects.addproject(...projectParams, { authorization: `${projectParams[0]}@active` })
+    const approveParameters = [fundParams[0], 0, "https://fund-lp.com", "400000.00 USD", 40000, "300.00 USD"]
+    await contracts.projects.approveprjct(...approveParameters, { authorization: `${fundParams[0]}@active` });
 
     const investParameters = [
-    investorParams[0], 
-    0, 
-    "5000000.00 USD",
-    "20",
-    "500",
-    1666675375,
-    'subscription package'
+      investorParams[0],
+      0,
+      "5000000.00 USD",
+      "20",
+      "500",
+      1666675375,
+      'subscription package'
     ]
 
-    await contracts.projects.invest(...investParameters, { authorization: `${investorParams[0]}@active`})
+    await contracts.projects.invest(...investParameters, { authorization: `${investorParams[0]}@active` })
 
     //Act 
-    await contracts.projects.deleteinvest(investorParams[0], 0, { authorization: `${investorParams[0]}@active`})
+    await contracts.projects.deleteinvest(investorParams[0], 0, { authorization: `${investorParams[0]}@active` })
 
 
     //Assert
@@ -733,45 +733,45 @@ describe('Tests for projects smart contract', async function () {
 
   })
 
-  it('Approve an investment', async function(){
+  it('Approve an investment', async function () {
     //Arrange
-    const developerEntity = await EntityFactory.createWithDefaults({type: EntityConstants.developer});
+    const developerEntity = await EntityFactory.createWithDefaults({ type: EntityConstants.developer });
     const developerParams = developerEntity.getActionParams()
 
-    const investorEntity = await EntityFactory.createWithDefaults({type: EntityConstants.investor});
+    const investorEntity = await EntityFactory.createWithDefaults({ type: EntityConstants.investor });
     const investorParams = investorEntity.getActionParams()
     console.log('investor is:', investorParams[0])
 
-    const fundEntity = await EntityFactory.createWithDefaults({type: EntityConstants.fund});
+    const fundEntity = await EntityFactory.createWithDefaults({ type: EntityConstants.fund });
     const fundParams = fundEntity.getActionParams()
 
-    await contracts.projects.addentity(...developerParams, { authorization: `${developerParams[0]}@active`})
-    await contracts.projects.addtestuser(developerParams[0], developerParams[1], 1, { authorization: `${developerParams[0]}@active`})
-    await contracts.projects.addentity(...investorParams, { authorization: `${investorParams[0]}@active`})
-    await contracts.projects.addtestuser(investorParams[0], investorParams[1], 2, { authorization: `${investorParams[0]}@active`})
-    await contracts.projects.addentity(...fundParams, { authorization: `${fundParams[0]}@active`})
-    await contracts.projects.addtestuser(fundParams[0], fundParams[1], 3, { authorization: `${fundParams[0]}@active`})
+    await contracts.projects.addentity(...developerParams, { authorization: `${developerParams[0]}@active` })
+    await contracts.projects.addtestuser(developerParams[0], developerParams[1], 1, { authorization: `${developerParams[0]}@active` })
+    await contracts.projects.addentity(...investorParams, { authorization: `${investorParams[0]}@active` })
+    await contracts.projects.addtestuser(investorParams[0], investorParams[1], 2, { authorization: `${investorParams[0]}@active` })
+    await contracts.projects.addentity(...fundParams, { authorization: `${fundParams[0]}@active` })
+    await contracts.projects.addtestuser(fundParams[0], fundParams[1], 3, { authorization: `${fundParams[0]}@active` })
 
-    const newProject = await ProjectFactory.createWithDefaults({actor: developerParams[0]});
+    const newProject = await ProjectFactory.createWithDefaults({ actor: developerParams[0] });
     const projectParams = newProject.getActionParams()
 
-    await contracts.projects.addproject(...projectParams, { authorization: `${projectParams[0]}@active`})
-    const approveParameters = [fundParams[0],0,"https://fund-lp.com", "400000.00 USD",40000,"300.00 USD"]
-    await contracts.projects.approveprjct(...approveParameters,{ authorization: `${fundParams[0]}@active`});
+    await contracts.projects.addproject(...projectParams, { authorization: `${projectParams[0]}@active` })
+    const approveParameters = [fundParams[0], 0, "https://fund-lp.com", "400000.00 USD", 40000, "300.00 USD"]
+    await contracts.projects.approveprjct(...approveParameters, { authorization: `${fundParams[0]}@active` });
 
     const investParameters = [
-    investorParams[0], 
-    0, 
-    "5000000.00 USD",
-    "20",
-    "500",
-    1666675375,
-    'subscription package'
+      investorParams[0],
+      0,
+      "5000000.00 USD",
+      "20",
+      "500",
+      1666675375,
+      'subscription package'
     ]
-    await contracts.projects.invest(...investParameters, { authorization: `${investorParams[0]}@active`})
+    await contracts.projects.invest(...investParameters, { authorization: `${investorParams[0]}@active` })
 
     //Act
-    await contracts.projects.approveinvst(fundParams[0], 0, { authorization: `${fundParams[0]}@active`})
+    await contracts.projects.approveinvst(fundParams[0], 0, { authorization: `${fundParams[0]}@active` })
 
     //Assert
     const projectsTable = await rpc.get_table_rows({
@@ -811,43 +811,43 @@ describe('Tests for projects smart contract', async function () {
 
   })
 
-    it('Make a transfer', async function(){
+  it('Make a transfer', async function () {
     //Arrange
-    const developerEntity = await EntityFactory.createWithDefaults({type: EntityConstants.developer});
+    const developerEntity = await EntityFactory.createWithDefaults({ type: EntityConstants.developer });
     const developerParams = developerEntity.getActionParams()
 
-    const investorEntity = await EntityFactory.createWithDefaults({type: EntityConstants.investor});
+    const investorEntity = await EntityFactory.createWithDefaults({ type: EntityConstants.investor });
     const investorParams = investorEntity.getActionParams()
 
-    const fundEntity = await EntityFactory.createWithDefaults({type: EntityConstants.fund});
+    const fundEntity = await EntityFactory.createWithDefaults({ type: EntityConstants.fund });
     const fundParams = fundEntity.getActionParams()
 
-    await contracts.projects.addentity(...developerParams, { authorization: `${developerParams[0]}@active`})
-    await contracts.projects.addtestuser(developerParams[0], developerParams[1], 1, { authorization: `${developerParams[0]}@active`})
-    await contracts.projects.addentity(...investorParams, { authorization: `${investorParams[0]}@active`})
-    await contracts.projects.addtestuser(investorParams[0], investorParams[1], 2, { authorization: `${investorParams[0]}@active`})
-    await contracts.projects.addentity(...fundParams, { authorization: `${fundParams[0]}@active`})
-    await contracts.projects.addtestuser(fundParams[0], fundParams[1], 3, { authorization: `${fundParams[0]}@active`})
+    await contracts.projects.addentity(...developerParams, { authorization: `${developerParams[0]}@active` })
+    await contracts.projects.addtestuser(developerParams[0], developerParams[1], 1, { authorization: `${developerParams[0]}@active` })
+    await contracts.projects.addentity(...investorParams, { authorization: `${investorParams[0]}@active` })
+    await contracts.projects.addtestuser(investorParams[0], investorParams[1], 2, { authorization: `${investorParams[0]}@active` })
+    await contracts.projects.addentity(...fundParams, { authorization: `${fundParams[0]}@active` })
+    await contracts.projects.addtestuser(fundParams[0], fundParams[1], 3, { authorization: `${fundParams[0]}@active` })
 
-    const newProject = await ProjectFactory.createWithDefaults({actor: developerParams[0]});
+    const newProject = await ProjectFactory.createWithDefaults({ actor: developerParams[0] });
     const projectParams = newProject.getActionParams()
 
-    await contracts.projects.addproject(...projectParams, { authorization: `${projectParams[0]}@active`})
-    const approveParameters = [fundParams[0],0,"https://fund-lp.com", "400000.00 USD",40000,"300.00 USD"]
-    await contracts.projects.approveprjct(...approveParameters,{ authorization: `${fundParams[0]}@active`});
+    await contracts.projects.addproject(...projectParams, { authorization: `${projectParams[0]}@active` })
+    const approveParameters = [fundParams[0], 0, "https://fund-lp.com", "400000.00 USD", 40000, "300.00 USD"]
+    await contracts.projects.approveprjct(...approveParameters, { authorization: `${fundParams[0]}@active` });
 
-    
+
     const investParameters = [
-    investorParams[0], 
-    0, 
-    "5000000.00 USD",
-    "20",
-    "500",
-    1666675375,
-    'subscription package'
+      investorParams[0],
+      0,
+      "5000000.00 USD",
+      "20",
+      "500",
+      1666675375,
+      'subscription package'
     ]
-    await contracts.projects.invest(...investParameters, { authorization: `${investorParams[0]}@active`})
-    await contracts.projects.approveinvst(fundParams[0], 0, { authorization: `${fundParams[0]}@active`})
+    await contracts.projects.invest(...investParameters, { authorization: `${investorParams[0]}@active` })
+    await contracts.projects.approveinvst(fundParams[0], 0, { authorization: `${fundParams[0]}@active` })
 
     //Act
     const transferParameters = [
@@ -857,7 +857,7 @@ describe('Tests for projects smart contract', async function () {
       "Transfer done",
       Date.now()
     ]
-    await contracts.projects.maketransfer(...transferParameters,  { authorization: `${investorParams[0]}@active`})
+    await contracts.projects.maketransfer(...transferParameters, { authorization: `${investorParams[0]}@active` })
 
 
     //Assert
@@ -911,45 +911,45 @@ describe('Tests for projects smart contract', async function () {
 
   })
 
-  it('Edit a transfer', async function(){
+  it('Edit a transfer', async function () {
     //Arrange
-    const developerEntity = await EntityFactory.createWithDefaults({type: EntityConstants.developer});
+    const developerEntity = await EntityFactory.createWithDefaults({ type: EntityConstants.developer });
     const developerParams = developerEntity.getActionParams()
 
-    const investorEntity = await EntityFactory.createWithDefaults({type: EntityConstants.investor});
+    const investorEntity = await EntityFactory.createWithDefaults({ type: EntityConstants.investor });
     const investorParams = investorEntity.getActionParams()
 
-    const fundEntity = await EntityFactory.createWithDefaults({type: EntityConstants.fund});
+    const fundEntity = await EntityFactory.createWithDefaults({ type: EntityConstants.fund });
     const fundParams = fundEntity.getActionParams()
 
-    await contracts.projects.addentity(...developerParams, { authorization: `${developerParams[0]}@active`})
-    await contracts.projects.addtestuser(developerParams[0], developerParams[1], 1, { authorization: `${developerParams[0]}@active`})
-    await contracts.projects.addentity(...investorParams, { authorization: `${investorParams[0]}@active`})
-    await contracts.projects.addtestuser(investorParams[0], investorParams[1], 2, { authorization: `${investorParams[0]}@active`})
-    await contracts.projects.addentity(...fundParams, { authorization: `${fundParams[0]}@active`})
-    await contracts.projects.addtestuser(fundParams[0], fundParams[1], 3, { authorization: `${fundParams[0]}@active`})
+    await contracts.projects.addentity(...developerParams, { authorization: `${developerParams[0]}@active` })
+    await contracts.projects.addtestuser(developerParams[0], developerParams[1], 1, { authorization: `${developerParams[0]}@active` })
+    await contracts.projects.addentity(...investorParams, { authorization: `${investorParams[0]}@active` })
+    await contracts.projects.addtestuser(investorParams[0], investorParams[1], 2, { authorization: `${investorParams[0]}@active` })
+    await contracts.projects.addentity(...fundParams, { authorization: `${fundParams[0]}@active` })
+    await contracts.projects.addtestuser(fundParams[0], fundParams[1], 3, { authorization: `${fundParams[0]}@active` })
 
-    const newProject = await ProjectFactory.createWithDefaults({actor: developerParams[0]});
+    const newProject = await ProjectFactory.createWithDefaults({ actor: developerParams[0] });
     const projectParams = newProject.getActionParams()
 
-    await contracts.projects.addproject(...projectParams, { authorization: `${projectParams[0]}@active`})
-    const approveParameters = [fundParams[0],0,"https://fund-lp.com", "400000.00 USD",40000,"300.00 USD"]
-    await contracts.projects.approveprjct(...approveParameters,{ authorization: `${fundParams[0]}@active`});
+    await contracts.projects.addproject(...projectParams, { authorization: `${projectParams[0]}@active` })
+    const approveParameters = [fundParams[0], 0, "https://fund-lp.com", "400000.00 USD", 40000, "300.00 USD"]
+    await contracts.projects.approveprjct(...approveParameters, { authorization: `${fundParams[0]}@active` });
 
-    
+
     const investParameters = [
-    investorParams[0], 
-    0, 
-    "5000000.00 USD",
-    "20",
-    "500",
-    1666675375,
-    'subscription package'
+      investorParams[0],
+      0,
+      "5000000.00 USD",
+      "20",
+      "500",
+      1666675375,
+      'subscription package'
     ]
-    await contracts.projects.invest(...investParameters, { authorization: `${investorParams[0]}@active`})
-    await contracts.projects.approveinvst(fundParams[0], 0, { authorization: `${fundParams[0]}@active`})
+    await contracts.projects.invest(...investParameters, { authorization: `${investorParams[0]}@active` })
+    await contracts.projects.approveinvst(fundParams[0], 0, { authorization: `${fundParams[0]}@active` })
 
-    
+
     const transferParameters = [
       investorParams[0],
       "5000.00 USD",
@@ -957,7 +957,7 @@ describe('Tests for projects smart contract', async function () {
       "Transfer done",
       Date.now()
     ]
-    await contracts.projects.maketransfer(...transferParameters,  { authorization: `${investorParams[0]}@active`})
+    await contracts.projects.maketransfer(...transferParameters, { authorization: `${investorParams[0]}@active` })
 
     //Act
     const editTransferParameters = [
@@ -967,7 +967,7 @@ describe('Tests for projects smart contract', async function () {
       "Transfer done modified",
       Date.now() + 5000
     ]
-    await contracts.projects.edittransfer(...editTransferParameters,  { authorization: `${investorParams[0]}@active`})
+    await contracts.projects.edittransfer(...editTransferParameters, { authorization: `${investorParams[0]}@active` })
 
     //Assert
     const transfersTable = await rpc.get_table_rows({
@@ -1020,45 +1020,45 @@ describe('Tests for projects smart contract', async function () {
 
   })
 
-  it('Confirm a transfer', async function(){
+  it('Confirm a transfer', async function () {
     //Arrange
-    const developerEntity = await EntityFactory.createWithDefaults({type: EntityConstants.developer});
+    const developerEntity = await EntityFactory.createWithDefaults({ type: EntityConstants.developer });
     const developerParams = developerEntity.getActionParams()
 
-    const investorEntity = await EntityFactory.createWithDefaults({type: EntityConstants.investor});
+    const investorEntity = await EntityFactory.createWithDefaults({ type: EntityConstants.investor });
     const investorParams = investorEntity.getActionParams()
 
-    const fundEntity = await EntityFactory.createWithDefaults({type: EntityConstants.fund});
+    const fundEntity = await EntityFactory.createWithDefaults({ type: EntityConstants.fund });
     const fundParams = fundEntity.getActionParams()
 
-    await contracts.projects.addentity(...developerParams, { authorization: `${developerParams[0]}@active`})
-    await contracts.projects.addtestuser(developerParams[0], developerParams[1], 1, { authorization: `${developerParams[0]}@active`})
-    await contracts.projects.addentity(...investorParams, { authorization: `${investorParams[0]}@active`})
-    await contracts.projects.addtestuser(investorParams[0], investorParams[1], 2, { authorization: `${investorParams[0]}@active`})
-    await contracts.projects.addentity(...fundParams, { authorization: `${fundParams[0]}@active`})
-    await contracts.projects.addtestuser(fundParams[0], fundParams[1], 3, { authorization: `${fundParams[0]}@active`})
+    await contracts.projects.addentity(...developerParams, { authorization: `${developerParams[0]}@active` })
+    await contracts.projects.addtestuser(developerParams[0], developerParams[1], 1, { authorization: `${developerParams[0]}@active` })
+    await contracts.projects.addentity(...investorParams, { authorization: `${investorParams[0]}@active` })
+    await contracts.projects.addtestuser(investorParams[0], investorParams[1], 2, { authorization: `${investorParams[0]}@active` })
+    await contracts.projects.addentity(...fundParams, { authorization: `${fundParams[0]}@active` })
+    await contracts.projects.addtestuser(fundParams[0], fundParams[1], 3, { authorization: `${fundParams[0]}@active` })
 
-    const newProject = await ProjectFactory.createWithDefaults({actor: developerParams[0]});
+    const newProject = await ProjectFactory.createWithDefaults({ actor: developerParams[0] });
     const projectParams = newProject.getActionParams()
 
-    await contracts.projects.addproject(...projectParams, { authorization: `${projectParams[0]}@active`})
-    const approveParameters = [fundParams[0],0,"https://fund-lp.com", "400000.00 USD",40000,"300.00 USD"]
-    await contracts.projects.approveprjct(...approveParameters,{ authorization: `${fundParams[0]}@active`});
+    await contracts.projects.addproject(...projectParams, { authorization: `${projectParams[0]}@active` })
+    const approveParameters = [fundParams[0], 0, "https://fund-lp.com", "400000.00 USD", 40000, "300.00 USD"]
+    await contracts.projects.approveprjct(...approveParameters, { authorization: `${fundParams[0]}@active` });
 
-    
+
     const investParameters = [
-    investorParams[0], 
-    0, 
-    "5000000.00 USD",
-    "20",
-    "500",
-    1666675375,
-    'subscription package'
+      investorParams[0],
+      0,
+      "5000000.00 USD",
+      "20",
+      "500",
+      1666675375,
+      'subscription package'
     ]
-    await contracts.projects.invest(...investParameters, { authorization: `${investorParams[0]}@active`})
-    await contracts.projects.approveinvst(fundParams[0], 0, { authorization: `${fundParams[0]}@active`})
+    await contracts.projects.invest(...investParameters, { authorization: `${investorParams[0]}@active` })
+    await contracts.projects.approveinvst(fundParams[0], 0, { authorization: `${fundParams[0]}@active` })
 
-    
+
     const transferParameters = [
       investorParams[0],
       "5000.00 USD",
@@ -1066,7 +1066,7 @@ describe('Tests for projects smart contract', async function () {
       "Transfer done",
       Date.now()
     ]
-    await contracts.projects.maketransfer(...transferParameters,  { authorization: `${investorParams[0]}@active`})
+    await contracts.projects.maketransfer(...transferParameters, { authorization: `${investorParams[0]}@active` })
 
     //Act
     const confirmTransferParameters = [
@@ -1074,7 +1074,7 @@ describe('Tests for projects smart contract', async function () {
       0,
       "Transfer confirmed",
     ]
-    await contracts.projects.confrmtrnsfr(...confirmTransferParameters,  { authorization: `${fundParams[0]}@active`})
+    await contracts.projects.confrmtrnsfr(...confirmTransferParameters, { authorization: `${fundParams[0]}@active` })
 
     //Assert
     const transfersTable = await rpc.get_table_rows({
@@ -1115,7 +1115,7 @@ describe('Tests for projects smart contract', async function () {
       annual_preferred_return: 500,
       signed_agreement_date: 1666675375,
       total_confirmed_transfered_amount: transferParameters[1],
-      total_unconfirmed_transfered_amount: "0.00 USD" ,
+      total_unconfirmed_transfered_amount: "0.00 USD",
       total_confirmed_transfers: 1,
       total_unconfirmed_transfers: 0,
       subscription_package: 'subscription package',
@@ -1127,45 +1127,45 @@ describe('Tests for projects smart contract', async function () {
 
   })
 
-  it('Delete a transfer', async function(){
+  it('Delete a transfer', async function () {
     //Arrange
-    const developerEntity = await EntityFactory.createWithDefaults({type: EntityConstants.developer});
+    const developerEntity = await EntityFactory.createWithDefaults({ type: EntityConstants.developer });
     const developerParams = developerEntity.getActionParams()
 
-    const investorEntity = await EntityFactory.createWithDefaults({type: EntityConstants.investor});
+    const investorEntity = await EntityFactory.createWithDefaults({ type: EntityConstants.investor });
     const investorParams = investorEntity.getActionParams()
 
-    const fundEntity = await EntityFactory.createWithDefaults({type: EntityConstants.fund});
+    const fundEntity = await EntityFactory.createWithDefaults({ type: EntityConstants.fund });
     const fundParams = fundEntity.getActionParams()
 
-    await contracts.projects.addentity(...developerParams, { authorization: `${developerParams[0]}@active`})
-    await contracts.projects.addtestuser(developerParams[0], developerParams[1], 1, { authorization: `${developerParams[0]}@active`})
-    await contracts.projects.addentity(...investorParams, { authorization: `${investorParams[0]}@active`})
-    await contracts.projects.addtestuser(investorParams[0], investorParams[1], 2, { authorization: `${investorParams[0]}@active`})
-    await contracts.projects.addentity(...fundParams, { authorization: `${fundParams[0]}@active`})
-    await contracts.projects.addtestuser(fundParams[0], fundParams[1], 3, { authorization: `${fundParams[0]}@active`})
+    await contracts.projects.addentity(...developerParams, { authorization: `${developerParams[0]}@active` })
+    await contracts.projects.addtestuser(developerParams[0], developerParams[1], 1, { authorization: `${developerParams[0]}@active` })
+    await contracts.projects.addentity(...investorParams, { authorization: `${investorParams[0]}@active` })
+    await contracts.projects.addtestuser(investorParams[0], investorParams[1], 2, { authorization: `${investorParams[0]}@active` })
+    await contracts.projects.addentity(...fundParams, { authorization: `${fundParams[0]}@active` })
+    await contracts.projects.addtestuser(fundParams[0], fundParams[1], 3, { authorization: `${fundParams[0]}@active` })
 
-    const newProject = await ProjectFactory.createWithDefaults({actor: developerParams[0]});
+    const newProject = await ProjectFactory.createWithDefaults({ actor: developerParams[0] });
     const projectParams = newProject.getActionParams()
 
-    await contracts.projects.addproject(...projectParams, { authorization: `${projectParams[0]}@active`})
-    const approveParameters = [fundParams[0],0,"https://fund-lp.com", "400000.00 USD",40000,"300.00 USD"]
-    await contracts.projects.approveprjct(...approveParameters,{ authorization: `${fundParams[0]}@active`});
+    await contracts.projects.addproject(...projectParams, { authorization: `${projectParams[0]}@active` })
+    const approveParameters = [fundParams[0], 0, "https://fund-lp.com", "400000.00 USD", 40000, "300.00 USD"]
+    await contracts.projects.approveprjct(...approveParameters, { authorization: `${fundParams[0]}@active` });
 
-    
+
     const investParameters = [
-    investorParams[0], 
-    0, 
-    "5000000.00 USD",
-    "20",
-    "500",
-    1666675375,
-    'subscription package'
+      investorParams[0],
+      0,
+      "5000000.00 USD",
+      "20",
+      "500",
+      1666675375,
+      'subscription package'
     ]
-    await contracts.projects.invest(...investParameters, { authorization: `${investorParams[0]}@active`})
-    await contracts.projects.approveinvst(fundParams[0], 0, { authorization: `${fundParams[0]}@active`})
+    await contracts.projects.invest(...investParameters, { authorization: `${investorParams[0]}@active` })
+    await contracts.projects.approveinvst(fundParams[0], 0, { authorization: `${fundParams[0]}@active` })
 
-    
+
     const transferParameters = [
       investorParams[0],
       "5000.00 USD",
@@ -1173,11 +1173,11 @@ describe('Tests for projects smart contract', async function () {
       "Transfer done",
       Date.now()
     ]
-    await contracts.projects.maketransfer(...transferParameters,  { authorization: `${investorParams[0]}@active`})
+    await contracts.projects.maketransfer(...transferParameters, { authorization: `${investorParams[0]}@active` })
 
     //Act
-    await contracts.projects.deletetrnsfr(investorParams[0], 0, { authorization: `${investorParams[0]}@active`})
-    
+    await contracts.projects.deletetrnsfr(investorParams[0], 0, { authorization: `${investorParams[0]}@active` })
+
     //Assert
     const transfersTable = await rpc.get_table_rows({
       code: projects,
@@ -1217,6 +1217,6 @@ describe('Tests for projects smart contract', async function () {
     }])
 
   })
-  
+
 
 })
