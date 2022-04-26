@@ -12,7 +12,7 @@ namespace common
   namespace types
   {
 
-    typedef std::variant<std::monostate, int64_t, double, eosio::name, eosio::asset, std::string, bool, eosio::time_point> variant_value;
+    // typedef std::variant<std::monostate, int64_t, double, eosio::name, eosio::asset, std::string, bool, eosio::time_point> variant_value;
     // typedef vector<uint64_t> projects_vector;
     // typedef vector<uint64_t> projects_users;
 
@@ -26,6 +26,12 @@ namespace common
     {
       eosio::name account;
       eosio::asset amount;
+    };
+
+    struct transaction_amount
+    {
+      uint64_t account_id;
+      int64_t amount;
     };
 
   }

@@ -19,7 +19,6 @@
 #include <transactions/drawdown_states.hpp>
 #include <transactions/drawdown_types.hpp>
 
-
 #include <common/tables/account_transaction.hpp>
 #include <common/tables/account.hpp>
 #include <common/tables/transaction.hpp>
@@ -35,11 +34,6 @@
 using namespace eosio;
 using namespace std;
 
-struct transaction_amount
-{
-	uint64_t account_id;
-	int64_t amount;
-};
 
 CONTRACT transactions : public contract
 {
@@ -82,11 +76,11 @@ public:
 	ACTION transact(name actor,
 									uint64_t transaction_id,
 									uint64_t project_id,
-									vector<transaction_amount> & amounts,
+									vector<common::types::transaction_amount> & amounts,
 									uint64_t & date,
 									string & description,
 									std::string & drawdown_type,
-									vector<common::types::transaction_subtypes> & transactions,
+									vector<common::types::transaction_subtypes> & accounting,
 									vector<common::types::url_information> & supporting_files);
 
 	ACTION deletetrxn(name actor,
@@ -96,16 +90,18 @@ public:
 	ACTION edittrxn(name actor,
 									uint64_t project_id,
 									uint64_t transaction_id,
-									vector<transaction_amount> amounts,
+									vector<common::types::transaction_amount> amounts,
 									uint64_t date,
 									string description,
 									std::string & drawdown_type,
-									vector<common::types::url_information> supporting_files);
+									vector<common::types::transaction_subtypes> & accounting,
+									vector<common::types::url_information> & supporting_files);
 
 	ACTION deletetrxns(uint64_t project_id);
 
 	ACTION submitdrwdn(name actor,
 										 uint64_t project_id,
+										 vector<common::types::transaction_subtypes> &accounting,
 										 vector<common::types::url_information> files);
 
 	ACTION initdrawdown(uint64_t project_id, std::string drawdown_type);
@@ -123,9 +119,10 @@ private:
 	void make_transaction(name actor,
 												uint64_t transaction_id,
 												uint64_t project_id,
-												vector<transaction_amount> & amounts,
+												vector<common::types::transaction_amount> & amounts,
 												uint64_t & date,
 												string & description,
-												std::string &drawdown_type,
-												vector<common::types::url_information> &supporting_files);
+												std::string & drawdown_type,
+												vector<common::types::transaction_subtypes> & accounting,
+												vector<common::types::url_information> & supporting_files);
 };

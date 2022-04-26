@@ -17,10 +17,11 @@
 void transactions::make_transaction(name actor,
 																		uint64_t transaction_id,
 																		uint64_t project_id,
-																		vector<transaction_amount> &amounts,
+																		vector<common::types::transaction_amount> &amounts,
 																		uint64_t &date,
 																		string &description,
 																		std::string &drawdown_type,
+																		vector<common::types::transaction_subtypes> &accounting,
 																		vector<common::types::url_information> &supporting_files)
 {
 
@@ -241,11 +242,11 @@ ACTION transactions::reset()
 ACTION transactions::transact(name actor,
 															uint64_t transaction_id,
 															uint64_t project_id,
-															vector<transaction_amount> &amounts,
+															vector<common::types::transaction_amount> &amounts,
 															uint64_t &date,
 															string &description,
 															std::string &drawdown_type,
-															vector<common::types::transaction_subtypes> &transactions,
+															vector<common::types::transaction_subtypes> &accounting,
 															vector<common::types::url_information> &supporting_files)
 {
 
@@ -261,7 +262,7 @@ ACTION transactions::transact(name actor,
 	auto itr_project = projects.find(project_id);
 	check(itr_project != projects.end(), common::contracts::transactions.to_string() + ": the project with the id = " + to_string(project_id) + " does not exist.");
 
-	make_transaction(actor, 0, project_id, amounts, date, description, drawdown_type, supporting_files);
+	make_transaction(actor, 0, project_id, amounts, date, description, drawdown_type, accounting, supporting_files);
 }
 
 ACTION transactions::deletetrxn(name actor, uint64_t project_id, uint64_t transaction_id)
@@ -281,11 +282,12 @@ ACTION transactions::deletetrxn(name actor, uint64_t project_id, uint64_t transa
 ACTION transactions::edittrxn(name actor,
 															uint64_t project_id,
 															uint64_t transaction_id,
-															vector<transaction_amount> amounts,
+															vector<common::types::transaction_amount> amounts,
 															uint64_t date,
 															string description,
 															std::string &drawdown_type,
-															vector<common::types::url_information> supporting_files)
+															vector<common::types::transaction_subtypes> &accounting,
+															vector<common::types::url_information> &supporting_files)
 {
 
 	require_auth(actor);
@@ -316,7 +318,7 @@ ACTION transactions::edittrxn(name actor,
 	}
 
 	delete_transaction(actor, project_id, transaction_id);
-	make_transaction(actor, transaction_id, project_id, amounts, date, description, drawdown_type, supporting_files);
+	make_transaction(actor, transaction_id, project_id, amounts, date, description, drawdown_type, accounting, supporting_files);
 }
 
 ACTION transactions::deletetrxns(uint64_t project_id)
@@ -341,6 +343,7 @@ ACTION transactions::deletetrxns(uint64_t project_id)
 
 ACTION transactions::submitdrwdn(name actor,
 																 uint64_t project_id,
+																 vector<common::types::transaction_subtypes> &accounting,
 																 vector<common::types::url_information> files
 																 /*vector<common::types::url_information> files*/)
 {
