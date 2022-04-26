@@ -4,13 +4,13 @@
 
 	TODO
 	[ ] create multiple options / types of drawdowns for each project only builder and admin
-			can create those builder EB5 admin all of them.
+	 can create those builder EB5 admin all of them.
 
-	[ ] on the drawdown, summit new information for each drawdown type
+	 [ ] on the drawdown, summit new information for each drawdown type
 
-	[ ] update transactions::submitdrwdn to get the drawdown type
+	 [ ] update transactions::submitdrwdn to get the drawdown type
 
-	[ ] update transactions::transact to accept a vector of expenses
+	 [ ] update transactions::transact to accept a vector of expenses
 
 */
 
@@ -25,7 +25,7 @@ void transactions::make_transaction(name actor,
 {
 
 	transaction_tables transactions(_self, project_id);
-	account_transaction_tables accnttrxns(_self, project_id);
+	account_transaction_tables account_transacion_t(_self, project_id);
 
 	account_tables accounts(common::contracts::accounts, project_id);
 
@@ -54,7 +54,7 @@ void transactions::make_transaction(name actor,
 
 		if (ledger_id != itr_account->ledger_id)
 		{
-			check(ledger_id == 0, common::contracts::transactions.to_string() + ": can not edit diferent ledgers in the same transaction.");
+			check(ledger_id == 0, common::contracts::transactions.to_string() + ": can not edit different ledgers in the same transaction.");
 			ledger_id = itr_account->ledger_id;
 		}
 
@@ -63,12 +63,12 @@ void transactions::make_transaction(name actor,
 			transaction_category = itr_account->account_category;
 		}
 
-		accnttrxns.emplace(_self, [&](auto &atrx)
+		account_transacion_t.emplace(_self, [&](auto &item)
 											 {
-			atrx.accnt_transaction_id = accnttrxns.available_primary_key();
-			atrx.transaction_id = trx_id;
-			atrx.account_id = itr_amounts -> account_id;
-			atrx.amount = itr_amounts -> amount; });
+			item.accnt_transaction_id = account_transacion_t.available_primary_key();
+			item.transaction_id = trx_id;
+			item.account_id = itr_amounts -> account_id;
+			item.amount = itr_amounts -> amount; });
 
 		total += itr_amounts->amount;
 
@@ -141,18 +141,18 @@ void transactions::delete_transaction(name actor,
 {
 
 	transaction_tables transactions(_self, project_id);
-	account_transaction_tables accnttrxns(_self, project_id);
+	account_transaction_tables account_transacion_t(_self, project_id);
 
 	auto itr_trxn = transactions.find(transaction_id);
 	check(itr_trxn != transactions.end(), common::contracts::transactions.to_string() + ": the transaction you want to delete does not exist.");
 
-	auto accnttrxns_by_transactions = accnttrxns.get_index<"bytrxns"_n>();
-	auto itr_amount = accnttrxns_by_transactions.find(transaction_id);
+	auto account_transacion_t_by_transactions = account_transacion_t.get_index<"bytrxns"_n>();
+	auto itr_amount = account_transacion_t_by_transactions.find(transaction_id);
 	uint64_t ledger_id = 0;
 	asset total_amount = asset(0, common::currency);
 	name action_cancel_amount;
 
-	if (itr_amount != accnttrxns_by_transactions.end())
+	if (itr_amount != account_transacion_t_by_transactions.end())
 	{
 		account_tables accounts(common::contracts::accounts, project_id);
 		auto itr_account = accounts.find(itr_amount->account_id);
@@ -166,7 +166,7 @@ void transactions::delete_transaction(name actor,
 			std::make_tuple(actor, project_id, ledger_id))
 			.send();
 
-	while (itr_amount != accnttrxns_by_transactions.end() &&
+	while (itr_amount != account_transacion_t_by_transactions.end() &&
 				 itr_amount->transaction_id == transaction_id)
 	{
 
@@ -187,7 +187,7 @@ void transactions::delete_transaction(name actor,
 				std::make_tuple(project_id, itr_amount->account_id, asset(abs(itr_amount->amount), common::currency)))
 				.send();
 
-		itr_amount = accnttrxns_by_transactions.erase(itr_amount);
+		itr_amount = account_transacion_t_by_transactions.erase(itr_amount);
 	}
 
 	if (itr_trxn->drawdown_id)
@@ -220,12 +220,12 @@ ACTION transactions::reset()
 			itr_t = transactions.erase(itr_t);
 		}
 
-		account_transaction_tables accnttrxns(_self, i);
+		account_transaction_tables account_transacion_t(_self, i);
 
-		auto itr_at = accnttrxns.begin();
-		while (itr_at != accnttrxns.end())
+		auto itr_at = account_transacion_t.begin();
+		while (itr_at != account_transacion_t.end())
 		{
-			itr_at = accnttrxns.erase(itr_at);
+			itr_at = account_transacion_t.erase(itr_at);
 		}
 
 		drawdown_tables drawdowns(_self, i);
@@ -321,7 +321,7 @@ ACTION transactions::deletetrxns(uint64_t project_id)
 	require_auth(_self);
 
 	transaction_tables transactions(_self, project_id);
-	account_transaction_tables accnttrxns(_self, project_id);
+	account_transaction_tables account_transacion_t(_self, project_id);
 
 	auto itr_transaction = transactions.begin();
 	while (itr_transaction != transactions.end())
@@ -329,10 +329,10 @@ ACTION transactions::deletetrxns(uint64_t project_id)
 		itr_transaction = transactions.erase(itr_transaction);
 	}
 
-	auto itr_at = accnttrxns.begin();
-	while (itr_at != accnttrxns.end())
+	auto itr_at = account_transacion_t.begin();
+	while (itr_at != account_transacion_t.end())
 	{
-		itr_at = accnttrxns.erase(itr_at);
+		itr_at = account_transacion_t.erase(itr_at);
 	}
 }
 
