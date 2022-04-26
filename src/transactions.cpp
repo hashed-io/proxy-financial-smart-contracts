@@ -385,6 +385,8 @@ ACTION transactions::initdrawdown(uint64_t project_id, std::string drawdown_type
 {
 	require_auth(_self);
 
+	check(DRAWDOWN_TYPES.is_valid_constant(drawdown_type), common::contracts::transactions.to_string() + ": Unkown drawdown type");
+
 	drawdown_tables drawdowns(_self, project_id);
 
 	auto drawdowns_by_state = drawdowns.get_index<"bystate"_n>();
