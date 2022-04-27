@@ -108,32 +108,38 @@ void transactions::make_transaction(name actor,
 
 	check(DRAWDOWN_TYPES.is_valid_constant(drawdown_type), common::contracts::transactions.to_string() + ": Unkown drawdown type");
 
-	// if (drawdown_type) {
-	drawdown_tables drawdowns(_self, project_id);
+	if (DRAWDOWN_TYPES.is_valid_constant(drawdown_type))
+	{
+		drawdown_tables drawdowns(_self, project_id);
 
-	auto drawdowns_by_state = drawdowns.get_index<"bystate"_n>();
-	auto itr_drawdown = drawdowns_by_state.find(DRAWDOWN_STATES.OPEN);
+		auto drawdowns_by_state = drawdowns.get_index<"bystate"_n>();
+		auto itr_drawdown = drawdowns_by_state.find(DRAWDOWN_STATES.OPEN);
 
-	check(itr_drawdown != drawdowns_by_state.end(), common::contracts::transactions.to_string() + ": there are no open drawdowns.");
+		check(itr_drawdown != drawdowns_by_state.end(), common::contracts::transactions.to_string() + ": there are no open drawdowns.");
 
-	drawdown_id = itr_drawdown->drawdown_id;
+		drawdown_id = itr_drawdown->drawdown_id;
 
-	drawdowns_by_state.modify(itr_drawdown, _self, [&](auto &modified_drawdown)
-														{ modified_drawdown.total_amount += asset(total_positive, common::currency); });
-	// }
+		drawdowns_by_state.modify(itr_drawdown, _self, [&](auto &item)
+															{ 
+																item.total_amount += asset(total_positive, common::currency); });
+	}
 
-	transactions.emplace(_self, [&](auto &new_transaction)
+	transactions.emplace(_self, [&](auto &item)
 											 {
-		new_transaction.transaction_id = trx_id;
-		new_transaction.actor = actor;
-		new_transaction.timestamp = date;
-		new_transaction.description = description;
-		new_transaction.drawdown_id = drawdown_id;
-		new_transaction.transaction_category = transaction_category;
-		new_transaction.total_amount = asset(total_positive, common::currency);
+		item.transaction_id = trx_id;
+		item.actor = actor;
+		item.timestamp = date;
+		item.description = description;
+		item.drawdown_id = drawdown_id;
+		item.transaction_category = transaction_category;
+		item.total_amount = asset(total_positive, common::currency);
+
+		for (int i = 0; i < accounting.size(); i++) {
+			item.accounting.push_back(accounting[i]);
+		}
 		
 		for (int i = 0; i < supporting_files.size(); i++) {
-			new_transaction.supporting_files.push_back(supporting_files[i]);
+			item.supporting_files.push_back(supporting_files[i]);
 		} });
 }
 
@@ -201,8 +207,8 @@ void transactions::delete_transaction(name actor,
 
 		check(itr_drawdown != drawdowns_by_state.end(), common::contracts::transactions.to_string() + ": there are no open drawdowns.");
 
-		drawdowns_by_state.modify(itr_drawdown, _self, [&](auto &modified_drawdown)
-															{ modified_drawdown.total_amount -= total_amount; });
+		drawdowns_by_state.modify(itr_drawdown, _self, [&](auto &item)
+															{ item.total_amount -= total_amount; });
 	}
 
 	transactions.erase(itr_trxn);
@@ -366,14 +372,20 @@ ACTION transactions::submitdrwdn(name actor,
 	check(itr_drawdown != drawdowns_by_state.end(),
 				common::contracts::transactions.to_string() + ": the project has no open drawdowns, the project may not exist.");
 
-	drawdowns_by_state.modify(itr_drawdown, _self, [&](auto &modified_drawdown)
+	drawdowns_by_state.modify(itr_drawdown, _self, [&](auto &item)
 														{
-		modified_drawdown.state = DRAWDOWN_STATES.CLOSE;
-		modified_drawdown.close_date = eosio::current_time_point().sec_since_epoch();
+		item.state = DRAWDOWN_STATES.CLOSE;
+		item.close_date = eosio::current_time_point().sec_since_epoch();
+
+		for (int i = 0; i < accounting.size(); i++) {
+			item.accounting.push_back(accounting[i]);
+		}
 
 		for (int i = 0; i < files.size(); i++) {
-			modified_drawdown.files.push_back(files[i]);
+			item.files.push_back(files[i]);
 		} });
+
+		
 
 	drawdowns.emplace(_self, [&](auto &item)
 										{
@@ -433,15 +445,15 @@ ACTION transactions::toggledrdwn(uint64_t project_id,
 	auto drawdown_by_state = drawdowns.get_index<"bystate"_n>();
 	auto itr_drawdown_by_state = drawdown_by_state.find(DRAWDOWN_STATES.OPEN);
 
-	drawdown_by_state.modify(itr_drawdown_by_state, _self, [&](auto &md)
-													 { md.state = DRAWDOWN_STATES.CLOSE; });
+	drawdown_by_state.modify(itr_drawdown_by_state, _self, [&](auto &item)
+													 { item.state = DRAWDOWN_STATES.CLOSE; });
 
 	auto itr_drawdown = drawdowns.find(drawdown_id);
 	check(itr_drawdown != drawdowns.end(), "no drawdown found.");
 
-	drawdowns.modify(itr_drawdown, _self, [&](auto &mdrawdown)
+	drawdowns.modify(itr_drawdown, _self, [&](auto &item)
 									 {
-		if (mdrawdown.state == DRAWDOWN_STATES.CLOSE) {
-			mdrawdown.state = DRAWDOWN_STATES.OPEN;
+		if (item.state == DRAWDOWN_STATES.CLOSE) {
+			item.state = DRAWDOWN_STATES.OPEN;
 		} });
 }
