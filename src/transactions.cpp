@@ -244,6 +244,7 @@ ACTION transactions::reset()
 		}
 	}
 }
+// TODO change this thing or is this the onlyone than handles the transaction?
 
 ACTION transactions::transact(name actor,
 															uint64_t transaction_id,

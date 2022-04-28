@@ -1,16 +1,15 @@
 #include "../common/constants.hpp"
 
 #include <set>
-#include <string>
 
 using namespace std;
 
-class EntityTypes
+class EntityTypes // its more like a rol
 {
 public:
-    const string INVESTOR = common::projects::entity::investor;
-    const string DEVELOPER = common::projects::entity::developer;
-    const string FUND = common::projects::entity::fund;
+    const eosio::name INVESTOR = common::projects::entity::investor;
+    const eosio::name DEVELOPER = common::projects::entity::developer;
+    const eosio::name FUND = common::projects::entity::fund;
 
     EntityTypes()
     {
@@ -19,12 +18,12 @@ public:
         constants.insert(FUND);
     }
 
-    bool is_valid_constant(string constant)
+    bool is_valid_constant(eosio::name constant)
     {
         auto itr = constants.find(constant);
         return (itr != constants.end()) ? true : false;
     }
 
 private:
-    set<string> constants;
+    set<eosio::name> constants;
 } ENTITY_TYPES;

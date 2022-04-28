@@ -30,7 +30,7 @@ namespace common
     // constexpr eosio::name transactions = "proxycaptrx1"_n;
     // constexpr eosio::name permissions = "proxycapper1"_n;
     // constexpr eosio::name budgets = "proxycapbdg1"_n;
-    
+
     // TESTNET CONTRACTS (NEW)
     // constexpr eosio::name projects = "proxyv1prjct"_n;
     // constexpr eosio::name accounts = "proxyv1accnt"_n;
@@ -47,10 +47,10 @@ namespace common
       constexpr int64_t status_open = 1;
       constexpr int64_t status_close = 2;
 
-      const std::string type_EB5 = "EB-5";
-      const std::string type_construction_loan = "Construction Loan";
-      const std::string type_developer_equity = "Developer Equity";
-    } // namespace drawdown
+      const std::string type_EB5 = "EB-5";                            // can be only created by contructor and admin
+      const std::string type_construction_loan = "Construction Loan"; // created by investors
+      const std::string type_developer_equity = "Developer Equity";   // created by investors
+    }                                                                 // namespace drawdown
 
   } // namespace transactions
 
@@ -117,9 +117,9 @@ namespace common
 
     namespace entity
     {
-      const std::string investor = "Investor";
-      const std::string developer = "Developer";
-      const std::string fund = "Fund";
+      const eosio::name investor = "investor"_n;
+      const eosio::name developer = "developer"_n;
+      const eosio::name fund = "fund"_n;
     } // namespace entity
 
     namespace investment
