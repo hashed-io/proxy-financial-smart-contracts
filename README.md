@@ -1,33 +1,58 @@
-### Compiler Setup in .env file
+# Proxy financial smart contracts
 
-The COMPILER variable can either be docker or local - if you have eos-cpp installed on your local machine you can use local, if you want to use a docker container make sure docker is running and it'll do everything for you.
+This repository contains the smart contracts for the proxy financial project
 
-### Tools Setup
+Specific documentation can be found at src/ sub folders or in docs/
 
-```
+## Setup
+
+Install the node libraries by running
+
+```bash
 npm install
-npm install -g eoslime
 ```
 
-# Deploy Tools
+To setup the project, clone the .env.example as .env on the same directory
 
-Use npm run to compile, deploy, test:
-
- * Compile all the contracts. They will be stored in the artifacts directory
-
-```
-npm run compile
+```bash
+cp .env.example .env
 ```
 
- * Deploy all the contracts and create the permissions.
- * To chose a block chain (local or testnet) set the variable EOSIO_NETWORK to "local" or "telosTestnet" in the .env file.
- * The permissions and other configurations are in the helper.js file.
+On the .env file you can see several variables, you can customize them as follows
 
-```
-npm run deploy
+| variable                |              function               |                   possible values |
+| ----------------------- | :---------------------------------: | --------------------------------: |
+| COMPILER                |  It defines which compiler to use   |                     local, docker |
+| CHAIN_NAME              | It defines which endpoint to choose | local, telosTestnet, telosMainnet |
+| LOCAL_PRIVATE_KEY       |       EOSIO local private key       |                         eosio key |
+| LOCAL_PUBLIC_KEY        |       EOSIO local public key        |                         eosio key |
+| TLOSTESTNET_PRIVATE_KEY |   TLOS TESTNET local private key    |                 proxy's admin key |
+| TLOSTESTNET_PUBLIC_KEY  |    TLOS TESTNET local public key    |                 proxy's admin key |
+| TLOSMAINNET_PUBLIC_KEY  |   TLOS MAINNET local private key    |                 proxy's admin key |
+| TLOSMAINNET_PRIVATE_KEY |    TLOS MAINNET local public key    |                 proxy's admin key |
+
+Then you can run the following command to compile the smart contracts
+
+```bash
+npm run build
 ```
 
-* Test all the contracts. It will work only on a local node.
-```
+this commands just compiles the smart contracts, the wasm and abi files can be found at compiled/
+
+## Test
+
+We used mocha to test the smart contracts, make sure you have compiled them previously, then you can run all the test by running
+
+```bash
 npm run test
 ```
+
+## Deploy
+
+If you want to initialize all the contracts in a given chain (local, testnet...) you can run
+
+```bash
+npm run initAll
+```
+
+This commands compiles all the smart contracts, then deploys them with the accounts names written on scripts/config.js file, then generates all the permissions needed for the interaction.
