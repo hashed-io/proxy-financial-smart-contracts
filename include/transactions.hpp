@@ -104,14 +104,14 @@ public:
 										 vector<common::types::transaction_subtypes> &accounting,
 										 vector<common::types::url_information> files);
 
-	ACTION initdrawdown(uint64_t project_id, std::string drawdown_type);
+	ACTION initdrawdown(const uint64_t &project_id, const eosio::name &drawdown_type);
 
 	ACTION toggledrdwn(uint64_t project_id,
 										 uint64_t drawdown_id);
 
 private:
-	type_tables account_types;
 
+	type_tables account_types;
 	project_tables projects;
 
 	void delete_transaction(name actor, uint64_t project_id, uint64_t transaction_id);

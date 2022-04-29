@@ -44,13 +44,30 @@ namespace common
   {
     namespace drawdown
     {
+      namespace status
+      {
+        constexpr int64_t daft = 0;
+        constexpr int64_t submitted = 1;
+        constexpr int64_t reviewed = 2;
+        constexpr int64_t approved = 3;
+        /* There is no a rejected because rejected dawdowns return to a daft state */
+      } // namespace status
+
       constexpr int64_t status_open = 1;
       constexpr int64_t status_close = 2;
 
       const std::string type_EB5 = "EB-5";                            // can be only created by contructor and admin
       const std::string type_construction_loan = "Construction Loan"; // created by investors
       const std::string type_developer_equity = "Developer Equity";   // created by investors
-    }                                                                 // namespace drawdown
+
+      namespace type
+      {
+        constexpr eosio::name eb5 = "eb5"_n;
+        constexpr eosio::name construction_loan = "constrcloan"_n;
+        constexpr eosio::name developer_equity = "devequity"_n;
+      } // namespace types
+
+    } // namespace drawdown
 
   } // namespace transactions
 

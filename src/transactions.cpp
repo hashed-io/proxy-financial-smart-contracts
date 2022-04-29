@@ -1,5 +1,12 @@
 #include <transactions.hpp>
 
+#include <drawdowns/drawdown_factory.hpp>
+
+#include "drawdowns/base_drawdown.cpp"
+#include "drawdowns/eb5_drawdown.cpp"
+#include "drawdowns/construction_loan_drawdown.cpp"
+#include "drawdowns/developer_equity_drawdown.cpp""
+
 /*
 
 	TODO
@@ -120,8 +127,7 @@ void transactions::make_transaction(name actor,
 		drawdown_id = itr_drawdown->drawdown_id;
 
 		drawdowns_by_state.modify(itr_drawdown, _self, [&](auto &item)
-															{ 
-																item.total_amount += asset(total_positive, common::currency); });
+															{ item.total_amount += asset(total_positive, common::currency); });
 	}
 
 	transactions.emplace(_self, [&](auto &item)
@@ -386,8 +392,6 @@ ACTION transactions::submitdrwdn(name actor,
 			item.files.push_back(files[i]);
 		} });
 
-		
-
 	drawdowns.emplace(_self, [&](auto &item)
 										{
 		item.drawdown_id = get_valid_index(drawdowns.available_primary_key());
@@ -397,41 +401,10 @@ ACTION transactions::submitdrwdn(name actor,
 		item.close_date = 0; });
 }
 
-ACTION transactions::initdrawdown(uint64_t project_id, std::string drawdown_type)
+ACTION transactions::initdrawdown(const uint64_t &project_id, const eosio::name &drawdown_type)
 {
-	require_auth(_self);
-
-	check(DRAWDOWN_TYPES.is_valid_constant(drawdown_type), common::contracts::transactions.to_string() + ": Unkown drawdown type");
-
-	drawdown_tables drawdowns(_self, project_id);
-
-	auto drawdowns_by_state = drawdowns.get_index<"bystate"_n>();
-	auto itr_drawdown = drawdowns_by_state.find(DRAWDOWN_STATES.OPEN);
-
-	bool existing_drawdown = false;
-
-	while (itr_drawdown != drawdowns_by_state.end())
-	{
-		/* code */
-		if (itr_drawdown->type == drawdown_type)
-		{
-			existing_drawdown = true;
-			break;
-		}
-
-		itr_drawdown++;
-	}
-
-	check(!existing_drawdown, "Drawdown already exists!");
-
-	drawdowns.emplace(_self, [&](auto &item)
-										{
-		item.drawdown_id = get_valid_index(drawdowns.available_primary_key());
-		item.type = drawdown_type;
-		item.total_amount = asset(0, common::currency);
-		item.state = DRAWDOWN_STATES.OPEN;
-		item.open_date = eosio::current_time_point().sec_since_epoch();
-		item.close_date = 0; });
+	std::unique_ptr<Drawdown> drawdown = std::unique_ptr<Drawdown>(DrawdownFactory::Factory(project_id, *this, drawdown_type));
+	drawdown->create(project_id, drawdown_type);
 }
 
 ACTION transactions::toggledrdwn(uint64_t project_id,

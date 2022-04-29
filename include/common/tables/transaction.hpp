@@ -10,7 +10,7 @@ using namespace eosio;
     eosio::name actor;                                            \
     uint64_t timestamp;                                           \
     std::string description;                                      \
-    uint64_t drawdown_id;                                         \
+    uint64_t drawdown_id; /* this may change? */                  \
     eosio::asset total_amount;                                    \
     uint64_t transaction_category;                                \
     vector<common::types::transaction_subtypes> accounting;       \
