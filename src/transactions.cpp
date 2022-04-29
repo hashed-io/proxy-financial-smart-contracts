@@ -17,7 +17,7 @@
 
 	 [ ] update transactions::submitdrwdn to get the drawdown type
 
-	 [ ] update transactions::transact to accept a vector of expenses
+	 [ ] update transactions::transact to accept a vector of expeses
 
 */
 
@@ -404,7 +404,7 @@ ACTION transactions::submitdrwdn(name actor,
 ACTION transactions::initdrawdown(const uint64_t &project_id, const eosio::name &drawdown_type)
 {
 	std::unique_ptr<Drawdown> drawdown = std::unique_ptr<Drawdown>(DrawdownFactory::Factory(project_id, *this, drawdown_type));
-	drawdown->create(project_id, drawdown_type);
+	drawdown->create(drawdown_type);
 }
 
 ACTION transactions::toggledrdwn(uint64_t project_id,

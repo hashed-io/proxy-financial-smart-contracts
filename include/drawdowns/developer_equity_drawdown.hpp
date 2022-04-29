@@ -11,7 +11,7 @@ class DeveloperEquityDrawdown : public Drawdown {
 
   protected:
 
-    virtual void create_impl(const uint64_t &project_id, const eosio::name &drawdown_type);
-    virtual void update_impl(const uint64_t &project_id, const uint64_t &drawdown_id);
+    virtual void create_impl(const eosio::name &drawdown_type);
+    virtual void update_impl(const uint64_t &drawdown_id);
 
 };

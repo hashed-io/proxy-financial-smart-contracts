@@ -11,19 +11,19 @@ public:
 
   virtual ~Drawdown(){};
 
-  virtual void check_requirements(const uint64_t &project_id);
+  virtual void check_requirements();
 
-  virtual void create(const uint64_t &project_id, const eosio::name &drawdown_type);
-  virtual void update(const uint64_t &project_id, const uint64_t &drawdown_id);
+  virtual void create(const eosio::name &drawdown_type);
+  virtual void update(const uint64_t &drawdown_id);
 
-  virtual void submit(const uint64_t &project_id, const uint64_t &drawdown_id);
+  virtual void submit(const uint64_t &drawdown_id);
 
-  virtual void approve(const uint64_t &project_id, const uint64_t &drawdown_id);
-  virtual void reject(const uint64_t &project_id, const uint64_t &drawdown_id);
+  virtual void approve(const uint64_t &drawdown_id);
+  virtual void reject(const uint64_t &drawdown_id);
 
 protected:
-  virtual void create_impl(const uint64_t &project_id, const eosio::name &drawdown_type) = 0;
-  virtual void update_impl(const uint64_t &project_id, const uint64_t &drawdown_id) = 0;
+  virtual void create_impl(const eosio::name &drawdown_type) = 0;
+  virtual void update_impl(const uint64_t &drawdown_id) = 0;
 
   uint64_t project_id;
   transactions &m_contract;

@@ -1,6 +1,6 @@
 #include <drawdowns/construction_loan_drawdown.hpp>
 
-void ConstructionLoanDrawdown::create_impl(const uint64_t &project_id, const eosio::name &drawdown_type)
+void ConstructionLoanDrawdown::create_impl(const eosio::name &drawdown_type)
 {
   transactions::drawdown_tables drawdown_t(contract_name, project_id);
 
@@ -29,7 +29,7 @@ void ConstructionLoanDrawdown::create_impl(const uint64_t &project_id, const eos
 		item.close_date = 0; });
 }
 
-void ConstructionLoanDrawdown::update_impl(const uint64_t &project_id, const uint64_t &drawdown_id)
+void ConstructionLoanDrawdown::update_impl(const uint64_t &drawdown_id)
 {
   transactions::drawdown_tables drawdown_t(contract_name, project_id);
   auto drawdown_itr = drawdown_t.find(drawdown_id);

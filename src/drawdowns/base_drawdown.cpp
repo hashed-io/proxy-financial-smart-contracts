@@ -1,20 +1,19 @@
 #include <drawdowns/base_drawdown.hpp>
 
-void Drawdown::check_requirements(const uint64_t &project_id)
+void Drawdown::check_requirements()
 {
   /* code here */
 }
 
-void Drawdown::create(const uint64_t &project_id, const eosio::name &drawdown_type)
+void Drawdown::create(const eosio::name &drawdown_type)
 {
 
   transactions::drawdown_tables drawdown_t(contract_name, project_id);
 
-  create_impl(project_id, drawdown_type);
-
+  create_impl(drawdown_type);
 }
 
-void Drawdown::update(const uint64_t &project_id, const uint64_t &drawdown_id)
+void Drawdown::update(const uint64_t &drawdown_id)
 {
   /* code here */
   transactions::drawdown_tables drawdown_t(contract_name, project_id);
@@ -22,10 +21,10 @@ void Drawdown::update(const uint64_t &project_id, const uint64_t &drawdown_id)
 
   check(drawdown_itr != drawdown_t.end(), "Drawdown not found");
 
-  update_impl(project_id, drawdown_id);
+  update_impl(drawdown_id);
 }
 
-void Drawdown::submit(const uint64_t &project_id, const uint64_t &drawdown_id)
+void Drawdown::submit(const uint64_t &drawdown_id)
 {
   /* code here */
   transactions::drawdown_tables drawdown_t(contract_name, project_id);
@@ -37,7 +36,7 @@ void Drawdown::submit(const uint64_t &project_id, const uint64_t &drawdown_id)
                     { item.state = DRAWDOWN_STATES.SUBMITTED; });
 }
 
-void Drawdown::approve(const uint64_t &project_id, const uint64_t &drawdown_id)
+void Drawdown::approve(const uint64_t &drawdown_id)
 {
   /* code here */
   transactions::drawdown_tables drawdown_t(contract_name, project_id);
@@ -51,7 +50,7 @@ void Drawdown::approve(const uint64_t &project_id, const uint64_t &drawdown_id)
                     { item.state = DRAWDOWN_STATES.APPROVED; });
 }
 
-void Drawdown::reject(const uint64_t &project_id, const uint64_t &drawdown_id)
+void Drawdown::reject(const uint64_t &drawdown_id)
 {
   /* code here */
   transactions::drawdown_tables drawdown_t(contract_name, project_id);
