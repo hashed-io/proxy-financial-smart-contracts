@@ -45,6 +45,7 @@ describe('Tests for projects smart contract', async function () {
   })
 
   it('Add test entities', async function () {
+
     // Arrange
     const developerEntity = await EntityFactory.createWithDefaults({ type: EntityConstants.developer });
     const developerParams = developerEntity.getActionParams()
@@ -56,6 +57,7 @@ describe('Tests for projects smart contract', async function () {
     const fundParams = fundEntity.getActionParams()
 
 
+    console.log(developerEntity, investorEntity, fundEntity)
     //Act
     await contracts.projects.addentity(...developerParams, { authorization: `${developerParams[0]}@active` })
 
@@ -69,24 +71,24 @@ describe('Tests for projects smart contract', async function () {
       table: 'entities',
       json: true
     })
-    console.log('\n\n Entities table : ', entitiesTable)
+    console.table(entitiesTable.rows); 4
 
     // Assert
     assert.deepStrictEqual(entitiesTable.rows, [{
       entity_id: 1,
-      entity_name: developerParams[1],
-      description: developerParams[2],
-      type: EntityConstants.developer
+      entity_name: developerEntity.params.entity_name,
+      description: developerEntity.params.description,
+      role: developerEntity.params.type
     }, {
       entity_id: 2,
-      entity_name: investorParams[1],
-      description: investorParams[2],
-      type: EntityConstants.investor
+      entity_name: investorEntity.params.entity_name,
+      description: investorEntity.params.description,
+      role: investorEntity.params.type
     }, {
       entity_id: 3,
-      entity_name: fundParams[1],
-      description: fundParams[2],
-      type: EntityConstants.fund
+      entity_name: fundEntity.params.entity_name,
+      description: fundEntity.params.description,
+      role: fundEntity.params.type
     }])
 
   })

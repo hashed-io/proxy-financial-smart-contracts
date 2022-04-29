@@ -6,18 +6,20 @@ const Roles = {
   fund: "fund"
 }
 
-class Entity {
+class User {
   constructor(
     actor,
-    entity_name,
-    description,
-    role
+    user_name,
+    entity_id,
+    role,
+    related_projects
   ) {
     this.params = {
       actor,
-      entity_name,
-      description,
-      role
+      user_name,
+      entity_id,
+      role,
+      related_projects
     }
   }
 
@@ -27,20 +29,20 @@ class Entity {
       this.params.actor,
       this.params.entity_name,
       this.params.description,
-      this.params.role
+      this.params.role  
     ]
   }
 
 }
 
-class EntityFactory {
+class UserFactory {
   static createEntry({
     actor,
     entity_name,
     description,
     role
   }) {
-    return new Entity(
+    return new User(
       actor,
       entity_name,
       description,
@@ -64,14 +66,14 @@ class EntityFactory {
     }
 
     if (!description) {
-      description = `A test entity for ${role.toString()}`
+      description = `A test entity for ${role.toString()} role`
     }
 
     if (!role) {
       role = Roles.developer
     }
 
-    return EntityFactory.createEntry({
+    return UserFactory.createEntry({
       actor,
       entity_name,
       description,
@@ -81,4 +83,4 @@ class EntityFactory {
 }
 
 
-module.exports = { Entity, EntityFactory, EntityConstants: Roles }
+module.exports = { User, UserFactory, Roles }

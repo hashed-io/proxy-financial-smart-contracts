@@ -44,7 +44,9 @@ public:
 	transactions(name receiver, name code, datastream<const char *> ds)
 			: contract(receiver, code, ds),
 				projects(common::contracts::projects, common::contracts::projects.value),
+				users(common::contracts::projects, common::contracts::projects.value),
 				account_types(common::contracts::accounts, common::contracts::accounts.value)
+				
 	{
 	}
 
@@ -118,6 +120,7 @@ private:
 
 	type_tables account_types;
 	project_tables projects;
+	user_tables users;
 
 	void delete_transaction(name actor, uint64_t project_id, uint64_t transaction_id);
 

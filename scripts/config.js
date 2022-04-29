@@ -75,6 +75,7 @@ const contractsConfig = {
   //   contract('projects', 'proxycapprox'),
   //   contract('transactions', 'proxycaptrx1')
   // ],
+  
   //  NEW ACCOUNTS CREATED
   [supportedChains.telosTestnet]: [
     contract('accounts', 'proxyv1accnt'),
