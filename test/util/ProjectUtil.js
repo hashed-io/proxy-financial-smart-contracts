@@ -18,9 +18,9 @@ const ProjectConstants ={
     completed: 4
   },
   entity:{
-    investor: "Investor",
-    developer: "Developer",
-    fund: "Fund"
+    investor: "investor",
+    developer: "developer",
+    fund: "fund"
   },
   investment:{
     pending: 1,

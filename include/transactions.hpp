@@ -24,6 +24,7 @@
 #include <common/tables/transaction.hpp>
 #include <common/tables/drawdown.hpp>
 #include <common/tables/type.hpp>
+#include <common/tables/user.hpp>
 
 #include <common/tables/project.hpp>
 
@@ -70,6 +71,10 @@ public:
 	DEFINE_TYPE_TABLE
 
 	DEFINE_TYPE_TABLE_MULTI_INDEX
+
+	DEFINE_USER_TABLE
+
+	DEFINE_USER_TABLE_MULTI_INDEX
 
 	ACTION reset();
 

@@ -1,9 +1,9 @@
 const { createRandomAccount, createRandomName } = require('../../scripts/eosio-util')
 
-const EntityConstants = {
-  investor: "Investor",
-  developer: "Developer",
-  fund: "Fund"
+const Roles = {
+  investor: "investor",
+  developer: "developer",
+  fund: "fund"
 }
 
 class Entity {
@@ -68,7 +68,7 @@ class EntityFactory {
     }
 
     if (!type) {
-      type = EntityConstants.developer
+      type = Roles.developer
     }
 
     return EntityFactory.createEntry({
@@ -81,4 +81,4 @@ class EntityFactory {
 }
 
 
-module.exports = { Entity, EntityFactory, EntityConstants }
+module.exports = { Entity, EntityFactory, EntityConstants: Roles }
