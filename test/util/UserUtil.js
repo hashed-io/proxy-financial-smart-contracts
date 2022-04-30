@@ -8,76 +8,93 @@ const Roles = {
 
 class User {
   constructor(
-    actor,
+    account,
     user_name,
     entity_id,
     role,
-    related_projects
+    related_projects,
+    description
   ) {
     this.params = {
-      actor,
+      account,
       user_name,
       entity_id,
       role,
-      related_projects
+      related_projects,
+      description
     }
   }
-
-  getActionParams() {
-
+  getCreateParams() {
     return [
-      this.params.actor,
-      this.params.entity_name,
-      this.params.description,
-      this.params.role  
+      this.params.account,
+      this.params.user_name,
+      this.params.role
     ]
   }
+
+
 
 }
 
 class UserFactory {
   static createEntry({
-    actor,
-    entity_name,
-    description,
-    role
+    account,
+    user_name,
+    entity_id,
+    role,
+    related_projects,
+    description
   }) {
     return new User(
-      actor,
-      entity_name,
-      description,
-      role
+      account,
+      user_name,
+      entity_id,
+      role,
+      related_projects,
+      description
     )
   }
 
   static async createWithDefaults({
-    actor,
-    entity_name,
-    description,
-    role
+    account,
+    user_name,
+    entity_id,
+    role,
+    related_projects,
+    description
   }) {
 
-    if (!actor) {
-      actor = await createRandomAccount()
+    if (!account) {
+      account = await createRandomAccount()
     }
 
-    if (!entity_name) { 
-      entity_name = createRandomName() 
+    if (!user_name) {
+      user_name = createRandomName()
     }
 
-    if (!description) {
-      description = `A test entity for ${role.toString()} role`
+    if (!entity_id) {
+      entity_id = 0
     }
 
     if (!role) {
       role = Roles.developer
     }
 
+    if (!related_projects) {
+      related_projects = []
+    }
+
+    if (!description) {
+      description = ""
+    }
+
     return UserFactory.createEntry({
-      actor,
-      entity_name,
-      description,
-      role
+      account,
+      user_name,
+      entity_id,
+      role,
+      related_projects,
+      description
     })
   }
 }

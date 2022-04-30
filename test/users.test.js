@@ -8,6 +8,8 @@ const { updatePermissions } = require('../scripts/permissions');
 const { EnvironmentUtil } = require('./util/EnvironmentUtil');
 const { EntityFactory, EntityConstants } = require('./util/EntityUtil');
 const { ProjectFactory, ProjectConstants, ProjectUtil } = require('./util/ProjectUtil');
+const { UserFactory, Roles } = require('./util/UserUtil');
+
 const { func } = require('promisify');
 const assert = require('assert');
 
@@ -15,6 +17,22 @@ const expect = require('chai').expect;
 
 const { projects, transactions } = contractNames;
 
+const createRolesCases = (() => {
+  return [
+    {
+      testName: 'Create an Admin account',
+      role: Roles.fund
+    },
+    {
+      testName: 'Create a Builder account',
+      role: Roles.developer
+    },
+    {
+      testName: 'Create an Investor account',
+      role: Roles.investor
+    }
+  ]
+})()
 describe('Tests for projects smart contract', async function () {
 
   let contracts;
@@ -42,6 +60,40 @@ describe('Tests for projects smart contract', async function () {
     await EnvironmentUtil.killNode();
 
   });
+
+  createRolesCases.forEach(({ testName, role }) => {
+    it.only(testName, async () => {
+
+      // Arrange
+      const user = await UserFactory.createWithDefaults({ role: role });
+      // console.table(user);
+
+      // Act
+      await contracts.projects.adduser(...user.getCreateParams(), { authorization: `${projects}@active` })
+
+      // Assert
+      const usersTable = await rpc.get_table_rows({
+        code: projects,
+        scope: projects,
+        table: 'users',
+        json: true
+      });
+
+      // console.table(usersTable.rows);
+
+      expect(usersTable.rows).to.deep.include.members([{
+        account: user.params.account,
+        description: "",
+        user_name: user.params.user_name,
+        entity_id: user.params.entity_id,
+        related_projects: [],
+        role: role
+      }]);
+
+    });
+
+  })
+
 
   it('Add test entities', async function () {
 
@@ -92,7 +144,7 @@ describe('Tests for projects smart contract', async function () {
 
   });
 
-  it.only('Create an user', async function () {
+  it('Create an user', async function () {
 
     // Arrange
     const developerEntity = await EntityFactory.createWithDefaults({ role: EntityConstants.developer });
