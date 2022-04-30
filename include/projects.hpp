@@ -36,11 +36,11 @@ public:
     using contract::contract;
     projects(name receiver, name code, datastream<const char *> ds)
         : contract(receiver, code, ds),
-          projects_table(receiver, receiver.value),
-          users(receiver, receiver.value),
-          entities(receiver, receiver.value),
-          investments(receiver, receiver.value),
-          transfers(receiver, receiver.value)
+          project_t(receiver, receiver.value),
+          user_t(receiver, receiver.value),
+          entity_t(receiver, receiver.value),
+          investment_t(receiver, receiver.value),
+          fund_transfer_t(receiver, receiver.value)
     {
     }
 
@@ -68,24 +68,24 @@ public:
 
     ACTION resetusers();
 
-    ACTION addproject(const eosio::name & actor,
-                      const std::string & project_class,
-                      const std::string & project_name,
-                      const std::string & description,
-                      const eosio::asset & total_project_cost,
-                      const eosio::asset & debt_financing,
-                      const uint8_t & term,
-                      const uint16_t & interest_rate,
-                      const std::string & loan_agreement, // url
-                      const eosio::asset & total_equity_financing,
-                      const eosio::asset & total_gp_equity,
-                      const eosio::asset & private_equity,
-                      const uint16_t & annual_return,
-                      const std::string & project_co_lp, // url
-                      const uint64_t & project_co_lp_date,
-                      const uint64_t & projected_completion_date,
-                      const uint64_t & projected_stabilization_date,
-                      const uint64_t & anticipated_year_sale_refinance);
+    ACTION addproject(const eosio::name &actor,
+                      const std::string &project_class,
+                      const std::string &project_name,
+                      const std::string &description,
+                      const eosio::asset &total_project_cost,
+                      const eosio::asset &debt_financing,
+                      const uint8_t &term,
+                      const uint16_t &interest_rate,
+                      const std::string &loan_agreement, // url
+                      const eosio::asset &total_equity_financing,
+                      const eosio::asset &total_gp_equity,
+                      const eosio::asset &private_equity,
+                      const uint16_t &annual_return,
+                      const std::string &project_co_lp, // url
+                      const uint64_t &project_co_lp_date,
+                      const uint64_t &projected_completion_date,
+                      const uint64_t &projected_stabilization_date,
+                      const uint64_t &anticipated_year_sale_refinance);
 
     ACTION editproject(const eosio::name &actor,
                        const uint64_t &project_id,
@@ -159,12 +159,20 @@ public:
 
     ACTION changestatus(uint64_t project_id, uint64_t status);
 
+    ACTION adduser(const eosio::name &account, const std::string &user_name, const eosio::name &role);
+
+    ACTION assignuser(const eosio::name &account, const uint64_t &project_id);
+
+    ACTION removeuser(const eosio::name &account, const uint64_t &project_id);
+
+    ACTION deleteuser(const eosio::name &account);
+
 private:
-    project_tables projects_table;
-    user_tables users;
-    entity_tables entities;
-    investment_tables investments;
-    fund_transfer_tables transfers;
+    project_tables project_t;
+    user_tables user_t;
+    entity_tables entity_t;
+    investment_tables investment_t;
+    fund_transfer_tables fund_transfer_t;
 
     void check_user_role(eosio::name user, eosio::name role);
     void delete_transfer_aux(uint64_t transfer_id);

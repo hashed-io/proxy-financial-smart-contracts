@@ -134,9 +134,9 @@ namespace common
 
     namespace entity
     {
-      const eosio::name investor = "investor"_n;
-      const eosio::name developer = "developer"_n;
-      const eosio::name fund = "fund"_n;
+      constexpr eosio::name investor = "investor"_n;
+      constexpr eosio::name developer = "developer"_n;
+      constexpr eosio::name fund = "fund"_n;
     } // namespace entity
 
     namespace investment
