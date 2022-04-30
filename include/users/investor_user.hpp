@@ -11,7 +11,7 @@ class Investor : public User {
 
   protected:
 
-    virtual void update_impl(const eosio::name &user);
-    virtual void assign_impl(const eosio::name &user, const uint64_t &project_id);
+    virtual void update_impl(const eosio::name &account);
+    virtual void assign_impl(const eosio::name &account, const uint64_t &project_id);
 
 };

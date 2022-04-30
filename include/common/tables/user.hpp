@@ -8,6 +8,7 @@ using namespace eosio;
     uint64_t entity_id;                /* this may be deprecated */                                   \
     eosio::name role;                  /* admin, builder, investor */                                 \
     vector<uint64_t> related_projects; /* ids of projects */                                          \
+    std::string description; /* ids of projects */                                          \
                                                                                                       \
     uint64_t primary_key() const { return account.value; }                                            \
     uint64_t by_role() const { return role.value; }                                                   \
