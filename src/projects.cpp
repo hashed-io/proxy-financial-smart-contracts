@@ -630,12 +630,26 @@ ACTION projects::changestatus(uint64_t project_id, uint64_t status)
 	auto itr = project_t.find(project_id);
 	check(itr != project_t.end(), common::contracts::projects.to_string() + ": project not found.");
 
-	project_t.modify(itr, _self, [&](auto &mp)
-									 { mp.status = status; });
+	project_t.modify(itr, _self, [&](auto &item)
+									 { item.status = status; });
 }
 
-ACTION projects::adduser(const eosio::name &account, const std::string &user_name, const eosio::name &role)
+// Users
+
+ACTION projects::adduser(const eosio::name &actor, const eosio::name &account, const std::string &user_name, const eosio::name &role)
 {
+	if (has_auth(actor))
+	{
+		require_auth(actor);
+		auto actor_itr = user_t.find(actor.value);
+		check(actor_itr != user_t.end(), actor.to_string() + " is not registred!");
+		check(actor_itr->role == common::projects::entity::fund, actor.to_string() + " has not permissions to do that");
+	}
+	else
+	{
+
+		require_auth(_self);
+	}
 	auto user_itr = user_t.find(account.value);
 	check(user_itr == user_t.end(), common::contracts::projects.to_string() + ": the account already exist.");
 
@@ -643,8 +657,20 @@ ACTION projects::adduser(const eosio::name &account, const std::string &user_nam
 	user->create(account, user_name, role, "");
 }
 
-ACTION projects::assignuser(const eosio::name &account, const uint64_t &project_id)
+ACTION projects::assignuser(const eosio::name &actor, const eosio::name &account, const uint64_t &project_id)
 {
+	if (has_auth(actor))
+	{
+		require_auth(actor);
+		auto actor_itr = user_t.find(actor.value);
+		check(actor_itr != user_t.end(), actor.to_string() + " is not registred!");
+		check(actor_itr->role == common::projects::entity::fund, actor.to_string() + " has not permissions to do that");
+	}
+	else
+	{
+
+		require_auth(_self);
+	}
 	auto user_itr = user_t.find(account.value);
 	check(user_itr != user_t.end(), common::contracts::projects.to_string() + ": the account does not exist.");
 
@@ -655,8 +681,20 @@ ACTION projects::assignuser(const eosio::name &account, const uint64_t &project_
 	user->assign(account, project_id);
 }
 
-ACTION projects::removeuser(const eosio::name &account, const uint64_t &project_id)
+ACTION projects::removeuser(const eosio::name &actor, const eosio::name &account, const uint64_t &project_id)
 {
+	if (has_auth(actor))
+	{
+		require_auth(actor);
+		auto actor_itr = user_t.find(actor.value);
+		check(actor_itr != user_t.end(), actor.to_string() + " is not registred!");
+		check(actor_itr->role == common::projects::entity::fund, actor.to_string() + " has not permissions to do that");
+	}
+	else
+	{
+
+		require_auth(_self);
+	}
 	auto user_itr = user_t.find(account.value);
 	check(user_itr != user_t.end(), common::contracts::projects.to_string() + ": the account does not exist.");
 
@@ -667,8 +705,20 @@ ACTION projects::removeuser(const eosio::name &account, const uint64_t &project_
 	user->unassign(account, project_id);
 }
 
-ACTION projects::deleteuser(const eosio::name &account)
+ACTION projects::deleteuser(const eosio::name &actor, const eosio::name &account)
 {
+	if (has_auth(actor))
+	{
+		require_auth(actor);
+		auto actor_itr = user_t.find(actor.value);
+		check(actor_itr != user_t.end(), actor.to_string() + " is not registred!");
+		check(actor_itr->role == common::projects::entity::fund, actor.to_string() + " has not permissions to do that");
+	}
+	else
+	{
+
+		require_auth(_self);
+	}
 	auto user_itr = user_t.find(account.value);
 	check(user_itr != user_t.end(), common::contracts::projects.to_string() + ": the account does not exist.");
 
