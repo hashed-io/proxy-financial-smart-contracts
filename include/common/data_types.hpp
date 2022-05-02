@@ -47,5 +47,13 @@ namespace common
       std::string &description;
     };
 
+    struct transaction_pram
+    {
+      uint64_t date;
+      transaction_amount amounts;
+      std::string description;
+      common::types::url_information supporting_files;
+    };
+
   }
 }

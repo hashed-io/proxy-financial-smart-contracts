@@ -36,7 +36,6 @@
 using namespace eosio;
 using namespace std;
 
-
 CONTRACT transactions : public contract
 {
 
@@ -47,7 +46,7 @@ public:
 				projects(common::contracts::projects, common::contracts::projects.value),
 				users(common::contracts::projects, common::contracts::projects.value),
 				account_types(common::contracts::accounts, common::contracts::accounts.value)
-				
+
 	{
 	}
 
@@ -91,6 +90,15 @@ public:
 									vector<common::types::transaction_subtypes> & accounting,
 									vector<common::types::url_information> & supporting_files);
 
+	ACTION transacts(const eosio::name &actor,
+									 const uint64_t &project_id,
+									 const uint64_t &drawdown_id,
+									 std::vector<common::types::transaction_pram> transactions);
+
+	ACTION deltransacts(name actor,
+											uint64_t transaction_id,
+											std::vector<uint64_t> project_id);
+
 	ACTION deletetrxn(name actor,
 										uint64_t project_id,
 										uint64_t transaction_id);
@@ -109,16 +117,19 @@ public:
 
 	ACTION submitdrwdn(name actor,
 										 uint64_t project_id,
-										 vector<common::types::transaction_subtypes> &accounting,
+										 vector<common::types::transaction_subtypes> & accounting,
 										 vector<common::types::url_information> files);
 
 	ACTION initdrawdown(const uint64_t &project_id);
+
+	ACTION movedrawdown(const eosio::name &actor,
+											const uint64_t &project_id,
+											const int64_t &drawdown_id);
 
 	ACTION toggledrdwn(uint64_t project_id,
 										 uint64_t drawdown_id);
 
 private:
-
 	account_type_tables account_types;
 	project_tables projects;
 	user_tables users;

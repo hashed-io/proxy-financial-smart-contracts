@@ -18,11 +18,11 @@ namespace common
     // constexpr eosio::name budgets = "pxbud.sh"_n;
 
     // LOCAL CONTRACTS
-    constexpr eosio::name projects = "proxyprj"_n;
-    constexpr eosio::name accounts = "proxyact"_n;
-    constexpr eosio::name transactions = "proxytrx"_n;
-    constexpr eosio::name permissions = "proxyperm"_n;
-    constexpr eosio::name budgets = "proxybud"_n;
+    // constexpr eosio::name projects = "proxyprj"_n;
+    // constexpr eosio::name accounts = "proxyact"_n;
+    // constexpr eosio::name transactions = "proxytrx"_n;
+    // constexpr eosio::name permissions = "proxyperm"_n;
+    // constexpr eosio::name budgets = "proxybud"_n;
 
     // TESTNET CONTRACTS
     // constexpr eosio::name projects = "proxycappro1"_n;
@@ -32,11 +32,11 @@ namespace common
     // constexpr eosio::name budgets = "proxycapbdg1"_n;
 
     // TESTNET CONTRACTS (NEW)
-    // constexpr eosio::name projects = "proxyv1prjct"_n;
-    // constexpr eosio::name accounts = "proxyv1accnt"_n;
-    // constexpr eosio::name transactions = "proxyv1trnsc"_n;
-    // constexpr eosio::name permissions = "proxyv1prmss"_n;
-    // constexpr eosio::name budgets = "proxyv1bdgts"_n;
+    constexpr eosio::name projects = "proxyv1prjct"_n;
+    constexpr eosio::name accounts = "proxyv1accnt"_n;
+    constexpr eosio::name transactions = "proxyv1trnsc"_n;
+    constexpr eosio::name permissions = "proxyv1prmss"_n;
+    constexpr eosio::name budgets = "proxyv1bdgts"_n;
     //
   } // namespace contracts
 

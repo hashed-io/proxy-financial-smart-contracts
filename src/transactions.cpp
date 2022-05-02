@@ -405,7 +405,7 @@ ACTION transactions::initdrawdown(const uint64_t &project_id)
 {
 
 	// TODO no calleable
-	
+
 	std::unique_ptr<Drawdown> drawdown_eb5 = std::unique_ptr<Drawdown>(DrawdownFactory::Factory(project_id, *this, common::transactions::drawdown::type::eb5));
 	drawdown_eb5->create(common::transactions::drawdown::type::eb5);
 
@@ -414,10 +414,7 @@ ACTION transactions::initdrawdown(const uint64_t &project_id)
 
 	std::unique_ptr<Drawdown> drawdown_developer_equity = std::unique_ptr<Drawdown>(DrawdownFactory::Factory(project_id, *this, common::transactions::drawdown::type::developer_equity));
 	drawdown_developer_equity->create(common::transactions::drawdown::type::developer_equity);
-	
 }
-
-
 
 ACTION transactions::toggledrdwn(uint64_t project_id,
 																 uint64_t drawdown_id)
@@ -442,4 +439,26 @@ ACTION transactions::toggledrdwn(uint64_t project_id,
 		if (item.state == DRAWDOWN_STATES.CLOSE) {
 			item.state = DRAWDOWN_STATES.OPEN;
 		} });
+}
+
+ACTION transactions::movedrawdown(const eosio::name &actor,
+																	const uint64_t &project_id,
+																	const int64_t &drawdown_id)
+{
+	require_auth(_self);
+}
+
+ACTION transactions::transacts(const eosio::name &actor,
+															 const uint64_t &project_id,
+															 const uint64_t &drawdown_id,
+															 std::vector<common::types::transaction_pram> transactions)
+{
+	require_auth(_self);
+}
+
+ACTION transactions::deltransacts(name actor,
+																	uint64_t transaction_id,
+																	std::vector<uint64_t> project_id)
+{
+	require_auth(_self);
 }

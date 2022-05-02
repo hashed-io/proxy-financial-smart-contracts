@@ -23,7 +23,7 @@ const supportedChains = {
 
 const ownerByChain = {
   [supportedChains.local]: 'eosio',
-  [supportedChains.telosTestnet]: 'tlaclocmant2',
+  [supportedChains.telosTestnet]: 'proxyadmin11',
   [supportedChains.telosMainnet]: 'tlalocman.sh'
 }
 
