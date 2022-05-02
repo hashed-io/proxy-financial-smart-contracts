@@ -48,6 +48,8 @@ void Drawdown::approve(const uint64_t &drawdown_id)
 
   drawdown_t.modify(drawdown_itr, contract_name, [&](auto item)
                     { item.state = DRAWDOWN_STATES.APPROVED; });
+
+  // TODO create a new one
 }
 
 void Drawdown::reject(const uint64_t &drawdown_id)

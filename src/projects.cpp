@@ -167,7 +167,8 @@ ACTION projects::addproject(const eosio::name &actor,
 {
 
 	require_auth(actor);
-	checkuserdev(actor);
+	// checkuserdev(actor); 
+	// TODO change to admin
 
 	check(PROJECT_CLASS.is_valid_constant(project_class), common::contracts::projects.to_string() + ": that project class does not exist.");
 

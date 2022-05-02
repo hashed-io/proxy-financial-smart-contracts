@@ -13,7 +13,7 @@ using namespace eosio;
     vector<common::types::transaction_subtypes> accounting;         \
     vector<uint64_t> transaction_ids; /* Add signed transactions */ \
     vector<common::types::url_information> files;                   \
-    uint64_t state;                                                 \
+    uint64_t state; /* Add signed transactions */                   \
     uint64_t open_date;                                             \
     uint64_t close_date;                                            \
     eosio::name creator;                                            \
