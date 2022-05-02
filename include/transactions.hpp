@@ -20,10 +20,11 @@
 #include <transactions/drawdown_types.hpp>
 
 #include <common/tables/account_transaction.hpp>
+#include <common/tables/account_type.hpp>
+
 #include <common/tables/account.hpp>
 #include <common/tables/transaction.hpp>
 #include <common/tables/drawdown.hpp>
-#include <common/tables/type.hpp>
 #include <common/tables/user.hpp>
 
 #include <common/tables/project.hpp>
@@ -118,7 +119,7 @@ public:
 
 private:
 
-	type_tables account_types;
+	account_type_tables account_types;
 	project_tables projects;
 	user_tables users;
 

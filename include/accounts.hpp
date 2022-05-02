@@ -18,7 +18,7 @@
 #include <budgets/budget_types.hpp>
 
 #include <common/tables/account.hpp>
-#include <common/tables/type.hpp>
+#include <common/tables/account_type.hpp>
 #include <common/tables/ledger.hpp>
 #include <common/tables/project.hpp>
 #include <common/tables/user.hpp>
@@ -128,7 +128,7 @@ private:
         "Developer ledger",
         "Fund ledger"};
 
-    type_tables account_types;
+    account_type_tables account_types;
     project_tables projects_table;
     user_tables users;
     entity_tables entities;

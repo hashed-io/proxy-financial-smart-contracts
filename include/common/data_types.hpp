@@ -22,7 +22,7 @@ namespace common
       std::string address;
     };
 
-    struct transaction_subtypes
+    struct transaction_subtypes // account types
     {
       eosio::name account;
       eosio::asset amount;
@@ -32,6 +32,12 @@ namespace common
     {
       uint64_t account_id;
       int64_t amount;
+    };
+
+    struct transaction_parameters
+    {
+      common::types::transaction_amount &amounts;
+      std::string &description;
     };
 
   }
