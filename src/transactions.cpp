@@ -401,11 +401,21 @@ ACTION transactions::submitdrwdn(name actor,
 		item.close_date = 0; });
 }
 
-ACTION transactions::initdrawdown(const uint64_t &project_id, const eosio::name &drawdown_type)
+ACTION transactions::initdrawdown(const uint64_t &project_id)
 {
-	std::unique_ptr<Drawdown> drawdown = std::unique_ptr<Drawdown>(DrawdownFactory::Factory(project_id, *this, drawdown_type));
-	drawdown->create(drawdown_type);
+	
+	std::unique_ptr<Drawdown> drawdown_eb5 = std::unique_ptr<Drawdown>(DrawdownFactory::Factory(project_id, *this, common::transactions::drawdown::type::eb5));
+	drawdown_eb5->create(common::transactions::drawdown::type::eb5);
+
+	std::unique_ptr<Drawdown> drawdown_construction_loan = std::unique_ptr<Drawdown>(DrawdownFactory::Factory(project_id, *this, common::transactions::drawdown::type::construction_loan));
+	drawdown_construction_loan->create(common::transactions::drawdown::type::construction_loan);
+
+	std::unique_ptr<Drawdown> drawdown_developer_equity = std::unique_ptr<Drawdown>(DrawdownFactory::Factory(project_id, *this, common::transactions::drawdown::type::developer_equity));
+	drawdown_developer_equity->create(common::transactions::drawdown::type::developer_equity);
+	
 }
+
+
 
 ACTION transactions::toggledrdwn(uint64_t project_id,
 																 uint64_t drawdown_id)

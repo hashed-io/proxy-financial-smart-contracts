@@ -112,7 +112,7 @@ public:
 										 vector<common::types::transaction_subtypes> &accounting,
 										 vector<common::types::url_information> files);
 
-	ACTION initdrawdown(const uint64_t &project_id, const eosio::name &drawdown_type);
+	ACTION initdrawdown(const uint64_t &project_id);
 
 	ACTION toggledrdwn(uint64_t project_id,
 										 uint64_t drawdown_id);
