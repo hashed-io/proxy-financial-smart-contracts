@@ -22,6 +22,13 @@ namespace common
       std::string address;
     };
 
+    struct account_types
+    {
+      std::string type_name;
+      std::string account_class;
+      uint64_t category;
+    };
+
     struct transaction_subtypes // account types
     {
       eosio::name account;

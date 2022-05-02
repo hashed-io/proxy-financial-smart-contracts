@@ -62,14 +62,56 @@ ACTION accounts::reset()
         itr_types = account_types.erase(itr_types);
     }
 
-    for (int i = 0; i < account_types_v.size(); i++)
+    // add new information of accounts
+
+    vector<common::types::account_types> account_types_vv;
+
+    // hardcosts
+
+    account_types_vv.push_back((common::types::account_types){common::accouts::subtypes::construction, common::accouts::types::credit, common::accouts::categories::hard_cost});
+    account_types_vv.push_back((common::types::account_types){common::accouts::subtypes::furniture_fixtures_allowance, common::accouts::types::credit, common::accouts::categories::hard_cost});
+    account_types_vv.push_back((common::types::account_types){common::accouts::subtypes::hard_cost_contingency_allowance, common::accouts::types::credit, common::accouts::categories::hard_cost});
+
+    // softcosts
+    account_types_vv.push_back((common::types::account_types){common::accouts::subtypes::architect_design, common::accouts::types::credit, common::accouts::categories::soft_cost});
+    account_types_vv.push_back((common::types::account_types){common::accouts::subtypes::building_permits_impact_fees, common::accouts::types::credit, common::accouts::categories::soft_cost});
+    account_types_vv.push_back((common::types::account_types){common::accouts::subtypes::developer_reimbursable, common::accouts::types::credit, common::accouts::categories::soft_cost});
+    account_types_vv.push_back((common::types::account_types){common::accouts::subtypes::builder_risk_insurance, common::accouts::types::credit, common::accouts::categories::soft_cost});
+    account_types_vv.push_back((common::types::account_types){common::accouts::subtypes::environment_soils_survey, common::accouts::types::credit, common::accouts::categories::soft_cost});
+    account_types_vv.push_back((common::types::account_types){common::accouts::subtypes::testing_inspections, common::accouts::types::credit, common::accouts::categories::soft_cost});
+    account_types_vv.push_back((common::types::account_types){common::accouts::subtypes::legal_professional, common::accouts::types::credit, common::accouts::categories::soft_cost});
+    account_types_vv.push_back((common::types::account_types){common::accouts::subtypes::real_estate_taxes_owners_liability_insurance, common::accouts::types::credit, common::accouts::categories::soft_cost});
+    account_types_vv.push_back((common::types::account_types){common::accouts::subtypes::predevelopment_fee, common::accouts::types::credit, common::accouts::categories::soft_cost});
+    account_types_vv.push_back((common::types::account_types){common::accouts::subtypes::equity_management_fee, common::accouts::types::credit, common::accouts::categories::soft_cost});
+    account_types_vv.push_back((common::types::account_types){common::accouts::subtypes::bank_origination_fee, common::accouts::types::credit, common::accouts::categories::soft_cost});
+    account_types_vv.push_back((common::types::account_types){common::accouts::subtypes::lender_debt_placement_fee, common::accouts::types::credit, common::accouts::categories::soft_cost});
+    account_types_vv.push_back((common::types::account_types){common::accouts::subtypes::title_appraisal_feasibility_plan_review_closing, common::accouts::types::credit, common::accouts::categories::soft_cost});
+    account_types_vv.push_back((common::types::account_types){common::accouts::subtypes::interest_carry_during_construction, common::accouts::types::credit, common::accouts::categories::soft_cost});
+    account_types_vv.push_back((common::types::account_types){common::accouts::subtypes::ops_stabilization_interest_carry_reserve, common::accouts::types::credit, common::accouts::categories::soft_cost});
+    account_types_vv.push_back((common::types::account_types){common::accouts::subtypes::sales_marketing, common::accouts::types::credit, common::accouts::categories::soft_cost});
+    account_types_vv.push_back((common::types::account_types){common::accouts::subtypes::preopening_expenses, common::accouts::types::credit, common::accouts::categories::soft_cost});
+    account_types_vv.push_back((common::types::account_types){common::accouts::subtypes::contingency, common::accouts::types::credit, common::accouts::categories::soft_cost});
+
+
+    for (int i = 0; i < account_types_vv.size(); i++)
     {
-        account_types.emplace(_self, [&](auto &naccount)
+        account_types.emplace(_self, [&](auto &item)
                               {
-			naccount.type_id = i + 1;
-			naccount.type_name = account_types_v[i].first;
-			naccount.account_class = account_types_v[i].second; });
+			item.type_id = i + 1;
+			item.type_name = account_types_vv[i].type_name;
+			item.account_class = account_types_vv[i].account_class;
+            item.category = account_types_vv[i].category; });
     }
+
+    // Old subtypes
+    // for (int i = 0; i < account_types_v.size(); i++)
+    // {
+    //     account_types.emplace(_self, [&](auto &item)
+    //                           {
+	// 		item.type_id = i + 1;
+	// 		item.type_name = account_types_v[i].first;
+	// 		item.account_class = account_types_v[i].second; });
+    // }
 }
 
 ACTION accounts::addledger(const uint64_t &project_id,

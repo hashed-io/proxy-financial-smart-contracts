@@ -117,6 +117,7 @@ public:
     ACTION deleteaccnts(const uint64_t &project_id);
 
 private:
+
     const vector<pair<std::string, std::string>> account_types_v = {
         make_pair(ACCOUNT_SUBTYPES.ASSETS, ACCOUNT_TYPES.DEBIT),
         make_pair(ACCOUNT_SUBTYPES.EQUITY, ACCOUNT_TYPES.CREDIT),
