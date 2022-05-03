@@ -12,6 +12,7 @@ const { UserFactory, Roles } = require('./util/UserUtil');
 
 const { func } = require('promisify');
 const assert = require('assert');
+const { Console } = require('console');
 
 const expect = require('chai').expect;
 
@@ -33,7 +34,7 @@ const createRolesCases = (() => {
     }
   ]
 })()
-describe('Tests for projects smart contract', async function () {
+describe('Tests for the users on projects smart contract', async function () {
 
   let contracts;
 
@@ -69,7 +70,7 @@ describe('Tests for projects smart contract', async function () {
       // console.table(user);
 
       // Act
-      await contracts.projects.adduser(...user.getCreateParams(), { authorization: `${projects}@active` })
+      await contracts.projects.adduser(projects, ...user.getCreateParams(), { authorization: `${projects}@active` })
 
       // Assert
       const usersTable = await rpc.get_table_rows({
@@ -83,7 +84,7 @@ describe('Tests for projects smart contract', async function () {
 
       expect(usersTable.rows).to.deep.include.members([{
         account: user.params.account,
-        description: "",
+        description: "description",
         user_name: user.params.user_name,
         entity_id: user.params.entity_id,
         related_projects: [],
@@ -93,6 +94,24 @@ describe('Tests for projects smart contract', async function () {
     });
 
   })
+
+  it.only('Test reset action', async () => {
+    // Arrange
+
+    // Act
+    await contracts.projects.reset({ authorization: `${projects}@active` })
+    // Assert
+
+    const usersTable = await rpc.get_table_rows({
+      code: projects,
+      scope: projects,
+      table: 'users',
+      json: true
+    });
+
+    console.table(usersTable.rows);
+
+  });
 
 
   it('Add test entities', async function () {
