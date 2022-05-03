@@ -1,8 +1,8 @@
 const { dateToBlockTimestamp } = require('eosjs/dist/eosjs-serialize')
 const { createRandomAccount, createRandomName } = require('../../scripts/eosio-util')
 
-const ProjectConstants ={
-  type:{
+const ProjectConstants = {
+  type: {
     nnn: "NNN",
     multifamily: "MULTIFAMILY",
     office: "OFFICE",
@@ -11,56 +11,56 @@ const ProjectConstants ={
     medical: "MEDICAL",
     hotel: "HOTEL"
   },
-  status:{
+  status: {
     awaiting: 1,
     ready: 2,
     investment: 3,
     completed: 4
   },
-  entity:{
+  entity: {
     investor: "investor",
     developer: "developer",
     fund: "fund"
   },
-  investment:{
+  investment: {
     pending: 1,
     funding: 2,
     funded: 3
   },
-  transfer:{
+  transfer: {
     awaiting: 1,
     confirmed: 2
   }
 }
 
-class ProjectUtil{
+class ProjectUtil {
   static tokenSymbol = '2,USD'
 
-  static async approveprjct({actor, project_id, fund_lp, total_fund_offering_amount, total_number_fund_offering, price_per_fund_unit, contract, account}){
-    await contract.approveprjct(actor, project_id, fund_lp, total_fund_offering_amount, total_number_fund_offering, price_per_fund_unit, { authorization: `${account}@active` })
+  static async approveprjct({ owner, project_id, fund_lp, total_fund_offering_amount, total_number_fund_offering, price_per_fund_unit, contract, account }) {
+    await contract.approveprjct(owner, project_id, fund_lp, total_fund_offering_amount, total_number_fund_offering, price_per_fund_unit, { authorization: `${account}@active` })
   }
 
-  static async deleteprojct({actor, project_id, contract, account}){
-    await contract.deleteprojct(actor, project_id, { authorization: `${account}@active` })
+  static async deleteprojct({ owner, project_id, contract, account }) {
+    await contract.deleteprojct(owner, project_id, { authorization: `${account}@active` })
   }
 
-  static async changestatus({project_id, status, contract, account}){
+  static async changestatus({ project_id, status, contract, account }) {
     await contract.changestatus(project_id, status, { authorization: `${account}@active` })
   }
 
   static async invest({
-    actor, 
-    project_id, 
+    owner,
+    project_id,
     total_investment_amount,
     quantity_units_purchased,
     annual_preferred_return,
     signed_agreement_date,
     subscription_package,
-    contract, 
-    account}){
+    contract,
+    account }) {
     await contract.invest(
-      actor, 
-      project_id, 
+      owner,
+      project_id,
       total_investment_amount,
       quantity_units_purchased,
       annual_preferred_return,
@@ -69,7 +69,7 @@ class ProjectUtil{
   }
 
   static async editproject({
-    actor, 
+    owner,
     project_id,
     project_class,
     project_name,
@@ -78,20 +78,20 @@ class ProjectUtil{
     debt_financing,
     term,
     interest_rate,
-    loan_agreement, 
+    loan_agreement,
     total_equity_financing,
     total_gp_equity,
     private_equity,
     annual_return,
-    project_co_lp, 
+    project_co_lp,
     project_co_lp_date,
     projected_completion_date,
     projected_stabilization_date,
-    anticipated_year_sale_refinance, 
-    contract, 
-    account }){
+    anticipated_year_sale_refinance,
+    contract,
+    account }) {
     await contract.editproject(
-      actor, 
+      owner,
       project_id,
       project_class,
       project_name,
@@ -100,16 +100,16 @@ class ProjectUtil{
       debt_financing,
       term,
       interest_rate,
-      loan_agreement, 
+      loan_agreement,
       total_equity_financing,
       total_gp_equity,
       private_equity,
       annual_return,
-      project_co_lp, 
+      project_co_lp,
       project_co_lp_date,
       projected_completion_date,
       projected_stabilization_date,
-      anticipated_year_sale_refinance,     
+      anticipated_year_sale_refinance,
       { authorization: `${account}@active` })
   }
 
@@ -117,7 +117,8 @@ class ProjectUtil{
 
 class Project {
   constructor(
-    actor,
+    owner,
+    id,
     project_class,
     project_name,
     description,
@@ -137,7 +138,8 @@ class Project {
     anticipated_year_sale_refinance
   ) {
     this.params = {
-      actor,
+      owner,
+      id,
       project_class,
       project_name,
       description,
@@ -158,10 +160,35 @@ class Project {
     }
   }
 
-  getActionParams() {
+  getCreateActionParams() {
 
     return [
-      this.params.actor,
+      this.params.owner,
+      this.params.project_class,
+      this.params.project_name,
+      this.params.description,
+      this.params.total_project_cost, // asset
+      this.params.debt_financing, // asset
+      this.params.term,
+      this.params.interest_rate,
+      this.params.loan_agreement,
+      this.params.total_equity_financing, // asset
+      this.params.total_gp_equity, // asset
+      this.params.private_equity, // asset
+      this.params.annual_return,
+      this.params.project_co_lp,
+      this.params.project_co_lp_date,
+      this.params.projected_completion_date,
+      this.params.projected_stabilization_date,
+      this.params.anticipated_year_sale_refinance
+    ]
+  }
+
+  getEditActionParams() {
+
+    return [
+      this.params.owner,
+      this.params.id,
       this.params.project_class,
       this.params.project_name,
       this.params.description,
@@ -182,11 +209,20 @@ class Project {
     ]
   }
 
+  getDeleteActionParams() {
+
+    return [
+      this.params.owner,
+      this.params.id
+    ]
+  }
+
 }
 
 class ProjectFactory {
   static createEntry({
-    actor,
+    owner,
+    id,
     project_class,
     project_name,
     description,
@@ -206,7 +242,8 @@ class ProjectFactory {
     anticipated_year_sale_refinance
   }) {
     return new Project(
-      actor,
+      owner,
+      id,
       project_class,
       project_name,
       description,
@@ -228,7 +265,8 @@ class ProjectFactory {
   }
 
   static async createWithDefaults({
-    actor,
+    owner,
+    id,
     project_class,
     project_name,
     description,
@@ -248,15 +286,19 @@ class ProjectFactory {
     anticipated_year_sale_refinance
   }) {
 
-    if (!actor) {
-      actor = await createRandomAccount()
+    if (!owner) {
+      owner = await createRandomAccount()
     }
 
-    if (!project_class) { 
+    if(!id) {
+      id = 0;
+    }
+
+    if (!project_class) {
       project_class = "NNN";
     }
 
-    if (!project_name) { 
+    if (!project_name) {
       project_name = createRandomName();
     }
 
@@ -273,11 +315,11 @@ class ProjectFactory {
     }
 
     if (!term) {
-      term = "2";
+      term = 2;
     }
 
     if (!interest_rate) {
-      interest_rate = "25";
+      interest_rate = 25;
     }
 
     if (!loan_agreement) {
@@ -297,7 +339,7 @@ class ProjectFactory {
     }
 
     if (!annual_return) {
-      annual_return = "600";
+      annual_return = 600;
     }
 
     if (!project_co_lp) {
@@ -305,28 +347,29 @@ class ProjectFactory {
     }
 
     if (!project_co_lp_date) {
-      project_co_lp_date = "1583864481";
+      project_co_lp_date = 1583864481;
     }
 
     if (!projected_completion_date) {
       //ajustar estas fechas con entradas a futuro el lugar de hardcodear
       const completitionDate = Date.now();
-      projected_completion_date = "1682400175";
+      projected_completion_date = 1682400175;
     }
 
     if (!projected_stabilization_date) {
       //ajustar estas fechas con entradas a futuro el lugar de hardcodear
-      projected_stabilization_date = "1714022575";
+      projected_stabilization_date = 1714022575;
     }
 
     if (!anticipated_year_sale_refinance) {
-      anticipated_year_sale_refinance = "2023";
+      anticipated_year_sale_refinance = 2023;
     }
 
 
 
     return ProjectFactory.createEntry({
-      actor,
+      owner,
+      id,
       project_class,
       project_name,
       description,
@@ -349,5 +392,5 @@ class ProjectFactory {
 }
 
 
-module.exports = { Project, ProjectUtil ,ProjectFactory, ProjectConstants }
+module.exports = { Project, ProjectUtil, ProjectFactory, ProjectConstants }
 

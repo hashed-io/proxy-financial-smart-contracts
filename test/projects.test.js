@@ -8,6 +8,9 @@ const { updatePermissions } = require('../scripts/permissions')
 const { EnvironmentUtil } = require('./util/EnvironmentUtil')
 const { EntityFactory, EntityConstants } = require('./util/EntityUtil')
 const { ProjectFactory, ProjectConstants, ProjectUtil } = require('./util/ProjectUtil')
+const { UserFactory, Roles } = require('./util/UserUtil');
+
+
 const { func } = require('promisify')
 const assert = require('assert')
 
@@ -44,133 +47,138 @@ describe('Tests for projects smart contract', async function () {
 
   })
 
-  it('Add test entities', async function () {
+  // it('Add test entities', async function () {
 
-    // Arrange
-    const developerEntity = await EntityFactory.createWithDefaults({ type: EntityConstants.developer });
-    const developerParams = developerEntity.getActionParams()
+  //   // Arrange
+  //   const developerEntity = await EntityFactory.createWithDefaults({ type: EntityConstants.developer });
+  //   const developerParams = developerEntity.getActionParams()
 
-    const investorEntity = await EntityFactory.createWithDefaults({ type: EntityConstants.investor });
-    const investorParams = investorEntity.getActionParams()
+  //   const investorEntity = await EntityFactory.createWithDefaults({ type: EntityConstants.investor });
+  //   const investorParams = investorEntity.getActionParams()
 
-    const fundEntity = await EntityFactory.createWithDefaults({ type: EntityConstants.fund });
-    const fundParams = fundEntity.getActionParams()
-
-
-    console.log(developerEntity, investorEntity, fundEntity)
-    //Act
-    await contracts.projects.addentity(...developerParams, { authorization: `${developerParams[0]}@active` })
-
-    await contracts.projects.addentity(...investorParams, { authorization: `${investorParams[0]}@active` })
-
-    await contracts.projects.addentity(...fundParams, { authorization: `${fundParams[0]}@active` })
-
-    const entitiesTable = await rpc.get_table_rows({
-      code: projects,
-      scope: projects,
-      table: 'entities',
-      json: true
-    })
-    console.table(entitiesTable.rows); 4
-
-    // Assert
-    assert.deepStrictEqual(entitiesTable.rows, [{
-      entity_id: 1,
-      entity_name: developerEntity.params.entity_name,
-      description: developerEntity.params.description,
-      role: developerEntity.params.type
-    }, {
-      entity_id: 2,
-      entity_name: investorEntity.params.entity_name,
-      description: investorEntity.params.description,
-      role: investorEntity.params.type
-    }, {
-      entity_id: 3,
-      entity_name: fundEntity.params.entity_name,
-      description: fundEntity.params.description,
-      role: fundEntity.params.type
-    }])
-
-  })
+  //   const fundEntity = await EntityFactory.createWithDefaults({ type: EntityConstants.fund });
+  //   const fundParams = fundEntity.getActionParams()
 
 
+  //   console.log(developerEntity, investorEntity, fundEntity)
+  //   //Act
+  //   await contracts.projects.addentity(...developerParams, { authorization: `${developerParams[0]}@active` })
 
-  it('Add test users', async function () {
-    // Arrange
-    const developerEntity = await EntityFactory.createWithDefaults({ type: EntityConstants.developer });
-    const developerParams = developerEntity.getActionParams()
+  //   await contracts.projects.addentity(...investorParams, { authorization: `${investorParams[0]}@active` })
 
-    const investorEntity = await EntityFactory.createWithDefaults({ type: EntityConstants.investor });
-    const investorParams = investorEntity.getActionParams()
+  //   await contracts.projects.addentity(...fundParams, { authorization: `${fundParams[0]}@active` })
 
-    const fundEntity = await EntityFactory.createWithDefaults({ type: EntityConstants.fund });
-    const fundParams = fundEntity.getActionParams()
+  //   const entitiesTable = await rpc.get_table_rows({
+  //     code: projects,
+  //     scope: projects,
+  //     table: 'entities',
+  //     json: true
+  //   })
+  //   console.table(entitiesTable.rows); 4
 
-    await contracts.projects.addentity(...developerParams, { authorization: `${developerParams[0]}@active` })
+  //   // Assert
+  //   assert.deepStrictEqual(entitiesTable.rows, [{
+  //     entity_id: 1,
+  //     entity_name: developerEntity.params.entity_name,
+  //     description: developerEntity.params.description,
+  //     role: developerEntity.params.type
+  //   }, {
+  //     entity_id: 2,
+  //     entity_name: investorEntity.params.entity_name,
+  //     description: investorEntity.params.description,
+  //     role: investorEntity.params.type
+  //   }, {
+  //     entity_id: 3,
+  //     entity_name: fundEntity.params.entity_name,
+  //     description: fundEntity.params.description,
+  //     role: fundEntity.params.type
+  //   }])
 
-    await contracts.projects.addentity(...investorParams, { authorization: `${investorParams[0]}@active` })
+  // })
 
-    await contracts.projects.addentity(...fundParams, { authorization: `${fundParams[0]}@active` })
+  // it('Add test users', async function () {
+  //   // Arrange
+  //   const developerEntity = await EntityFactory.createWithDefaults({ type: EntityConstants.developer });
+  //   const developerParams = developerEntity.getActionParams()
 
-    //Act 
-    await contracts.projects.addtestuser(developerParams[0], developerParams[1], 1, { authorization: `${developerParams[0]}@active` })
+  //   const investorEntity = await EntityFactory.createWithDefaults({ type: EntityConstants.investor });
+  //   const investorParams = investorEntity.getActionParams()
 
-    await contracts.projects.addtestuser(investorParams[0], investorParams[1], 2, { authorization: `${investorParams[0]}@active` })
+  //   const fundEntity = await EntityFactory.createWithDefaults({ type: EntityConstants.fund });
+  //   const fundParams = fundEntity.getActionParams()
 
-    await contracts.projects.addtestuser(fundParams[0], fundParams[1], 3, { authorization: `${fundParams[0]}@active` })
+  //   await contracts.projects.addentity(...developerParams, { authorization: `${developerParams[0]}@active` })
 
-    const entitiesTable = await rpc.get_table_rows({
-      code: projects,
-      scope: projects,
-      table: 'entities',
-      json: true
-    })
-    console.log('\n\n Entities table : ', entitiesTable)
+  //   await contracts.projects.addentity(...investorParams, { authorization: `${investorParams[0]}@active` })
 
-    const usersTable = await rpc.get_table_rows({
-      code: projects,
-      scope: projects,
-      table: 'users',
-      json: true
-    })
-    console.log('\n\n Users table : ', usersTable)
+  //   await contracts.projects.addentity(...fundParams, { authorization: `${fundParams[0]}@active` })
 
-    // Assert
-    expect(usersTable.rows).to.deep.include.members([{
-      account: developerParams[0],
-      user_name: developerParams[1],
-      entity_id: 1,
-      type: EntityConstants.developer
-    }, {
-      account: investorParams[0],
-      user_name: investorParams[1],
-      entity_id: 2,
-      type: EntityConstants.investor
-    }, {
-      account: fundParams[0],
-      user_name: fundParams[1],
-      entity_id: 3,
-      type: EntityConstants.fund
-    }]);
-  })
+  //   //Act 
+  //   await contracts.projects.addtestuser(developerParams[0], developerParams[1], 1, { authorization: `${developerParams[0]}@active` })
+
+  //   await contracts.projects.addtestuser(investorParams[0], investorParams[1], 2, { authorization: `${investorParams[0]}@active` })
+
+  //   await contracts.projects.addtestuser(fundParams[0], fundParams[1], 3, { authorization: `${fundParams[0]}@active` })
+
+  //   const entitiesTable = await rpc.get_table_rows({
+  //     code: projects,
+  //     scope: projects,
+  //     table: 'entities',
+  //     json: true
+  //   })
+  //   console.log('\n\n Entities table : ', entitiesTable)
+
+  //   const usersTable = await rpc.get_table_rows({
+  //     code: projects,
+  //     scope: projects,
+  //     table: 'users',
+  //     json: true
+  //   })
+  //   console.log('\n\n Users table : ', usersTable)
+
+  //   // Assert
+  //   expect(usersTable.rows).to.deep.include.members([{
+  //     account: developerParams[0],
+  //     user_name: developerParams[1],
+  //     entity_id: 1,
+  //     type: EntityConstants.developer
+  //   }, {
+  //     account: investorParams[0],
+  //     user_name: investorParams[1],
+  //     entity_id: 2,
+  //     type: EntityConstants.investor
+  //   }, {
+  //     account: fundParams[0],
+  //     user_name: fundParams[1],
+  //     entity_id: 3,
+  //     type: EntityConstants.fund
+  //   }]);
+  // })
 
 
-  it("Creates a new project", async function () {
+  it.only("Creates a project", async function () {
+
     //Arrange
-    const developerEntity = await EntityFactory.createWithDefaults({ type: EntityConstants.developer });
-    const developerParams = developerEntity.getActionParams()
-    await contracts.projects.addentity(...developerParams, { authorization: `${developerParams[0]}@active` })
-    await contracts.projects.addtestuser(developerParams[0], developerParams[1], 1, { authorization: `${developerParams[0]}@active` })
+    const user = await UserFactory.createWithDefaults({ role: Roles.fund });
+    console.log(user);
+    await contracts.projects.adduser(projects, ...user.getCreateParams(), { authorization: `${projects}@active` });
 
-    const newProject = await ProjectFactory.createWithDefaults({ actor: developerParams[0] });
-    const projectParams = newProject.getActionParams()
+    const project = await ProjectFactory.createWithDefaults({ owner: user.params.account });
+    project.params.status = 1;
+    project.params.builders = [];
+    project.params.investors = [];
+    project.params.fund_lp = '';
+    project.params.total_fund_offering_amount = '0 ';
+    project.params.total_number_fund_offering = 0;
+    project.params.price_per_fund_unit = '0 ';
+
+
+    console.log(project);
 
     //Act
-    await contracts.projects.addproject(...projectParams, { authorization: `${projectParams[0]}@active` })
-
+    await contracts.projects.addproject(...project.getCreateActionParams(), { authorization: `${user.params.account}@active` });
 
     //Assert
-
     const projectsTable = await rpc.get_table_rows({
       code: projects,
       scope: projects,
@@ -181,32 +189,34 @@ describe('Tests for projects smart contract', async function () {
     console.log('\n\n Projects table : ', projectsTable)
 
     assert.deepStrictEqual(projectsTable.rows, [{
-      project_id: 0,
+      project_id: project.params.id,
       developer_id: 0,
-      owner: projectParams[0],
-      project_class: 'NNN',
-      project_name: projectParams[2],
-      description: 'This is a default project',
+      owner: project.params.owner,
+      project_class: project.params.project_class,
+      project_name: project.params.project_name,
+      description: project.params.description,
       created_date: projectsTable.rows[0].created_date,
-      status: 1,
-      total_project_cost: '435000.00 USD',
-      debt_financing: '2000.00 USD',
-      term: 2,
-      interest_rate: 25,
-      loan_agreement: 'https://loan-agreement.com',
-      total_equity_financing: '3000.00 USD',
-      total_gp_equity: '2100.00 USD',
-      private_equity: '5000.00 USD',
-      annual_return: 600,
-      project_co_lp: 'https://project-co-lp.com',
-      project_co_lp_date: 1583864481,
-      projected_completion_date: 1682400175,
-      projected_stabilization_date: 1714022575,
-      anticipated_year_sale_refinance: 2023,
-      fund_lp: '',
-      total_fund_offering_amount: '0 ',
-      total_number_fund_offering: 0,
-      price_per_fund_unit: '0 ',
+      status: project.params.status,
+      builders: project.params.builders,
+      investors: project.params.investors,
+      total_project_cost: project.params.total_project_cost,
+      debt_financing: project.params.debt_financing,
+      term: project.params.term,
+      interest_rate: project.params.interest_rate,
+      loan_agreement: project.params.loan_agreement,
+      total_equity_financing: project.params.total_equity_financing,
+      total_gp_equity: project.params.total_gp_equity,
+      private_equity: project.params.private_equity,
+      annual_return: project.params.annual_return,
+      project_co_lp: project.params.project_co_lp,
+      project_co_lp_date: project.params.project_co_lp_date,
+      projected_completion_date: project.params.projected_completion_date,
+      projected_stabilization_date: project.params.projected_stabilization_date,
+      anticipated_year_sale_refinance: project.params.anticipated_year_sale_refinance,
+      fund_lp: project.params.fund_lp,
+      total_fund_offering_amount: project.params.total_fund_offering_amount,
+      total_number_fund_offering: project.params.total_number_fund_offering,
+      price_per_fund_unit: project.params.price_per_fund_unit,
       approved_date: 0,
       approved_by: ''
     }
