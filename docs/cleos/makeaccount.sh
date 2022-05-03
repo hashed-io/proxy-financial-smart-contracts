@@ -1,0 +1,1 @@
+cleos -u https://testnet.telos.caleos.io push action proxyv1prjct
