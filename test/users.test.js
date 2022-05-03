@@ -34,6 +34,8 @@ const createRolesCases = (() => {
     }
   ]
 })()
+
+
 describe('Tests for the users on projects smart contract', async function () {
 
   let contracts;
@@ -100,8 +102,8 @@ describe('Tests for the users on projects smart contract', async function () {
 
     // Act
     await contracts.projects.reset({ authorization: `${projects}@active` })
-    // Assert
 
+    // Assert
     const usersTable = await rpc.get_table_rows({
       code: projects,
       scope: projects,
