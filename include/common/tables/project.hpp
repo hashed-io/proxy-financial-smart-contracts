@@ -11,8 +11,8 @@ using namespace eosio;
     std::string description;                               \
     uint64_t created_date;                                 \
     uint64_t status;                                       \
-    uint64_t builder;                                      \
-    vector<uint64_t> investors;                            \
+    eosio::name builder;                                   \
+    vector<eosio::name> investors;                         \
                                                            \
     eosio::asset total_project_cost;                       \
     eosio::asset debt_financing;                           \

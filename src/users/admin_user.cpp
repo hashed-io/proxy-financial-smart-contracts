@@ -1,6 +1,6 @@
 #include <users/admin_user.hpp>
 
-void Admin::create_imp(const eosio::name &account)
+void Admin::create_impl(const eosio::name &account)
 {
   projects::user_tables user_t(contract_name, contract_name.value);
   auto user_itr = user_t.find(account.value);

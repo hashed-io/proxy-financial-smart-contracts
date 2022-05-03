@@ -1,7 +1,6 @@
 #include <users/builder_user.hpp>
 
-
-void Builder::update_impl(const eosio::name &account)
+void Builder::create_impl(const eosio::name &account)
 {
   projects::user_tables user_t(contract_name, contract_name.value);
   auto user_itr = user_t.find(account.value);
@@ -18,6 +17,14 @@ void Builder::update_impl(const eosio::name &account)
 
 void Builder::assign_impl(const eosio::name &account, const uint64_t &project_id)
 {
+
+  projects::project_tables project_t(contract_name, contract_name.value);
+  auto project_itr = project_t.find(project_id);
+
+  // TODO check if there is a prev builder assigned to the project
+  project_t.modify(project_itr, contract_name, [&](auto &item)
+                   { item.builder = account; });
+
   projects::user_tables user_t(contract_name, contract_name.value);
   auto user_itr = user_t.find(account.value);
 

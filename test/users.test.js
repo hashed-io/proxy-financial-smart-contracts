@@ -22,16 +22,20 @@ const createRolesCases = (() => {
   return [
     {
       testName: 'Create an Admin account',
-      role: Roles.fund
-    },
-    {
-      testName: 'Create a Builder account',
-      role: Roles.developer
+      role: Roles.fund,
+      entity_id: 1
     },
     {
       testName: 'Create an Investor account',
-      role: Roles.investor
+      role: Roles.investor,
+      entity_id: 2
+    },
+    {
+      testName: 'Create a Builder account',
+      role: Roles.developer,
+      entity_id: 3
     }
+
   ]
 })()
 
@@ -64,11 +68,13 @@ describe('Tests for the users on projects smart contract', async function () {
 
   });
 
-  createRolesCases.forEach(({ testName, role }) => {
+  createRolesCases.forEach(({ testName, role, entity_id }) => {
     it.only(testName, async () => {
 
       // Arrange
       const user = await UserFactory.createWithDefaults({ role: role });
+
+      user.params.entity_id = entity_id;
       // console.table(user);
 
       // Act
@@ -101,7 +107,7 @@ describe('Tests for the users on projects smart contract', async function () {
     // Arrange
 
     // Act
-    await contracts.projects.reset({ authorization: `${projects}@active` })
+    await contracts.projects.init({ authorization: `${projects}@active` })
 
     // Assert
     const usersTable = await rpc.get_table_rows({
@@ -111,7 +117,15 @@ describe('Tests for the users on projects smart contract', async function () {
       json: true
     });
 
+    const entitiesTable = await rpc.get_table_rows({
+      code: projects,
+      scope: projects,
+      table: 'entities',
+      json: true
+    });
+
     console.table(usersTable.rows);
+    console.table(entitiesTable.rows);
 
   });
 

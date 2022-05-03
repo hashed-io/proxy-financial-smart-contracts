@@ -1,5 +1,6 @@
 const { rpc, api, transact } = require('../scripts/eos')
 const { getContracts, createRandomAccount, createRandomName } = require('../scripts/eosio-util')
+
 const { assertError } = require('../scripts/eosio-errors')
 const { contractNames, contracts: configContracts, isLocalNode, sleep } = require('../scripts/config')
 
@@ -21,7 +22,7 @@ const { projects } = contractNames
 
 describe('Tests for projects smart contract', async function () {
 
-  let contracts
+  let contracts, admin, builder, investor
 
   before(async function () {
     if (!isLocalNode()) {
@@ -39,6 +40,18 @@ describe('Tests for projects smart contract', async function () {
 
     await updatePermissions()
     console.log('\n')
+
+    await contracts.projects.init({ authorization: `${projects}@active` });
+
+    admin = await UserFactory.createWithDefaults({ role: Roles.fund, account: 'proxyadmin11', user_name: 'Admin', entity_id: 1 });
+    investor = await UserFactory.createWithDefaults({ role: Roles.investor, account: 'investoruser', user_name: 'Investor', entity_id: 2});
+    builder = await UserFactory.createWithDefaults({ role: Roles.builder, account: 'builderuser1', user_name: 'Builder', entity_id: 3 });
+
+    await EnvironmentUtil.createAccount('proxyadmin11');
+    await EnvironmentUtil.createAccount('investoruser');
+    await EnvironmentUtil.createAccount('builderuser1');
+
+  
 
   })
 
@@ -165,7 +178,7 @@ describe('Tests for projects smart contract', async function () {
 
     const project = await ProjectFactory.createWithDefaults({ owner: user.params.account });
     project.params.status = 1;
-    project.params.builders = [];
+    project.params.builder = '';
     project.params.investors = [];
     project.params.fund_lp = '';
     project.params.total_fund_offering_amount = '0 ';
@@ -197,7 +210,7 @@ describe('Tests for projects smart contract', async function () {
       description: project.params.description,
       created_date: projectsTable.rows[0].created_date,
       status: project.params.status,
-      builders: project.params.builders,
+      builder: project.params.builder,
       investors: project.params.investors,
       total_project_cost: project.params.total_project_cost,
       debt_financing: project.params.debt_financing,
@@ -223,6 +236,151 @@ describe('Tests for projects smart contract', async function () {
     ])
 
   })
+
+  it.only('Assign builder to a project', async () => {
+
+    //Arrange
+    const project = await ProjectFactory.createWithDefaults({ owner: admin.params.account });
+    project.params.status = 1;
+    project.params.builder = '';
+    project.params.investors = [];
+    project.params.fund_lp = '';
+    project.params.total_fund_offering_amount = '0 ';
+    project.params.total_number_fund_offering = 0;
+    project.params.price_per_fund_unit = '0 ';
+
+    await contracts.projects.addproject(...project.getCreateActionParams(), { authorization: `${admin.params.account}@active` });
+
+    await contracts.projects.assignuser( admin.params.account, builder.params.account, 0, { authorization: `${admin.params.account}@active` })
+
+    project.params.status = 1;
+    project.params.builder = builder.params.account;
+    project.params.investors = [];
+    project.params.fund_lp = '';
+    project.params.total_fund_offering_amount = '0 ';
+    project.params.total_number_fund_offering = 0;
+    project.params.price_per_fund_unit = '0 ';
+
+    //Assert
+    const projectsTable = await rpc.get_table_rows({
+      code: projects,
+      scope: projects,
+      table: 'projects',
+      json: true
+    })
+
+    console.log('\n\n Projects table : ', projectsTable)
+
+    assert.deepStrictEqual(projectsTable.rows, [{
+      project_id: project.params.id,
+      developer_id: 0,
+      owner: project.params.owner,
+      project_class: project.params.project_class,
+      project_name: project.params.project_name,
+      description: project.params.description,
+      created_date: projectsTable.rows[0].created_date,
+      status: project.params.status,
+      builder: project.params.builder,
+      investors: project.params.investors,
+      total_project_cost: project.params.total_project_cost,
+      debt_financing: project.params.debt_financing,
+      term: project.params.term,
+      interest_rate: project.params.interest_rate,
+      loan_agreement: project.params.loan_agreement,
+      total_equity_financing: project.params.total_equity_financing,
+      total_gp_equity: project.params.total_gp_equity,
+      private_equity: project.params.private_equity,
+      annual_return: project.params.annual_return,
+      project_co_lp: project.params.project_co_lp,
+      project_co_lp_date: project.params.project_co_lp_date,
+      projected_completion_date: project.params.projected_completion_date,
+      projected_stabilization_date: project.params.projected_stabilization_date,
+      anticipated_year_sale_refinance: project.params.anticipated_year_sale_refinance,
+      fund_lp: project.params.fund_lp,
+      total_fund_offering_amount: project.params.total_fund_offering_amount,
+      total_number_fund_offering: project.params.total_number_fund_offering,
+      price_per_fund_unit: project.params.price_per_fund_unit,
+      approved_date: 0,
+      approved_by: ''
+    }
+    ])
+
+  });
+
+
+  it.only('Assign investor to a project', async () => {
+
+    // console.log(admin);
+    // console.log(investor);
+    // console.log(builder);
+
+    //Arrange
+    const project = await ProjectFactory.createWithDefaults({ owner: admin.params.account });
+    project.params.status = 1;
+    project.params.builder = '';
+    project.params.investors = [];
+    project.params.fund_lp = '';
+    project.params.total_fund_offering_amount = '0 ';
+    project.params.total_number_fund_offering = 0;
+    project.params.price_per_fund_unit = '0 ';
+
+    await contracts.projects.addproject(...project.getCreateActionParams(), { authorization: `${admin.params.account}@active` });
+
+    await contracts.projects.assignuser( admin.params.account, investor.params.account, 0, { authorization: `${admin.params.account}@active` })
+
+    project.params.status = 1;
+    project.params.builder = '';
+    project.params.investors = [investor.params.account];
+    project.params.fund_lp = '';
+    project.params.total_fund_offering_amount = '0 ';
+    project.params.total_number_fund_offering = 0;
+    project.params.price_per_fund_unit = '0 ';
+
+    //Assert
+    const projectsTable = await rpc.get_table_rows({
+      code: projects,
+      scope: projects,
+      table: 'projects',
+      json: true
+    })
+
+    console.log('\n\n Projects table : ', projectsTable)
+
+    assert.deepStrictEqual(projectsTable.rows, [{
+      project_id: project.params.id,
+      developer_id: 0,
+      owner: project.params.owner,
+      project_class: project.params.project_class,
+      project_name: project.params.project_name,
+      description: project.params.description,
+      created_date: projectsTable.rows[0].created_date,
+      status: project.params.status,
+      builder: project.params.builder,
+      investors: project.params.investors,
+      total_project_cost: project.params.total_project_cost,
+      debt_financing: project.params.debt_financing,
+      term: project.params.term,
+      interest_rate: project.params.interest_rate,
+      loan_agreement: project.params.loan_agreement,
+      total_equity_financing: project.params.total_equity_financing,
+      total_gp_equity: project.params.total_gp_equity,
+      private_equity: project.params.private_equity,
+      annual_return: project.params.annual_return,
+      project_co_lp: project.params.project_co_lp,
+      project_co_lp_date: project.params.project_co_lp_date,
+      projected_completion_date: project.params.projected_completion_date,
+      projected_stabilization_date: project.params.projected_stabilization_date,
+      anticipated_year_sale_refinance: project.params.anticipated_year_sale_refinance,
+      fund_lp: project.params.fund_lp,
+      total_fund_offering_amount: project.params.total_fund_offering_amount,
+      total_number_fund_offering: project.params.total_number_fund_offering,
+      price_per_fund_unit: project.params.price_per_fund_unit,
+      approved_date: 0,
+      approved_by: ''
+    }
+    ])
+
+  });
 
 
   it('Approve a project', async function () {
