@@ -23,6 +23,7 @@ public:
   virtual void remove(const eosio::name &account);
 
 protected:
+  virtual void create_imp(const eosio::name &account) = 0;
   virtual void update_impl(const eosio::name &account) = 0;
   virtual void assign_impl(const eosio::name &account, const uint64_t &project_id) = 0;
 

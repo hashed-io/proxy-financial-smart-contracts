@@ -66,7 +66,7 @@ public:
 
     ACTION reset();
 
-    ACTION resetusers();
+    ACTION init();
 
     ACTION addproject(const eosio::name &actor,
                       const std::string &project_class,

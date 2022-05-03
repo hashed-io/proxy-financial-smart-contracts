@@ -15,6 +15,8 @@ void User::create(const eosio::name &account, const std::string &user_name, cons
                    item.user_name = user_name;
                    item.role = role;
                    item.description = description; });
+
+  create_imp(account);
 }
 
 void User::update(const eosio::name &account, const std::string &user_name, const eosio::name &role, const std::string &description, const uint64_t &encripted_data)

@@ -66,23 +66,23 @@ ACTION projects::reset()
 	{
 		transfer_itr = fund_transfer_t.erase(transfer_itr);
 	}
-	action(
-			permission_level(get_self(), "active"_n),
-			get_self(),
-			"resetusers"_n,
-			std::make_tuple())
-			.send();
-}
-
-ACTION projects::resetusers()
-{
-	require_auth(_self);
-
+	
 	auto user_itr = user_t.begin();
 	while (user_itr != user_t.end())
 	{
 		user_itr = user_t.erase(user_itr);
 	}
+
+}
+
+ACTION projects::init()
+{
+	require_auth(_self);
+
+	addentity(_self, "Proxy Capital", "Entity for Proxy Capital", ENTITY_TYPES.FUND);
+	addentity(_self, "Investor Entity 1", "Entity for investors", ENTITY_TYPES.INVESTOR);
+	addentity(_self, "Developer Entity 1", "Entity for developer", ENTITY_TYPES.DEVELOPER);
+
 
 	// hardcoding some entity_t and user_t for testnet
 	adduser(_self, "proxyadmin11"_n, "Admin", common::projects::entity::fund);
@@ -131,12 +131,9 @@ ACTION projects::addentity(const eosio::name &actor,
 
 	check(ENTITY_TYPES.is_valid_constant(role), common::contracts::projects.to_string() + ": the role is not valid.");
 
-	uint64_t entity_id = entity_t.available_primary_key();
-	entity_id = (entity_id > 0) ? entity_id : 1;
-
 	entity_t.emplace(_self, [&](auto &new_entity)
 									 {
-		new_entity.entity_id = entity_id;
+		new_entity.entity_id = get_valid_index(entity_t.available_primary_key());;
 		new_entity.entity_name = entity_name;
 		new_entity.description = description;
 		new_entity.role = role; });
