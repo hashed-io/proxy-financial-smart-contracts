@@ -1,0 +1,2 @@
+# cleos -u https://testnet.telos.caleos.io push action proxyv1prjct adduser '["proxyv1prjct", "tlalocmant4", "name: builderuser1", "developer"]' -p proxyv1prjct@active
+cleos -u https://testnet.telos.caleos.io push action proxyv1prjct addentity '["proxyv1prjct", "tlalocmant4", "name: builderuser1", "developer"]' -p proxyv1prjct@active
