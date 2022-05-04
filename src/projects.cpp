@@ -357,7 +357,8 @@ ACTION projects::approveprjct(name actor,
 	check(project_itr->status == PROJECT_STATUS.AWAITING_FUND_APPROVAL, common::contracts::projects.to_string() + ": the project has been already approved.");
 
 	uint64_t role_id = 0;
-	uint64_t developer_entity = get_user_entity(project_itr->owner);
+	
+	uint64_t developer_entity = get_user_entity(project_itr->builder);
 	uint64_t fund_entity = get_user_entity(actor);
 
 	action(

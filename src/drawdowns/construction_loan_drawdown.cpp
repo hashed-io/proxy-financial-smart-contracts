@@ -9,9 +9,9 @@ void ConstructionLoanDrawdown::create_impl(const eosio::name &drawdown_type)
 
   while (drawdown_itr != drawdowns_by_type.end())
   {
-    if (drawdown_itr->state != common::transactions::drawdown::status::approved)
+    if (drawdown_itr->type == drawdown_type)
     {
-      check(false, "Cannot create a drawdown, one already in process");
+      check(drawdown_itr->state != common::transactions::drawdown::status::approved, "Cannot create a drawdown, one already in process");
       break;
     }
 
@@ -46,10 +46,9 @@ void ConstructionLoanDrawdown::update_impl(const uint64_t &drawdown_id)
   {
     /* code */
     // permissions of the admin
-  } else
+  }
+  else
   {
     check(false, "Drawdown can not be edited at this state!");
   }
-  
-
 }

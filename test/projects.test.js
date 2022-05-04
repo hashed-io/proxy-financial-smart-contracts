@@ -17,7 +17,7 @@ const assert = require('assert')
 
 const expect = require('chai').expect
 
-const { projects } = contractNames
+const { projects, accounts, budgets, permissions, transactions} = contractNames
 
 
 describe('Tests for projects smart contract', async function () {
@@ -36,7 +36,7 @@ describe('Tests for projects smart contract', async function () {
     await sleep(4000)
     await EnvironmentUtil.deployContracts(configContracts)
 
-    contracts = await getContracts([projects])
+    contracts = await getContracts([projects, accounts, budgets, permissions, transactions])
 
     await updatePermissions()
     console.log('\n')
@@ -44,14 +44,14 @@ describe('Tests for projects smart contract', async function () {
     await contracts.projects.init({ authorization: `${projects}@active` });
 
     admin = await UserFactory.createWithDefaults({ role: Roles.fund, account: 'proxyadmin11', user_name: 'Admin', entity_id: 1 });
-    investor = await UserFactory.createWithDefaults({ role: Roles.investor, account: 'investoruser', user_name: 'Investor', entity_id: 2});
+    investor = await UserFactory.createWithDefaults({ role: Roles.investor, account: 'investoruser', user_name: 'Investor', entity_id: 2 });
     builder = await UserFactory.createWithDefaults({ role: Roles.builder, account: 'builderuser1', user_name: 'Builder', entity_id: 3 });
 
     await EnvironmentUtil.createAccount('proxyadmin11');
     await EnvironmentUtil.createAccount('investoruser');
     await EnvironmentUtil.createAccount('builderuser1');
 
-  
+
 
   })
 
@@ -173,17 +173,19 @@ describe('Tests for projects smart contract', async function () {
 
     //Arrange
     const user = await UserFactory.createWithDefaults({ role: Roles.fund });
-    console.log(user);
     await contracts.projects.adduser(projects, ...user.getCreateParams(), { authorization: `${projects}@active` });
 
     const project = await ProjectFactory.createWithDefaults({ owner: user.params.account });
-    project.params.status = 1;
-    project.params.builder = '';
-    project.params.investors = [];
-    project.params.fund_lp = '';
-    project.params.total_fund_offering_amount = '0 ';
-    project.params.total_number_fund_offering = 0;
-    project.params.price_per_fund_unit = '0 ';
+
+    Object.assign(project.params, {
+      status: 1,
+      builder: '',
+      investors: [],
+      fund_lp: '',
+      total_fund_offering_amount: '0 ',
+      total_number_fund_offering: 0,
+      price_per_fund_unit: '0 '
+    });
 
 
     console.log(project);
@@ -241,25 +243,20 @@ describe('Tests for projects smart contract', async function () {
 
     //Arrange
     const project = await ProjectFactory.createWithDefaults({ owner: admin.params.account });
-    project.params.status = 1;
-    project.params.builder = '';
-    project.params.investors = [];
-    project.params.fund_lp = '';
-    project.params.total_fund_offering_amount = '0 ';
-    project.params.total_number_fund_offering = 0;
-    project.params.price_per_fund_unit = '0 ';
 
     await contracts.projects.addproject(...project.getCreateActionParams(), { authorization: `${admin.params.account}@active` });
 
-    await contracts.projects.assignuser( admin.params.account, builder.params.account, 0, { authorization: `${admin.params.account}@active` })
+    await contracts.projects.assignuser(admin.params.account, builder.params.account, 0, { authorization: `${admin.params.account}@active` })
 
-    project.params.status = 1;
-    project.params.builder = builder.params.account;
-    project.params.investors = [];
-    project.params.fund_lp = '';
-    project.params.total_fund_offering_amount = '0 ';
-    project.params.total_number_fund_offering = 0;
-    project.params.price_per_fund_unit = '0 ';
+    Object.assign(project.params, {
+      status: 1,
+      builder: builder.params.account,
+      investors: [],
+      fund_lp: '',
+      total_fund_offering_amount: '0 ',
+      total_number_fund_offering: 0,
+      price_per_fund_unit: '0 '
+    });
 
     //Assert
     const projectsTable = await rpc.get_table_rows({
@@ -326,15 +323,17 @@ describe('Tests for projects smart contract', async function () {
 
     await contracts.projects.addproject(...project.getCreateActionParams(), { authorization: `${admin.params.account}@active` });
 
-    await contracts.projects.assignuser( admin.params.account, investor.params.account, 0, { authorization: `${admin.params.account}@active` })
+    await contracts.projects.assignuser(admin.params.account, investor.params.account, 0, { authorization: `${admin.params.account}@active` })
 
-    project.params.status = 1;
-    project.params.builder = '';
-    project.params.investors = [investor.params.account];
-    project.params.fund_lp = '';
-    project.params.total_fund_offering_amount = '0 ';
-    project.params.total_number_fund_offering = 0;
-    project.params.price_per_fund_unit = '0 ';
+    Object.assign(project.params, {
+      status: 1,
+      builder: '',
+      investors: [investor.params.account],
+      fund_lp: '',
+      total_fund_offering_amount: '0 ',
+      total_number_fund_offering: 0,
+      price_per_fund_unit: '0 '
+    });
 
     //Assert
     const projectsTable = await rpc.get_table_rows({
@@ -382,6 +381,52 @@ describe('Tests for projects smart contract', async function () {
 
   });
 
+  it.only('Approve project', async () => {
+
+    //Arrange
+    const project = await ProjectFactory.createWithDefaults({ owner: admin.params.account });
+
+    await contracts.projects.addproject(...project.getCreateActionParams(), { authorization: `${admin.params.account}@active` });
+
+    await contracts.projects.assignuser(admin.params.account, builder.params.account, 0, { authorization: `${admin.params.account}@active` })
+
+    await contracts.projects.assignuser(admin.params.account, investor.params.account, 0, { authorization: `${admin.params.account}@active` })
+
+    Object.assign(project.params, {
+      status: 1,
+      builder: builder.params.account,
+      investors: [investor.params.account],
+      fund_lp: "https://fund-lp.com",
+      total_fund_offering_amount: "400000.00 USD",
+      total_number_fund_offering: 40000,
+      price_per_fund_unit: "300.00 USD"
+    });
+
+    console.log(project)
+    // Act
+
+    /*
+    *ACTION projects::approveprjct(name actor,
+    *															uint64_t project_id,
+    *															string fund_lp,
+    *															asset total_fund_offering_amount,
+    *															uint64_t total_number_fund_offering,
+    *															asset price_per_fund_unit)
+    */
+    await contracts.projects.approveprjct(admin.params.account, ...project.getApproveActionParams(), { authorization: `${admin.params.account}@active` });
+
+    //Assert
+    const projectsTable = await rpc.get_table_rows({
+      code: projects,
+      scope: projects,
+      table: 'projects',
+      json: true
+    })
+
+
+    console.log('\n\n Projects table : ', projectsTable)
+
+  });
 
   it('Approve a project', async function () {
     //Arrange

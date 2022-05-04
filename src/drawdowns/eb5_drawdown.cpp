@@ -11,9 +11,9 @@ void EB5Drawdown::create_impl(const eosio::name &drawdown_type)
 
   while (drawdown_itr != drawdowns_by_type.end())
   {
-    if (drawdown_itr->state != common::transactions::drawdown::status::approved)
+    if (drawdown_itr->type == drawdown_type)
     {
-      check(false, "Cannot create a drawdown, one already in process");
+      check(drawdown_itr->state != common::transactions::drawdown::status::approved, "Cannot create a drawdown, one already in process");
       break;
     }
 
@@ -38,7 +38,6 @@ void EB5Drawdown::update_impl(const uint64_t &drawdown_id)
 
   check(drawdown_itr != drawdown_t.end(), "Drawdown not found");
   check(drawdown_itr->state == DRAWDOWN_STATES.DAFT, "EB5 Drawdown can not be edited after submit.");
-  
+
   // permissions of builder
-  
 }

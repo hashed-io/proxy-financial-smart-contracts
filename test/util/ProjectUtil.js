@@ -217,6 +217,24 @@ class Project {
     ]
   }
 
+  /**
+  *getApproveActionParams() uint64_t project_id,
+  *	 string fund_lp,
+  *	 asset total_fund_offering_amount,
+  *	 uint64_t total_number_fund_offering,
+  *	 asset price_per_fund_unit
+   */
+  getApproveActionParams() {
+    return [
+      this.params.id,
+      this.params.fund_lp,
+      this.params.total_fund_offering_amount,
+      this.params.total_number_fund_offering,
+      this.params.price_per_fund_unit
+
+    ]
+  }
+
 }
 
 class ProjectFactory {
@@ -290,7 +308,7 @@ class ProjectFactory {
       owner = await createRandomAccount()
     }
 
-    if(!id) {
+    if (!id) {
       id = 0;
     }
 

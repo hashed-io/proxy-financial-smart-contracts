@@ -60,11 +60,11 @@ const publicKeysByChain = {
 const contractsConfig = {
   [supportedChains.local]: [
     contract('nullcontract', 'm1nulldaos'),
-    contract('accounts', 'proxyact'),
-    contract('budgets', 'proxybud'),
-    contract('permissions', 'proxyperm'),
-    contract('projects', 'proxyprj'),
-    contract('transactions', 'proxytrx')
+    contract('accounts', 'proxyv2accnt'),
+    contract('budgets', 'proxyv2bdgts'),
+    contract('permissions', 'proxyv2prmss'),
+    contract('projects', 'proxyv2prjct'),
+    contract('transactions', 'proxyv2trnsc')
 
   ],
   // THIS CONTRACTS ARE THE ONES ON THE GITLAB
