@@ -29,6 +29,8 @@ CONTRACT accounts : public contract {
         
         ACTION reset ();
 
+        ACTION init();
+
         ACTION addledger (uint64_t project_id, uint64_t ledger_id);
 
         // ACTION initaccounts (uint64_t project_id);
