@@ -78,11 +78,11 @@ const contractsConfig = {
   
   //  NEW ACCOUNTS CREATED
   [supportedChains.telosTestnet]: [
-    contract('accounts', 'proxyv1accnt'),
-    contract('budgets', 'proxyv1bdgts'),
-    contract('permissions', 'proxyv1prmss'),
-    contract('projects', 'proxyv1prjct'),
-    contract('transactions', 'proxyv1trnsc')
+    contract('accounts', 'proxyv2accnt'),
+    contract('budgets', 'proxyv2bdgts'),
+    contract('permissions', 'proxyv2prmss'),
+    contract('projects', 'proxyv2prjct'),
+    contract('transactions', 'proxyv2trnsc')
   ],
   [supportedChains.telosMainnet]: [
     contract('accounts', 'pxact.sh'),
