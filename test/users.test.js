@@ -103,7 +103,7 @@ describe('Tests for the users on projects smart contract', async function () {
 
   })
 
-  it.only('Test reset action', async () => {
+  it.only('Test init action', async () => {
     // Arrange
 
     // Act

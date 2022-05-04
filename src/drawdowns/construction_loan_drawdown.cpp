@@ -29,7 +29,7 @@ void ConstructionLoanDrawdown::create_impl(const eosio::name &drawdown_type)
 		item.close_date = 0; });
 }
 
-void ConstructionLoanDrawdown::update_impl(const uint64_t &drawdown_id)
+void ConstructionLoanDrawdown::update_impl(const uint64_t &drawdown_id, const eosio::asset &total_amount)
 {
   transactions::drawdown_tables drawdown_t(contract_name, project_id);
   auto drawdown_itr = drawdown_t.find(drawdown_id);

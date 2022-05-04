@@ -41,18 +41,14 @@ namespace common
       int64_t amount;
     };
 
-    struct transaction_parameters
+    struct transaction_param
     {
-      common::types::transaction_amount &amounts;
-      std::string &description;
-    };
-
-    struct transaction_pram
-    {
+      uint64_t id;
       uint64_t date;
-      transaction_amount amounts;
+      std::vector<transaction_amount> amounts;
       std::string description;
-      common::types::url_information supporting_files;
+      std::vector<url_information> supporting_files;
+      uint64_t flag;
     };
 
   }

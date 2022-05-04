@@ -451,9 +451,22 @@ ACTION transactions::movedrawdown(const eosio::name &actor,
 ACTION transactions::transacts(const eosio::name &actor,
 															 const uint64_t &project_id,
 															 const uint64_t &drawdown_id,
-															 std::vector<common::types::transaction_pram> transactions)
+															 std::vector<common::types::transaction_param> transactions)
 {
 	require_auth(_self);
+
+	for (int i = 0; i < transactions.size(); i++)
+	{
+		/* code */
+		generate_transaction(actor,
+												 project_id,
+												 drawdown_id,
+												 transactions[i].id,
+												 transactions[i].date,
+												 transactions[i].amounts,
+												 transactions[i].description,
+												 transactions[i].supporting_files);
+	}
 }
 
 ACTION transactions::deltransacts(name actor,
@@ -461,4 +474,118 @@ ACTION transactions::deltransacts(name actor,
 																	std::vector<uint64_t> project_id)
 {
 	require_auth(_self);
+}
+
+void transactions::generate_transaction(const eosio::name &actor,
+																				const uint64_t &project_id,
+																				const uint64_t &drawdown_id,
+																				uint64_t transaction_id,
+																				const uint64_t &date,
+																				vector<common::types::transaction_amount> amounts,
+																				const std::string description,
+																				vector<common::types::url_information> supporting_files)
+{
+
+	transaction_tables transactions_t(_self, project_id);
+	account_transaction_tables account_transacion_t(_self, project_id);
+
+	account_tables account_t(common::contracts::accounts, project_id);
+
+	auto itr_amounts = amounts.begin();
+	uint64_t trx_id = 0;
+	int64_t total = 0;
+	uint64_t total_positive = 0;
+	uint64_t ledger_id = 0;
+	uint64_t transaction_category = ACCOUNT_CATEGORIES.NONE;
+	name action_accnt;
+
+	if (transaction_id == -1)
+	{
+		trx_id = transactions_t.available_primary_key();
+		trx_id = (trx_id > 0) ? trx_id : 1;
+	}
+	else
+	{
+		trx_id = transaction_id;
+	}
+
+	while (itr_amounts != amounts.end())
+	{
+		auto itr_account = account_t.find(itr_amounts->account_id);
+		check(itr_account != account_t.end(), common::contracts::transactions.to_string() + ": the account does not exist.");
+
+		if (ledger_id != itr_account->ledger_id)
+		{
+			check(ledger_id == 0, common::contracts::transactions.to_string() + ": can not edit different ledgers in the same transaction.");
+			ledger_id = itr_account->ledger_id;
+		}
+
+		if (transaction_category == ACCOUNT_CATEGORIES.NONE)
+		{
+			transaction_category = itr_account->account_category;
+		}
+
+		account_transacion_t.emplace(_self, [&](auto &item)
+																 {
+			item.accnt_transaction_id = account_transacion_t.available_primary_key();
+			item.transaction_id = trx_id;
+			item.account_id = itr_amounts -> account_id;
+			item.amount = itr_amounts -> amount; });
+
+		total += itr_amounts->amount;
+
+		if (itr_amounts->amount < 0)
+		{
+			action_accnt = "subbalance"_n;
+		}
+		else
+		{
+			action_accnt = "addbalance"_n;
+			total_positive += itr_amounts->amount;
+		}
+
+		action(
+				permission_level(common::contracts::accounts, "active"_n),
+				common::contracts::accounts,
+				action_accnt,
+				std::make_tuple(project_id, itr_amounts->account_id, asset(abs(itr_amounts->amount), common::currency)))
+				.send();
+
+		itr_amounts++;
+	}
+
+	check(ledger_id > 0, common::contracts::transactions.to_string() + ": no ledger will be modified.");
+
+	action(
+			permission_level(common::contracts::permissions, "active"_n),
+			common::contracts::permissions,
+			"checkledger"_n,
+			std::make_tuple(actor, project_id, ledger_id))
+			.send();
+
+	check(total == 0, common::contracts::transactions.to_string() + ": the transaction total balance must be zero.");
+
+	drawdown_tables drawdown_t(_self, project_id);
+
+	auto drawdown_itr = drawdown_t.find(drawdown_id);
+
+	std::unique_ptr<Drawdown> drawdown = std::unique_ptr<Drawdown>(DrawdownFactory::Factory(project_id, *this, drawdown_itr->type));
+	drawdown->update(drawdown_id, asset(total_positive, common::currency));
+
+	// drawdowns_by_state.modify(itr_drawdown, _self, [&](auto &item)
+	// 													{ item.total_amount += asset(total_positive, common::currency); });
+
+	transactions_t.emplace(_self, [&](auto &item)
+												 {
+		item.transaction_id = trx_id;
+		item.actor = actor;
+		item.timestamp = date;
+		item.description = description;
+		item.drawdown_id = drawdown_id;
+		item.transaction_category = transaction_category;
+		item.total_amount = asset(total_positive, common::currency);
+		
+		for (int i = 0; i < supporting_files.size(); i++) {
+			item.supporting_files.push_back(supporting_files[i]);
+		} });
 }

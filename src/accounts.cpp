@@ -64,10 +64,24 @@ ACTION accounts::reset()
 
     // add new information of accounts
 
+    
+
+
+}
+
+ACTION accounts::init()
+
+{
+
+    reset();
+
+    // TODO ACCOUNT_TYPES solo va a ser hard costs y soft cost
+
+    // TODO add accounts to this thing below
+
     vector<common::types::account_types> account_types_vv;
 
     // hardcosts
-
     account_types_vv.push_back((common::types::account_types){common::accouts::subtypes::construction, common::accouts::types::credit, common::accouts::categories::hard_cost});
     account_types_vv.push_back((common::types::account_types){common::accouts::subtypes::furniture_fixtures_allowance, common::accouts::types::credit, common::accouts::categories::hard_cost});
     account_types_vv.push_back((common::types::account_types){common::accouts::subtypes::hard_cost_contingency_allowance, common::accouts::types::credit, common::accouts::categories::hard_cost});
@@ -102,16 +116,7 @@ ACTION accounts::reset()
 			item.account_class = account_types_vv[i].account_class;
             item.category = account_types_vv[i].category; });
     }
-
-    // Old subtypes
-    // for (int i = 0; i < account_types_v.size(); i++)
-    // {
-    //     account_types.emplace(_self, [&](auto &item)
-    //                           {
-	// 		item.type_id = i + 1;
-	// 		item.type_name = account_types_v[i].first;
-	// 		item.account_class = account_types_v[i].second; });
-    // }
+    
 }
 
 ACTION accounts::addledger(const uint64_t &project_id,

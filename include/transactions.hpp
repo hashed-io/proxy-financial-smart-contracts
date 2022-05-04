@@ -93,7 +93,7 @@ public:
 	ACTION transacts(const eosio::name &actor,
 									 const uint64_t &project_id,
 									 const uint64_t &drawdown_id,
-									 std::vector<common::types::transaction_pram> transactions);
+									 std::vector<common::types::transaction_param> transactions);
 
 	ACTION deltransacts(name actor,
 											uint64_t transaction_id,
@@ -135,6 +135,15 @@ private:
 	user_tables users;
 
 	void delete_transaction(name actor, uint64_t project_id, uint64_t transaction_id);
+
+	void generate_transaction(const eosio::name &actor,
+														const uint64_t &project_id,
+														const uint64_t &drawdown_id,
+														uint64_t transaction_id,
+														const uint64_t &date,
+														vector<common::types::transaction_amount> amounts,
+														const std::string description,
+														vector<common::types::url_information> supporting_files);
 
 	void make_transaction(name actor,
 												uint64_t transaction_id,

@@ -42,6 +42,14 @@ namespace common
 
   namespace transactions
   {
+
+    namespace flag
+    {
+      constexpr uint8_t remove = 0;
+      constexpr uint8_t create = 1;
+      constexpr uint8_t edit = 2;
+    } // namespace flag
+
     namespace drawdown
     {
       namespace status

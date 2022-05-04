@@ -72,6 +72,8 @@ public:
 
     ACTION reset();
 
+    ACTION init();
+
     ACTION addledger(const uint64_t &project_id,
                      const uint64_t &entity_id);
 

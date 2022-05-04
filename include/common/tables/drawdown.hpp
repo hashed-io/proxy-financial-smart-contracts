@@ -2,11 +2,14 @@
 
 using namespace eosio;
 
-// scoped by project_id
+// TODO add the number of drawdown type
+
+// ! scoped by project_id
 #define DEFINE_DRAWDOWN_TABLE                                       \
   TABLE drawdown_table                                              \
   {                                                                 \
     uint64_t drawdown_id;                                           \
+    uint64_t drawdown_number; /* Number of drawdown of each type*/  \
     std::string type_str;                                           \
     eosio::name type;                                               \
     eosio::asset total_amount;                                      \

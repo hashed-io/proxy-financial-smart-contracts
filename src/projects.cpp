@@ -34,7 +34,7 @@ void projects::delete_transfer_aux(uint64_t transfer_id)
 uint64_t projects::get_user_entity(name actor)
 {
 	auto user_itr = user_t.find(actor.value);
-	check(user_itr != user_t.end(), common::contracts::projects.to_string() + ": proxy cap user not found.");
+	check(user_itr != user_t.end(), common::contracts::projects.to_string() + ": " + actor.to_string() + " proxy cap user not found.");
 
 	return user_itr->entity_id;
 }
