@@ -43,11 +43,11 @@ namespace common
 
     struct transaction_param
     {
-      uint64_t id;
-      uint64_t date;
-      std::vector<transaction_amount> amounts;
+      uint64_t id; // ! user
+      uint64_t date; // ! user
+      std::vector<transaction_amount> amounts;  // ! user
       std::string description;
-      std::vector<url_information> supporting_files;
+      std::vector<url_information> supporting_files; // ! user
       uint64_t flag;
     };
 
