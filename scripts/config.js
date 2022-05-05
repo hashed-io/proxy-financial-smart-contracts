@@ -8,7 +8,7 @@ const contract = (name, nameOnChain) => {
     stakes: {
       cpu: '40.0000 TLOS',
       net: '40.0000 TLOS',
-      ram: 1000000
+      ram: 2400000
     }
   }
 }
@@ -63,8 +63,8 @@ const contractsConfig = {
     contract('accounts', 'proxyv2accnt'),
     contract('budgets', 'proxyv2bdgts'),
     contract('permissions', 'proxyv2prmss'),
-    contract('projects', 'proxyv2prjct'),
-    contract('transactions', 'proxyv2trnsc')
+    contract('projects', 'proxyv3prjct'),
+    contract('transactions', 'proxyv3trnsc')
 
   ],
   // THIS CONTRACTS ARE THE ONES ON THE GITLAB
@@ -81,8 +81,8 @@ const contractsConfig = {
     contract('accounts', 'proxyv2accnt'),
     contract('budgets', 'proxyv2bdgts'),
     contract('permissions', 'proxyv2prmss'),
-    contract('projects', 'proxyv2prjct'),
-    contract('transactions', 'proxyv2trnsc')
+    contract('projects', 'proxyv3prjct'),
+    contract('transactions', 'proxyv3trnsc')
   ],
   [supportedChains.telosMainnet]: [
     contract('accounts', 'pxact.sh'),

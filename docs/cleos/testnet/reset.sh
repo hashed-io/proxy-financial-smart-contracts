@@ -11,15 +11,15 @@ cleos -u https://test.telos.kitchen push action proxyv2prmss reset '{}' -p proxy
 
 
 echo 'Reset of: proxyv2prjct'
-cleos -u https://test.telos.kitchen push action proxyv2prjct reset '{}' -p proxyv2prjct@active
+cleos -u https://test.telos.kitchen push action proxyv3prjct reset '{}' -p proxyv3prjct@active
 
 
 echo 'Reset of: proxyv2trnsc'
-cleos -u https://test.telos.kitchen push action proxyv2trnsc reset '{}' -p proxyv2trnsc@active
+cleos -u https://test.telos.kitchen push action proxyv3trnsc reset '{}' -p proxyv3trnsc@active
 
 
 # echo 'Init projects and accounts'
 
-# cleos -u https://test.telos.kitchen push action proxyv2prjct init '{}' -p proxyv2prjct@active
+cleos -u https://test.telos.kitchen push action proxyv3prjct init '{}' -p proxyv3prjct@active
 
-# cleos -u https://test.telos.kitchen push action proxyv2accnt init '{}' -p proxyv2accnt@active
+cleos -u https://test.telos.kitchen push action proxyv2accnt init '{}' -p proxyv2accnt@active

@@ -9,10 +9,10 @@ cleos -u https://testnet.telos.caleos.io set contract --clear proxyv2accnt -p pr
 cleos -u https://testnet.telos.caleos.io set contract --clear proxyv2prmss  -p proxyv2prmss@active
 
 ## transactions contract
-cleos -u https://testnet.telos.caleos.io set contract --clear proxyv2trnsc  -p proxyv2trnsc@active
+cleos -u https://testnet.telos.caleos.io set contract --clear proxyv3trnsc  -p proxyv2trnsc@active
 
 ## projects contract
-cleos -u https://testnet.telos.caleos.io set contract --clear proxyv2prjct -p proxyv2prjct@active
+cleos -u https://testnet.telos.caleos.io set contract --clear proxyv3prjct -p proxyv2prjct@active
 
 
 # cleos -u https://testnet.telos.caleos.io set contract --clear proxyv2bdgts ./artifacts budgets.wasm budgets.abi -p proxyv2bdgts@active

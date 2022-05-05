@@ -1,1 +1,1 @@
-cleos -u https://testnet.telos.caleos.io push action eosio buyrambytes '{"payer":"investoruser", "receiver":"proxyv2prjct", "bytes":1000000 }' -p investoruser@active
+cleos -u https://testnet.telos.caleos.io push action eosio buyrambytes '{"payer":"investoruser", "receiver":"proxyv3prjct", "bytes":1849514 }' -p investoruser@active
