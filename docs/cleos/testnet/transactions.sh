@@ -1,4 +1,4 @@
-cleos push action proxyv2trnsc transacts '{
+cleos -u https://testnet.telos.caleos.io push action proxyv2trnsc transacts '{
   "actor": "builderuser1",
   "project_id": 0,
   "drawdown_id": 2,
