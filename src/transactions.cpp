@@ -453,7 +453,7 @@ ACTION transactions::transacts(const eosio::name &actor,
 															 const uint64_t &drawdown_id,
 															 std::vector<common::types::transaction_param> transactions)
 {
-	require_auth(_self);
+	require_auth(actor);
 
 	for (int i = 0; i < transactions.size(); i++)
 	{
@@ -499,7 +499,7 @@ void transactions::generate_transaction(const eosio::name &actor,
 	uint64_t transaction_category = ACCOUNT_CATEGORIES.NONE;
 	name action_accnt;
 
-	if (transaction_id == -1)
+	if (transaction_id == 0)
 	{
 		trx_id = transactions_t.available_primary_key();
 		trx_id = (trx_id > 0) ? trx_id : 1;

@@ -25,7 +25,6 @@ class Transaction {
     date,
     amounts,
     description,
-    accounting,
     supporting_files,
     flag
   ) {
@@ -34,7 +33,6 @@ class Transaction {
       date,
       amounts,
       description,
-      accounting,
       supporting_files,
       flag
     }
@@ -45,7 +43,6 @@ class Transaction {
       date: this.params.date,
       amounts: this.params.amounts,
       description: this.params.description,
-      accounting: this.params.accounting,
       supporting_files: this.params.supporting_files,
       flag: this.params.flag
     }]
@@ -61,7 +58,6 @@ class TransactionFactory {
     date,
     amounts,
     description,
-    accounting,
     supporting_files,
     flag
   }) {
@@ -70,7 +66,6 @@ class TransactionFactory {
       date,
       amounts,
       description,
-      accounting,
       supporting_files,
       flag
     )
@@ -81,7 +76,6 @@ class TransactionFactory {
     date,
     amounts,
     description,
-    accounting,
     supporting_files,
     flag
   }) {
@@ -90,7 +84,6 @@ class TransactionFactory {
     if (!date) { date = 2023 }
     if (!amounts) { amounts = [{ account_id: 0, amount: "200.00 USD" }] }
     if (!description) { description = 'descrip' }
-    if (!accounting) { accounting = [{ account_id: 0, amount: "200.00 USD" }] }
     if (!supporting_files) {
       supporting_files = [{
         filename: 'lorem_ipsum',
@@ -104,7 +97,6 @@ class TransactionFactory {
       date,
       amounts,
       description,
-      accounting,
       supporting_files,
       flag
     })

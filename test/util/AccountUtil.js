@@ -19,8 +19,12 @@ const AccountConstants = {
     expenses: "Expenses",
     income: "Income",
     liabilities: "Liabilities"
-  }
+  },
+  hard_cost : {
+
+  }, soft_cost : {}
 }
+
 
 class AccountUtil {
   static tokenSymbol = '2,USD'

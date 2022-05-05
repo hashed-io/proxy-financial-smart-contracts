@@ -66,13 +66,12 @@ ACTION projects::reset()
 	{
 		transfer_itr = fund_transfer_t.erase(transfer_itr);
 	}
-	
+
 	auto user_itr = user_t.begin();
 	while (user_itr != user_t.end())
 	{
 		user_itr = user_t.erase(user_itr);
 	}
-
 }
 
 ACTION projects::init()
@@ -82,7 +81,6 @@ ACTION projects::init()
 	addentity(_self, "Proxy Capital", "Entity for Proxy Capital", ENTITY_TYPES.FUND);
 	addentity(_self, "Investor Entity 1", "Entity for investors", ENTITY_TYPES.INVESTOR);
 	addentity(_self, "Developer Entity 1", "Entity for developer", ENTITY_TYPES.DEVELOPER);
-
 
 	// hardcoding some entity_t and user_t for testnet
 	adduser(_self, "proxyadmin11"_n, "Admin", common::projects::entity::fund);
@@ -357,7 +355,7 @@ ACTION projects::approveprjct(name actor,
 	check(project_itr->status == PROJECT_STATUS.AWAITING_FUND_APPROVAL, common::contracts::projects.to_string() + ": the project has been already approved.");
 
 	uint64_t role_id = 0;
-	
+
 	uint64_t developer_entity = get_user_entity(project_itr->builder);
 	uint64_t fund_entity = get_user_entity(actor);
 
@@ -679,7 +677,6 @@ ACTION projects::assignuser(const eosio::name &actor, const eosio::name &account
 
 	if (actor_itr != user_t.end())
 	{
-
 		require_auth(actor);
 		check(actor_itr->role == common::projects::entity::fund, actor.to_string() + " has not permissions to do that!");
 	}
