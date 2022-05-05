@@ -169,7 +169,7 @@ describe('Tests for projects smart contract', async function () {
   // })
 
 
-  it.only("Creates a project", async function () {
+  it("Creates a project", async function () {
 
     //Arrange
     const user = await UserFactory.createWithDefaults({ role: Roles.fund });
@@ -239,7 +239,7 @@ describe('Tests for projects smart contract', async function () {
 
   })
 
-  it.only('Assign builder to a project', async () => {
+  it('Assign builder to a project', async () => {
 
     //Arrange
     const project = await ProjectFactory.createWithDefaults({ owner: admin.params.account });
@@ -305,7 +305,7 @@ describe('Tests for projects smart contract', async function () {
   });
 
 
-  it.only('Assign investor to a project', async () => {
+  it('Assign investor to a project', async () => {
 
     // console.log(admin);
     // console.log(investor);
@@ -381,7 +381,7 @@ describe('Tests for projects smart contract', async function () {
 
   });
 
-  it.only('Approve project', async () => {
+  it('Approve project', async () => {
 
     //Arrange
     const project = await ProjectFactory.createWithDefaults({ owner: admin.params.account });

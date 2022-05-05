@@ -40,15 +40,15 @@ class Transaction {
     }
   }
   getCreateParams() {
-    return [
-      this.params.id,
-      this.params.date,
-      this.params.amounts,
-      this.params.description,
-      this.params.accounting,
-      this.params.supporting_files,
-      this.params.flag
-    ]
+    return [{
+      id: this.params.id,
+      date: this.params.date,
+      amounts: this.params.amounts,
+      description: this.params.description,
+      accounting: this.params.accounting,
+      supporting_files: this.params.supporting_files,
+      flag: this.params.flag
+    }]
   }
 
 
@@ -86,11 +86,11 @@ class TransactionFactory {
     flag
   }) {
 
-    if (!id) { id = -1 }
-    if (!date) { date = 1714022575 }
-    if (!amounts) { amounts = [{ account_id: -1, amount: "200.00" }] }
-    if (!description) { description = createRandomName() }
-    if (!accounting) { accounting = [{ account_id: -1, amount: "200.00" }] }
+    if (!id) { id = 0 }
+    if (!date) { date = 2023 }
+    if (!amounts) { amounts = [{ account_id: 0, amount: "200.00 USD" }] }
+    if (!description) { description = 'descrip' }
+    if (!accounting) { accounting = [{ account_id: 0, amount: "200.00 USD" }] }
     if (!supporting_files) {
       supporting_files = [{
         filename: 'lorem_ipsum',

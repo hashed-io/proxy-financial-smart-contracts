@@ -69,7 +69,7 @@ describe('Tests for the users on projects smart contract', async function () {
   });
 
   createRolesCases.forEach(({ testName, role, entity_id }) => {
-    it.only(testName, async () => {
+    it(testName, async () => {
 
       // Arrange
       const user = await UserFactory.createWithDefaults({ role: role });
@@ -103,7 +103,7 @@ describe('Tests for the users on projects smart contract', async function () {
 
   })
 
-  it.only('Test init action', async () => {
+  it('Test init action', async () => {
     // Arrange
 
     // Act

@@ -46,6 +46,8 @@ describe('Tests for transactions smart contract', async function () {
 
     await contracts.projects.init({ authorization: `${projects}@active` });
 
+    await contracts.accounts.init({ authorization: `${accounts}@active` });
+
     admin = await UserFactory.createWithDefaults({ role: Roles.fund, account: 'proxyadmin11', user_name: 'Admin', entity_id: 1 });
     investor = await UserFactory.createWithDefaults({ role: Roles.investor, account: 'investoruser', user_name: 'Investor', entity_id: 2 });
     builder = await UserFactory.createWithDefaults({ role: Roles.builder, account: 'builderuser1', user_name: 'Builder', entity_id: 3 });
@@ -93,7 +95,7 @@ describe('Tests for transactions smart contract', async function () {
 
   })
 
-  it.only('Creation of all drawdown types on project approval', async () => {
+  it('Creation of all drawdown types on project approval', async () => {
 
     // Arrange
 
@@ -111,7 +113,7 @@ describe('Tests for transactions smart contract', async function () {
 
   });
 
-  it.only('Update drawdown', async () => {
+  it('Update drawdown', async () => {
 
     // Arrange
 
@@ -133,12 +135,22 @@ describe('Tests for transactions smart contract', async function () {
 
     // Arrange
     const transaction = await TransactionFactory.createWithDefaults({});
-    console.log(transaction);
+    console.log(transaction.getCreateParams());
 
     // Act
-    await contracts.transactions.transacts(admin.account, 0, 0, transact.get);
+    // await contracts.transactions.transacts(builder.params.account, 0, 0, transaction.getCreateParams(), { authorization: `${admin.params.account}@active` });
 
     // Assert
+    const permissionsTable = await rpc.get_table_rows({
+      code: accounts,
+      scope: project.params.id,
+      table: 'accounts',
+      json: true
+    });
+
+    console.table(permissionsTable.rows);
+
+    
     const drawdownTable = await rpc.get_table_rows({
       code: transactions,
       scope: project.params.id,
@@ -157,6 +169,50 @@ describe('Tests for transactions smart contract', async function () {
 
     console.table(transactionsTable.rows);
 
+    const ledgerTable = await rpc.get_table_rows({
+      code: accounts,
+      scope: project.params.id,
+      table: 'ledgers',
+      json: true
+    });
+
+    console.table(ledgerTable.rows);
+
+    const accountsTable = await rpc.get_table_rows({
+      code: accounts,
+      scope: project.params.id,
+      table: 'accounts',
+      json: true
+    });
+
+    console.table(accountsTable.rows);
+
+    const accountTypesTable = await rpc.get_table_rows({
+      code: accounts,
+      scope: accounts,
+      table: 'accnttypes',
+      json: true
+    });
+
+    console.table(accountTypesTable.rows);
+
+    const UserTable = await rpc.get_table_rows({
+      code: projects,
+      scope: projects,
+      table: 'users',
+      json: true
+    });
+
+    console.table(UserTable.rows);
+
   });
 
 });
+/**
+ * @param 
+ * 
+ * TODO update view my projects []
+ * 
+ * 
+ * 
+ */
