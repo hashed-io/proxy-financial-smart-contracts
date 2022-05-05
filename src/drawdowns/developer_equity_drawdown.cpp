@@ -36,23 +36,23 @@ void DeveloperEquityDrawdown::update_impl(const uint64_t &drawdown_id, const eos
 
   check(drawdown_itr != drawdown_t.end(), "Drawdown not found");
 
+  transactions::project_tables project_t(common::contracts::projects, common::contracts::projects.value);
+  auto project_itr = project_t.find(project_id);
+
   if (drawdown_itr->state == DRAWDOWN_STATES.DAFT)
   {
-    /* code */
-    // permissions of the builder
-    drawdown_t.modify(drawdown_itr, contract_name, [&](auto &item)
-                      { item.total_amount += total_amount; });
+    require_auth(project_itr->builder);
   }
 
   else if (drawdown_itr->state == DRAWDOWN_STATES.SUBMITTED)
   {
-    /* code */
-    // permissions of the admin
-    drawdown_t.modify(drawdown_itr, contract_name, [&](auto &item)
-                      { item.total_amount += total_amount; });
+    require_auth(project_itr->owner);
   }
   else
   {
     check(false, "Drawdown can not be edited at this state!");
   }
+
+  drawdown_t.modify(drawdown_itr, contract_name, [&](auto &item)
+                    { item.total_amount += total_amount; });
 }
