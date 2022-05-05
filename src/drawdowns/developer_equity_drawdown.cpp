@@ -22,7 +22,7 @@ void DeveloperEquityDrawdown::create_impl(const eosio::name &drawdown_type)
                      {
 		item.drawdown_id = get_valid_index(drawdown_t.available_primary_key());
 		item.type_str = common::transactions::drawdown::type_developer_equity;
-    item.type = common::transactions::drawdown::type::construction_loan;
+    item.type = common::transactions::drawdown::type::developer_equity;
 		item.total_amount = asset(0, common::currency);
 		item.state = DRAWDOWN_STATES.DAFT;
 		item.open_date = eosio::current_time_point().sec_since_epoch();
