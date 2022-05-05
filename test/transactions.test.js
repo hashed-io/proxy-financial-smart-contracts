@@ -135,10 +135,10 @@ describe('Tests for transactions smart contract', async function () {
 
     // Arrange
     const transaction = await TransactionFactory.createWithDefaults({});
-    console.log(transaction.getCreateParams());
+    console.log(...transaction.getCreateParams());
 
     // Act
-    await contracts.transactions.transacts(builder.params.account, 0, 0, transaction.getCreateParams(), { authorization: `${admin.params.account}@active` });
+    await contracts.transactions.transacts(builder.params.account, 0, 1, transaction.getCreateParams(), { authorization: `${builder.params.account}@active` });
 
     // Assert
     const permissionsTable = await rpc.get_table_rows({

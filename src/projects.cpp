@@ -72,6 +72,7 @@ ACTION projects::reset()
 	{
 		user_itr = user_t.erase(user_itr);
 	}
+	
 }
 
 ACTION projects::init()
