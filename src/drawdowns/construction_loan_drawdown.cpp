@@ -40,12 +40,16 @@ void ConstructionLoanDrawdown::update_impl(const uint64_t &drawdown_id, const eo
   {
     /* code */
     // permissions of the builder
+    drawdown_t.modify(drawdown_itr, contract_name, [&](auto &item)
+                      { item.total_amount += total_amount; });
   }
 
   else if (drawdown_itr->state == DRAWDOWN_STATES.SUBMITTED)
   {
     /* code */
     // permissions of the admin
+    drawdown_t.modify(drawdown_itr, contract_name, [&](auto &item)
+                      { item.total_amount += total_amount; });
   }
   else
   {

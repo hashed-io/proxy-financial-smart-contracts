@@ -39,5 +39,8 @@ void EB5Drawdown::update_impl(const uint64_t &drawdown_id, const eosio::asset &t
   check(drawdown_itr != drawdown_t.end(), "Drawdown not found");
   check(drawdown_itr->state == DRAWDOWN_STATES.DAFT, "EB5 Drawdown can not be edited after submit.");
 
+  drawdown_t.modify(drawdown_itr, contract_name, [&](auto &item)
+                    { item.total_amount += total_amount; });
+
   // permissions of builder
 }

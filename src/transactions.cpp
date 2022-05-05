@@ -455,6 +455,7 @@ ACTION transactions::transacts(const eosio::name &actor,
 															 std::vector<common::types::transaction_param> transactions)
 {
 	require_auth(actor);
+	
 
 	for (int i = 0; i < transactions.size(); i++)
 	{

@@ -82,7 +82,7 @@ class TransactionFactory {
 
     if (!id) { id = 0 }
     if (!date) { date = 1636610400 }
-    if (!amounts) { amounts = [{ account_id: 6, amount: 10 }] }
+    if (!amounts) { amounts = [{ account_id: 6, amount: 10 }, { account_id: 6, amount: -10 }] }
     if (!description) { description = 'descrip' }
     if (!supporting_files) {
       supporting_files = [{
