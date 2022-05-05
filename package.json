@@ -7,7 +7,7 @@
     "test": "test"
   },
   "scripts": {
-    "compile": "node ./scripts/compile.js",
+    "build": "node ./scripts/compile.js",
     "test": "eoslime test --path=\"./test\"",
     "deploy": "node ./scripts/deploy_scripts.js",
     "deploylocal": "eoslime deploy --path=\"./scripts/deploy/\""

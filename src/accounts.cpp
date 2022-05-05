@@ -110,6 +110,61 @@ ACTION accounts::addledger (uint64_t project_id, uint64_t entity_id) {
         });
         itr_types++;
     }
+
+
+    // TODO create child accounts here
+
+    auto accounts_by_ledger = accounts.get_index<"byledger"_n>();
+    auto account_itr = accounts_by_ledger.find(ledger_id);
+
+    uint64_t hard_cost_parent = 0;
+    uint64_t soft_cost_parent = 0;
+
+    while (account_itr != accounts_by_ledger.end())
+    {
+        if (hard_cost_parent != 0 && soft_cost_parent != 0)
+        {
+            break;
+        }
+        if (account_itr->account_name == common::accouts::categories::names::hard_cost)
+        {
+            hard_cost_parent = account_itr->account_id;
+        }
+
+        if (account_itr->account_name == common::accouts::categories::names::soft_cost)
+        {
+            soft_cost_parent = account_itr->account_id;
+        }
+
+        account_itr++;
+    }
+
+    for (size_t i = 0; i < hard_cost_accounts.size(); i++)
+    { // ! creates the hard cost accounts
+
+        add_account(entity_id,
+                   project_id,
+                   hard_cost_accounts[i],
+                   hard_cost_parent,
+                   common::currency,
+                   "Children account",
+                   common::accouts::categories::hard_cost,
+                   asset(0, common::currency));
+    }
+
+    for (size_t i = 0; i < soft_cost_accounts.size(); i++)
+    { // ! creates the soft cost accounts
+
+        add_account(entity_id,
+                   project_id,
+                   soft_cost_accounts[i],
+                   soft_cost_parent,
+                   common::currency,
+                   "Children account",
+                   common::accouts::categories::soft_cost,
+                   asset(0, common::currency));
+    }
+
 }
 
 
@@ -420,6 +475,84 @@ ACTION accounts::deleteaccnts (uint64_t project_id) {
     auto itr_ledger = ledgers.begin();
     while (itr_ledger != ledgers.end()) {
         itr_ledger = ledgers.erase(itr_ledger);
+    }
+}
+
+void accounts::add_account (const uint64_t &entity_id,
+                            const uint64_t &project_id,
+                            const std::string &account_name,
+                            const uint64_t &parent_id,
+                            const eosio::symbol &account_currency,
+                            const std::string &description,
+                            const uint64_t &account_category,
+                            const eosio::asset &budget_amount)
+{
+
+
+    ledger_tables ledgers(_self, project_id);
+    auto ledgers_by_entity = ledgers.get_index<"byentity"_n>();
+    auto itr_ledger = ledgers_by_entity.find(entity_id);
+    check(itr_ledger != ledgers_by_entity.end(), common::contracts::accounts.to_string() + ": there is no ledger associated with that entity.");
+
+    auto project_exists = projects_table.find(project_id);
+    check(project_exists != projects_table.end(), common::contracts::accounts.to_string() + ": the project where the account is trying to be placed does not exist.");
+
+    account_tables accounts(_self, project_id);
+
+    auto accounts_by_ledger = accounts.get_index<"byledger"_n>();
+    auto itr_accounts = accounts_by_ledger.find(itr_ledger->ledger_id);
+
+    while (itr_accounts != accounts_by_ledger.end() && itr_accounts->ledger_id == itr_ledger->ledger_id)
+    {
+        check(itr_accounts->account_name != account_name, common::contracts::accounts.to_string() + ": the name of the account already exists.");
+        itr_accounts++;
+    }
+
+    check(ACCOUNT_CATEGORIES.is_valid_constant(account_category), common::contracts::accounts.to_string() + ": the account category is invalid.");
+
+    check(account_currency == common::currency, common::contracts::accounts.to_string() + ": the currency must be the same.");
+    check(parent_id != 0, common::contracts::accounts.to_string() + ": the parent id must be grater than zero.");
+
+    auto parent = accounts.find(parent_id);
+    check(parent != accounts.end(), common::contracts::accounts.to_string() + ": the parent account does not exist.");
+
+    if (parent->num_children == 0)
+    {
+        check(parent->increase_balance == asset(0, common::currency) && parent->decrease_balance == asset(0, common::currency),
+              common::contracts::accounts.to_string() + ": the parent's balance is not zero.");
+    }
+
+    check(parent->ledger_id == itr_ledger->ledger_id, common::contracts::accounts.to_string() + ": the ledger must be the same as the parent account.");
+
+    uint64_t new_account_id = accounts.available_primary_key();
+    new_account_id = (new_account_id > 0) ? new_account_id : 1;
+
+    accounts.emplace(_self, [&](auto &new_account)
+                     {
+		new_account.account_id = new_account_id; 
+		new_account.parent_id = parent_id;
+        new_account.ledger_id = itr_ledger -> ledger_id;
+		new_account.account_name = account_name;
+		new_account.account_subtype = parent -> account_subtype;
+		new_account.increase_balance = asset(0, common::currency);
+		new_account.decrease_balance = asset(0, common::currency);
+		new_account.account_symbol = common::currency;
+        new_account.description = description;
+        new_account.account_category = account_category; });
+
+    accounts.modify(parent, _self, [&](auto &modified_account)
+                    { modified_account.num_children += 1; });
+
+    if (budget_amount > asset(0, common::currency))
+    {
+        uint64_t budget_type_id = 1;
+        uint64_t date = 0;
+        action(
+            permission_level(common::contracts::budgets, "active"_n),
+            common::contracts::budgets,
+            "addbudget"_n,
+            std::make_tuple(common::contracts::budgets, project_id, new_account_id, budget_amount, budget_type_id, date, date, true))
+            .send();
     }
 }
 
