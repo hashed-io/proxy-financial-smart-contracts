@@ -386,14 +386,14 @@ ACTION projects::approveprjct(name actor,
 			permission_level(common::contracts::permissions, "active"_n),
 			common::contracts::permissions,
 			"assignrole"_n,
-			std::make_tuple(common::contracts::permissions, project_itr->owner, project_id, role_id))
+			std::make_tuple(common::contracts::permissions, project_itr->builder, project_id, role_id)) // ! builder
 			.send();
 
 	action(
 			permission_level(common::contracts::permissions, "active"_n),
 			common::contracts::permissions,
 			"assignrole"_n,
-			std::make_tuple(common::contracts::permissions, actor, project_id, role_id))
+			std::make_tuple(common::contracts::permissions, actor, project_id, role_id)) // ! admin
 			.send();
 
 	action(

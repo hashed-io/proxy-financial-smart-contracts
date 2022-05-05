@@ -119,6 +119,31 @@ public:
     ACTION deleteaccnts(const uint64_t &project_id);
 
 private:
+    const vector<std::string> hard_cost_accounts = {
+        common::accouts::subtypes::hardcost::construction,
+        common::accouts::subtypes::hardcost::furniture_fixtures_allowance,
+        common::accouts::subtypes::hardcost::hard_cost_contingency_allowance};
+
+    const vector<std::string> soft_cost_accounts = {
+        common::accouts::subtypes::softcost::architect_design,
+        common::accouts::subtypes::softcost::building_permits_impact_fees,
+        common::accouts::subtypes::softcost::developer_reimbursable,
+        common::accouts::subtypes::softcost::builder_risk_insurance,
+        common::accouts::subtypes::softcost::environment_soils_survey,
+        common::accouts::subtypes::softcost::testing_inspections,
+        common::accouts::subtypes::softcost::legal_professional,
+        common::accouts::subtypes::softcost::real_estate_taxes_owners_liability_insurance,
+        common::accouts::subtypes::softcost::predevelopment_fee,
+        common::accouts::subtypes::softcost::equity_management_fee,
+        common::accouts::subtypes::softcost::bank_origination_fee,
+        common::accouts::subtypes::softcost::lender_debt_placement_fee,
+        common::accouts::subtypes::softcost::title_appraisal_feasibility_plan_review_closing,
+        common::accouts::subtypes::softcost::interest_carry_during_construction,
+        common::accouts::subtypes::softcost::ops_stabilization_interest_carry_reserve,
+        common::accouts::subtypes::softcost::sales_marketing,
+        common::accouts::subtypes::softcost::preopening_expenses,
+        common::accouts::subtypes::softcost::contingency};
+
 
     const vector<pair<std::string, std::string>> account_types_v = {
         make_pair(ACCOUNT_SUBTYPES.ASSETS, ACCOUNT_TYPES.DEBIT),
@@ -141,4 +166,13 @@ private:
                         const asset &amount,
                         const bool &increase,
                         const bool &cancel);
+
+    void add_account(const uint64_t &entity_id,
+                     const uint64_t &project_id,
+                     const std::string &account_name,
+                     const uint64_t &parent_id,
+                     const eosio::symbol &account_currency,
+                     const std::string &description,
+                     const uint64_t &account_category,
+                     const eosio::asset &budget_amount);
 };

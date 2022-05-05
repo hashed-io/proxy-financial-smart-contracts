@@ -86,6 +86,14 @@ namespace common
       constexpr int64_t none = 1;
       constexpr int64_t hard_cost = 2;
       constexpr int64_t soft_cost = 3;
+
+      namespace names
+      {
+        const std::string none = "None";
+        const std::string hard_cost = "Hard Cost";
+        const std::string soft_cost = "Soft Cost";
+      } // namespace names
+
     } // namespace categories
 
     namespace types
@@ -104,30 +112,37 @@ namespace common
 
       // new types
 
-      // hard costs
-      const std::string construction = "Construction";
-      const std::string furniture_fixtures_allowance = "Furniture, Fixtures & Allowance";
-      const std::string hard_cost_contingency_allowance = "Hard Cost contingency & Allowance";
+      namespace hardcost
+      {
+        // hard costs
+        const std::string construction = "Construction";
+        const std::string furniture_fixtures_allowance = "Furniture, Fixtures & Allowance";
+        const std::string hard_cost_contingency_allowance = "Hard Cost contingency & Allowance";
 
-      // soft costs
-      const std::string architect_design = "Architect & Design";
-      const std::string building_permits_impact_fees = "Building Permits & Impact Fees";
-      const std::string developer_reimbursable = "Developer Reimbursable";
-      const std::string builder_risk_insurance = "Builder Risk Insurance";
-      const std::string environment_soils_survey = "Environment / Soils / Survey";
-      const std::string testing_inspections = "Testing & Inspections";
-      const std::string legal_professional = "Legal & Professional";
-      const std::string real_estate_taxes_owners_liability_insurance = "Real Estate Taxes & Owner's Liability Insurance";
-      const std::string predevelopment_fee = "Pre - Development Fee";
-      const std::string equity_management_fee = "Equity Management Fee";
-      const std::string bank_origination_fee = "Bank Origination Fee";
-      const std::string lender_debt_placement_fee = "Lender Debt Placement Fee";
-      const std::string title_appraisal_feasibility_plan_review_closing = "Title, Appraisal, Feasibility, Plan Review & Closing";
-      const std::string interest_carry_during_construction = "Interest Carry during Construction";
-      const std::string ops_stabilization_interest_carry_reserve = "Ops Stabilization & Interest Carry Reserve";
-      const std::string sales_marketing = "Sales & Marketing";
-      const std::string preopening_expenses = "Pre - Opening Expenses";
-      const std::string contingency = "Contingency";
+      } // namespace hardcost
+
+      namespace softcost
+      {
+        const std::string architect_design = "Architect & Design";
+        const std::string building_permits_impact_fees = "Building Permits & Impact Fees";
+        const std::string developer_reimbursable = "Developer Reimbursable";
+        const std::string builder_risk_insurance = "Builder Risk Insurance";
+        const std::string environment_soils_survey = "Environment / Soils / Survey";
+        const std::string testing_inspections = "Testing & Inspections";
+        const std::string legal_professional = "Legal & Professional";
+        const std::string real_estate_taxes_owners_liability_insurance = "Real Estate Taxes & Owner's Liability Insurance";
+        const std::string predevelopment_fee = "Pre - Development Fee";
+        const std::string equity_management_fee = "Equity Management Fee";
+        const std::string bank_origination_fee = "Bank Origination Fee";
+        const std::string lender_debt_placement_fee = "Lender Debt Placement Fee";
+        const std::string title_appraisal_feasibility_plan_review_closing = "Title, Appraisal, Feasibility, Plan Review & Closing";
+        const std::string interest_carry_during_construction = "Interest Carry during Construction";
+        const std::string ops_stabilization_interest_carry_reserve = "Ops Stabilization & Interest Carry Reserve";
+        const std::string sales_marketing = "Sales & Marketing";
+        const std::string preopening_expenses = "Pre - Opening Expenses";
+        const std::string contingency = "Contingency";
+
+      } // namespace softcost
 
     } // namespace subtypes
 
