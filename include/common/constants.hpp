@@ -188,6 +188,8 @@ namespace common
       constexpr eosio::name investor = "investor"_n;
       constexpr eosio::name developer = "developer"_n;
       constexpr eosio::name fund = "fund"_n;
+      constexpr eosio::name issuer = "issuer"_n;
+      constexpr eosio::name regional_center = "regionalcrt"_n;
     } // namespace entity
 
     namespace investment

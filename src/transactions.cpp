@@ -566,7 +566,8 @@ void transactions::generate_transaction(const eosio::name &actor,
 			.send();
 			
 	// TODO checar esta validacion
-	check(total == 0, common::contracts::transactions.to_string() + ": the transaction total balance must be zero.");
+	// ! remove this when the validation is complete
+	// check(total == 0, common::contracts::transactions.to_string() + ": the transaction total balance must be zero.");
 
 	drawdown_tables drawdown_t(_self, project_id);
 
