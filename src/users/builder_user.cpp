@@ -25,7 +25,6 @@ void Builder::assign_impl(const eosio::name &account, const uint64_t &project_id
   // review statement
   check(project_itr -> builder.size() == 0, "There can only be one builder per project!")
   //check(project_itr -> builder.empty(), "There can only be one builder per project!")
-
   project_t.modify(project_itr, contract_name, [&](auto &item)
                    { item.builder = account; });
 
