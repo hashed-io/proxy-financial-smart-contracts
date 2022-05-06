@@ -4,7 +4,7 @@
 #include "builder_user.hpp"
 #include "investor_user.hpp"
 #include "issuer_user.hpp"
-#include "regional_user.hpp"
+#include "regional_center_user.hpp"
 
 #include "../common/constants.hpp"
 
@@ -29,7 +29,7 @@ public:
       return new Issuer(_contract);
 
     case common::projects::entity::regional_center.value:
-      return new Regional(_contract);
+      return new RegionalCenter(_contract);
 
     // TODO: add support for regional_center and issuer
 
