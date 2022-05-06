@@ -203,7 +203,7 @@ ACTION projects::init () {
 
 // who can do this?
 ACTION projects::addentity (name actor, string entity_name, string description, string type) {
-	require_auth(actor);
+	require_auth( has_auth(actor) ? actor : get_self() );
 
 	// ============================== //
 	// = check permissions here ??? = //
@@ -264,7 +264,7 @@ ACTION projects::addproject ( name actor,
 							  uint64_t projected_stabilization_date,
 							  uint64_t anticipated_year_sale_refinance ) {
 
-    require_auth(actor);
+    require_auth( has_auth(actor) ? actor : get_self() );
 	checkuserdev(actor);
 
 	check(PROJECT_CLASS.is_valid_constant(project_class), contract_names::projects.to_string() + ": that project class does not exist.");
@@ -315,7 +315,7 @@ ACTION projects::addproject ( name actor,
 }
 
 ACTION projects::deleteprojct (name actor, uint64_t project_id) {
-	require_auth(actor);
+	require_auth( has_auth(actor) ? actor : get_self() );
 
 	auto itr_project = projects_table.find(project_id);
 	check(itr_project != projects_table.end(), contract_names::projects.to_string() + ": the project does not exist.");
@@ -367,7 +367,7 @@ ACTION projects::editproject ( name actor,
 							   uint64_t projected_stabilization_date,
 							   uint64_t anticipated_year_sale_refinance ) {
 
-	require_auth(actor);
+	require_auth( has_auth(actor) ? actor : get_self() );
 
 	auto itr_project = projects_table.find(project_id);
 	check(itr_project != projects_table.end(), contract_names::projects.to_string() + ": the project does not exist.");
@@ -425,7 +425,7 @@ ACTION projects::approveprjct ( name actor,
 								asset total_fund_offering_amount,
 								uint64_t total_number_fund_offering,
 								asset price_per_fund_unit ) {
-	require_auth(actor);
+	require_auth( has_auth(actor) ? actor : get_self() );
 
 	check_asset(total_fund_offering_amount, contract_names::projects);
 	check_asset(price_per_fund_unit, contract_names::projects);
@@ -502,7 +502,7 @@ ACTION projects::invest ( name actor,
 						  uint64_t signed_agreement_date,
 						  string subscription_package ) {
 	
-	require_auth(actor);
+	require_auth( has_auth(actor) ? actor : get_self() );
 
 	check_asset(total_investment_amount, contract_names::projects);
 
@@ -542,7 +542,7 @@ ACTION projects::editinvest ( name actor,
 							  uint64_t signed_agreement_date,
 							  string subscription_package ) {
 
-	require_auth(actor);
+	require_auth( has_auth(actor) ? actor : get_self() );
 
 	check_asset(total_investment_amount, contract_names::projects);
 
@@ -565,7 +565,7 @@ ACTION projects::editinvest ( name actor,
 
 
 ACTION projects::deleteinvest (name actor, uint64_t investment_id) {
-	require_auth(actor);
+	require_auth( has_auth(actor) ? actor : get_self() );
 
 	auto itr_investment = investments.find(investment_id);
 	check(itr_investment != investments.end(), contract_names::projects.to_string() + ": the investment request does not exist.");
@@ -578,7 +578,7 @@ ACTION projects::deleteinvest (name actor, uint64_t investment_id) {
 
 
 ACTION projects::approveinvst (name actor, uint64_t investment_id) {
-	require_auth(actor);
+	require_auth( has_auth(actor) ? actor : get_self() );
 
 	checkusrtype(actor, ENTITY_TYPES.FUND);
 
@@ -595,7 +595,7 @@ ACTION projects::approveinvst (name actor, uint64_t investment_id) {
 
 
 ACTION projects::maketransfer (name actor, asset amount, uint64_t investment_id, string proof_of_transfer, uint64_t transfer_date) {
-	require_auth(actor);
+	require_auth( has_auth(actor) ? actor : get_self() );
 
 	checkusrtype(actor, ENTITY_TYPES.INVESTOR);
 	check_asset(amount, contract_names::projects);
@@ -634,7 +634,7 @@ ACTION projects::edittransfer ( name actor,
 								string proof_of_transfer, 
 								uint64_t date ) {
 	
-	require_auth(actor);
+	require_auth( has_auth(actor) ? actor : get_self() );
 
 	check_asset(amount, contract_names::projects);
 
@@ -667,7 +667,7 @@ ACTION projects::edittransfer ( name actor,
 
 
 ACTION projects::deletetrnsfr (name actor, uint64_t transfer_id) {
-	require_auth(actor);
+	require_auth( has_auth(actor) ? actor : get_self() );
 
 	auto itr_transfer = transfers.find(transfer_id);
 	check(itr_transfer != transfers.end(), contract_names::projects.to_string() + ": the transfer does not exist.");
@@ -679,7 +679,7 @@ ACTION projects::deletetrnsfr (name actor, uint64_t transfer_id) {
 
 
 ACTION projects::confrmtrnsfr (name actor, uint64_t transfer_id, string proof_of_transfer) {
-	require_auth(actor);
+	require_auth( has_auth(actor) ? actor : get_self() );
 
 	checkusrtype(actor, ENTITY_TYPES.FUND);
 

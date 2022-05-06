@@ -9,7 +9,7 @@ echo "Clear permissions contract"
 cleos -u https://api.telos.kitchen set contract --clear pxperm.sh -p pxperm.sh@active
 
 echo "Clear transactions contract"
-cleos -u https://api.telos.kitchen set contract --clear pxtrx.sh  -p pxtrx.sh @active
+cleos -u https://api.telos.kitchen set contract --clear pxtrx.sh -p pxtrx.sh@active
 
 echo "Clear projects contract"
 cleos -u https://api.telos.kitchen set contract --clear pxprj.sh -p pxprj.sh@active

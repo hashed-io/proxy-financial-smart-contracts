@@ -1,0 +1,1 @@
+cleos -u https://api.telos.kitchen push action eosio buyrambytes '{"payer":"pxbud.sh", "receiver":"pxact.sh", "bytes":233248 }' -p pxbud.sh@active
