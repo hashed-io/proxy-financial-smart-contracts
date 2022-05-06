@@ -72,7 +72,6 @@ ACTION projects::reset()
 	{
 		user_itr = user_t.erase(user_itr);
 	}
-	
 }
 
 ACTION projects::init()
@@ -94,19 +93,24 @@ ACTION projects::init()
 	adduser(_self, "tlalocman.sh"_n, "Admin", common::projects::entity::fund);
 	adduser(_self, "proxybuilder"_n, "Builder", common::projects::entity::developer);
 
-	// old flow
-	// hardcoding some entity_t and user_t for testnet
-	// addentity(_self, "Proxy Capital", "A test entity for Proxy Capital", ENTITY_TYPyES.FUND);
-	// addentity(_self, "Investor Entity 1", "A test entity for investors", ENTITY_TYPES.INVESTOR);
-	// addentity(_self, "Investor Entity 2", "A test entity for investors", ENTITY_TYPES.INVESTOR);
-	// addentity(_self, "Developer Entity 1", "A test entity for developer", ENTITY_TYPES.DEVELOPER);
+	addproject("proxyadmin11"_n, "OFFICE", "Hashed's office",
+						 "48,000 sf of office space in Minnesota continues to grow as a hub for businesses and Edina is where corporations that want access to the talent pool of Minneapolis and the surrounding without paying exorbitant prices for office space are setting their headquarters. We are building a beautiful building to will provide office space to 200-300 people at an exceptional location near the mall and connected via mass transit to Minneapolis downtown",
+						 asset(10000000.00, symbol("USD", 2)),
+						 asset(6000000.00, symbol("USD", 2)),
+						 5,
+						 600,
+						 "QmZ18Uj9y79d3qU7PyEq98fWnnittyAN4fqXAZ8Pth6qKu:pdf",
+						 asset(4000000.00, symbol("USD", 2)),
+						 asset(2000000.00, symbol("USD", 2)),
+						 asset(2000000.00, symbol("USD", 2)),
+						 600,
+						 "QmZ18Uj9y79d3qU7PyEq98fWnnittyAN4fqXAZ8Pth6qKu:pdf",
+						 1682053200,
+						 1682398800,
+						 1682485200,
+						 2023);
 
-	// uint64_t entity_id = 1;
-
-	// addtestuser("proxyadmin11"_n, "John Miller", entity_id);
-	// addtestuser("investoruser"_n, "James Smith", entity_id + 1);
-	// addtestuser("investorusr2"_n, "Sally Fields", entity_id + 2);
-	// addtestuser("builderuser1"_n, "Mary Williams", entity_id + 3);
+	
 }
 
 // who can do this?
@@ -176,7 +180,7 @@ ACTION projects::addproject(const eosio::name &actor,
 														const uint64_t &anticipated_year_sale_refinance)
 {
 
-	require_auth(actor);
+	require_auth( has_auth(actor) ? actor : get_self() );
 
 	auto actor_itr = user_t.find(actor.value);
 	check(actor_itr->role == common::projects::entity::fund, actor.to_string() + "has not permissions to create projects!");
@@ -678,7 +682,7 @@ ACTION projects::assignuser(const eosio::name &actor, const eosio::name &account
 
 	if (actor_itr != user_t.end())
 	{
-		require_auth(actor);
+		require_auth( has_auth(actor) ? actor : get_self() );
 		check(actor_itr->role == common::projects::entity::fund, actor.to_string() + " has not permissions to do that!");
 	}
 	else
