@@ -23,6 +23,8 @@ public:
     case common::projects::entity::investor.value:
       return new Investor(_contract);
 
+    // TODO: add support for regional_center and issuer
+
     default:
       break;
     }
