@@ -56,7 +56,7 @@ namespace common
       {
         constexpr int64_t daft = 0;
         constexpr int64_t submitted = 1;
-        constexpr int64_t reviewed = 2;
+        constexpr int64_t reviewed = 2; // ! not implemented
         constexpr int64_t approved = 3;
         /* There is no a rejected because rejected dawdowns return to a daft state */
       } // namespace status

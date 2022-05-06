@@ -420,6 +420,8 @@ ACTION transactions::initdrawdown(const uint64_t &project_id)
 ACTION transactions::toggledrdwn(uint64_t project_id,
 																 uint64_t drawdown_id)
 {
+
+	// ! remove this transaction
 	require_auth(_self);
 
 	print("drawdown toggled");
@@ -446,7 +448,27 @@ ACTION transactions::movedrawdown(const eosio::name &actor,
 																	const uint64_t &project_id,
 																	const int64_t &drawdown_id)
 {
-	require_auth(_self);
+
+	drawdown_tables drawdown_t(_self, project_id);
+	auto drawdown_itr = drawdown_t.find(drawdown_id);
+
+	check(drawdown_itr != drawdown_t.end(), "Drawdown not found");
+
+	std::unique_ptr<Drawdown> drawdown = std::unique_ptr<Drawdown>(DrawdownFactory::Factory(project_id, *this, drawdown_itr->type));
+	drawdown->submit(drawdown_id, drawdown_itr->files);
+}
+
+ACTION transactions::rejtdrawdown(const eosio::name &actor,
+																	const uint64_t &project_id,
+																	const int64_t &drawdown_id)
+{
+	drawdown_tables drawdown_t(_self, project_id);
+	auto drawdown_itr = drawdown_t.find(drawdown_id);
+
+	check(drawdown_itr != drawdown_t.end(), "Drawdown not found");
+
+	std::unique_ptr<Drawdown> drawdown = std::unique_ptr<Drawdown>(DrawdownFactory::Factory(project_id, *this, drawdown_itr->type));
+	drawdown->reject(drawdown_id);
 }
 
 ACTION transactions::transacts(const eosio::name &actor,
@@ -455,19 +477,42 @@ ACTION transactions::transacts(const eosio::name &actor,
 															 std::vector<common::types::transaction_param> transactions)
 {
 	require_auth(actor);
-	
 
 	for (int i = 0; i < transactions.size(); i++)
 	{
-		/* code */
-		generate_transaction(actor,
+		if (transactions[i].flag == common::transactions::flag::create)
+		{
+			generate_transaction(actor,
+													 project_id,
+													 drawdown_id,
+													 transactions[i].id,
+													 transactions[i].date,
+													 transactions[i].amounts,
+													 transactions[i].description,
+													 transactions[i].supporting_files);
+		}
+		else if (transactions[i].flag == common::transactions::flag::remove)
+		{
+			delete_transaction(actor,
 												 project_id,
-												 drawdown_id,
-												 transactions[i].id,
-												 transactions[i].date,
-												 transactions[i].amounts,
-												 transactions[i].description,
-												 transactions[i].supporting_files);
+												 transactions[i].id);
+		}
+		else if (transactions[i].flag == common::transactions::flag::edit)
+		{
+
+			delete_transaction(actor,
+												 project_id,
+												 transactions[i].id);
+
+			generate_transaction(actor,
+													 project_id,
+													 drawdown_id,
+													 transactions[i].id,
+													 transactions[i].date,
+													 transactions[i].amounts,
+													 transactions[i].description,
+													 transactions[i].supporting_files);
+		}
 	}
 }
 
@@ -564,7 +609,7 @@ void transactions::generate_transaction(const eosio::name &actor,
 			"checkledger"_n,
 			std::make_tuple(actor, project_id, ledger_id))
 			.send();
-			
+
 	// TODO checar esta validacion
 	// ! remove this when the validation is complete
 	// check(total == 0, common::contracts::transactions.to_string() + ": the transaction total balance must be zero.");
