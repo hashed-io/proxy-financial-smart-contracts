@@ -23,23 +23,23 @@ struct account_types_s
         };
 
 // mainnet
-// namespace contract_names {
-//     name projects = "pxprj.sh"_n;
-//     name accounts = "pxact.sh"_n;
-//     name transactions = "pxtrx.sh"_n;
-//     name permissions = "pxperm.sh"_n;
-//     name budgets = "pxbud.sh"_n;
-// }
+namespace contract_names {
+    name projects = "pxprj.sh"_n;
+    name accounts = "pxact.sh"_n;
+    name transactions = "pxtrx.sh"_n;
+    name permissions = "pxperm.sh"_n;
+    name budgets = "pxbud.sh"_n;
+}
 
 
 // testnet
-namespace contract_names {
-    name projects = "proxyv3prjct"_n;
-    name accounts = "proxyv2accnt"_n;
-    name transactions = "proxyv3trnsc"_n;
-    name permissions = "proxyv2prmss"_n;
-    name budgets = "proxyv2bdgts"_n;
-}
+// namespace contract_names {
+//     name projects = "proxyv3prjct"_n;
+//     name accounts = "proxyv2accnt"_n;
+//     name transactions = "proxyv3trnsc"_n;
+//     name permissions = "proxyv2prmss"_n;
+//     name budgets = "proxyv2bdgts"_n;
+// }
 
 
 void check_asset(asset amount, name contract_name) {
