@@ -13,8 +13,8 @@ using namespace eosio;
     uint64_t status;                                       \
     eosio::name builder;                                   \
     vector<eosio::name> investors;                         \
-    vector<eosio::name> issuers;                           \
-    vector<eosio::name> regional_center;                   \
+    esoio::name issuer;                           \
+    eosio::name regional_center;                   \
                                                            \
     eosio::asset total_project_cost;                       \
     eosio::asset debt_financing;                           \

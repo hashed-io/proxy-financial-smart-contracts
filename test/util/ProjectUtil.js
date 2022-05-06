@@ -36,12 +36,12 @@ const ProjectConstants = {
 class ProjectUtil {
   static tokenSymbol = '2,USD'
 
-  static async approveprjct({ owner, project_id, fund_lp, total_fund_offering_amount, total_number_fund_offering, price_per_fund_unit, contract, account }) {
-    await contract.approveprjct(owner, project_id, fund_lp, total_fund_offering_amount, total_number_fund_offering, price_per_fund_unit, { authorization: `${account}@active` })
+  static async approveprjct({ actor, project_id, fund_lp, total_fund_offering_amount, total_number_fund_offering, price_per_fund_unit, contract, account }) {
+    await contract.approveprjct(actor, project_id, fund_lp, total_fund_offering_amount, total_number_fund_offering, price_per_fund_unit, { authorization: `${account}@active` })
   }
 
-  static async deleteprojct({ owner, project_id, contract, account }) {
-    await contract.deleteprojct(owner, project_id, { authorization: `${account}@active` })
+  static async deleteprojct({ actor, project_id, contract, account }) {
+    await contract.deleteprojct(actor, project_id, { authorization: `${account}@active` })
   }
 
   static async changestatus({ project_id, status, contract, account }) {
@@ -49,7 +49,7 @@ class ProjectUtil {
   }
 
   static async invest({
-    owner,
+    actor,
     project_id,
     total_investment_amount,
     quantity_units_purchased,
@@ -59,7 +59,7 @@ class ProjectUtil {
     contract,
     account }) {
     await contract.invest(
-      owner,
+      actor,
       project_id,
       total_investment_amount,
       quantity_units_purchased,
@@ -69,7 +69,7 @@ class ProjectUtil {
   }
 
   static async editproject({
-    owner,
+    actor,
     project_id,
     project_class,
     project_name,
@@ -91,7 +91,7 @@ class ProjectUtil {
     contract,
     account }) {
     await contract.editproject(
-      owner,
+      actor,
       project_id,
       project_class,
       project_name,
@@ -117,8 +117,7 @@ class ProjectUtil {
 
 class Project {
   constructor(
-    owner,
-    id,
+    actor,
     project_class,
     project_name,
     description,
@@ -138,8 +137,7 @@ class Project {
     anticipated_year_sale_refinance
   ) {
     this.params = {
-      owner,
-      id,
+      actor,
       project_class,
       project_name,
       description,
@@ -163,7 +161,7 @@ class Project {
   getCreateActionParams() {
 
     return [
-      this.params.owner,
+      this.params.actor,
       this.params.project_class,
       this.params.project_name,
       this.params.description,
@@ -187,8 +185,7 @@ class Project {
   getEditActionParams() {
 
     return [
-      this.params.owner,
-      this.params.id,
+      this.params.actor,
       this.params.project_class,
       this.params.project_name,
       this.params.description,
@@ -212,8 +209,7 @@ class Project {
   getDeleteActionParams() {
 
     return [
-      this.params.owner,
-      this.params.id
+      this.params.actor,
     ]
   }
 
@@ -226,7 +222,6 @@ class Project {
    */
   getApproveActionParams() {
     return [
-      this.params.id,
       this.params.fund_lp,
       this.params.total_fund_offering_amount,
       this.params.total_number_fund_offering,
@@ -239,8 +234,7 @@ class Project {
 
 class ProjectFactory {
   static createEntry({
-    owner,
-    id,
+    actor,
     project_class,
     project_name,
     description,
@@ -260,8 +254,7 @@ class ProjectFactory {
     anticipated_year_sale_refinance
   }) {
     return new Project(
-      owner,
-      id,
+      actor,
       project_class,
       project_name,
       description,
@@ -283,8 +276,7 @@ class ProjectFactory {
   }
 
   static async createWithDefaults({
-    owner,
-    id,
+    actor,
     project_class,
     project_name,
     description,
@@ -304,12 +296,8 @@ class ProjectFactory {
     anticipated_year_sale_refinance
   }) {
 
-    if (!owner) {
-      owner = await createRandomAccount()
-    }
-
-    if (!id) {
-      id = 0;
+    if (!actor) {
+      actor = await createRandomAccount()
     }
 
     if (!project_class) {
@@ -386,8 +374,7 @@ class ProjectFactory {
 
 
     return ProjectFactory.createEntry({
-      owner,
-      id,
+      actor,
       project_class,
       project_name,
       description,

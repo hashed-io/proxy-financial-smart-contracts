@@ -27,7 +27,7 @@ void Investor::assign_impl(const eosio::name &account, const uint64_t &project_i
   auto user_itr = user_t.find(account.value);
 
   // TODO check if has another related project check relatedprojects.size() < 1
-  check(user_itr->related_projects.size() < 1, "Investor can only can manage one project!");
+  check(user_itr->related_projects.size() < 1, "Investor can only manage one project!");
 
   user_t.modify(user_itr, contract_name, [&](auto &item)
                 { item.related_projects.push_back(project_id); });
