@@ -56,7 +56,7 @@ describe('Tests for transactions smart contract', async function () {
     await EnvironmentUtil.createAccount('investoruser');
     await EnvironmentUtil.createAccount('builderuser1');
 
-    project = await ProjectFactory.createWithDefaults({ owner: admin.params.account });
+    project = await ProjectFactory.createWithDefaults({ actor: admin.params.account });
 
     await contracts.projects.addproject(...project.getCreateActionParams(), { authorization: `${admin.params.account}@active` });
 
@@ -74,9 +74,9 @@ describe('Tests for transactions smart contract', async function () {
       price_per_fund_unit: "300.00 USD"
     });
 
-    console.log(project)
+    await contracts.projects.approveprjct(admin.params.account, 0, ...project.getApproveActionParams(),
+     { authorization: `${admin.params.account}@active` });
 
-    await contracts.projects.approveprjct(admin.params.account, ...project.getApproveActionParams(), { authorization: `${admin.params.account}@active` });
 
     const projectsTable = await rpc.get_table_rows({
       code: projects,
@@ -85,8 +85,7 @@ describe('Tests for transactions smart contract', async function () {
       json: true
     })
 
-    console.log('\n\n Projects table : ', projectsTable)
-
+    //console.log('\n\n Projects table : ', projectsTable)
 
   })
 
@@ -96,6 +95,7 @@ describe('Tests for transactions smart contract', async function () {
   })
 
   it('Creation of all drawdown types on project approval', async () => {
+    console.log('hello')
 
     // Arrange
 
@@ -109,103 +109,103 @@ describe('Tests for transactions smart contract', async function () {
       json: true
     });
 
-    console.table(drawdownTable.rows);
+    console.log(drawdownTable.rows);
 
   });
 
-  it('Update drawdown', async () => {
+  // it('Update drawdown', async () => {
 
-    // Arrange
+  //   // Arrange
 
-    // Act
+  //   // Act
 
-    // Assert
-    const drawdownTable = await rpc.get_table_rows({
-      code: transactions,
-      scope: project.params.id,
-      table: 'drawdowns',
-      json: true
-    });
+  //   // Assert
+  //   const drawdownTable = await rpc.get_table_rows({
+  //     code: transactions,
+  //     scope: project.params.id,
+  //     table: 'drawdowns',
+  //     json: true
+  //   });
 
-    console.table(drawdownTable.rows);
+  //   console.table(drawdownTable.rows);
 
-  });
+  // });
 
-  it.only('Create transactions', async () => {
+  // it('Create transactions', async () => {
 
-    // Arrange
-    const transaction = await TransactionFactory.createWithDefaults({});
-    console.log(...transaction.getCreateParams());
+  //   // Arrange
+  //   const transaction = await TransactionFactory.createWithDefaults({});
+  //   console.log(...transaction.getCreateParams());
 
-    // Act
-    await contracts.transactions.transacts(builder.params.account, 0, 1, transaction.getCreateParams(), { authorization: `${builder.params.account}@active` });
+  //   // Act
+  //   await contracts.transactions.transacts(builder.params.account, 0, 1, transaction.getCreateParams(), { authorization: `${builder.params.account}@active` });
 
-    // Assert
-    const permissionsTable = await rpc.get_table_rows({
-      code: accounts,
-      scope: project.params.id,
-      table: 'accounts',
-      json: true
-    });
+  //   // Assert
+  //   const permissionsTable = await rpc.get_table_rows({
+  //     code: accounts,
+  //     scope: project.params.id,
+  //     table: 'accounts',
+  //     json: true
+  //   });
 
-    console.table(permissionsTable.rows);
+  //   console.table(permissionsTable.rows);
 
     
-    const drawdownTable = await rpc.get_table_rows({
-      code: transactions,
-      scope: project.params.id,
-      table: 'drawdowns',
-      json: true
-    });
+  //   const drawdownTable = await rpc.get_table_rows({
+  //     code: transactions,
+  //     scope: project.params.id,
+  //     table: 'drawdowns',
+  //     json: true
+  //   });
 
-    console.table(drawdownTable.rows);
+  //   console.table(drawdownTable.rows);
 
-    const transactionsTable = await rpc.get_table_rows({
-      code: transactions,
-      scope: project.params.id,
-      table: 'transactions',
-      json: true
-    });
+  //   const transactionsTable = await rpc.get_table_rows({
+  //     code: transactions,
+  //     scope: project.params.id,
+  //     table: 'transactions',
+  //     json: true
+  //   });
 
-    console.table(transactionsTable.rows);
+  //   console.table(transactionsTable.rows);
 
-    const ledgerTable = await rpc.get_table_rows({
-      code: accounts,
-      scope: project.params.id,
-      table: 'ledgers',
-      json: true
-    });
+  //   const ledgerTable = await rpc.get_table_rows({
+  //     code: accounts,
+  //     scope: project.params.id,
+  //     table: 'ledgers',
+  //     json: true
+  //   });
 
-    console.table(ledgerTable.rows);
+  //   console.table(ledgerTable.rows);
 
-    const accountsTable = await rpc.get_table_rows({
-      code: accounts,
-      scope: project.params.id,
-      table: 'accounts',
-      json: true
-    });
+  //   const accountsTable = await rpc.get_table_rows({
+  //     code: accounts,
+  //     scope: project.params.id,
+  //     table: 'accounts',
+  //     json: true
+  //   });
 
-    console.table(accountsTable.rows);
+  //   console.table(accountsTable.rows);
 
-    const accountTypesTable = await rpc.get_table_rows({
-      code: accounts,
-      scope: accounts,
-      table: 'accnttypes',
-      json: true
-    });
+  //   const accountTypesTable = await rpc.get_table_rows({
+  //     code: accounts,
+  //     scope: accounts,
+  //     table: 'accnttypes',
+  //     json: true
+  //   });
 
-    console.table(accountTypesTable.rows);
+  //   console.table(accountTypesTable.rows);
 
-    const UserTable = await rpc.get_table_rows({
-      code: projects,
-      scope: projects,
-      table: 'users',
-      json: true
-    });
+  //   const UserTable = await rpc.get_table_rows({
+  //     code: projects,
+  //     scope: projects,
+  //     table: 'users',
+  //     json: true
+  //   });
 
-    console.table(UserTable.rows);
+  //   console.table(UserTable.rows);
 
-  });
+  // });
 
 });
 /**
