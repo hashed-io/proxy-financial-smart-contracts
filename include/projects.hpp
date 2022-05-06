@@ -32,7 +32,7 @@ CONTRACT projects : public contract {
 
         ACTION reset ();
         
-        ACTION resetusers ();
+        ACTION init ();
 
         ACTION addproject ( name actor,
                             string project_class,

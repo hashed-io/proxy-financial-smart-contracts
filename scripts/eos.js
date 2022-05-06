@@ -5,12 +5,13 @@ const { JsSignatureProvider } = require('eosjs/dist/eosjs-jssig')
 const { TextEncoder, TextDecoder } = require('util')
 const fetch = require('node-fetch')
 
-const { Api, JsonRpc } = eosjs
+const { Api, JsonRpc, RpcError } = require('eosjs');
 
 const getChainInfo = () => {
   const chainName = process.env.CHAIN_NAME
   switch(chainName) {
     case 'local':
+      
       return {
         keyProvider: [process.env.LOCAL_PRIVATE_KEY],
         httpEndpoint: 'http://127.0.0.1:8888'
@@ -31,7 +32,6 @@ const getChainInfo = () => {
 }
 
 const { keyProvider, httpEndpoint } = getChainInfo()
-
 const signatureProvider = new JsSignatureProvider(Array.isArray(keyProvider) ? keyProvider : [keyProvider])
 
 const rpc = new JsonRpc(httpEndpoint, { fetch });

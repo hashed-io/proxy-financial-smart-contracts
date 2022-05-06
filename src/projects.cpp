@@ -60,16 +60,15 @@ ACTION projects::reset () {
 
 }
 
+ACTION projects::init () {
 
-ACTION projects::resetusers () {
+	
   require_auth(_self);
 
 	auto itr_users = users.begin();
 	while (itr_users != users.end()) {
 		itr_users = users.erase(itr_users);
 	}
-
-
 	// hardcoding some entities and users for testnet
 	addentity(_self, "Fund Entity 1", "A test entity for Fund", ENTITY_TYPES.FUND);
 	addentity(_self, "Fund Entity 2", "A test entity for Fund", ENTITY_TYPES.FUND);
@@ -83,9 +82,10 @@ ACTION projects::resetusers () {
 	addtestuser("proxyadmin11"_n, "Sam Fund", entity_id + 1);
 	addtestuser("proxyinvestr"_n, "Sam Investor", entity_id + 2);
 	addtestuser("proxybuilder"_n, "Sam Developer", entity_id + 3);
-	//addtestuser("proxyadmin11"_n, "Max Fund", entity_id + 4);
 
-	// //Add projects
+	addtestuser("tlalocman.sh"_n, "Tlalocman Fund", entity_id);
+
+	// Add projects
 	addproject ("proxybuilder"_n, "OFFICE", "Hashed's office",
 													"48,000 sf of office space in Minnesota continues to grow as a hub for businesses and Edina is where corporations that want access to the talent pool of Minneapolis and the surrounding without paying exorbitant prices for office space are setting their headquarters. We are building a beautiful building to will provide office space to 200-300 people at an exceptional location near the mall and connected via mass transit to Minneapolis downtown",
 													asset(10000000.00, symbol("USD", 2)),
@@ -199,9 +199,7 @@ ACTION projects::resetusers () {
 								asset(11000000.00,  symbol("USD", 2)),
 								100,
 								asset(110000.00,  symbol("USD", 2)));
-
 }
-
 
 // who can do this?
 ACTION projects::addentity (name actor, string entity_name, string description, string type) {
@@ -266,12 +264,12 @@ ACTION projects::addproject ( name actor,
 							  uint64_t projected_stabilization_date,
 							  uint64_t anticipated_year_sale_refinance ) {
 
-  require_auth( has_auth(actor) ? actor : get_self() );
+    require_auth( has_auth(actor) ? actor : get_self() );
 	checkuserdev(actor);
 
 	check(PROJECT_CLASS.is_valid_constant(project_class), contract_names::projects.to_string() + ": that project class does not exist.");
 
-  check_asset(total_project_cost, contract_names::projects);
+    check_asset(total_project_cost, contract_names::projects);
 	check_asset(debt_financing, contract_names::projects);
 	check_asset(total_equity_financing, contract_names::projects);
 	check_asset(total_gp_equity, contract_names::projects);
@@ -286,7 +284,7 @@ ACTION projects::addproject ( name actor,
         itr_p++;
 	}
 
-  uint64_t new_project_id = projects_table.available_primary_key();
+    uint64_t new_project_id = projects_table.available_primary_key();
 
 	projects_table.emplace(_self, [&](auto & new_project) {
 		new_project.project_id = new_project_id;
@@ -427,7 +425,6 @@ ACTION projects::approveprjct ( name actor,
 								asset total_fund_offering_amount,
 								uint64_t total_number_fund_offering,
 								asset price_per_fund_unit ) {
-									
 	require_auth( has_auth(actor) ? actor : get_self() );
 
 	check_asset(total_fund_offering_amount, contract_names::projects);
@@ -737,6 +734,5 @@ ACTION projects::changestatus (uint64_t project_id, uint64_t status) {
 }
 
 
-
-EOSIO_DISPATCH(projects, (reset)(resetusers)(addproject)(approveprjct)(addentity)(addtestuser)(invest)(approveinvst)(maketransfer)(editproject)(deleteprojct)(deleteinvest)(editinvest)(confrmtrnsfr)(edittransfer)(deletetrnsfr)(changestatus));
+EOSIO_DISPATCH(projects, (reset)(init)(addproject)(approveprjct)(addentity)(addtestuser)(invest)(approveinvst)(maketransfer)(editproject)(deleteprojct)(deleteinvest)(editinvest)(confrmtrnsfr)(edittransfer)(deletetrnsfr)(changestatus));
 

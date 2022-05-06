@@ -8,7 +8,7 @@ const contract = (name, nameOnChain) => {
     stakes: {
       cpu: '40.0000 TLOS',
       net: '40.0000 TLOS',
-      ram: 1000000
+      ram: 2400000
     }
   }
 }
@@ -23,7 +23,7 @@ const supportedChains = {
 
 const ownerByChain = {
   [supportedChains.local]: 'eosio',
-  [supportedChains.telosTestnet]: 'tlaclocmant2',
+  [supportedChains.telosTestnet]: 'proxyadmin11',
   [supportedChains.telosMainnet]: 'tlalocman.sh'
 }
 
@@ -59,11 +59,12 @@ const publicKeysByChain = {
 
 const contractsConfig = {
   [supportedChains.local]: [
-    contract('accounts', 'proxyact'),
-    contract('budgets', 'proxybud'),
-    contract('permissions', 'proxyperm'),
-    contract('projects', 'proxyprj'),
-    contract('transactions', 'proxytrx')
+    contract('nullcontract', 'm1nulldaos'),
+    contract('accounts', 'proxyv2accnt'),
+    contract('budgets', 'proxyv2bdgts'),
+    contract('permissions', 'proxyv2prmss'),
+    contract('projects', 'proxyv3prjct'),
+    contract('transactions', 'proxyv3trnsc')
 
   ],
   // THIS CONTRACTS ARE THE ONES ON THE GITLAB
@@ -74,13 +75,14 @@ const contractsConfig = {
   //   contract('projects', 'proxycapprox'),
   //   contract('transactions', 'proxycaptrx1')
   // ],
+  
   //  NEW ACCOUNTS CREATED
   [supportedChains.telosTestnet]: [
-    contract('accounts', 'proxyv1accnt'),
-    contract('budgets', 'proxyv1bdgts'),
-    contract('permissions', 'proxyv1prmss'),
-    contract('projects', 'proxyv1prjct'),
-    contract('transactions', 'proxyv1trnsc')
+    contract('accounts', 'proxyv2accnt'),
+    contract('budgets', 'proxyv2bdgts'),
+    contract('permissions', 'proxyv2prmss'),
+    contract('projects', 'proxyv3prjct'),
+    contract('transactions', 'proxyv3trnsc')
   ],
   [supportedChains.telosMainnet]: [
     contract('accounts', 'pxact.sh'),
@@ -92,6 +94,8 @@ const contractsConfig = {
 }
 
 const chain = process.env.CHAIN_NAME
+
+const manager = "proxyadmin11"
 
 const owner = ownerByChain[chain]
 const ownerPublicKeys = ownerPublicKeysByChain[chain]
@@ -123,6 +127,10 @@ const permissionsConfig = [
     target: `${contractNames.accounts}@active`,
     actor: `${owner}@active`
   },
+  {
+    target: `${contractNames.accounts}@active`,
+    actor: `${manager}@active`
+  },
   { // permissions for budgets
     target: `${contractNames.budgets}@active`,
     actor: `${contractNames.budgets}@eosio.code`
@@ -132,8 +140,12 @@ const permissionsConfig = [
     actor: `${contractNames.accounts}@active`
   },
   {
-    target: `${contractNames.accounts}@active`,
+    target: `${contractNames.budgets}@active`,
     actor: `${owner}@active`
+  },
+  {
+    target: `${contractNames.budgets}@active`,
+    actor: `${manager}@active`
   },
   { // for permissions
     target: `${contractNames.permissions}@active`,
@@ -152,16 +164,24 @@ const permissionsConfig = [
     actor: `${contractNames.transactions}@active`
   },
   {
-    target: `${contractNames.accounts}@active`,
+    target: `${contractNames.permissions}@active`,
     actor: `${owner}@active`
+  },
+  {
+    target: `${contractNames.permissions}@active`,
+    actor: `${manager}@active`
   },
   { // permissions for projects
     target: `${contractNames.projects}@active`,
     actor: `${contractNames.projects}@eosio.code`
   },
   {
-    target: `${contractNames.accounts}@active`,
+    target: `${contractNames.projects}@active`,
     actor: `${owner}@active`
+  },
+  {
+    target: `${contractNames.projects}@active`,
+    actor: `${manager}@active`
   },
   { // permissions for transactions
     target: `${contractNames.transactions}@active`,
@@ -172,8 +192,12 @@ const permissionsConfig = [
     actor: `${contractNames.projects}@active`
   },
   {
-    target: `${contractNames.accounts}@active`,
+    target: `${contractNames.transactions}@active`,
     actor: `${owner}@active`
+  },
+  {
+    target: `${contractNames.transactions}@active`,
+    actor: `${manager}@active`
   }
 ]
 

@@ -5,8 +5,9 @@ const { promisify } = require('util')
 const fs = require('fs')
 const { join } = require('path')
 
-const existsAsync = promisify(fs.exists)
-const fse = require('fs-extra')
+// const existsAsync = promisify(fs.exists)  //not used
+// const fse = require('fs-extra')           //not used
+
 
 const execCommand = promisify(exec)
 
