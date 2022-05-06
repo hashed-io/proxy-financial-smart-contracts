@@ -3,6 +3,8 @@
 #include "admin_user.hpp"
 #include "builder_user.hpp"
 #include "investor_user.hpp"
+#include "issuer_user.hpp"
+#include "regional_user.hpp"
 
 #include "../common/constants.hpp"
 
@@ -22,6 +24,12 @@ public:
 
     case common::projects::entity::investor.value:
       return new Investor(_contract);
+
+    case common::projects::entity::issuer.value:
+      return new Issuer(_contract);
+
+    case common::projects::entity::regional_center.value:
+      return new Regional(_contract);
 
     // TODO: add support for regional_center and issuer
 
