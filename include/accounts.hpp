@@ -11,6 +11,9 @@
 #include <account_categories.hpp>
 #include <budget_types.hpp>
 
+#include <vector>
+
+
 using namespace eosio;
 using namespace std;
 
@@ -66,6 +69,32 @@ CONTRACT accounts : public contract {
     
 
     private:
+
+        const vector<std::string> hard_cost_accounts = {
+            "Construction",
+            "Furniture, Fixtures & Allowance",
+            "Hard Cost contingency & Allowance"};
+
+        const vector<std::string> soft_cost_accounts = {
+            "Architect & Design",
+            "Building Permits & Impact Fees",
+            "Developer Reimbursable",
+            "Builder Risk Insurance",
+            "Environment / Soils / Survey",
+            "Testing & Inspections",
+            "Legal & Professional",
+            "Real Estate Taxes & Owner's Liability Insurance",
+            "Pre - Development Fee",
+            "Equity Management Fee",
+            "Bank Origination Fee",
+            "Lender Debt Placement Fee",
+            "Title, Appraisal, Feasibility, Plan Review & Closing",
+            "Interest Carry during Construction",
+            "Ops Stabilization & Interest Carry Reserve",
+            "Sales & Marketing",
+            "Pre - Opening Expenses",
+            "Contingency"
+            };
 
         const vector< pair<string, string> > account_types_v = {
 			make_pair(ACCOUNT_SUBTYPES.ASSETS, ACCOUNT_TYPES.DEBIT),
@@ -228,6 +257,15 @@ CONTRACT accounts : public contract {
         entity_tables entities;
 
 		void change_balance (uint64_t project_id, uint64_t account_id, asset amount, bool increase, bool cancel);
+
+        void add_account (const uint64_t &entity_id,
+                            const uint64_t &project_id,
+                            const std::string &account_name,
+                            const uint64_t &parent_id,
+                            const eosio::symbol &account_currency,
+                            const std::string &description,
+                            const uint64_t &account_category,
+                            const eosio::asset &budget_amount);
 };
 
 
