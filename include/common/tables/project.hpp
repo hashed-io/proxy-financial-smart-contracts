@@ -14,7 +14,7 @@ using namespace eosio;
     eosio::name builder;                                   \
     vector<eosio::name> investors;                         \
     esoio::name issuer;                           \
-    vector<eosio::name> regional_center;                   \
+    eosio::name regional_center;                   \
                                                            \
     eosio::asset total_project_cost;                       \
     eosio::asset debt_financing;                           \
