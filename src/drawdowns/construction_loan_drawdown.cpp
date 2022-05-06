@@ -1,6 +1,6 @@
 #include <drawdowns/construction_loan_drawdown.hpp>
 
-void ConstructionLoanDrawdown::create_impl(const eosio::name &drawdown_type)
+void ConstructionLoanDrawdown::create_impl(const eosio::name &drawdown_type, const uint64_t &drawdown_number)
 {
   transactions::drawdown_tables drawdown_t(contract_name, project_id);
 
@@ -21,6 +21,7 @@ void ConstructionLoanDrawdown::create_impl(const eosio::name &drawdown_type)
   drawdown_t.emplace(contract_name, [&](auto &item)
                      {
 		item.drawdown_id = get_valid_index(drawdown_t.available_primary_key());
+    item.drawdown_number = drawdown_number;
 		item.type_str = common::transactions::drawdown::type_construction_loan;
     item.type = common::transactions::drawdown::type::construction_loan;
 		item.total_amount = asset(0, common::currency);

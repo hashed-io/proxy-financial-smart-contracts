@@ -5,18 +5,17 @@ void Drawdown::check_requirements()
   /* code here */
 }
 
-void Drawdown::create(const eosio::name &drawdown_type)
+void Drawdown::create(const eosio::name &drawdown_type, const uint64_t &drawdown_number)
 {
 
   transactions::drawdown_tables drawdown_t(contract_name, project_id);
 
-  create_impl(drawdown_type);
+  create_impl(drawdown_type, drawdown_number);
 }
 
 void Drawdown::update(const uint64_t &drawdown_id, const eosio::asset &total_amount)
 {
-  // TODO update this part to just update the total_amount
-  /* code here */
+
   transactions::drawdown_tables drawdown_t(contract_name, project_id);
   auto drawdown_itr = drawdown_t.find(drawdown_id);
 
@@ -27,8 +26,6 @@ void Drawdown::update(const uint64_t &drawdown_id, const eosio::asset &total_amo
 
 void Drawdown::submit(const uint64_t &drawdown_id, const std::vector<common::types::url_information> &files)
 {
-  /* code here */
-  // TODO update this part to just update the files
   
   transactions::drawdown_tables drawdown_t(contract_name, project_id);
   auto drawdown_itr = drawdown_t.find(drawdown_id);
@@ -47,7 +44,6 @@ void Drawdown::submit(const uint64_t &drawdown_id, const std::vector<common::typ
 
 void Drawdown::approve(const uint64_t &drawdown_id)
 {
-  /* code here */
   transactions::drawdown_tables drawdown_t(contract_name, project_id);
   auto drawdown_itr = drawdown_t.find(drawdown_id);
 
@@ -59,6 +55,9 @@ void Drawdown::approve(const uint64_t &drawdown_id)
                     { item.state = DRAWDOWN_STATES.APPROVED; });
 
   // TODO create a new one
+
+  create(drawdown_itr->type, drawdown_itr->drawdown_number + 1);
+  
 }
 
 void Drawdown::reject(const uint64_t &drawdown_id)

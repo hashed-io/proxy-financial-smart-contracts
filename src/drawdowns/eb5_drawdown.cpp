@@ -1,6 +1,6 @@
 #include <drawdowns/eb5_drawdown.hpp>
 
-void EB5Drawdown::create_impl(const eosio::name &drawdown_type)
+void EB5Drawdown::create_impl(const eosio::name &drawdown_type, const uint64_t &drawdown_number)
 {
   transactions::drawdown_tables drawdown_t(contract_name, project_id);
 
@@ -23,6 +23,7 @@ void EB5Drawdown::create_impl(const eosio::name &drawdown_type)
   drawdown_t.emplace(contract_name, [&](auto &item)
                      {
 		item.drawdown_id = get_valid_index(drawdown_t.available_primary_key());
+    item.drawdown_number = drawdown_number;
 		item.type_str = common::transactions::drawdown::type_EB5;
     item.type = common::transactions::drawdown::type::eb5;
 		item.total_amount = asset(0, common::currency);

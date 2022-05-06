@@ -1,6 +1,6 @@
 #include <drawdowns/developer_equity_drawdown.hpp>
 
-void DeveloperEquityDrawdown::create_impl(const eosio::name &drawdown_type)
+void DeveloperEquityDrawdown::create_impl(const eosio::name &drawdown_type, const uint64_t &drawdown_number)
 {
   transactions::drawdown_tables drawdown_t(contract_name, project_id);
 
@@ -21,6 +21,7 @@ void DeveloperEquityDrawdown::create_impl(const eosio::name &drawdown_type)
   drawdown_t.emplace(contract_name, [&](auto &item)
                      {
 		item.drawdown_id = get_valid_index(drawdown_t.available_primary_key());
+    item.drawdown_number = drawdown_number;
 		item.type_str = common::transactions::drawdown::type_developer_equity;
     item.type = common::transactions::drawdown::type::developer_equity;
 		item.total_amount = asset(0, common::currency);

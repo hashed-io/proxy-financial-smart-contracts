@@ -408,13 +408,13 @@ ACTION transactions::initdrawdown(const uint64_t &project_id)
 	// TODO no calleable
 
 	std::unique_ptr<Drawdown> drawdown_eb5 = std::unique_ptr<Drawdown>(DrawdownFactory::Factory(project_id, *this, common::transactions::drawdown::type::eb5));
-	drawdown_eb5->create(common::transactions::drawdown::type::eb5);
+	drawdown_eb5->create(common::transactions::drawdown::type::eb5, 1);
 
 	std::unique_ptr<Drawdown> drawdown_construction_loan = std::unique_ptr<Drawdown>(DrawdownFactory::Factory(project_id, *this, common::transactions::drawdown::type::construction_loan));
-	drawdown_construction_loan->create(common::transactions::drawdown::type::construction_loan);
+	drawdown_construction_loan->create(common::transactions::drawdown::type::construction_loan, 1);
 
 	std::unique_ptr<Drawdown> drawdown_developer_equity = std::unique_ptr<Drawdown>(DrawdownFactory::Factory(project_id, *this, common::transactions::drawdown::type::developer_equity));
-	drawdown_developer_equity->create(common::transactions::drawdown::type::developer_equity);
+	drawdown_developer_equity->create(common::transactions::drawdown::type::developer_equity, 1);
 }
 
 ACTION transactions::toggledrdwn(uint64_t project_id,
