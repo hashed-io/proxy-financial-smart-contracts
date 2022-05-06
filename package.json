@@ -12,6 +12,7 @@
     "initContract": "node scripts/commands.js run $1",
     "build": "node scripts/commands.js compile",
     "compile": "node scripts/commands.js compile $1",
+
     "setParams": "node scripts/commands.js set params",
     "setPermissions": "node scripts/commands.js set permissions",
     "test": "mocha --timeout 0"
@@ -35,5 +36,6 @@
   },
   "devDependencies": {
     "mocha": "^8.4.0"
+
   }
 }

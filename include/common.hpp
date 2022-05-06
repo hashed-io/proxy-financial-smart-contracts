@@ -23,6 +23,7 @@ struct account_types_s
         };
 
 // mainnet
+
 namespace contract_names {
     name projects = "pxprj.sh"_n;
     name accounts = "pxact.sh"_n;
