@@ -413,8 +413,7 @@ ACTION transactions::movedrawdown(const eosio::name &actor,
 
 	drawdown_t.modify(drawdown_itr, _self, [&](auto &item)
 										{ item.creator = actor;
-										item.state = common::transactions::drawdown::status::submitted; 
-										item.close_date = eosio::current_time_point().sec_since_epoch(); });
+										item.state = common::transactions::drawdown::status::submitted; });
 
 	// std::unique_ptr<Drawdown> drawdown = std::unique_ptr<Drawdown>(DrawdownFactory::Factory(project_id, *this, drawdown_itr->type));
 	// drawdown->submit(drawdown_id);
@@ -434,6 +433,27 @@ ACTION transactions::rejtdrawdown(const eosio::name &actor,
 
 	std::unique_ptr<Drawdown> drawdown = std::unique_ptr<Drawdown>(DrawdownFactory::Factory(project_id, *this, drawdown_itr->type));
 	drawdown->reject(drawdown_id);
+}
+
+ACTION transactions::acptdrawdown(const eosio::name &actor,
+																	const uint64_t &project_id,
+																	const uint64_t &drawdown_id)
+{
+
+	drawdown_tables drawdown_t(_self, project_id);
+
+	auto drawdown_itr = drawdown_t.find(drawdown_id);
+
+	check(drawdown_itr != drawdown_t.end(), "Drawdown not found");
+
+	drawdown_t.modify(drawdown_itr, _self, [&](auto &item)
+										{ item.creator = actor;
+										item.state = common::transactions::drawdown::status::approved;
+										item.close_date = eosio::current_time_point().sec_since_epoch(); });
+
+
+	// std::unique_ptr<Drawdown> drawdown = std::unique_ptr<Drawdown>(DrawdownFactory::Factory(project_id, *this, drawdown_itr->type));
+	// drawdown->approve(drawdown_id);
 }
 
 ACTION transactions::transacts(const eosio::name &actor,

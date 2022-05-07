@@ -54,12 +54,10 @@ namespace common
     {
       namespace status
       {
-        constexpr uint64_t NULL_PROPOSAL_ID = 0;
         constexpr uint64_t daft = 0;
         constexpr uint64_t submitted = 1;
-        constexpr uint64_t reviewed = 2; // ! not implemented
+        constexpr uint64_t reviewed = 2;
         constexpr uint64_t approved = 3;
-        /* There is no a rejected because rejected dawdowns return to a daft state */
       } // namespace status
 
       constexpr uint64_t status_open = 1;

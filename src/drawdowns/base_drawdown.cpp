@@ -33,22 +33,22 @@ void Drawdown::submit(const uint64_t &drawdown_id)
   check(drawdown_itr != drawdown_t.end(), "Drawdown not found");
 
   drawdown_t.modify(drawdown_itr, contract_name, [&](auto item)
-                    {
-                      item.state = common::transactions::drawdown::status::submitted;
-                      item.close_date = eosio::current_time_point().sec_since_epoch(); });
+                    { item.state = common::transactions::drawdown::status::submitted; });
 }
 
 void Drawdown::approve(const uint64_t &drawdown_id)
 {
   transactions::drawdown_tables drawdown_t(contract_name, project_id);
+
   auto drawdown_itr = drawdown_t.find(drawdown_id);
 
   check(drawdown_itr != drawdown_t.end(), "Drawdown not found");
 
   check(drawdown_itr->state == common::transactions::drawdown::status::submitted, "Drawdown is not in a submitted state!");
 
-  drawdown_t.modify(drawdown_itr, contract_name, [&](auto item)
-                    { item.state = common::transactions::drawdown::status::approved;; });
+  // drawdown_t.modify(drawdown_itr, contract_name, [&](auto item)
+  //                   { item.state = common::transactions::drawdown::status::approved;
+  //                   item.close_date = eosio::current_time_point().sec_since_epoch(); });
 
   // TODO create a new one
 

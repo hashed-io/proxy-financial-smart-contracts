@@ -216,7 +216,9 @@ describe('Tests for transactions smart contract', async function () {
     await contracts.transactions.transacts(builder.params.account, project.params.id, 1, transaction.getCreateParams(), { authorization: `${builder.params.account}@active` });
 
     // Act
-    await contracts.transactions.movedrawdown(builder.params.account, project.params.id, 1, { authorization: `${builder.params.account}@active` })
+    await contracts.transactions.movedrawdown(builder.params.account, project.params.id, 2, { authorization: `${builder.params.account}@active` })
+    
+    await contracts.transactions.rejtdrawdown(builder.params.account, project.params.id, 2, { authorization: `${builder.params.account}@active` })
 
     // await contracts.transactions.rejtdrawdown(builder.params.account, project.params.id, 1, { authorization: `${builder.params.account}@active` })
 
