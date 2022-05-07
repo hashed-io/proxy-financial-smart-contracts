@@ -10,7 +10,7 @@ const { EnvironmentUtil } = require('./util/EnvironmentUtil')
 const { EntityFactory, EntityConstants } = require('./util/EntityUtil')
 const { ProjectFactory, ProjectConstants, ProjectUtil } = require('./util/ProjectUtil')
 const { UserFactory, Roles } = require('./util/UserUtil');
-const { TransactionFactory, Flag } = require('./util/TransactionUtil');
+const { TransactionFactory, Flag, DrawdownState } = require('./util/TransactionUtil');
 
 
 const { func } = require('promisify')
@@ -74,8 +74,8 @@ describe('Tests for transactions smart contract', async function () {
       price_per_fund_unit: "300.00 USD"
     });
 
-    await contracts.projects.approveprjct(admin.params.account, 0, ...project.getApproveActionParams(),
-     { authorization: `${admin.params.account}@active` });
+    await contracts.projects.approveprjct(admin.params.account, project.params.id, ...project.getApproveActionParams(),
+      { authorization: `${admin.params.account}@active` });
 
 
     const projectsTable = await rpc.get_table_rows({
@@ -95,8 +95,6 @@ describe('Tests for transactions smart contract', async function () {
   })
 
   it('Creation of all drawdown types on project approval', async () => {
-    console.log('hello')
-
     // Arrange
 
     // Act
@@ -109,48 +107,131 @@ describe('Tests for transactions smart contract', async function () {
       json: true
     });
 
-    console.log(drawdownTable.rows);
+    // console.log(drawdownTable.rows);
+
+    expect(drawdownTable.rows).to.deep.equals([
+      {
+        close_date: 0,
+        creator: "",
+        drawdown_id: 1,
+        drawdown_number: 1,
+        files: [],
+        open_date: drawdownTable.rows[0].open_date,
+        state: 0,
+        total_amount: "0.00 USD",
+        type: "eb5",
+        type_str: "EB-5"
+      },
+      {
+        drawdown_id: 2,
+        drawdown_number: 1,
+        type_str: 'Construction Loan',
+        type: 'constrcloan',
+        total_amount: '0.00 USD',
+        files: [],
+        state: 0,
+        open_date: drawdownTable.rows[1].open_date,
+        close_date: 0,
+        creator: ''
+      },
+      {
+        drawdown_id: 3,
+        drawdown_number: 1,
+        type_str: 'Developer Equity',
+        type: 'devequity',
+        total_amount: '0.00 USD',
+        files: [],
+        state: 0,
+        open_date: drawdownTable.rows[2].open_date,
+        close_date: 0,
+        creator: ''
+      }
+    ])
+
 
   });
 
-  it('Update drawdown', async () => {
+  const drawdownTransactionsCases = [
+    { testName: 'Create a transaction for a EB5 drawdown', drawdown_id: 1 },
+    { testName: 'Create a transaction for a Construction Loan drawdown', drawdown_id: 2 },
+    { testName: 'Create a transaction for a Developer Equity drawdown', drawdown_id: 3 }
+  ]
 
-    // Arrange
 
-    // Act
+  drawdownTransactionsCases.forEach(({ testName, drawdown_id }) => {
 
-    // Assert
-    const drawdownTable = await rpc.get_table_rows({
-      code: transactions,
-      scope: project.params.id,
-      table: 'drawdowns',
-      json: true
+    it.only(testName, async () => {
+      // Arrange
+      const transaction = await TransactionFactory.createWithDefaults({});
+      // console.log(transaction.getCreateParams());
+
+      // Act
+      await contracts.transactions.transacts(builder.params.account, project.params.id, drawdown_id, transaction.getCreateParams(), { authorization: `${builder.params.account}@active` });
+
+      // Assert    
+      const drawdownTable = await rpc.get_table_rows({
+        code: transactions,
+        scope: project.params.id,
+        table: 'drawdowns',
+        json: true
+      });
+
+      expect(drawdownTable.rows[drawdown_id - 1]).to.include({ total_amount: `${transaction.getCreateParams()[0].amounts[0].amount * 0.01}.00 USD` })
+
+
+      const transactionsTable = await rpc.get_table_rows({
+        code: transactions,
+        scope: project.params.id,
+        table: 'transactions',
+        json: true
+      });
+
+      expect(transactionsTable.rows).to.deep.equals([
+        {
+          accounting: [],
+          actor: builder.params.account,
+          description: 'descrip',
+          drawdown_id: drawdown_id,
+          supporting_files: transaction.getCreateParams()[0].supporting_files,
+          timestamp: transactionsTable.rows[0].timestamp,
+          total_amount: `${transaction.getCreateParams()[0].amounts[0].amount * 0.01}.00 USD`,
+          transaction_category: 3,
+          transaction_id: 1
+        }
+      ]);
+
+
+      const accountsTable = await rpc.get_table_rows({
+        code: accounts,
+        scope: project.params.id,
+        table: 'accounts',
+        json: true
+      });
+
+      // console.table(accountsTable.rows);
+
+      expect(accountsTable.rows[1]).to.include({ increase_balance: `${transaction.getCreateParams()[0].amounts[0].amount * 0.01}.00 USD` })
+      expect(accountsTable.rows[5]).to.include({ increase_balance: `${transaction.getCreateParams()[0].amounts[0].amount * 0.01}.00 USD` })
+
     });
 
-    console.table(drawdownTable.rows);
-
   });
 
-  it('Create a transaction for the project', async () => {
+
+  it('Reject a submitted drawdown after a successful transaction for the project', async () => {
 
     // Arrange
     const transaction = await TransactionFactory.createWithDefaults({});
     console.log(...transaction.getCreateParams());
 
+    await contracts.transactions.transacts(builder.params.account, project.params.id, 1, transaction.getCreateParams(), { authorization: `${builder.params.account}@active` });
+
     // Act
-    await contracts.transactions.transacts(builder.params.account, 0, 1, transaction.getCreateParams(), { authorization: `${builder.params.account}@active` });
+    await contracts.transactions.movedrawdown(builder.params.account, project.params.id, 2, { authorization: `${builder.params.account}@active` })
+
+    await contracts.transactions.rejtdrawdown(builder.params.account, project.params.id, 2, { authorization: `${builder.params.account}@active` })
 
     // Assert
-    const permissionsTable = await rpc.get_table_rows({
-      code: accounts,
-      scope: project.params.id,
-      table: 'accounts',
-      json: true
-    });
-
-    console.table(permissionsTable.rows);
-
-    
     const drawdownTable = await rpc.get_table_rows({
       code: transactions,
       scope: project.params.id,
@@ -205,34 +286,24 @@ describe('Tests for transactions smart contract', async function () {
 
     console.table(UserTable.rows);
 
+
+
+
   });
 
-  it.only('Summit drawdown after a successful transaction for the project', async () => {
+
+  it('Summit drawdown after a successful transaction for the project', async () => {
 
     // Arrange
     const transaction = await TransactionFactory.createWithDefaults({});
     console.log(...transaction.getCreateParams());
-    
+
     await contracts.transactions.transacts(builder.params.account, project.params.id, 1, transaction.getCreateParams(), { authorization: `${builder.params.account}@active` });
 
     // Act
     await contracts.transactions.movedrawdown(builder.params.account, project.params.id, 2, { authorization: `${builder.params.account}@active` })
-    
-    await contracts.transactions.rejtdrawdown(builder.params.account, project.params.id, 2, { authorization: `${builder.params.account}@active` })
-
-    // await contracts.transactions.rejtdrawdown(builder.params.account, project.params.id, 1, { authorization: `${builder.params.account}@active` })
 
     // Assert
-    const permissionsTable = await rpc.get_table_rows({
-      code: accounts,
-      scope: project.params.id,
-      table: 'accounts',
-      json: true
-    });
-
-    console.table(permissionsTable.rows);
-
-    
     const drawdownTable = await rpc.get_table_rows({
       code: transactions,
       scope: project.params.id,
@@ -241,6 +312,8 @@ describe('Tests for transactions smart contract', async function () {
     });
 
     console.table(drawdownTable.rows);
+
+    expect(drawdownTable)
 
     const transactionsTable = await rpc.get_table_rows({
       code: transactions,
@@ -297,19 +370,10 @@ describe('Tests for transactions smart contract', async function () {
     console.log(...transaction.getCreateParams());
 
     // Act
-    await contracts.transactions.transacts(builder.params.account, 0, 1, transaction.getCreateParams(), { authorization: `${builder.params.account}@active` });
+    await contracts.transactions.transacts(builder.params.account, project.params.id, 1, transaction.getCreateParams(), { authorization: `${builder.params.account}@active` });
 
     // Assert
-    const permissionsTable = await rpc.get_table_rows({
-      code: accounts,
-      scope: project.params.id,
-      table: 'accounts',
-      json: true
-    });
 
-    console.table(permissionsTable.rows);
-
-    
     const drawdownTable = await rpc.get_table_rows({
       code: transactions,
       scope: project.params.id,
@@ -367,11 +431,3 @@ describe('Tests for transactions smart contract', async function () {
   });
 
 });
-/**
- * @param 
- * 
- * TODO update view my projects []
- * 
- * 
- * 
- */

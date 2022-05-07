@@ -6,6 +6,13 @@ const Flag = {
   edit: 2
 }
 
+const DrawdownState = {
+  daft: 0,
+  submitted: 1,
+  reviewed: 2,
+  approved: 2
+}
+
 /*
 struct transaction_param
     {
@@ -82,7 +89,8 @@ class TransactionFactory {
 
     if (!id) { id = 0 }
     if (!date) { date = 1636610400 }
-    if (!amounts) { amounts = [{ account_id: 6, amount: 10 }] }
+    // ! note, make sure the amount is a number greater than 100, otherwise tests will fail
+    if (!amounts) { amounts = [{ account_id: 6, amount: 1000 }] }
     if (!description) { description = 'descrip' }
     if (!supporting_files) {
       supporting_files = [{
@@ -104,4 +112,4 @@ class TransactionFactory {
 }
 
 
-module.exports = { Transaction, TransactionFactory, Flag }
+module.exports = { Transaction, TransactionFactory, Flag, DrawdownState }
