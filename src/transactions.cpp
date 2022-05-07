@@ -207,15 +207,11 @@ void transactions::delete_transaction(name actor,
 
 	if (itr_trxn->drawdown_id)
 	{
-		drawdown_tables drawdowns(_self, project_id);
+		drawdown_tables drawdown_t(_self, project_id);
+		auto drawdown_itr = drawdown_t.find(itr_trxn->drawdown_id);
 
-		auto drawdowns_by_state = drawdowns.get_index<"bystate"_n>();
-		auto itr_drawdown = drawdowns_by_state.find(DRAWDOWN_STATES.OPEN);
-
-		check(itr_drawdown != drawdowns_by_state.end(), common::contracts::transactions.to_string() + ": there are no open drawdowns.");
-
-		drawdowns_by_state.modify(itr_drawdown, _self, [&](auto &item)
-															{ item.total_amount -= total_amount; });
+		drawdown_t.modify(drawdown_itr, _self, [&](auto &item)
+											{ item.total_amount -= total_amount; });
 	}
 
 	transactions.erase(itr_trxn);
@@ -362,50 +358,10 @@ ACTION transactions::submitdrwdn(name actor,
 																 /*vector<common::types::url_information> files*/)
 {
 	require_auth(actor);
-
-	if (actor != _self)
-	{
-
-		// ======================================== //
-		// ======== CHECK PERMISSIONS HERE ======== //
-		// ======================================== //
-	}
-
-	drawdown_tables drawdowns(_self, project_id);
-
-	// change this to accept a vector of transactions
-	auto drawdowns_by_state = drawdowns.get_index<"bystate"_n>();
-	auto itr_drawdown = drawdowns_by_state.find(DRAWDOWN_STATES.OPEN);
-
-	check(itr_drawdown != drawdowns_by_state.end(),
-				common::contracts::transactions.to_string() + ": the project has no open drawdowns, the project may not exist.");
-
-	drawdowns_by_state.modify(itr_drawdown, _self, [&](auto &item)
-														{
-		item.state = DRAWDOWN_STATES.CLOSE;
-		item.close_date = eosio::current_time_point().sec_since_epoch();
-
-		for (int i = 0; i < accounting.size(); i++) {
-			item.accounting.push_back(accounting[i]);
-		}
-
-		for (int i = 0; i < files.size(); i++) {
-			item.files.push_back(files[i]);
-		} });
-
-	drawdowns.emplace(_self, [&](auto &item)
-										{
-		item.drawdown_id = get_valid_index(drawdowns.available_primary_key());
-		item.total_amount = asset(0, common::currency);
-		item.state = DRAWDOWN_STATES.OPEN;
-		item.open_date = eosio::current_time_point().sec_since_epoch();
-		item.close_date = 0; });
 }
 
 ACTION transactions::initdrawdown(const uint64_t &project_id)
 {
-
-	// TODO no calleable
 
 	std::unique_ptr<Drawdown> drawdown_eb5 = std::unique_ptr<Drawdown>(DrawdownFactory::Factory(project_id, *this, common::transactions::drawdown::type::eb5));
 	drawdown_eb5->create(common::transactions::drawdown::type::eb5, 1);
@@ -450,12 +406,21 @@ ACTION transactions::movedrawdown(const eosio::name &actor,
 {
 
 	drawdown_tables drawdown_t(_self, project_id);
+
 	auto drawdown_itr = drawdown_t.find(drawdown_id);
 
 	check(drawdown_itr != drawdown_t.end(), "Drawdown not found");
 
-	std::unique_ptr<Drawdown> drawdown = std::unique_ptr<Drawdown>(DrawdownFactory::Factory(project_id, *this, drawdown_itr->type));
-	drawdown->submit(drawdown_id, drawdown_itr->files);
+	drawdown_t.modify(drawdown_itr, _self, [&](auto &item)
+										{ item.creator = actor;
+										item.state = common::transactions::drawdown::status::submitted; 
+										item.close_date = eosio::current_time_point().sec_since_epoch(); });
+
+	// std::unique_ptr<Drawdown> drawdown = std::unique_ptr<Drawdown>(DrawdownFactory::Factory(project_id, *this, drawdown_itr->type));
+	// drawdown->submit(drawdown_id);
+
+	// std::unique_ptr<Drawdown> drawdown = std::unique_ptr<Drawdown>(DrawdownFactory::Factory(project_id, *this, drawdown_itr->type));
+	// drawdown->update(drawdown_id, asset(total_positive, common::currency));
 }
 
 ACTION transactions::rejtdrawdown(const eosio::name &actor,
@@ -620,9 +585,6 @@ void transactions::generate_transaction(const eosio::name &actor,
 
 	std::unique_ptr<Drawdown> drawdown = std::unique_ptr<Drawdown>(DrawdownFactory::Factory(project_id, *this, drawdown_itr->type));
 	drawdown->update(drawdown_id, asset(total_positive, common::currency));
-
-	// drawdowns_by_state.modify(itr_drawdown, _self, [&](auto &item)
-	// 													{ item.total_amount += asset(total_positive, common::currency); });
 
 	transactions_t.emplace(_self, [&](auto &item)
 												 {
