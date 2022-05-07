@@ -6,6 +6,8 @@
 #include "users/admin_user.cpp"
 #include "users/builder_user.cpp"
 #include "users/investor_user.cpp"
+#include "users/issuer_user.cpp"
+#include "users/regional_center_user.cpp"
 
 void projects::check_user_role(name user, eosio::name role)
 {
