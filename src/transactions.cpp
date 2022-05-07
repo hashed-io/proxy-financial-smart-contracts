@@ -411,10 +411,16 @@ ACTION transactions::movedrawdown(const eosio::name &actor,
 
 	check(drawdown_itr != drawdown_t.end(), "Drawdown not found");
 
+	auto project_itr = project_t.find(project_id);
+
+	check(project_itr != project_t.end(), "Project not found!");
+	check(project_itr->builder == actor, actor.to_string() + " is not the project's builder!");
+
 	drawdown_t.modify(drawdown_itr, _self, [&](auto &item)
 										{ item.creator = actor;
 										item.state = common::transactions::drawdown::status::submitted; });
 
+	// TODO: check why this is not working
 	// std::unique_ptr<Drawdown> drawdown = std::unique_ptr<Drawdown>(DrawdownFactory::Factory(project_id, *this, drawdown_itr->type));
 	// drawdown->submit(drawdown_id);
 
@@ -431,8 +437,18 @@ ACTION transactions::rejtdrawdown(const eosio::name &actor,
 
 	check(drawdown_itr != drawdown_t.end(), "Drawdown not found");
 
-	std::unique_ptr<Drawdown> drawdown = std::unique_ptr<Drawdown>(DrawdownFactory::Factory(project_id, *this, drawdown_itr->type));
-	drawdown->reject(drawdown_id);
+	auto user_itr = user_t.find(actor.value);
+
+	check(user_itr != user_t.end(), "User not found");
+	check(user_itr->role == common::projects::entity::fund, actor.to_string() + " has no permissions to reject this drawdown");
+
+	drawdown_t.modify(drawdown_itr, _self, [&](auto &item)
+										{ item.creator = actor;
+										item.state = common::transactions::drawdown::status::daft; });
+
+	// TODO: check why this is not working
+	// std::unique_ptr<Drawdown> drawdown = std::unique_ptr<Drawdown>(DrawdownFactory::Factory(project_id, *this, drawdown_itr->type));
+	// drawdown->reject(drawdown_id);
 }
 
 ACTION transactions::acptdrawdown(const eosio::name &actor,
@@ -446,12 +462,17 @@ ACTION transactions::acptdrawdown(const eosio::name &actor,
 
 	check(drawdown_itr != drawdown_t.end(), "Drawdown not found");
 
+	auto user_itr = user_t.find(actor.value);
+
+	check(user_itr != user_t.end(), "User not found");
+	check(user_itr->role == common::projects::entity::fund, actor.to_string() + " has no permissions to reject this drawdown");
+
 	drawdown_t.modify(drawdown_itr, _self, [&](auto &item)
 										{ item.creator = actor;
 										item.state = common::transactions::drawdown::status::approved;
 										item.close_date = eosio::current_time_point().sec_since_epoch(); });
 
-
+	// TODO: check why this is not working
 	// std::unique_ptr<Drawdown> drawdown = std::unique_ptr<Drawdown>(DrawdownFactory::Factory(project_id, *this, drawdown_itr->type));
 	// drawdown->approve(drawdown_id);
 }
@@ -500,8 +521,6 @@ ACTION transactions::transacts(const eosio::name &actor,
 		}
 	}
 }
-
-
 
 void transactions::generate_transaction(const eosio::name &actor,
 																				const uint64_t &project_id,
@@ -614,5 +633,4 @@ void transactions::generate_transaction(const eosio::name &actor,
 		for (int i = 0; i < supporting_files.size(); i++) {
 			item.supporting_files.push_back(supporting_files[i]);
 		} });
-		
 }

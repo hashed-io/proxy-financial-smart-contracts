@@ -306,7 +306,7 @@ describe('Tests for transactions smart contract', async function () {
       await contracts.transactions.movedrawdown(builder.params.account, project.params.id, drawdown_id, { authorization: `${builder.params.account}@active` });
 
       // Act
-      await contracts.transactions.acptdrawdown(builder.params.account, project.params.id, drawdown_id, { authorization: `${builder.params.account}@active` });
+      await contracts.transactions.acptdrawdown(admin.params.account, project.params.id, drawdown_id, { authorization: `${admin.params.account}@active` });
 
       // Assert    
       const drawdownTable = await rpc.get_table_rows({
@@ -378,7 +378,7 @@ describe('Tests for transactions smart contract', async function () {
       await contracts.transactions.movedrawdown(builder.params.account, project.params.id, drawdown_id, { authorization: `${builder.params.account}@active` });
 
       // Act
-      await contracts.transactions.rejtdrawdown(builder.params.account, project.params.id, drawdown_id, { authorization: `${builder.params.account}@active` });
+      await contracts.transactions.rejtdrawdown(admin.params.account, project.params.id, drawdown_id, { authorization: `${admin.params.account}@active` });
 
       // Assert    
       const drawdownTable = await rpc.get_table_rows({
