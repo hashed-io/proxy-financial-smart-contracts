@@ -22,7 +22,7 @@ void Issuer::assign_impl(const eosio::name &account, const uint64_t &project_id)
   
   //TODO: check if there is a prev issuer assigned to the project
   //review statement
-  check(project_itr -> issuer.size() == 0, "There can only be one issuer per project!")
+  //check(project_itr -> issuer.size() == 0, "There can only be one issuer per project!")
 
   project_t.modify(project_itr, contract_name, [&](auto &item)
                    { item.issuer = account; });

@@ -22,7 +22,7 @@ void RegionalCenter::assign_impl(const eosio::name &account, const uint64_t &pro
 
   //TODO: check if there is a prev regional center assigned to the project
   // review statement
-  check(project_itr -> builder.size() == 0, "There can only be one Regional Center per project!")
+  //check(project_itr -> builder.size() == 0, "There can only be one Regional Center per project!")
   project_t.modify(project_itr, contract_name, [&](auto &item)
                    { item.regional_center = account; });
   
