@@ -6,6 +6,8 @@
 #include "users/admin_user.cpp"
 #include "users/builder_user.cpp"
 #include "users/investor_user.cpp"
+#include "users/regional_center_user.cpp"
+#include "users/issuer_user.cpp"
 
 void projects::check_user_role(name user, eosio::name role)
 {
@@ -92,23 +94,6 @@ ACTION projects::init()
 	adduser(_self, "proxy.gm"_n, "Admin", common::projects::entity::fund);
 	adduser(_self, "tlalocman.sh"_n, "Admin", common::projects::entity::fund);
 	adduser(_self, "proxybuilder"_n, "Builder", common::projects::entity::developer);
-
-	addproject("proxyadmin11"_n, "OFFICE", "Hashed's office",
-						 "48,000 sf of office space in Minnesota continues to grow as a hub for businesses and Edina is where corporations that want access to the talent pool of Minneapolis and the surrounding without paying exorbitant prices for office space are setting their headquarters. We are building a beautiful building to will provide office space to 200-300 people at an exceptional location near the mall and connected via mass transit to Minneapolis downtown",
-						 asset(10000000.00, symbol("USD", 2)),
-						 asset(6000000.00, symbol("USD", 2)),
-						 5,
-						 600,
-						 "QmZ18Uj9y79d3qU7PyEq98fWnnittyAN4fqXAZ8Pth6qKu:pdf",
-						 asset(4000000.00, symbol("USD", 2)),
-						 asset(2000000.00, symbol("USD", 2)),
-						 asset(2000000.00, symbol("USD", 2)),
-						 600,
-						 "QmZ18Uj9y79d3qU7PyEq98fWnnittyAN4fqXAZ8Pth6qKu:pdf",
-						 1682053200,
-						 1682398800,
-						 1682485200,
-						 2023);
 
 	
 }
