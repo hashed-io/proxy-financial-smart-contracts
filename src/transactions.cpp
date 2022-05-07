@@ -446,7 +446,7 @@ ACTION transactions::toggledrdwn(uint64_t project_id,
 
 ACTION transactions::movedrawdown(const eosio::name &actor,
 																	const uint64_t &project_id,
-																	const int64_t &drawdown_id)
+																	const uint64_t &drawdown_id)
 {
 
 	drawdown_tables drawdown_t(_self, project_id);
@@ -460,7 +460,7 @@ ACTION transactions::movedrawdown(const eosio::name &actor,
 
 ACTION transactions::rejtdrawdown(const eosio::name &actor,
 																	const uint64_t &project_id,
-																	const int64_t &drawdown_id)
+																	const uint64_t &drawdown_id)
 {
 	drawdown_tables drawdown_t(_self, project_id);
 	auto drawdown_itr = drawdown_t.find(drawdown_id);

@@ -124,11 +124,11 @@ public:
 
 	ACTION movedrawdown(const eosio::name &actor,
 											const uint64_t &project_id,
-											const int64_t &drawdown_id);
+											const uint64_t &drawdown_id);
 
 	ACTION rejtdrawdown(const eosio::name &actor,
 											const uint64_t &project_id,
-											const int64_t &drawdown_id);
+											const uint64_t &drawdown_id);
 
 	ACTION toggledrdwn(uint64_t project_id,
 										 uint64_t drawdown_id);
