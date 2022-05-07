@@ -13,8 +13,6 @@ using namespace eosio;
     std::string type_str;                                               \
     eosio::name type;                                                   \
     eosio::asset total_amount;                                          \
-    vector<common::types::transaction_subtypes> accounting; /* erase */ \
-    vector<uint64_t> transaction_ids;                       /* erase */ \
     vector<common::types::url_information> files;                       \
     uint64_t state; /* Add signed transactions */                       \
     uint64_t open_date;                                                 \

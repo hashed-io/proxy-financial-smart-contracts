@@ -22,6 +22,7 @@ public:
   virtual void reject(const uint64_t &drawdown_id);
 
 protected:
+
   virtual void create_impl(const eosio::name &drawdown_type, const uint64_t &drawdown_number) = 0;
   virtual void update_impl(const uint64_t &drawdown_id, const eosio::asset &total_amount) = 0;
 

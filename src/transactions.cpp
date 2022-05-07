@@ -269,8 +269,8 @@ ACTION transactions::transact(name actor,
 				std::make_tuple(actor, project_id, ACTION_NAMES.TRANSACTIONS_ADD)
 		).send(); */
 
-	auto itr_project = projects.find(project_id);
-	check(itr_project != projects.end(), common::contracts::transactions.to_string() + ": the project with the id = " + to_string(project_id) + " does not exist.");
+	auto project_itr = project_t.find(project_id);
+	check(project_itr != project_t.end(), common::contracts::transactions.to_string() + ": the project with the id = " + to_string(project_id) + " does not exist.");
 
 	make_transaction(actor, 0, project_id, amounts, date, description, drawdown_type, accounting, supporting_files);
 }
@@ -311,8 +311,8 @@ ACTION transactions::edittrxn(name actor,
 				std::make_tuple(actor, project_id, ACTION_NAMES.TRANSACTIONS_EDIT)
 		).send(); */
 
-	auto itr_project = projects.find(project_id);
-	check(itr_project != projects.end(), common::contracts::transactions.to_string() + ": the project with the id = " + to_string(project_id) + " does not exist.");
+	auto project_itr = project_t.find(project_id);
+	check(project_itr != project_t.end(), common::contracts::transactions.to_string() + ": the project with the id = " + to_string(project_id) + " does not exist.");
 
 	transaction_tables transactions(_self, project_id);
 
@@ -501,12 +501,7 @@ ACTION transactions::transacts(const eosio::name &actor,
 	}
 }
 
-ACTION transactions::deltransacts(name actor,
-																	uint64_t transaction_id,
-																	std::vector<uint64_t> project_id)
-{
-	require_auth(_self);
-}
+
 
 void transactions::generate_transaction(const eosio::name &actor,
 																				const uint64_t &project_id,
@@ -619,4 +614,5 @@ void transactions::generate_transaction(const eosio::name &actor,
 		for (int i = 0; i < supporting_files.size(); i++) {
 			item.supporting_files.push_back(supporting_files[i]);
 		} });
+		
 }
