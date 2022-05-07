@@ -10,7 +10,7 @@ const DrawdownState = {
   daft: 0,
   submitted: 1,
   reviewed: 2,
-  approved: 2
+  approved: 3
 }
 
 /*
