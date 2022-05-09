@@ -7,9 +7,6 @@ void Drawdown::check_requirements()
 
 void Drawdown::create(const eosio::name &drawdown_type, const uint64_t &drawdown_number)
 {
-
-  transactions::drawdown_tables drawdown_t(contract_name, project_id);
-
   create_impl(drawdown_type, drawdown_number);
 }
 

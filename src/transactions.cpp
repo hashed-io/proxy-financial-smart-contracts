@@ -26,8 +26,8 @@ void transactions::create_drawdown(const uint64_t &project_id,
 																	 const uint64_t &drawdown_number)
 {
 
-	std::unique_ptr<Drawdown> drawdown_eb5 = std::unique_ptr<Drawdown>(DrawdownFactory::Factory(project_id, *this, common::transactions::drawdown::type::eb5));
-	drawdown_eb5->create(drawdown_type, drawdown_number);
+	std::unique_ptr<Drawdown> drawdown = std::unique_ptr<Drawdown>(DrawdownFactory::Factory(project_id, *this, drawdown_type));
+	drawdown->create(drawdown_type, drawdown_number);
 }
 
 void transactions::make_transaction(name actor,
@@ -372,6 +372,8 @@ ACTION transactions::submitdrwdn(name actor,
 ACTION transactions::initdrawdown(const uint64_t &project_id)
 {
 
+	// TODO: implement permissions check to only run once per project
+	
 	std::unique_ptr<Drawdown> drawdown_eb5 = std::unique_ptr<Drawdown>(DrawdownFactory::Factory(project_id, *this, common::transactions::drawdown::type::eb5));
 	drawdown_eb5->create(common::transactions::drawdown::type::eb5, 1);
 

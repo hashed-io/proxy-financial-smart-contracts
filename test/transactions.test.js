@@ -160,7 +160,7 @@ describe('Tests for transactions smart contract', async function () {
 
   drawdownTransactionsCases.forEach(({ testName, drawdown_id }) => {
 
-    it.only(testName, async () => {
+    it(testName, async () => {
       // Arrange
       const transaction = await TransactionFactory.createWithDefaults({});
       // console.log(transaction.getCreateParams());
@@ -228,7 +228,7 @@ describe('Tests for transactions smart contract', async function () {
   ]
 
   drawdownSubmitCases.forEach(({ testName, drawdown_id }) => {
-    it.only(testName, async () => {
+    it(testName, async () => {
       // Arrange
       const transaction = await TransactionFactory.createWithDefaults({});
       // console.log(...transaction.getCreateParams());
@@ -306,7 +306,13 @@ describe('Tests for transactions smart contract', async function () {
       await contracts.transactions.movedrawdown(builder.params.account, project.params.id, drawdown_id, { authorization: `${builder.params.account}@active` });
 
       // Act
-      await contracts.transactions.acptdrawdown(admin.params.account, project.params.id, drawdown_id, { authorization: `${admin.params.account}@active` });
+      try {
+        await contracts.transactions.acptdrawdown(admin.params.account, project.params.id, drawdown_id, { authorization: `${admin.params.account}@active` });
+        
+      } catch (e) {
+        console.log(e);
+      }
+      
 
       // Assert    
       const drawdownTable = await rpc.get_table_rows({

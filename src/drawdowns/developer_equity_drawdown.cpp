@@ -4,19 +4,21 @@ void DeveloperEquityDrawdown::create_impl(const eosio::name &drawdown_type, cons
 {
   transactions::drawdown_tables drawdown_t(contract_name, project_id);
 
-  auto drawdowns_by_type = drawdown_t.get_index<"bytype"_n>();
-  auto drawdown_itr = drawdowns_by_type.find(common::transactions::drawdown::type::developer_equity.value);
+  // TODO fix this validation
+  
+  // auto drawdowns_by_type = drawdown_t.get_index<"bytype"_n>();
+  // auto drawdown_itr = drawdowns_by_type.find(common::transactions::drawdown::type::developer_equity.value);
 
-  while (drawdown_itr != drawdowns_by_type.end())
-  {
-    if (drawdown_itr->type == drawdown_type)
-    {
-      check(drawdown_itr->state != common::transactions::drawdown::status::approved, "Cannot create a drawdown, one already in process");
-      break;
-    }
+  // while (drawdown_itr != drawdowns_by_type.end())
+  // {
+  //   if (drawdown_itr->type == drawdown_type)
+  //   {
+  //     check(drawdown_itr->state != common::transactions::drawdown::status::approved, "Cannot create a drawdown, one already in process");
+  //     break;
+  //   }
 
-    drawdown_itr++;
-  }
+  //   drawdown_itr++;
+  // }
 
   drawdown_t.emplace(contract_name, [&](auto &item)
                      {
