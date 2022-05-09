@@ -1,9 +1,9 @@
-const { createRandomAccount } = require('../../scripts/eosio-util')
+const { createRandomAccount, createRandomName } = require('../../scripts/eosio-util')
 
-const EntityConstants = {
-  investor: "Investor",
-  developer: "Developer",
-  fund: "Fund"
+const Roles = {
+  investor: "investor",
+  developer: "developer",
+  fund: "fund"
 }
 
 class Entity {
@@ -11,13 +11,13 @@ class Entity {
     actor,
     entity_name,
     description,
-    type
+    role
   ) {
     this.params = {
       actor,
       entity_name,
       description,
-      type
+      role
     }
   }
 
@@ -27,7 +27,7 @@ class Entity {
       this.params.actor,
       this.params.entity_name,
       this.params.description,
-      this.params.type
+      this.params.role
     ]
   }
 
@@ -38,13 +38,13 @@ class EntityFactory {
     actor,
     entity_name,
     description,
-    type
+    role
   }) {
     return new Entity(
       actor,
       entity_name,
       description,
-      type
+      role
     )
   }
 
@@ -52,33 +52,33 @@ class EntityFactory {
     actor,
     entity_name,
     description,
-    type
+    role
   }) {
 
     if (!actor) {
       actor = await createRandomAccount()
     }
 
-    if (!entity_name) {
-      entity_name = "Test Entity"
+    if (!entity_name) { 
+      entity_name = createRandomName() 
     }
 
     if (!description) {
-      description = "A test entity"
+      description = `A test entity for ${role.toString()}`
     }
 
-    if (!type) {
-      type = EntityConstants.developer
+    if (!role) {
+      role = Roles.developer
     }
 
     return EntityFactory.createEntry({
       actor,
       entity_name,
       description,
-      type
+      role
     })
   }
 }
 
 
-module.exports = { Entity, EntityFactory, EntityConstants }
+module.exports = { Entity, EntityFactory, EntityConstants: Roles }

@@ -1,7 +1,6 @@
 using namespace eosio;
 
 // scoped by project_id
-
 #define DEFINE_BUDGET_TABLE                                 \
   TABLE budget_table                                        \
   {                                                         \

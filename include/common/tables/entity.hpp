@@ -6,7 +6,7 @@ using namespace eosio;
     uint64_t entity_id;                                \
     string entity_name;                                \
     string description;                                \
-    string type;                                       \
+    eosio::name role;                                  \
                                                        \
     uint64_t primary_key() const { return entity_id; } \
   };

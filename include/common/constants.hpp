@@ -11,11 +11,18 @@ namespace common
   namespace contracts
   {
     // MAINNET CONTRACTS
-    constexpr eosio::name projects = "pxprj.sh"_n;
-    constexpr eosio::name accounts = "pxact.sh"_n;
-    constexpr eosio::name transactions = "pxtrx.sh"_n;
-    constexpr eosio::name permissions = "pxperm.sh"_n;
-    constexpr eosio::name budgets = "pxbud.sh"_n;
+    // constexpr eosio::name projects = "pxprj.sh"_n;
+    // constexpr eosio::name accounts = "pxact.sh"_n;
+    // constexpr eosio::name transactions = "pxtrx.sh"_n;
+    // constexpr eosio::name permissions = "pxperm.sh"_n;
+    // constexpr eosio::name budgets = "pxbud.sh"_n;
+
+    // LOCAL CONTRACTS
+    // constexpr eosio::name projects = "proxyprj"_n;
+    // constexpr eosio::name accounts = "proxyact"_n;
+    // constexpr eosio::name transactions = "proxytrx"_n;
+    // constexpr eosio::name permissions = "proxyperm"_n;
+    // constexpr eosio::name budgets = "proxybud"_n;
 
     // TESTNET CONTRACTS
     // constexpr eosio::name projects = "proxycappro1"_n;
@@ -23,26 +30,50 @@ namespace common
     // constexpr eosio::name transactions = "proxycaptrx1"_n;
     // constexpr eosio::name permissions = "proxycapper1"_n;
     // constexpr eosio::name budgets = "proxycapbdg1"_n;
-    
+
     // TESTNET CONTRACTS (NEW)
-    // constexpr eosio::name projects = "proxyv1prjct"_n;
-    // constexpr eosio::name accounts = "proxyv1accnt"_n;
-    // constexpr eosio::name transactions = "proxyv1trnsc"_n;
-    // constexpr eosio::name permissions = "proxyv1prmss"_n;
-    // constexpr eosio::name budgets = "proxyv1bdgts"_n;
+    constexpr eosio::name projects = "proxyv3prjct"_n;
+    constexpr eosio::name accounts = "proxyv2accnt"_n;
+    constexpr eosio::name transactions = "proxyv3trnsc"_n;
+    constexpr eosio::name permissions = "proxyv2prmss"_n;
+    constexpr eosio::name budgets = "proxyv2bdgts"_n;
     //
   } // namespace contracts
 
   namespace transactions
   {
+
+    namespace flag
+    {
+      constexpr uint8_t remove = 0;
+      constexpr uint8_t create = 1;
+      constexpr uint8_t edit = 2;
+    } // namespace flag
+
     namespace drawdown
     {
-      constexpr int64_t status_open = 1;
-      constexpr int64_t status_close = 2;
+      namespace status
+      {
+        constexpr uint64_t daft = 0;
+        constexpr uint64_t submitted = 1;
+        constexpr uint64_t reviewed = 2;
+        constexpr uint64_t approved = 3;
+      } // namespace status
 
-      const std::string type_EB5 = "EB-5";
-      const std::string type_construction_loan = "Construction Loan";
-      const std::string type_developer_equity = "Developer Equity";
+      constexpr uint64_t status_open = 1;
+      constexpr uint64_t status_close = 2;
+
+      const std::string type_EB5 = "EB-5";                            // can be only created by contructor and admin
+      const std::string type_construction_loan = "Construction Loan"; // created by investors
+      const std::string type_developer_equity = "Developer Equity";   // created by investors
+
+      namespace type
+      {
+        constexpr eosio::name eb5 = "eb5"_n;
+        constexpr eosio::name construction_loan = "constrcloan"_n;
+        constexpr eosio::name developer_equity = "devequity"_n;
+      } // namespace types
+
     } // namespace drawdown
 
   } // namespace transactions
@@ -54,6 +85,14 @@ namespace common
       constexpr int64_t none = 1;
       constexpr int64_t hard_cost = 2;
       constexpr int64_t soft_cost = 3;
+
+      namespace names
+      {
+        const std::string none = "None";
+        const std::string hard_cost = "Hard Cost";
+        const std::string soft_cost = "Soft Cost";
+      } // namespace names
+
     } // namespace categories
 
     namespace types
@@ -69,6 +108,41 @@ namespace common
       const std::string expenses = "Expenses";
       const std::string income = "Income";
       const std::string liabilities = "Liabilities";
+
+      // new types
+
+      namespace hardcost
+      {
+        // hard costs
+        const std::string construction = "Construction";
+        const std::string furniture_fixtures_allowance = "Furniture, Fixtures & Allowance";
+        const std::string hard_cost_contingency_allowance = "Hard Cost contingency & Allowance";
+
+      } // namespace hardcost
+
+      namespace softcost
+      {
+        const std::string architect_design = "Architect & Design";
+        const std::string building_permits_impact_fees = "Building Permits & Impact Fees";
+        const std::string developer_reimbursable = "Developer Reimbursable";
+        const std::string builder_risk_insurance = "Builder Risk Insurance";
+        const std::string environment_soils_survey = "Environment / Soils / Survey";
+        const std::string testing_inspections = "Testing & Inspections";
+        const std::string legal_professional = "Legal & Professional";
+        const std::string real_estate_taxes_owners_liability_insurance = "Real Estate Taxes & Owner's Liability Insurance";
+        const std::string predevelopment_fee = "Pre - Development Fee";
+        const std::string equity_management_fee = "Equity Management Fee";
+        const std::string bank_origination_fee = "Bank Origination Fee";
+        const std::string lender_debt_placement_fee = "Lender Debt Placement Fee";
+        const std::string title_appraisal_feasibility_plan_review_closing = "Title, Appraisal, Feasibility, Plan Review & Closing";
+        const std::string interest_carry_during_construction = "Interest Carry during Construction";
+        const std::string ops_stabilization_interest_carry_reserve = "Ops Stabilization & Interest Carry Reserve";
+        const std::string sales_marketing = "Sales & Marketing";
+        const std::string preopening_expenses = "Pre - Opening Expenses";
+        const std::string contingency = "Contingency";
+
+      } // namespace softcost
+
     } // namespace subtypes
 
   } // namespace accouts
@@ -110,9 +184,11 @@ namespace common
 
     namespace entity
     {
-      const std::string investor = "Investor";
-      const std::string developer = "Developer";
-      const std::string fund = "Fund";
+      constexpr eosio::name investor = "investor"_n;
+      constexpr eosio::name developer = "developer"_n;
+      constexpr eosio::name fund = "fund"_n;
+      constexpr eosio::name issuer = "issuer"_n;
+      constexpr eosio::name regional_center = "regionalcrt"_n;
     } // namespace entity
 
     namespace investment

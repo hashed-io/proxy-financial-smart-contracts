@@ -1,0 +1,1 @@
+cleos -u https://testnet.telos.caleos.io push action proxyv2prjct assignuser '[proxyadmin11, builderuser1, 1 ]' -p proxyadmin11@active

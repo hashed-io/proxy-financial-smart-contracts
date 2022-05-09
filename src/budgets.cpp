@@ -493,6 +493,3 @@ ACTION budgets::delbdgtsacct (uint64_t project_id, uint64_t account_id) {
         }
     }
 }
-
-
-EOSIO_DISPATCH(budgets, (reset)(addbudget)(deletebudget)(editbudget)(rcalcbudgets)(delbdgtsacct));

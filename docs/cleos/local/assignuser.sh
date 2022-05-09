@@ -1,0 +1,1 @@
+cleos push action proxyv2prjct assignuser '[proxyadmin11, builderuser1, 0 ]' -p proxyadmin11@active

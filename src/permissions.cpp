@@ -255,7 +255,3 @@ ACTION permissions::deletepmssns (uint64_t project_id) {
         itr_roles = roles.erase(itr_roles);
     }
 }
-
-
-EOSIO_DISPATCH(permissions, (reset)(assignrole)(checkledger)(checkprmissn)(givepermissn)(removeprmssn)(initroles)(addrole)(removerole)(deletepmssns)(addaction));
-

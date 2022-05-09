@@ -8,7 +8,7 @@ const contract = (name, nameOnChain) => {
     stakes: {
       cpu: '40.0000 TLOS',
       net: '40.0000 TLOS',
-      ram: 1000000
+      ram: 2400000
     }
   }
 }
@@ -23,7 +23,7 @@ const supportedChains = {
 
 const ownerByChain = {
   [supportedChains.local]: 'eosio',
-  [supportedChains.telosTestnet]: 'tlaclocmant2',
+  [supportedChains.telosTestnet]: 'proxyadmin11',
   [supportedChains.telosMainnet]: 'tlalocman.sh'
 }
 
@@ -59,11 +59,12 @@ const publicKeysByChain = {
 
 const contractsConfig = {
   [supportedChains.local]: [
-    contract('accounts', 'proxyact'),
-    contract('budgets', 'proxybud'),
-    contract('permissions', 'proxyperm'),
-    contract('projects', 'proxyprj'),
-    contract('transactions', 'proxytrx')
+    contract('nullcontract', 'm1nulldaos'),
+    contract('accounts', 'proxyv2accnt'),
+    contract('budgets', 'proxyv2bdgts'),
+    contract('permissions', 'proxyv2prmss'),
+    contract('projects', 'proxyv3prjct'),
+    contract('transactions', 'proxyv3trnsc')
 
   ],
   // THIS CONTRACTS ARE THE ONES ON THE GITLAB
@@ -74,13 +75,14 @@ const contractsConfig = {
   //   contract('projects', 'proxycapprox'),
   //   contract('transactions', 'proxycaptrx1')
   // ],
+  
   //  NEW ACCOUNTS CREATED
   [supportedChains.telosTestnet]: [
-    contract('accounts', 'proxyv1accnt'),
-    contract('budgets', 'proxyv1bdgts'),
-    contract('permissions', 'proxyv1prmss'),
-    contract('projects', 'proxyv1prjct'),
-    contract('transactions', 'proxyv1trnsc')
+    contract('accounts', 'proxyv2accnt'),
+    contract('budgets', 'proxyv2bdgts'),
+    contract('permissions', 'proxyv2prmss'),
+    contract('projects', 'proxyv3prjct'),
+    contract('transactions', 'proxyv3trnsc')
   ],
   [supportedChains.telosMainnet]: [
     contract('accounts', 'pxact.sh'),
