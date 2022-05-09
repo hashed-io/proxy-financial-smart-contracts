@@ -1,19 +1,22 @@
 using namespace eosio;
 
 // ! scoped by project_id
+// Budget Expenditures
 #define DEFINE_ACCOUNT_TABLE                                      \
   TABLE account_table                                             \
   {                                                               \
     uint64_t account_id;                                          \
     uint64_t parent_id;                                           \
     uint16_t num_children;                                        \
-    std::string account_name;                                     \
+    std::string account_name;    /* Budget Expenditures name*/    \
     std::string account_subtype; /* Asset, Expense, Income ... */ \
     eosio::asset increase_balance;                                \
     eosio::asset decrease_balance;                                \
     symbol account_symbol;                                        \
     uint64_t ledger_id;                                           \
     std::string description;                                      \
+    uint64_t naics_code;                                          \
+    uint64_t job_multiplayer;                                     \
     uint64_t account_category;                                    \
                                                                   \
     uint64_t primary_key() const { return account_id; }           \

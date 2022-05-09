@@ -61,7 +61,6 @@ ACTION accounts::reset()
     {
         itr_types = account_types.erase(itr_types);
     }
-
 }
 
 ACTION accounts::init()
@@ -175,29 +174,27 @@ ACTION accounts::addledger(const uint64_t &project_id,
     { // ! creates the hard cost accounts
 
         add_account(entity_id,
-                   project_id,
-                   hard_cost_accounts[i],
-                   hard_cost_parent,
-                   common::currency,
-                   "Children account",
-                   common::accouts::categories::hard_cost,
-                   asset(0, common::currency));
+                    project_id,
+                    hard_cost_accounts[i],
+                    hard_cost_parent,
+                    common::currency,
+                    "Children account",
+                    common::accouts::categories::hard_cost,
+                    asset(0, common::currency));
     }
 
     for (size_t i = 0; i < soft_cost_accounts.size(); i++)
     { // ! creates the soft cost accounts
 
         add_account(entity_id,
-                   project_id,
-                   soft_cost_accounts[i],
-                   soft_cost_parent,
-                   common::currency,
-                   "Children account",
-                   common::accouts::categories::soft_cost,
-                   asset(0, common::currency));
+                    project_id,
+                    soft_cost_accounts[i],
+                    soft_cost_parent,
+                    common::currency,
+                    "Children account",
+                    common::accouts::categories::soft_cost,
+                    asset(0, common::currency));
     }
-
-
 }
 
 ACTION accounts::initaccounts(const uint64_t &project_id)
@@ -275,17 +272,13 @@ ACTION accounts::editaccount(const eosio::name &actor,
                              const std::string &account_name,
                              const std::string &description,
                              const uint64_t &account_category,
-                             const eosio::asset &budget_amount)
+                             const eosio::asset &budget_amount,
+                             const uint64_t &naics_code,
+                             const uint64_t &job_multiplayer)
 {
 
     require_auth(actor);
 
-    /* action (
-        permission_level(common::contracts::permissions, "active"_n),
-        common::contracts::permissions,
-        "checkprmissn"_n,
-        std::make_tuple(actor, project_id, ACTION_NAMES.ACCOUNTS_EDIT)
-    ).send(); */
 
     check(account_name.length() > 0, common::contracts::accounts.to_string() + ": the account name can not be an empty string.");
     check(ACCOUNT_CATEGORIES.is_valid_constant(account_category), common::contracts::accounts.to_string() + ": the account category is invalid.");
@@ -430,7 +423,9 @@ ACTION accounts::addaccount(const eosio::name &actor,
                             const eosio::symbol &account_currency,
                             const std::string &description,
                             const uint64_t &account_category,
-                            const eosio::asset &budget_amount)
+                            const eosio::asset &budget_amount,
+                            const uint64_t &naics_code,
+                            const uint64_t &job_multiplayer)
 {
 
     require_auth(actor);
@@ -538,17 +533,15 @@ ACTION accounts::deleteaccnts(const uint64_t &project_id)
     }
 }
 
-
-void accounts::add_account (const uint64_t &entity_id,
-                            const uint64_t &project_id,
-                            const std::string &account_name,
-                            const uint64_t &parent_id,
-                            const eosio::symbol &account_currency,
-                            const std::string &description,
-                            const uint64_t &account_category,
-                            const eosio::asset &budget_amount)
+void accounts::add_account(const uint64_t &entity_id,
+                           const uint64_t &project_id,
+                           const std::string &account_name,
+                           const uint64_t &parent_id,
+                           const eosio::symbol &account_currency,
+                           const std::string &description,
+                           const uint64_t &account_category,
+                           const eosio::asset &budget_amount)
 {
-
 
     ledger_tables ledgers(_self, project_id);
     auto ledgers_by_entity = ledgers.get_index<"byentity"_n>();
