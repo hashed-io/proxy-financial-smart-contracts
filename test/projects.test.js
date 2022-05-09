@@ -54,6 +54,8 @@ describe('Tests for projects smart contract', async function () {
     await EnvironmentUtil.createAccount('proxyadmin11');
     await EnvironmentUtil.createAccount('investoruser');
     await EnvironmentUtil.createAccount('builderuser1');
+    await EnvironmentUtil.createAccount('issueruser1');
+    await EnvironmentUtil.createAccount('regionalcntr');
 
 
   })
@@ -143,13 +145,13 @@ describe('Tests for projects smart contract', async function () {
 
   });
 
-  it('Assign builder to a project', async () => {
+  it.only('Assign builder to a project', async () => {
     //Arrange
     const project = await ProjectFactory.createWithDefaults({ actor: admin.params.account });
 
     await contracts.projects.addproject(...project.getCreateActionParams(), { authorization: `${admin.params.account}@active` });
 
-    await contracts.projects.assignuser(admin.params.account, builder.params.account, 0, { authorization: `${admin.params.account}@active` })
+    await contracts.projects.assignuser(admin.params.account, builder.params.account, 0, { authorization: `${admin.params.account}@active` })    
 
     Object.assign(project.params, {
       status: 1,
