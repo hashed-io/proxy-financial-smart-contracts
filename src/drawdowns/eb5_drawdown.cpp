@@ -4,21 +4,23 @@ void EB5Drawdown::create_impl(const eosio::name &drawdown_type, const uint64_t &
 {
   transactions::drawdown_tables drawdown_t(contract_name, project_id);
 
-  auto drawdowns_by_type = drawdown_t.get_index<"bytype"_n>();
-  auto drawdown_itr = drawdowns_by_type.find(common::transactions::drawdown::type::eb5.value);
+  // TODO fix this validation
+
+  // auto drawdowns_by_type = drawdown_t.get_index<"bytype"_n>();
+  // auto drawdown_itr = drawdowns_by_type.find(common::transactions::drawdown::type::eb5.value);
 
   // bool unapproved_drawdown = false;
 
-  while (drawdown_itr != drawdowns_by_type.end())
-  {
-    if (drawdown_itr->type == drawdown_type)
-    {
-      check(drawdown_itr->state != common::transactions::drawdown::status::approved, "Cannot create a drawdown, one already in process");
-      break;
-    }
+  // while (drawdown_itr != drawdowns_by_type.end())
+  // {
+  //   if (drawdown_itr->type == drawdown_type)
+  //   {
+  //     unapproved_drawdown = true;
+  //     check(drawdown_itr->state != common::transactions::drawdown::status::approved, "Cannot create a drawdown, one already in process");
+  //   }
 
-    drawdown_itr++;
-  }
+  //   drawdown_itr++;
+  // }
 
   drawdown_t.emplace(contract_name, [&](auto &item)
                      {
