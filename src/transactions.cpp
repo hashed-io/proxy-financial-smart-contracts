@@ -590,7 +590,7 @@ void transactions::generate_transaction(const eosio::name &actor,
 			action_accnt = "addbalance"_n;
 			total_positive += itr_amounts->amount;
 		}
-
+// action name doesn't exist
 		action(
 				permission_level(common::contracts::accounts, "active"_n),
 				common::contracts::accounts,
