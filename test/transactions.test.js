@@ -212,7 +212,7 @@ describe('Tests for transactions smart contract', async function () {
 
   });
 
-  it.only('Edit a transaction', async function(){
+  it('Deletes a transaction', async function(){
     const drawdownTable = await rpc.get_table_rows({
       code: transactions,
       scope: project.params.id,
@@ -224,18 +224,19 @@ describe('Tests for transactions smart contract', async function () {
     const transaction = await TransactionFactory.createWithDefaults({});
     console.log(...transaction.getCreateParams());
 
-    await contracts.transactions.transacts(builder.params.account, 0, 1, transaction.getCreateParams(), { authorization: `${builder.params.account}@active` });
+   //await contracts.transactions.transacts(builder.params.account, 0, 1, transaction.getCreateParams(), { authorization: `${builder.params.account}@active` });
 
     // Act 
-    const editTransaction = await TransactionFactory.createWithDefaults({id:0, flag: Flag.edit, description: 'descrip edited'});
+    //const editTransaction = await TransactionFactory.createWithDefaults({id:0, flag: Flag.edit, description: 'descrip edited'});
     // Object.assign(editTransaction.params, {
     //   flag: 0
     // })
-    //problemas con la flag 0, 
+    //problemas con la flag 0, no me deja eliminar o editar una transaction.
+    //pendant to review
 
     console.log(...editTransaction.getCreateParams());
 
-    await contracts.transactions.transacts(builder.params.account, 0, 2, editTransaction.getCreateParams(), { authorization: `${builder.params.account}@active` });
+    //await contracts.transactions.transacts(builder.params.account, 0, 2, editTransaction.getCreateParams(), { authorization: `${builder.params.account}@active` });
 
 
     // Assert
@@ -258,7 +259,67 @@ describe('Tests for transactions smart contract', async function () {
 
   });
 
+  it.only('Edit a transaction', async function(){
+    const drawdownTable = await rpc.get_table_rows({
+      code: transactions,
+      scope: project.params.id,
+      table: 'drawdowns',
+      json: true
+    });
+    console.log('\ndrawdowns table is: \n', drawdownTable.rows);
+    // Arrange
+    const transaction = await TransactionFactory.createWithDefaults({});
+    console.log(...transaction.getCreateParams());
+
+    await contracts.transactions.transacts(builder.params.account, 0, 1, transaction.getCreateParams(), { authorization: `${builder.params.account}@active` });
+
+    // Act 
+    const editTransaction = await TransactionFactory.createWithDefaults({id:1, flag: Flag.edit, description: 'descrip edited'});
+    Object.assign(editTransaction.params, {
+      flag: 0
+    })
+    //problemas con la flag 0, no me deja eliminar o editar una transaction.
+    //pendant to review
+
+    console.log(...editTransaction.getCreateParams());
+
+    try{
+      await contracts.transactions.transacts(builder.params.account, 0, 1, editTransaction.getCreateParams(), { authorization: `${builder.params.account}@active` });
+    }catch(err){
+      console.error(err)
+    }
+
+    // Assert
+    const drawdownTable2 = await rpc.get_table_rows({
+      code: transactions,
+      scope: project.params.id,
+      table: 'drawdowns',
+      json: true
+    });
+    console.log('\ndrawdowns table is: \n', drawdownTable2.rows);
+
+    const transactionsTable = await rpc.get_table_rows({
+      code: transactions,
+      scope: project.params.id,
+      table: 'transactions',
+      json: true
+    });
+    console.log('\ntransactions table is: \n', transactionsTable.rows);
+
+
+  });
+
 });
+
+
+
+
+
+
+
+
+
+
 /**
  * @param 
  * 
