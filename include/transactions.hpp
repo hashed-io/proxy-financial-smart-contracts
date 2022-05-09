@@ -95,7 +95,6 @@ public:
 									 const uint64_t &drawdown_id,
 									 std::vector<common::types::transaction_param> transactions);
 
-
 	ACTION deletetrxn(name actor,
 										uint64_t project_id,
 										uint64_t transaction_id);
@@ -138,6 +137,10 @@ private:
 	account_type_tables account_types_t;
 	project_tables project_t;
 	user_tables user_t;
+
+	void create_drawdown(const uint64_t &project_id,
+											 const eosio::name &drawdown_type,
+											 const uint64_t &drawdown_number);
 
 	void delete_transaction(name actor, uint64_t project_id, uint64_t transaction_id);
 

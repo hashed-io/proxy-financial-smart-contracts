@@ -21,6 +21,15 @@
 
 */
 
+void transactions::create_drawdown(const uint64_t &project_id,
+																	 const eosio::name &drawdown_type,
+																	 const uint64_t &drawdown_number)
+{
+
+	std::unique_ptr<Drawdown> drawdown_eb5 = std::unique_ptr<Drawdown>(DrawdownFactory::Factory(project_id, *this, common::transactions::drawdown::type::eb5));
+	drawdown_eb5->create(drawdown_type, drawdown_number);
+}
+
 void transactions::make_transaction(name actor,
 																		uint64_t transaction_id,
 																		uint64_t project_id,
@@ -471,6 +480,9 @@ ACTION transactions::acptdrawdown(const eosio::name &actor,
 										{ item.creator = actor;
 										item.state = common::transactions::drawdown::status::approved;
 										item.close_date = eosio::current_time_point().sec_since_epoch(); });
+
+	
+	create_drawdown(project_id, drawdown_itr->type, drawdown_itr->drawdown_number + 1);
 
 	// TODO: check why this is not working
 	// std::unique_ptr<Drawdown> drawdown = std::unique_ptr<Drawdown>(DrawdownFactory::Factory(project_id, *this, drawdown_itr->type));

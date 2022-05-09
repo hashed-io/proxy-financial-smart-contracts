@@ -316,7 +316,7 @@ describe('Tests for transactions smart contract', async function () {
         json: true
       });
 
-      // console.log(drawdownTable);
+      console.table(drawdownTable.rows);
 
       expect(drawdownTable.rows[drawdown_id - 1]).to.include({
         state: DrawdownState.approved,
