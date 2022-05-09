@@ -90,6 +90,8 @@ class TransactionFactory {
         address: 'bafk...'
       }]
     }
+    // debido a esata conddicion, si mandamos flag.remove = 0, lo tomarà como falso
+    // y devolverà uno. 
     if (!flag) { flag = Flag.create }
 
     return TransactionFactory.createEntry({
