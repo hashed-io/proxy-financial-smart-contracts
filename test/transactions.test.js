@@ -135,39 +135,53 @@ describe('Tests for transactions smart contract', async function () {
 
     // Arrange
     const transaction = await TransactionFactory.createWithDefaults({});
-    console.log(...transaction.getCreateParams());
+    //console.log(...transaction.getCreateParams());
 
     // Act
     await contracts.transactions.transacts(builder.params.account, 0, 1, transaction.getCreateParams(), { authorization: `${builder.params.account}@active` });
 
     // Assert
-    const permissionsTable = await rpc.get_table_rows({
-      code: accounts,
+    const transactionsTable = await rpc.get_table_rows({
+      code: transactions,
       scope: project.params.id,
-      table: 'accounts',
+      table: 'transactions',
       json: true
     });
 
-    // console.table(permissionsTable.rows);
+    console.log('\ntransactions table is: \n', transactionsTable.rows);
 
+    const drawdownTable = await rpc.get_table_rows({
+      code: transactions,
+      scope: project.params.id,
+      table: 'drawdowns',
+      json: true
+    });
+
+    console.log('\ndrawdowns table is: \n', drawdownTable.rows);
+
+    assert.deepStrictEqual(transactionsTable.rows, [{
+      transaction_id: 1,
+      actor: builder.params.account,
+      timestamp: transactionsTable.rows[0].timestamp,
+      description: 'descrip',
+      drawdown_id: 1,
+      total_amount: transactionsTable.rows[0].total_amount,
+      transaction_category: 3,
+      accounting: [],
+      supporting_files: transactionsTable.rows[0].supporting_files
+    }])
+
+
+    // const accountsTable = await rpc.get_table_rows({
+    //   code: accounts,
+    //   scope: project.params.id,
+    //   table: 'accounts',
+    //   json: true
+    // });
+
+    // console.log('\naccounts table is: \n', accountsTable.rows);
     
-    // const drawdownTable = await rpc.get_table_rows({
-    //   code: transactions,
-    //   scope: project.params.id,
-    //   table: 'drawdowns',
-    //   json: true
-    // });
 
-    // console.table(drawdownTable.rows);
-
-    // const transactionsTable = await rpc.get_table_rows({
-    //   code: transactions,
-    //   scope: project.params.id,
-    //   table: 'transactions',
-    //   json: true
-    // });
-
-    // console.table(transactionsTable.rows);
 
     // const ledgerTable = await rpc.get_table_rows({
     //   code: accounts,
@@ -178,15 +192,6 @@ describe('Tests for transactions smart contract', async function () {
 
     // console.table(ledgerTable.rows);
 
-    // const accountsTable = await rpc.get_table_rows({
-    //   code: accounts,
-    //   scope: project.params.id,
-    //   table: 'accounts',
-    //   json: true
-    // });
-
-    // console.table(accountsTable.rows);
-
     // const accountTypesTable = await rpc.get_table_rows({
     //   code: accounts,
     //   scope: accounts,
@@ -194,7 +199,7 @@ describe('Tests for transactions smart contract', async function () {
     //   json: true
     // });
 
-    // console.table(accountTypesTable.rows);
+    // console.table('\naccount types table is: \n', accountTypesTable.rows);
 
     // const UserTable = await rpc.get_table_rows({
     //   code: projects,
@@ -203,7 +208,53 @@ describe('Tests for transactions smart contract', async function () {
     //   json: true
     // });
 
-    // console.table(UserTable.rows);
+    // console.log('\nusers table is: \n', UserTable.rows);
+
+  });
+
+  it.only('Edit a transaction', async function(){
+    const drawdownTable = await rpc.get_table_rows({
+      code: transactions,
+      scope: project.params.id,
+      table: 'drawdowns',
+      json: true
+    });
+    console.log('\ndrawdowns table is: \n', drawdownTable.rows);
+    // Arrange
+    const transaction = await TransactionFactory.createWithDefaults({});
+    console.log(...transaction.getCreateParams());
+
+    await contracts.transactions.transacts(builder.params.account, 0, 1, transaction.getCreateParams(), { authorization: `${builder.params.account}@active` });
+
+    // Act 
+    const editTransaction = await TransactionFactory.createWithDefaults({id:0, flag: Flag.edit, description: 'descrip edited'});
+    // Object.assign(editTransaction.params, {
+    //   flag: 0
+    // })
+    //problemas con la flag 0, 
+
+    console.log(...editTransaction.getCreateParams());
+
+    await contracts.transactions.transacts(builder.params.account, 0, 2, editTransaction.getCreateParams(), { authorization: `${builder.params.account}@active` });
+
+
+    // Assert
+    const drawdownTable2 = await rpc.get_table_rows({
+      code: transactions,
+      scope: project.params.id,
+      table: 'drawdowns',
+      json: true
+    });
+    console.log('\ndrawdowns table is: \n', drawdownTable2.rows);
+
+    const transactionsTable = await rpc.get_table_rows({
+      code: transactions,
+      scope: project.params.id,
+      table: 'transactions',
+      json: true
+    });
+    console.log('\ntransactions table is: \n', transactionsTable.rows);
+
 
   });
 
