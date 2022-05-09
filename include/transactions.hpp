@@ -43,9 +43,9 @@ public:
 	using contract::contract;
 	transactions(name receiver, name code, datastream<const char *> ds)
 			: contract(receiver, code, ds),
-				projects(common::contracts::projects, common::contracts::projects.value),
-				users(common::contracts::projects, common::contracts::projects.value),
-				account_types(common::contracts::accounts, common::contracts::accounts.value)
+				project_t(common::contracts::projects, common::contracts::projects.value),
+				user_t(common::contracts::projects, common::contracts::projects.value),
+				account_types_t(common::contracts::accounts, common::contracts::accounts.value)
 
 	{
 	}
@@ -95,10 +95,6 @@ public:
 									 const uint64_t &drawdown_id,
 									 std::vector<common::types::transaction_param> transactions);
 
-	ACTION deltransacts(name actor,
-											uint64_t transaction_id,
-											std::vector<uint64_t> project_id);
-
 	ACTION deletetrxn(name actor,
 										uint64_t project_id,
 										uint64_t transaction_id);
@@ -130,13 +126,21 @@ public:
 											const uint64_t &project_id,
 											const uint64_t &drawdown_id);
 
+	ACTION acptdrawdown(const eosio::name &actor,
+											const uint64_t &project_id,
+											const uint64_t &drawdown_id);
+
 	ACTION toggledrdwn(uint64_t project_id,
 										 uint64_t drawdown_id);
 
 private:
-	account_type_tables account_types;
-	project_tables projects;
-	user_tables users;
+	account_type_tables account_types_t;
+	project_tables project_t;
+	user_tables user_t;
+
+	void create_drawdown(const uint64_t &project_id,
+											 const eosio::name &drawdown_type,
+											 const uint64_t &drawdown_number);
 
 	void delete_transaction(name actor, uint64_t project_id, uint64_t transaction_id);
 

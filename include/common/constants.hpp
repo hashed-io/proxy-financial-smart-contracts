@@ -54,15 +54,14 @@ namespace common
     {
       namespace status
       {
-        constexpr int64_t daft = 0;
-        constexpr int64_t submitted = 1;
-        constexpr int64_t reviewed = 2; // ! not implemented
-        constexpr int64_t approved = 3;
-        /* There is no a rejected because rejected dawdowns return to a daft state */
+        constexpr uint64_t daft = 0;
+        constexpr uint64_t submitted = 1;
+        constexpr uint64_t reviewed = 2;
+        constexpr uint64_t approved = 3;
       } // namespace status
 
-      constexpr int64_t status_open = 1;
-      constexpr int64_t status_close = 2;
+      constexpr uint64_t status_open = 1;
+      constexpr uint64_t status_close = 2;
 
       const std::string type_EB5 = "EB-5";                            // can be only created by contructor and admin
       const std::string type_construction_loan = "Construction Loan"; // created by investors

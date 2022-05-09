@@ -21,6 +21,15 @@
 
 */
 
+void transactions::create_drawdown(const uint64_t &project_id,
+																	 const eosio::name &drawdown_type,
+																	 const uint64_t &drawdown_number)
+{
+
+	std::unique_ptr<Drawdown> drawdown_eb5 = std::unique_ptr<Drawdown>(DrawdownFactory::Factory(project_id, *this, common::transactions::drawdown::type::eb5));
+	drawdown_eb5->create(drawdown_type, drawdown_number);
+}
+
 void transactions::make_transaction(name actor,
 																		uint64_t transaction_id,
 																		uint64_t project_id,
@@ -207,15 +216,11 @@ void transactions::delete_transaction(name actor,
 
 	if (itr_trxn->drawdown_id)
 	{
-		drawdown_tables drawdowns(_self, project_id);
+		drawdown_tables drawdown_t(_self, project_id);
+		auto drawdown_itr = drawdown_t.find(itr_trxn->drawdown_id);
 
-		auto drawdowns_by_state = drawdowns.get_index<"bystate"_n>();
-		auto itr_drawdown = drawdowns_by_state.find(DRAWDOWN_STATES.OPEN);
-
-		check(itr_drawdown != drawdowns_by_state.end(), common::contracts::transactions.to_string() + ": there are no open drawdowns.");
-
-		drawdowns_by_state.modify(itr_drawdown, _self, [&](auto &item)
-															{ item.total_amount -= total_amount; });
+		drawdown_t.modify(drawdown_itr, _self, [&](auto &item)
+											{ item.total_amount -= total_amount; });
 	}
 
 	transactions.erase(itr_trxn);
@@ -273,8 +278,8 @@ ACTION transactions::transact(name actor,
 				std::make_tuple(actor, project_id, ACTION_NAMES.TRANSACTIONS_ADD)
 		).send(); */
 
-	auto itr_project = projects.find(project_id);
-	check(itr_project != projects.end(), common::contracts::transactions.to_string() + ": the project with the id = " + to_string(project_id) + " does not exist.");
+	auto project_itr = project_t.find(project_id);
+	check(project_itr != project_t.end(), common::contracts::transactions.to_string() + ": the project with the id = " + to_string(project_id) + " does not exist.");
 
 	make_transaction(actor, 0, project_id, amounts, date, description, drawdown_type, accounting, supporting_files);
 }
@@ -315,8 +320,8 @@ ACTION transactions::edittrxn(name actor,
 				std::make_tuple(actor, project_id, ACTION_NAMES.TRANSACTIONS_EDIT)
 		).send(); */
 
-	auto itr_project = projects.find(project_id);
-	check(itr_project != projects.end(), common::contracts::transactions.to_string() + ": the project with the id = " + to_string(project_id) + " does not exist.");
+	auto project_itr = project_t.find(project_id);
+	check(project_itr != project_t.end(), common::contracts::transactions.to_string() + ": the project with the id = " + to_string(project_id) + " does not exist.");
 
 	transaction_tables transactions(_self, project_id);
 
@@ -362,50 +367,10 @@ ACTION transactions::submitdrwdn(name actor,
 																 /*vector<common::types::url_information> files*/)
 {
 	require_auth(actor);
-
-	if (actor != _self)
-	{
-
-		// ======================================== //
-		// ======== CHECK PERMISSIONS HERE ======== //
-		// ======================================== //
-	}
-
-	drawdown_tables drawdowns(_self, project_id);
-
-	// change this to accept a vector of transactions
-	auto drawdowns_by_state = drawdowns.get_index<"bystate"_n>();
-	auto itr_drawdown = drawdowns_by_state.find(DRAWDOWN_STATES.OPEN);
-
-	check(itr_drawdown != drawdowns_by_state.end(),
-				common::contracts::transactions.to_string() + ": the project has no open drawdowns, the project may not exist.");
-
-	drawdowns_by_state.modify(itr_drawdown, _self, [&](auto &item)
-														{
-		item.state = DRAWDOWN_STATES.CLOSE;
-		item.close_date = eosio::current_time_point().sec_since_epoch();
-
-		for (int i = 0; i < accounting.size(); i++) {
-			item.accounting.push_back(accounting[i]);
-		}
-
-		for (int i = 0; i < files.size(); i++) {
-			item.files.push_back(files[i]);
-		} });
-
-	drawdowns.emplace(_self, [&](auto &item)
-										{
-		item.drawdown_id = get_valid_index(drawdowns.available_primary_key());
-		item.total_amount = asset(0, common::currency);
-		item.state = DRAWDOWN_STATES.OPEN;
-		item.open_date = eosio::current_time_point().sec_since_epoch();
-		item.close_date = 0; });
 }
 
 ACTION transactions::initdrawdown(const uint64_t &project_id)
 {
-
-	// TODO no calleable
 
 	std::unique_ptr<Drawdown> drawdown_eb5 = std::unique_ptr<Drawdown>(DrawdownFactory::Factory(project_id, *this, common::transactions::drawdown::type::eb5));
 	drawdown_eb5->create(common::transactions::drawdown::type::eb5, 1);
@@ -450,12 +415,26 @@ ACTION transactions::movedrawdown(const eosio::name &actor,
 {
 
 	drawdown_tables drawdown_t(_self, project_id);
+
 	auto drawdown_itr = drawdown_t.find(drawdown_id);
 
 	check(drawdown_itr != drawdown_t.end(), "Drawdown not found");
 
-	std::unique_ptr<Drawdown> drawdown = std::unique_ptr<Drawdown>(DrawdownFactory::Factory(project_id, *this, drawdown_itr->type));
-	drawdown->submit(drawdown_id, drawdown_itr->files);
+	auto project_itr = project_t.find(project_id);
+
+	check(project_itr != project_t.end(), "Project not found!");
+	check(project_itr->builder == actor, actor.to_string() + " is not the project's builder!");
+
+	drawdown_t.modify(drawdown_itr, _self, [&](auto &item)
+										{ item.creator = actor;
+										item.state = common::transactions::drawdown::status::submitted; });
+
+	// TODO: check why this is not working
+	// std::unique_ptr<Drawdown> drawdown = std::unique_ptr<Drawdown>(DrawdownFactory::Factory(project_id, *this, drawdown_itr->type));
+	// drawdown->submit(drawdown_id);
+
+	// std::unique_ptr<Drawdown> drawdown = std::unique_ptr<Drawdown>(DrawdownFactory::Factory(project_id, *this, drawdown_itr->type));
+	// drawdown->update(drawdown_id, asset(total_positive, common::currency));
 }
 
 ACTION transactions::rejtdrawdown(const eosio::name &actor,
@@ -467,8 +446,47 @@ ACTION transactions::rejtdrawdown(const eosio::name &actor,
 
 	check(drawdown_itr != drawdown_t.end(), "Drawdown not found");
 
-	std::unique_ptr<Drawdown> drawdown = std::unique_ptr<Drawdown>(DrawdownFactory::Factory(project_id, *this, drawdown_itr->type));
-	drawdown->reject(drawdown_id);
+	auto user_itr = user_t.find(actor.value);
+
+	check(user_itr != user_t.end(), "User not found");
+	check(user_itr->role == common::projects::entity::fund, actor.to_string() + " has no permissions to reject this drawdown");
+
+	drawdown_t.modify(drawdown_itr, _self, [&](auto &item)
+										{ item.creator = actor;
+										item.state = common::transactions::drawdown::status::daft; });
+
+	// TODO: check why this is not working
+	// std::unique_ptr<Drawdown> drawdown = std::unique_ptr<Drawdown>(DrawdownFactory::Factory(project_id, *this, drawdown_itr->type));
+	// drawdown->reject(drawdown_id);
+}
+
+ACTION transactions::acptdrawdown(const eosio::name &actor,
+																	const uint64_t &project_id,
+																	const uint64_t &drawdown_id)
+{
+
+	drawdown_tables drawdown_t(_self, project_id);
+
+	auto drawdown_itr = drawdown_t.find(drawdown_id);
+
+	check(drawdown_itr != drawdown_t.end(), "Drawdown not found");
+
+	auto user_itr = user_t.find(actor.value);
+
+	check(user_itr != user_t.end(), "User not found");
+	check(user_itr->role == common::projects::entity::fund, actor.to_string() + " has no permissions to reject this drawdown");
+
+	drawdown_t.modify(drawdown_itr, _self, [&](auto &item)
+										{ item.creator = actor;
+										item.state = common::transactions::drawdown::status::approved;
+										item.close_date = eosio::current_time_point().sec_since_epoch(); });
+
+	
+	create_drawdown(project_id, drawdown_itr->type, drawdown_itr->drawdown_number + 1);
+
+	// TODO: check why this is not working
+	// std::unique_ptr<Drawdown> drawdown = std::unique_ptr<Drawdown>(DrawdownFactory::Factory(project_id, *this, drawdown_itr->type));
+	// drawdown->approve(drawdown_id);
 }
 
 ACTION transactions::transacts(const eosio::name &actor,
@@ -514,13 +532,6 @@ ACTION transactions::transacts(const eosio::name &actor,
 													 transactions[i].supporting_files);
 		}
 	}
-}
-
-ACTION transactions::deltransacts(name actor,
-																	uint64_t transaction_id,
-																	std::vector<uint64_t> project_id)
-{
-	require_auth(_self);
 }
 
 void transactions::generate_transaction(const eosio::name &actor,
@@ -620,9 +631,6 @@ void transactions::generate_transaction(const eosio::name &actor,
 
 	std::unique_ptr<Drawdown> drawdown = std::unique_ptr<Drawdown>(DrawdownFactory::Factory(project_id, *this, drawdown_itr->type));
 	drawdown->update(drawdown_id, asset(total_positive, common::currency));
-
-	// drawdowns_by_state.modify(itr_drawdown, _self, [&](auto &item)
-	// 													{ item.total_amount += asset(total_positive, common::currency); });
 
 	transactions_t.emplace(_self, [&](auto &item)
 												 {

@@ -5,7 +5,7 @@ void DeveloperEquityDrawdown::create_impl(const eosio::name &drawdown_type, cons
   transactions::drawdown_tables drawdown_t(contract_name, project_id);
 
   auto drawdowns_by_type = drawdown_t.get_index<"bytype"_n>();
-  auto drawdown_itr = drawdowns_by_type.find(common::transactions::drawdown::type::construction_loan.value);
+  auto drawdown_itr = drawdowns_by_type.find(common::transactions::drawdown::type::developer_equity.value);
 
   while (drawdown_itr != drawdowns_by_type.end())
   {

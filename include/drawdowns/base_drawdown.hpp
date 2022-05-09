@@ -16,12 +16,13 @@ public:
   virtual void create(const eosio::name &drawdown_type, const uint64_t &drawdown_number);
   virtual void update(const uint64_t &drawdown_id, const eosio::asset &total_amount);
 
-  virtual void submit(const uint64_t &drawdown_id, const std::vector<common::types::url_information> &files);
+  virtual void submit(const uint64_t &drawdown_id);
 
   virtual void approve(const uint64_t &drawdown_id);
   virtual void reject(const uint64_t &drawdown_id);
 
 protected:
+
   virtual void create_impl(const eosio::name &drawdown_type, const uint64_t &drawdown_number) = 0;
   virtual void update_impl(const uint64_t &drawdown_id, const eosio::asset &total_amount) = 0;
 
