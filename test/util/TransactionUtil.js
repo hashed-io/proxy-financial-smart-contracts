@@ -19,6 +19,21 @@ struct transaction_param
     };
 
 */
+class TransactionstUtil {
+  static tokenSymbol = '2,USD'
+
+  static async delete_transaction({ 
+    actor, 
+    project_id, 
+    transaction_id }) {
+    await contract.delete_transaction(
+      actor, 
+      project_id, 
+      transaction_id, 
+      { authorization: `${account}@active` })
+  }
+}
+
 class Transaction {
   constructor(
     id,
@@ -106,4 +121,4 @@ class TransactionFactory {
 }
 
 
-module.exports = { Transaction, TransactionFactory, Flag }
+module.exports = { Transaction, TransactionFactory, Flag, TransactionstUtil }
