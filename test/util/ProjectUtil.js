@@ -68,6 +68,70 @@ class ProjectUtil {
       subscription_package, { authorization: `${account}@active` })
   }
 
+  static async editinvest({
+    actor,
+    investment_id,
+    total_investment_amount,
+    quantity_units_purchased,
+    annual_preferred_return,
+    signed_agreement_date,
+    subscription_package,
+    contract,
+    account }) {
+    await contract.editinvest(
+      actor,
+      investment_id,
+      total_investment_amount,
+      quantity_units_purchased,
+      annual_preferred_return,
+      signed_agreement_date,
+      subscription_package, { authorization: `${account}@active` })
+  }
+
+  static async maketransfer({
+    actor,
+    amount,  
+    investment_id,  
+    proof_of_transfer,  
+    transfer_date,
+    contract,
+    account }) {
+    await contract.maketransfer(
+      actor,
+      amount,  
+      investment_id,  
+      proof_of_transfer,  
+      transfer_date, { authorization: `${account}@active` })
+  }
+
+  static async edittransfer({
+    actor,
+    transfer_id,
+    amount,   
+    proof_of_transfer,  
+    date,
+    contract,
+    account }) {
+    await contract.edittransfer(
+      actor,
+      transfer_id,
+      amount,    
+      proof_of_transfer,  
+      date, { authorization: `${account}@active` })
+  }
+
+  static async confrmtrnsfr({
+    actor,
+    transfer_id,
+    proof_of_transfer,
+    contract,
+    account}) {
+    await contract.confrmtrnsfr(
+      actor,
+      transfer_id,
+      proof_of_transfer, { authorization: `${account}@active` })
+  }
+
   static async editproject({
     actor,
     project_id,
@@ -185,7 +249,6 @@ class Project {
   getEditActionParams() {
 
     return [
-      this.params.actor,
       this.params.project_class,
       this.params.project_name,
       this.params.description,
