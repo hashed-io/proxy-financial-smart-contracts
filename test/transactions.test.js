@@ -347,7 +347,7 @@ describe("Tests for transactions smart contract", async function () {
   ]
 
   drawdownApproveCases.forEach(({ testName, drawdown_id }) => {
-    it.only(testName, async () => {
+    it(testName, async () => {
       // Arrange
       const transaction = await TransactionFactory.createWithDefaults({});
       // console.log(...transaction.getCreateParams());
@@ -425,7 +425,7 @@ describe("Tests for transactions smart contract", async function () {
   ]
 
   drawdownRejectCases.forEach(({ testName, drawdown_id }) => {
-    it.only(testName, async () => {
+    it(testName, async () => {
       // Arrange
       const transaction = await TransactionFactory.createWithDefaults({});
       // console.log(...transaction.getCreateParams());
