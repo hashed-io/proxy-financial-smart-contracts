@@ -3,7 +3,9 @@ const { createRandomAccount, createRandomName } = require('../../scripts/eosio-u
 const Roles = {
   investor: "investor",
   developer: "developer",
-  fund: "fund"
+  fund: "fund",
+  issuer: "issuer",
+  regional_center: "regionalcrt"
 }
 
 class User {

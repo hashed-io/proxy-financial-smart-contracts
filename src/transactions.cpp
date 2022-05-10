@@ -370,9 +370,13 @@ ACTION transactions::submitdrwdn(name actor,
 }
 
 ACTION transactions::initdrawdown(const uint64_t &project_id)
-{
-
-	// TODO: implement permissions check to only run once per project
+{ 
+	// TODO: impleemnt permissions check to only run once per project
+	require_auth(_self);
+	
+	drawdown_tables drawdown_t(_self, project_id);
+	auto drawdown_itr = drawdown_t.find(1);
+	check(drawdown_itr == drawdown_t.end(), "Drawdowns have already started");
 	
 	std::unique_ptr<Drawdown> drawdown_eb5 = std::unique_ptr<Drawdown>(DrawdownFactory::Factory(project_id, *this, common::transactions::drawdown::type::eb5));
 	drawdown_eb5->create(common::transactions::drawdown::type::eb5, 1);
@@ -605,7 +609,7 @@ void transactions::generate_transaction(const eosio::name &actor,
 			action_accnt = "addbalance"_n;
 			total_positive += itr_amounts->amount;
 		}
-
+// action name doesn't exist
 		action(
 				permission_level(common::contracts::accounts, "active"_n),
 				common::contracts::accounts,

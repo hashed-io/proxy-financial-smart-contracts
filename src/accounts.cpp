@@ -465,7 +465,7 @@ ACTION accounts::addaccount(const eosio::name &actor,
     check(ACCOUNT_CATEGORIES.is_valid_constant(account_category), common::contracts::accounts.to_string() + ": the account category is invalid.");
 
     check(account_currency == common::currency, common::contracts::accounts.to_string() + ": the currency must be the same.");
-    check(parent_id != 0, common::contracts::accounts.to_string() + ": the parent id must be grater than zero.");
+    check(parent_id != 0, common::contracts::accounts.to_string() + ": addaccount -> the parent id must be grater than zero.");
 
     auto parent = accounts.find(parent_id);
     check(parent != accounts.end(), common::contracts::accounts.to_string() + ": the parent account does not exist.");
@@ -570,7 +570,7 @@ void accounts::add_account(const uint64_t &entity_id,
     check(ACCOUNT_CATEGORIES.is_valid_constant(account_category), common::contracts::accounts.to_string() + ": the account category is invalid.");
 
     check(account_currency == common::currency, common::contracts::accounts.to_string() + ": the currency must be the same.");
-    check(parent_id != 0, common::contracts::accounts.to_string() + ": the parent id must be grater than zero.");
+    check(parent_id != 0, common::contracts::accounts.to_string() + ": add_account -> the parent id must be grater than zero.");
 
     auto parent = accounts.find(parent_id);
     check(parent != accounts.end(), common::contracts::accounts.to_string() + ": the parent account does not exist.");

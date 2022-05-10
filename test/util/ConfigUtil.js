@@ -1,5 +1,3 @@
-//USADO EN BITCASH, NO ESTOY SEGURO SI SE USARÀ AQUÍ
-
 const { join } = require('path')
 
 class ConfigUtil {
