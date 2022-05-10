@@ -9,6 +9,8 @@
 #include "users/regional_center_user.cpp"
 #include "users/issuer_user.cpp"
 
+// TODO edit add and edit project
+
 void projects::check_user_role(name user, eosio::name role)
 {
 	auto user_itr = user_t.find(user.value);

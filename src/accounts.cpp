@@ -433,25 +433,19 @@ ACTION accounts::addaccount(const eosio::name &actor,
 
     require_auth(actor);
 
-    /* action (
-        permission_level(common::contracts::permissions, "active"_n),
-        common::contracts::permissions,
-        "checkprmissn"_n,
-        std::make_tuple(actor, project_id, ACTION_NAMES.ACCOUNTS_ADD)
-    ).send(); */
-    // ! make ledger associated to admin entity
+    auto admin_itr = users.find(actor.value);
+    check(admin_itr->role == common::projects::entity::fund , actor.to_string() + " is not an admin!");
 
-    // ! cannot create a new parent account (check if parent account != 0)
-    auto itr_usr = users.find(actor.value);
-    check(itr_usr != users.end(), common::contracts::accounts.to_string() + ": the user does not exist.");
+    auto project_itr = projects_table.find(project_id);
+    check(project_itr != projects_table.end(), "The project does not exists");
 
-    
+    auto user_itr = users.find(project_itr->builder.value);
+    check(user_itr != users.end(), common::contracts::accounts.to_string() + ": the user does not exist.");
 
     ledger_tables ledgers(_self, project_id);
     auto ledgers_by_entity = ledgers.get_index<"byentity"_n>();
-    auto itr_ledger = ledgers_by_entity.find(itr_usr->entity_id);
+    auto itr_ledger = ledgers_by_entity.find(user_itr->entity_id);
     
-    // ! update this validation so only the admin can add accounts
     check(itr_ledger != ledgers_by_entity.end(), common::contracts::accounts.to_string() + ": there is no ledger associated with that entity.");
 
     auto project_exists = projects_table.find(project_id);

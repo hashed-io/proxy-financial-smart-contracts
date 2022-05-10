@@ -140,6 +140,23 @@ describe('Tests for budget expenditures', async function () {
       await contracts.accounts.addaccount(...new_account.getCreateActionParams(), { authorization: `${admin.params.account}@active` });
 
       // Assert
+      const accountsTable = await rpc.get_table_rows({
+        code: accounts,
+        scope: project.params.id,
+        table: 'accounts',
+        json: true,
+        limit: 100
+      });
+
+
+      // console.table(accountsTable.rows[accountsTable.rows.length - 1]);
+
+      expect(accountsTable.rows[accountsTable.rows.length - 1]).to.include({
+        parent_id: parent_id,
+        account_name: account_name,
+        naics_code: new_account.params.naics_code,
+        jobs_multiplier: new_account.params.jobs_multiplier
+      })
 
     });
 
@@ -165,7 +182,7 @@ describe('Tests for budget expenditures', async function () {
 
 
   });
-  
+
   it('Edit name to a given budget expenditure', async () => {
     // Arrange
 
