@@ -10,12 +10,16 @@ public:
     const eosio::name INVESTOR = common::projects::entity::investor;
     const eosio::name DEVELOPER = common::projects::entity::developer;
     const eosio::name FUND = common::projects::entity::fund;
+    const eosio::name ISSUER = common::projects::entity::issuer;
+    const eosio::name REGIONALCENTER = common::projects::entity::regional_center;
 
     EntityTypes()
     {
         constants.insert(INVESTOR);
         constants.insert(DEVELOPER);
         constants.insert(FUND);
+        constants.insert(ISSUER);
+        constants.insert(REGIONALCENTER);
     }
 
     bool is_valid_constant(eosio::name constant)

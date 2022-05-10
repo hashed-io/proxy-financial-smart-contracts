@@ -26,6 +26,21 @@ struct transaction_param
     };
 
 */
+class TransactionstUtil {
+  static tokenSymbol = '2,USD'
+
+  static async delete_transaction({ 
+    actor, 
+    project_id, 
+    transaction_id }) {
+    await contract.delete_transaction(
+      actor, 
+      project_id, 
+      transaction_id, 
+      { authorization: `${account}@active` })
+  }
+}
+
 class Transaction {
   constructor(
     id,
@@ -54,7 +69,7 @@ class Transaction {
       flag: this.params.flag
     }]
   }
-
+  
 
 
 }
@@ -98,6 +113,8 @@ class TransactionFactory {
         address: 'bafk...'
       }]
     }
+    // debido a esata conddicion, si mandamos flag.remove = 0, lo tomarà como falso
+    // y devolverà uno. 
     if (!flag) { flag = Flag.create }
 
     return TransactionFactory.createEntry({
@@ -112,4 +129,4 @@ class TransactionFactory {
 }
 
 
-module.exports = { Transaction, TransactionFactory, Flag, DrawdownState }
+module.exports = { Transaction, TransactionFactory, Flag, DrawdownState, TransactionstUtil}
