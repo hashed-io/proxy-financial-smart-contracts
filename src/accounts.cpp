@@ -48,11 +48,11 @@ ACTION accounts::reset()
             itr_accounts = accounts.erase(itr_accounts);
         }
 
-        ledger_tables ledgers(_self, i);
-        auto itr_ledger = ledgers.begin();
-        while (itr_ledger != ledgers.end())
+        ledger_tables ledger_t(_self, i);
+        auto itr_ledger = ledger_t.begin();
+        while (itr_ledger != ledger_t.end())
         {
-            itr_ledger = ledgers.erase(itr_ledger);
+            itr_ledger = ledger_t.erase(itr_ledger);
         }
     }
 
@@ -96,7 +96,7 @@ ACTION accounts::addledger(const uint64_t &project_id,
     auto project = projects_table.find(project_id);
     check(project != projects_table.end(), common::contracts::accounts.to_string() + ": project does not exist.");
 
-    ledger_tables ledgers(_self, project_id);
+    ledger_tables ledger_t(_self, project_id);
     account_tables account_t(_self, project_id);
 
     auto itr_entity = entities.find(entity_id);
@@ -106,18 +106,18 @@ ACTION accounts::addledger(const uint64_t &project_id,
     // TODO make the ledger global for builder and admin
     // ! only admin can modify it ( the accounts )
     
-    // auto itr_ledger = ledgers.begin();
-    // while (itr_ledger != ledgers.end())
+    // auto itr_ledger = ledger_t.begin();
+    // while (itr_ledger != ledger_t.end())
     // {
     //     check(itr_ledger->entity_id != entity_id,
     //           common::contracts::accounts.to_string() + ": there is a ledger for the entity = " + to_string(entity_id) + ", project_id = " + to_string(project_id) + ".");
     //     itr_ledger++;
     // }
 
-    uint64_t ledger_id = ledgers.available_primary_key();
+    uint64_t ledger_id = ledger_t.available_primary_key();
     ledger_id = (ledger_id > 0) ? ledger_id : 1;
 
-    ledgers.emplace(_self, [&](auto &new_ledger)
+    ledger_t.emplace(_self, [&](auto &new_ledger)
                     {
         new_ledger.ledger_id = ledger_id;
         new_ledger.entity_id = entity_id;
@@ -442,11 +442,11 @@ ACTION accounts::addaccount(const eosio::name &actor,
     auto user_itr = users.find(project_itr->builder.value);
     check(user_itr != users.end(), common::contracts::accounts.to_string() + ": the user does not exist.");
 
-    ledger_tables ledgers(_self, project_id);
-    auto ledgers_by_entity = ledgers.get_index<"byentity"_n>();
-    auto itr_ledger = ledgers_by_entity.find(user_itr->entity_id);
+    ledger_tables ledger_t(_self, project_id);
+    auto ledger_t_by_entity = ledger_t.get_index<"byentity"_n>();
+    auto itr_ledger = ledger_t_by_entity.find(user_itr->entity_id);
     
-    check(itr_ledger != ledgers_by_entity.end(), common::contracts::accounts.to_string() + ": there is no ledger associated with that entity.");
+    check(itr_ledger != ledger_t_by_entity.end(), common::contracts::accounts.to_string() + ": there is no ledger associated with that entity.");
 
     auto project_exists = projects_table.find(project_id);
     check(project_exists != projects_table.end(), common::contracts::accounts.to_string() + ": the project where the account is trying to be placed does not exist.");
@@ -530,11 +530,11 @@ ACTION accounts::deleteaccnts(const uint64_t &project_id)
         itr_account = accounts.erase(itr_account);
     }
 
-    ledger_tables ledgers(_self, project_id);
-    auto itr_ledger = ledgers.begin();
-    while (itr_ledger != ledgers.end())
+    ledger_tables ledger_t(_self, project_id);
+    auto itr_ledger = ledger_t.begin();
+    while (itr_ledger != ledger_t.end())
     {
-        itr_ledger = ledgers.erase(itr_ledger);
+        itr_ledger = ledger_t.erase(itr_ledger);
     }
 }
 
@@ -548,10 +548,10 @@ void accounts::add_account(const uint64_t &entity_id,
                            const eosio::asset &budget_amount)
 {
 
-    ledger_tables ledgers(_self, project_id);
-    auto ledgers_by_entity = ledgers.get_index<"byentity"_n>();
-    auto itr_ledger = ledgers_by_entity.find(entity_id);
-    check(itr_ledger != ledgers_by_entity.end(), common::contracts::accounts.to_string() + ": there is no ledger associated with that entity.");
+    ledger_tables ledger_t(_self, project_id);
+    auto ledger_t_by_entity = ledger_t.get_index<"byentity"_n>();
+    auto itr_ledger = ledger_t_by_entity.find(entity_id);
+    check(itr_ledger != ledger_t_by_entity.end(), common::contracts::accounts.to_string() + ": there is no ledger associated with that entity.");
 
     auto project_exists = projects_table.find(project_id);
     check(project_exists != projects_table.end(), common::contracts::accounts.to_string() + ": the project where the account is trying to be placed does not exist.");
