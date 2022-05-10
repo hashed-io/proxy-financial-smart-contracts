@@ -61,7 +61,6 @@ ACTION accounts::reset()
     {
         itr_types = account_types.erase(itr_types);
     }
-
 }
 
 ACTION accounts::init()
@@ -89,6 +88,9 @@ ACTION accounts::init()
 ACTION accounts::addledger(const uint64_t &project_id,
                            const uint64_t &entity_id)
 {
+
+    // ! ledger is now for project
+    
     require_auth(_self);
 
     auto project = projects_table.find(project_id);
@@ -100,13 +102,17 @@ ACTION accounts::addledger(const uint64_t &project_id,
     auto itr_entity = entities.find(entity_id);
     check(itr_entity != entities.end(), common::contracts::accounts.to_string() + ": the entity does not exist.");
 
-    auto itr_ledger = ledgers.begin();
-    while (itr_ledger != ledgers.end())
-    {
-        check(itr_ledger->entity_id != entity_id,
-              common::contracts::accounts.to_string() + ": there is a ledger for the entity = " + to_string(entity_id) + ", project_id = " + to_string(project_id) + ".");
-        itr_ledger++;
-    }
+    // TODO check if exists a ledger for the project
+    // TODO make the ledger global for builder and admin
+    // ! only admin can modify it ( the accounts )
+    
+    // auto itr_ledger = ledgers.begin();
+    // while (itr_ledger != ledgers.end())
+    // {
+    //     check(itr_ledger->entity_id != entity_id,
+    //           common::contracts::accounts.to_string() + ": there is a ledger for the entity = " + to_string(entity_id) + ", project_id = " + to_string(project_id) + ".");
+    //     itr_ledger++;
+    // }
 
     uint64_t ledger_id = ledgers.available_primary_key();
     ledger_id = (ledger_id > 0) ? ledger_id : 1;
@@ -117,10 +123,6 @@ ACTION accounts::addledger(const uint64_t &project_id,
         new_ledger.entity_id = entity_id;
         new_ledger.description = "Ledger for the " + (itr_entity -> role.to_string()) + " " + itr_entity -> entity_name; });
 
-    // TODO update the creation of accouts here
-    // TODO other accounts can not have childs
-
-    // TODO create parent accounts here
 
     auto account_types_itr = account_types.begin();
     while (account_types_itr != account_types.end())
@@ -175,29 +177,27 @@ ACTION accounts::addledger(const uint64_t &project_id,
     { // ! creates the hard cost accounts
 
         add_account(entity_id,
-                   project_id,
-                   hard_cost_accounts[i],
-                   hard_cost_parent,
-                   common::currency,
-                   "Children account",
-                   common::accouts::categories::hard_cost,
-                   asset(0, common::currency));
+                    project_id,
+                    hard_cost_accounts[i],
+                    hard_cost_parent,
+                    common::currency,
+                    "Children account",
+                    common::accouts::categories::hard_cost,
+                    asset(0, common::currency));
     }
 
     for (size_t i = 0; i < soft_cost_accounts.size(); i++)
     { // ! creates the soft cost accounts
 
         add_account(entity_id,
-                   project_id,
-                   soft_cost_accounts[i],
-                   soft_cost_parent,
-                   common::currency,
-                   "Children account",
-                   common::accouts::categories::soft_cost,
-                   asset(0, common::currency));
+                    project_id,
+                    soft_cost_accounts[i],
+                    soft_cost_parent,
+                    common::currency,
+                    "Children account",
+                    common::accouts::categories::soft_cost,
+                    asset(0, common::currency));
     }
-
-
 }
 
 ACTION accounts::initaccounts(const uint64_t &project_id)
@@ -275,17 +275,13 @@ ACTION accounts::editaccount(const eosio::name &actor,
                              const std::string &account_name,
                              const std::string &description,
                              const uint64_t &account_category,
-                             const eosio::asset &budget_amount)
+                             const eosio::asset &budget_amount,
+                             const uint64_t &naics_code,
+                             const uint64_t &jobs_multiplier)
 {
 
     require_auth(actor);
 
-    /* action (
-        permission_level(common::contracts::permissions, "active"_n),
-        common::contracts::permissions,
-        "checkprmissn"_n,
-        std::make_tuple(actor, project_id, ACTION_NAMES.ACCOUNTS_EDIT)
-    ).send(); */
 
     check(account_name.length() > 0, common::contracts::accounts.to_string() + ": the account name can not be an empty string.");
     check(ACCOUNT_CATEGORIES.is_valid_constant(account_category), common::contracts::accounts.to_string() + ": the account category is invalid.");
@@ -430,24 +426,26 @@ ACTION accounts::addaccount(const eosio::name &actor,
                             const eosio::symbol &account_currency,
                             const std::string &description,
                             const uint64_t &account_category,
-                            const eosio::asset &budget_amount)
+                            const eosio::asset &budget_amount,
+                            const uint64_t &naics_code,
+                            const uint64_t &jobs_multiplier)
 {
 
     require_auth(actor);
 
-    /* action (
-        permission_level(common::contracts::permissions, "active"_n),
-        common::contracts::permissions,
-        "checkprmissn"_n,
-        std::make_tuple(actor, project_id, ACTION_NAMES.ACCOUNTS_ADD)
-    ).send(); */
+    auto admin_itr = users.find(actor.value);
+    check(admin_itr->role == common::projects::entity::fund , actor.to_string() + " is not an admin!");
 
-    auto itr_usr = users.find(actor.value);
-    check(itr_usr != users.end(), common::contracts::accounts.to_string() + ": the user does not exist.");
+    auto project_itr = projects_table.find(project_id);
+    check(project_itr != projects_table.end(), "The project does not exists");
+
+    auto user_itr = users.find(project_itr->builder.value);
+    check(user_itr != users.end(), common::contracts::accounts.to_string() + ": the user does not exist.");
 
     ledger_tables ledgers(_self, project_id);
     auto ledgers_by_entity = ledgers.get_index<"byentity"_n>();
-    auto itr_ledger = ledgers_by_entity.find(itr_usr->entity_id);
+    auto itr_ledger = ledgers_by_entity.find(user_itr->entity_id);
+    
     check(itr_ledger != ledgers_by_entity.end(), common::contracts::accounts.to_string() + ": there is no ledger associated with that entity.");
 
     auto project_exists = projects_table.find(project_id);
@@ -494,6 +492,8 @@ ACTION accounts::addaccount(const eosio::name &actor,
 		new_account.decrease_balance = asset(0, common::currency);
 		new_account.account_symbol = common::currency;
         new_account.description = description;
+        new_account.naics_code = naics_code;
+        new_account.jobs_multiplier = jobs_multiplier;
         new_account.account_category = account_category; });
 
     accounts.modify(parent, _self, [&](auto &modified_account)
@@ -538,17 +538,15 @@ ACTION accounts::deleteaccnts(const uint64_t &project_id)
     }
 }
 
-
-void accounts::add_account (const uint64_t &entity_id,
-                            const uint64_t &project_id,
-                            const std::string &account_name,
-                            const uint64_t &parent_id,
-                            const eosio::symbol &account_currency,
-                            const std::string &description,
-                            const uint64_t &account_category,
-                            const eosio::asset &budget_amount)
+void accounts::add_account(const uint64_t &entity_id,
+                           const uint64_t &project_id,
+                           const std::string &account_name,
+                           const uint64_t &parent_id,
+                           const eosio::symbol &account_currency,
+                           const std::string &description,
+                           const uint64_t &account_category,
+                           const eosio::asset &budget_amount)
 {
-
 
     ledger_tables ledgers(_self, project_id);
     auto ledgers_by_entity = ledgers.get_index<"byentity"_n>();
