@@ -86,7 +86,9 @@ public:
                       const eosio::symbol &account_currency,
                       const std::string &description,
                       const uint64_t &account_category,
-                      const eosio::asset &budget_amount);
+                      const eosio::asset &budget_amount,
+                      const uint64_t &naics_code,
+                      const uint64_t &job_multiplayer);
 
     ACTION editaccount(const eosio::name &actor,
                        const uint64_t &project_id,
@@ -94,7 +96,9 @@ public:
                        const std::string &account_name,
                        const std::string &description,
                        const uint64_t &account_category,
-                       const eosio::asset &budget_amount);
+                       const eosio::asset &budget_amount,
+                       const uint64_t &naics_code,
+                       const uint64_t &job_multiplayer);
 
     ACTION deleteaccnt(const eosio::name &actor,
                        const uint64_t &project_id,
@@ -143,7 +147,6 @@ private:
         common::accouts::subtypes::softcost::sales_marketing,
         common::accouts::subtypes::softcost::preopening_expenses,
         common::accouts::subtypes::softcost::contingency};
-
 
     const vector<pair<std::string, std::string>> account_types_v = {
         make_pair(ACCOUNT_SUBTYPES.ASSETS, ACCOUNT_TYPES.DEBIT),
