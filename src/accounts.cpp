@@ -274,7 +274,7 @@ ACTION accounts::editaccount(const eosio::name &actor,
                              const uint64_t &account_category,
                              const eosio::asset &budget_amount,
                              const uint64_t &naics_code,
-                             const uint64_t &job_multiplayer)
+                             const uint64_t &jobs_multiplier)
 {
 
     require_auth(actor);
@@ -425,7 +425,7 @@ ACTION accounts::addaccount(const eosio::name &actor,
                             const uint64_t &account_category,
                             const eosio::asset &budget_amount,
                             const uint64_t &naics_code,
-                            const uint64_t &job_multiplayer)
+                            const uint64_t &jobs_multiplier)
 {
 
     require_auth(actor);
@@ -489,6 +489,8 @@ ACTION accounts::addaccount(const eosio::name &actor,
 		new_account.decrease_balance = asset(0, common::currency);
 		new_account.account_symbol = common::currency;
         new_account.description = description;
+        new_account.naics_code = naics_code;
+        new_account.jobs_multiplier = jobs_multiplier;
         new_account.account_category = account_category; });
 
     accounts.modify(parent, _self, [&](auto &modified_account)

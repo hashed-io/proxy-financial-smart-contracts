@@ -96,8 +96,6 @@ ACTION projects::init()
 	adduser(_self, "tlalocman.sh"_n, "Admin", common::projects::entity::fund);
 	adduser(_self, "proxybuilder"_n, "Builder", common::projects::entity::developer);
 	adduser(_self, "proxybuilder2"_n, "Builder", common::projects::entity::developer);
-
-	
 }
 
 // who can do this?
@@ -167,7 +165,7 @@ ACTION projects::addproject(const eosio::name &actor,
 														const uint64_t &anticipated_year_sale_refinance)
 {
 
-	require_auth( has_auth(actor) ? actor : get_self() );
+	require_auth(has_auth(actor) ? actor : get_self());
 
 	auto actor_itr = user_t.find(actor.value);
 	check(actor_itr->role == common::projects::entity::fund, actor.to_string() + "has not permissions to create projects!");
@@ -358,12 +356,13 @@ ACTION projects::approveprjct(name actor,
 			std::make_tuple(project_id, developer_entity))
 			.send();
 
-	action(
-			permission_level(common::contracts::accounts, "active"_n),
-			common::contracts::accounts,
-			"addledger"_n,
-			std::make_tuple(project_id, fund_entity))
-			.send();
+	// ! this transaction should be removed in the future
+	// action(
+	// 		permission_level(common::contracts::accounts, "active"_n),
+	// 		common::contracts::accounts,
+	// 		"addledger"_n,
+	// 		std::make_tuple(project_id, fund_entity))
+	// 		.send();
 
 	action(
 			permission_level(common::contracts::permissions, "active"_n),
@@ -669,7 +668,7 @@ ACTION projects::assignuser(const eosio::name &actor, const eosio::name &account
 
 	if (actor_itr != user_t.end())
 	{
-		require_auth( has_auth(actor) ? actor : get_self() );
+		require_auth(has_auth(actor) ? actor : get_self());
 		check(actor_itr->role == common::projects::entity::fund, actor.to_string() + " has not permissions to do that!");
 	}
 	else
