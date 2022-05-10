@@ -143,8 +143,8 @@ describe("Tests for projects smart contract", async function () {
       json: true,
     });
 
-    console.log("\n\n Projects  table : ", projectsTable.rows);
-    console.log("params project is :", project.params);
+    // console.log("\n\n Projects  table : ", projectsTable.rows);
+    // console.log("params project is :", project.params);
 
     assert.deepStrictEqual(projectsTable.rows, [
       {
@@ -223,7 +223,7 @@ describe("Tests for projects smart contract", async function () {
       json: true,
     });
 
-    console.log("\n\n Projects table : ", projectsTable);
+    // console.log("\n\n Projects table : ", projectsTable);
 
     assert.deepStrictEqual(projectsTable.rows, [
       {
@@ -266,7 +266,6 @@ describe("Tests for projects smart contract", async function () {
   });
 
   it("Assign one of each type (Investor, Builder, Regional Center, Issuer)", async () => {
-    console.log("hello");
     // console.log(admin);
     // console.log(investor);
     // console.log(builder);
@@ -330,7 +329,7 @@ describe("Tests for projects smart contract", async function () {
       json: true,
     });
 
-    console.log("\n\n Projects table : ", projectsTable);
+    // console.log("\n\n Projects table : ", projectsTable);
 
     assert.deepStrictEqual(projectsTable.rows, [
       {
@@ -432,7 +431,7 @@ describe("Tests for projects smart contract", async function () {
       table: "projects",
       json: true,
     });
-    console.log("\n\n Projects table : ", projectsTable.rows);
+   //  console.log("\n\n Projects table : ", projectsTable.rows);
 
     assert.deepStrictEqual(projectsTable.rows, [
       {
@@ -528,7 +527,7 @@ describe("Tests for projects smart contract", async function () {
       table: "projects",
       json: true,
     });
-    console.log("\n\n Projects table : ", projectsTable.rows);
+    // console.log("\n\n Projects table : ", projectsTable.rows);
 
     assert.deepStrictEqual(projectsTable.rows, [
       {
