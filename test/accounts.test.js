@@ -119,6 +119,12 @@ describe('Tests for budget expenditures', async function () {
   });
 
   it('Edit add NAIC code to a given budget expenditure', async () => {
+    // Arrange
+
+    // Act
+
+    // Assert
+
 
   });
 
