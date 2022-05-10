@@ -88,6 +88,9 @@ ACTION accounts::init()
 ACTION accounts::addledger(const uint64_t &project_id,
                            const uint64_t &entity_id)
 {
+
+    // ! ledger is now for project
+    
     require_auth(_self);
 
     auto project = projects_table.find(project_id);
@@ -99,13 +102,17 @@ ACTION accounts::addledger(const uint64_t &project_id,
     auto itr_entity = entities.find(entity_id);
     check(itr_entity != entities.end(), common::contracts::accounts.to_string() + ": the entity does not exist.");
 
-    auto itr_ledger = ledgers.begin();
-    while (itr_ledger != ledgers.end())
-    {
-        check(itr_ledger->entity_id != entity_id,
-              common::contracts::accounts.to_string() + ": there is a ledger for the entity = " + to_string(entity_id) + ", project_id = " + to_string(project_id) + ".");
-        itr_ledger++;
-    }
+    // TODO check if exists a ledger for the project
+    // TODO make the ledger global for builder and admin
+    // ! only admin can modify it ( the accounts )
+    
+    // auto itr_ledger = ledgers.begin();
+    // while (itr_ledger != ledgers.end())
+    // {
+    //     check(itr_ledger->entity_id != entity_id,
+    //           common::contracts::accounts.to_string() + ": there is a ledger for the entity = " + to_string(entity_id) + ", project_id = " + to_string(project_id) + ".");
+    //     itr_ledger++;
+    // }
 
     uint64_t ledger_id = ledgers.available_primary_key();
     ledger_id = (ledger_id > 0) ? ledger_id : 1;
@@ -116,10 +123,6 @@ ACTION accounts::addledger(const uint64_t &project_id,
         new_ledger.entity_id = entity_id;
         new_ledger.description = "Ledger for the " + (itr_entity -> role.to_string()) + " " + itr_entity -> entity_name; });
 
-    // TODO update the creation of accouts here
-    // TODO other accounts can not have childs
-
-    // TODO create parent accounts here
 
     auto account_types_itr = account_types.begin();
     while (account_types_itr != account_types.end())
@@ -436,13 +439,19 @@ ACTION accounts::addaccount(const eosio::name &actor,
         "checkprmissn"_n,
         std::make_tuple(actor, project_id, ACTION_NAMES.ACCOUNTS_ADD)
     ).send(); */
+    // ! make ledger associated to admin entity
 
+    // ! cannot create a new parent account (check if parent account != 0)
     auto itr_usr = users.find(actor.value);
     check(itr_usr != users.end(), common::contracts::accounts.to_string() + ": the user does not exist.");
+
+    
 
     ledger_tables ledgers(_self, project_id);
     auto ledgers_by_entity = ledgers.get_index<"byentity"_n>();
     auto itr_ledger = ledgers_by_entity.find(itr_usr->entity_id);
+    
+    // ! update this validation so only the admin can add accounts
     check(itr_ledger != ledgers_by_entity.end(), common::contracts::accounts.to_string() + ": there is no ledger associated with that entity.");
 
     auto project_exists = projects_table.find(project_id);

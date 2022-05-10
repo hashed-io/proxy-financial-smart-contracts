@@ -42,8 +42,15 @@ describe('Tests for budget expenditures', async function () {
     await updatePermissions()
     console.log('\n')
 
-    await contracts.projects.init({ authorization: `${projects}@active` });
+    // clear old data
+    await contracts.projects.reset({ authorization: `${projects}@active` });
+    await contracts.accounts.reset({ authorization: `${accounts}@active` });
+    await contracts.budgets.reset({ authorization: `${budgets}@active` });
+    await contracts.permissions.reset({ authorization: `${permissions}@active` });
+    await contracts.transactions.reset({ authorization: `${transactions}@active` });
 
+    // setup contracts
+    await contracts.projects.init({ authorization: `${projects}@active` });
     await contracts.accounts.init({ authorization: `${accounts}@active` });
 
     admin = await UserFactory.createWithDefaults({ role: Roles.fund, account: 'proxyadmin11', user_name: 'Admin', entity_id: 1 });
@@ -118,7 +125,48 @@ describe('Tests for budget expenditures', async function () {
 
   });
 
-  it('Edit add NAIC code to a given budget expenditure', async () => {
+  const addBudgetExpenditures = [
+    { testName: 'Add a new hard cost budget expenditure', parent_id: 1, account_name: 'New hard cost account' },
+    { testName: 'Add a new soft cost budget expenditure', parent_id: 2, account_name: 'New soft cost account' }
+  ]
+
+  addBudgetExpenditures.forEach(({ testName, parent_id, account_name }) => {
+    it.only(testName, async () => {
+
+      // Arrange
+      const new_account = await AccountFactory.createWithDefaults({ actor: admin.params.account, account_name: account_name, parent_id: parent_id });
+
+      // Act
+      await contracts.accounts.addaccount(...new_account.getCreateActionParams(), { authorization: `${admin.params.account}@active` });
+
+      // Assert
+
+    });
+
+  });
+
+
+  it('Edit NAIC code to a given budget expenditure', async () => {
+    // Arrange
+
+    // Act
+
+    // Assert
+
+
+  });
+
+  it('Edit Jobs multiplier to a given budget expenditure', async () => {
+    // Arrange
+
+    // Act
+
+    // Assert
+
+
+  });
+  
+  it('Edit name to a given budget expenditure', async () => {
     // Arrange
 
     // Act
@@ -129,8 +177,7 @@ describe('Tests for budget expenditures', async function () {
   });
 
 
-
-  it('Create all the project\'s budget expenditures', async () => {
+  it('Delete a budget expenditure of a given project', async () => {
     // Arrange
 
     // Act

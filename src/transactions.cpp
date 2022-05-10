@@ -182,7 +182,7 @@ void transactions::delete_transaction(name actor,
 		auto itr_account = accounts.find(itr_amount->account_id);
 		ledger_id = itr_account->ledger_id;
 	}
-
+	// ! same as generate_transaction
 	action(
 			permission_level(common::contracts::permissions, "active"_n),
 			common::contracts::permissions,
@@ -573,6 +573,8 @@ void transactions::generate_transaction(const eosio::name &actor,
 	{
 		auto itr_account = account_t.find(itr_amounts->account_id);
 		check(itr_account != account_t.end(), common::contracts::transactions.to_string() + ": the account does not exist.");
+
+		// ! update this to be the global ledger
 
 		if (ledger_id != itr_account->ledger_id)
 		{

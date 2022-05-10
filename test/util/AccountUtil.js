@@ -20,9 +20,9 @@ const AccountConstants = {
     income: "Income",
     liabilities: "Liabilities"
   },
-  hard_cost : {
+  hard_cost: {
 
-  }, soft_cost : {}
+  }, soft_cost: {}
 }
 
 
@@ -157,7 +157,9 @@ class Account {
     account_currency,
     description,
     account_category,
-    budget_amount
+    budget_amount,
+    naics_code,
+    jobs_multiplier
   ) {
     this.params = {
       actor,
@@ -167,7 +169,9 @@ class Account {
       account_currency,
       description,
       account_category,
-      budget_amount
+      budget_amount,
+      naics_code,
+      jobs_multiplier
     }
   }
 
@@ -185,6 +189,21 @@ class Account {
     ]
   }
 
+  getCreateActionParams() {
+    return [
+      this.params.actor,
+      this.params.project_id,
+      this.params.account_name,
+      this.params.parent_id,
+      this.params.account_currency,
+      this.params.description,
+      this.params.account_category,
+      this.params.budget_amount,
+      this.params.naics_code,
+      this.params.jobs_multiplier
+    ]
+  }
+
 }
 
 class AccountFactory {
@@ -196,7 +215,9 @@ class AccountFactory {
     account_currency,
     description,
     account_category,
-    budget_amount
+    budget_amount,
+    naics_code,
+    jobs_multiplier
   }) {
     return new Account(
       actor,
@@ -206,7 +227,9 @@ class AccountFactory {
       account_currency,
       description,
       account_category,
-      budget_amount
+      budget_amount,
+      naics_code,
+      jobs_multiplier
     )
   }
 
@@ -218,7 +241,10 @@ class AccountFactory {
     account_currency,
     description,
     account_category,
-    budget_amount
+    budget_amount,
+    naics_code,
+    jobs_multiplier
+
   }) {
 
     if (!actor) {
@@ -234,7 +260,7 @@ class AccountFactory {
     }
 
     if (!parent_id) {
-      parent_id = isFinite(parent_id) ? parent_id : 0
+      parent_id = 0
     }
 
     if (!account_currency) {
@@ -253,6 +279,14 @@ class AccountFactory {
       budget_amount = '0.00 USD';
     }
 
+    if (!naics_code) {
+      naics_code = 44122; // NAICS Industry
+    }
+
+    if (!jobs_multiplier) {
+      jobs_multiplier = 10;
+    }
+
     return AccountFactory.createEntry({
       actor,
       project_id,
@@ -261,7 +295,9 @@ class AccountFactory {
       account_currency,
       description,
       account_category,
-      budget_amount
+      budget_amount,
+      naics_code,
+      jobs_multiplier
     })
   }
 }
