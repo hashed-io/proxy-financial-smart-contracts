@@ -22,7 +22,7 @@ void Builder::assign_impl(const eosio::name &account, const uint64_t &project_id
   auto project_itr = project_t.find(project_id);
 
   // TODO check if there is a prev builder assigned to the project
-
+  check(project_itr -> builder.value == 0, "There can only be one builder per project" );
 
   project_t.modify(project_itr, contract_name, [&](auto &item)
                    { item.builder = account; });

@@ -83,12 +83,17 @@ ACTION projects::init()
 	addentity(_self, "Proxy Capital", "Entity for Proxy Capital", ENTITY_TYPES.FUND);
 	addentity(_self, "Investor Entity 1", "Entity for investors", ENTITY_TYPES.INVESTOR);
 	addentity(_self, "Developer Entity 1", "Entity for developer", ENTITY_TYPES.DEVELOPER);
+	addentity(_self, "Issuer Entity 1", "Entity for issuer", ENTITY_TYPES.ISSUER);
+	addentity(_self, "Regional Center Entity 1", "Entity for regional center", ENTITY_TYPES.REGIONALCENTER);
 
 	// hardcoding some entity_t and user_t for testnet
 	adduser(_self, "proxyadmin11"_n, "Admin", common::projects::entity::fund);
 	adduser(_self, "investoruser"_n, "Investor 1", common::projects::entity::investor);
 	adduser(_self, "investorusr2"_n, "Investor 2", common::projects::entity::investor);
 	adduser(_self, "builderuser1"_n, "Builder", common::projects::entity::developer);
+	adduser(_self, "issueruser1"_n, "Issuer", common::projects::entity::issuer);
+	adduser(_self, "regionalcntr"_n, "RegionalCenter", common::projects::entity::regional_center);
+
 
 	// hardcoding some entity_t and user_t for mainnet
 	adduser(_self, "proxy.gm"_n, "Admin", common::projects::entity::fund);
