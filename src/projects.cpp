@@ -94,12 +94,6 @@ ACTION projects::init()
 	adduser(_self, "issueruser1"_n, "Issuer", common::projects::entity::issuer);
 	adduser(_self, "regionalcntr"_n, "RegionalCenter", common::projects::entity::regional_center);
 
-	//harcode to test validations issuer, regional center, builder
-	adduser(_self, "builderuser2"_n, "Builder2", common::projects::entity::developer);
-	adduser(_self, "issueruser2"_n, "Issuer2", common::projects::entity::issuer);
-	adduser(_self, "regionalcntr2"_n, "RegionalCenter2", common::projects::entity::regional_center);
-
-	
 
 	// hardcoding some entity_t and user_t for mainnet
 	adduser(_self, "proxy.gm"_n, "Admin", common::projects::entity::fund);
