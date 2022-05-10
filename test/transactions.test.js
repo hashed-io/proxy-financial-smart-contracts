@@ -844,3 +844,4 @@ describe("Tests for transactions smart contract", async function () {
     console.table(UserTable.rows);
   });
 });
+});
