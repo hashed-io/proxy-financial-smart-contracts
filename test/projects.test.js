@@ -629,7 +629,6 @@ describe("Tests for projects smart contract", async function () {
       fail = false;
     } catch (err) {
       fail = true;
-      console.log(err);
     }
 
     // //Assert
@@ -639,7 +638,7 @@ describe("Tests for projects smart contract", async function () {
       table: "projects",
       json: true,
     });
-    console.log("\n\n Projects table : ", projectsTable.rows);
+    //console.log("\n\n Projects table : ", projectsTable.rows);
 
     expect(fail).to.be.true;
   });
@@ -693,7 +692,7 @@ describe("Tests for projects smart contract", async function () {
       fail = false;
     } catch (err) {
       fail = true;
-      console.log(err);
+      //console.log(err);
     }
 
     // //Assert
@@ -703,7 +702,7 @@ describe("Tests for projects smart contract", async function () {
       table: "projects",
       json: true,
     });
-    console.log("\n\n Projects table : ", projectsTable.rows);
+    //console.log("\n\n Projects table : ", projectsTable.rows);
 
     expect(fail).to.be.true;
   });
@@ -763,7 +762,7 @@ describe("Tests for projects smart contract", async function () {
       table: "projects",
       json: true,
     });
-    console.log("\n\n Projects table : ", projectsTable.rows);
+    //console.log("\n\n Projects table : ", projectsTable.rows);
 
     assert.deepStrictEqual(projectsTable.rows, [
       {
@@ -866,7 +865,7 @@ describe("Tests for projects smart contract", async function () {
       table: "projects",
       json: true,
     });
-    console.log("\n\n Projects table : ", projectsTable.rows);
+    //console.log("\n\n Projects table : ", projectsTable.rows);
 
     const investTable = await rpc.get_table_rows({
       code: projects,
@@ -874,7 +873,7 @@ describe("Tests for projects smart contract", async function () {
       table: "investments",
       json: true,
     });
-    console.log("\n\n investments table is: ", investTable);
+    //console.log("\n\n investments table is: ", investTable);
 
     assert.deepStrictEqual(investTable.rows, [
       {
@@ -971,7 +970,7 @@ describe("Tests for projects smart contract", async function () {
       table: "projects",
       json: true,
     });
-    console.log("\n\n Projects table : ", projectsTable.rows);
+    // console.log("\n\n Projects table : ", projectsTable.rows);
 
     const investTable = await rpc.get_table_rows({
       code: projects,
@@ -979,7 +978,7 @@ describe("Tests for projects smart contract", async function () {
       table: "investments",
       json: true,
     });
-    console.log("\n\n investments table is: ", investTable);
+    //console.log("\n\n investments table is: ", investTable);
 
     assert.deepStrictEqual(investTable.rows, [
       {
@@ -1068,7 +1067,7 @@ describe("Tests for projects smart contract", async function () {
       table: "projects",
       json: true,
     });
-    console.log("\n\n Projects table : ", projectsTable.rows);
+    //console.log("\n\n Projects table : ", projectsTable.rows);
 
     const investTable = await rpc.get_table_rows({
       code: projects,
@@ -1076,7 +1075,7 @@ describe("Tests for projects smart contract", async function () {
       table: "investments",
       json: true,
     });
-    console.log("\n\n investments table is: ", investTable);
+    //console.log("\n\n investments table is: ", investTable);
 
     assert.deepStrictEqual(investTable.rows, []);
   });
@@ -1146,7 +1145,7 @@ describe("Tests for projects smart contract", async function () {
       table: "projects",
       json: true,
     });
-    console.log("\n\n Projects table : ", projectsTable.rows);
+    //console.log("\n\n Projects table : ", projectsTable.rows);
 
     const investTable = await rpc.get_table_rows({
       code: projects,
@@ -1154,7 +1153,7 @@ describe("Tests for projects smart contract", async function () {
       table: "investments",
       json: true,
     });
-    console.log("\n\n investments table is: ", investTable);
+    //console.log("\n\n investments table is: ", investTable);
 
     assert.deepStrictEqual(investTable.rows, [
       {
@@ -1253,7 +1252,7 @@ describe("Tests for projects smart contract", async function () {
       table: "investments",
       json: true,
     });
-    console.log("\n\n Investments table : ", projectsTable.rows);
+    //console.log("\n\n Investments table : ", projectsTable.rows);
 
     const transferTable = await rpc.get_table_rows({
       code: projects,
@@ -1261,7 +1260,7 @@ describe("Tests for projects smart contract", async function () {
       table: "transfers",
       json: true,
     });
-    console.log("\n\n transfer table is: ", transferTable);
+    //console.log("\n\n transfer table is: ", transferTable);
 
     assert.deepStrictEqual(transferTable.rows, [
       {
@@ -1364,7 +1363,7 @@ describe("Tests for projects smart contract", async function () {
       table: "investments",
       json: true,
     });
-    console.log("\n\n Investments table : ", projectsTable.rows);
+    //console.log("\n\n Investments table : ", projectsTable.rows);
 
     const transferTable = await rpc.get_table_rows({
       code: projects,
@@ -1372,7 +1371,7 @@ describe("Tests for projects smart contract", async function () {
       table: "transfers",
       json: true,
     });
-    console.log("\n\n transfer table is: ", transferTable);
+    //console.log("\n\n transfer table is: ", transferTable);
 
     assert.deepStrictEqual(transferTable.rows, [
       {
@@ -1473,7 +1472,7 @@ describe("Tests for projects smart contract", async function () {
       table: "investments",
       json: true,
     });
-    console.log("\n\n Investments table : ", projectsTable.rows);
+    //console.log("\n\n Investments table : ", projectsTable.rows);
 
     const transferTable = await rpc.get_table_rows({
       code: projects,
@@ -1481,7 +1480,7 @@ describe("Tests for projects smart contract", async function () {
       table: "transfers",
       json: true,
     });
-    console.log("\n\n transfer table is: ", transferTable);
+    //console.log("\n\n transfer table is: ", transferTable);
 
     assert.deepStrictEqual(transferTable.rows, [
       {
@@ -1578,7 +1577,7 @@ describe("Tests for projects smart contract", async function () {
       table: "investments",
       json: true,
     });
-    console.log("\n\n Investments table : ", projectsTable.rows);
+    //console.log("\n\n Investments table : ", projectsTable.rows);
 
     const transferTable = await rpc.get_table_rows({
       code: projects,
@@ -1586,7 +1585,7 @@ describe("Tests for projects smart contract", async function () {
       table: "transfers",
       json: true,
     });
-    console.log("\n\n transfer table is: ", transferTable);
+    //console.log("\n\n transfer table is: ", transferTable);
 
     assert.deepStrictEqual(transferTable.rows, []);
   });
@@ -1651,7 +1650,7 @@ describe("Tests for projects smart contract", async function () {
       table: "projects",
       json: true,
     });
-    console.log("\n\n Projects table : ", projectsTable.rows);
+    //console.log("\n\n Projects table : ", projectsTable.rows);
 
     const drawdownTable = await rpc.get_table_rows({
       code: transactions,
@@ -1660,7 +1659,7 @@ describe("Tests for projects smart contract", async function () {
       json: true,
     });
 
-    console.log("drawdown table is: ", drawdownTable.rows);
+    //console.log("drawdown table is: ", drawdownTable.rows);
 
     expect(fail).to.be.true;
 
@@ -1704,7 +1703,7 @@ describe("Tests for projects smart contract", async function () {
     ]);
   });
 
-  it.only("The can only be one (builder, issuer, regional center) per project", async () => {
+  it("There can only be one (builder, issuer, regional center) per project", async () => {
     //Arrange
     let failBuilder, failIssuer, failRegional;
     await contracts.projects.adduser(
@@ -1834,7 +1833,7 @@ describe("Tests for projects smart contract", async function () {
       table: "projects",
       json: true,
     });
-    console.log("\n\n Projects table : ", projectsTable.rows);
+    //console.log("\n\n Projects table : ", projectsTable.rows);
 
     expect(failBuilder).to.be.true
     expect(failIssuer).to.be.true

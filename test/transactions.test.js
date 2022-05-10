@@ -157,7 +157,7 @@ describe("Tests for transactions smart contract", async function () {
       json: true,
     });
 
-    console.log('drawdown table is: ', drawdownTable.rows);
+    //console.log('drawdown table is: ', drawdownTable.rows);
 
     expect(drawdownTable.rows).to.deep.equals([
       { 
@@ -776,7 +776,7 @@ describe("Tests for transactions smart contract", async function () {
   it("Create and remove a transaction for the project", async () => {
     // Arrange
     const transaction = await TransactionFactory.createWithDefaults({});
-    console.log(...transaction.getCreateParams());
+    //console.log(...transaction.getCreateParams());
 
     // Act
     await contracts.transactions.transacts(
@@ -796,7 +796,7 @@ describe("Tests for transactions smart contract", async function () {
       json: true,
     });
 
-    console.table(drawdownTable.rows);
+    //console.table(drawdownTable.rows);
 
     const transactionsTable = await rpc.get_table_rows({
       code: transactions,
@@ -805,7 +805,7 @@ describe("Tests for transactions smart contract", async function () {
       json: true,
     });
 
-    console.table(transactionsTable.rows);
+    //console.table(transactionsTable.rows);
 
     const ledgerTable = await rpc.get_table_rows({
       code: accounts,
@@ -814,7 +814,7 @@ describe("Tests for transactions smart contract", async function () {
       json: true,
     });
 
-    console.table(ledgerTable.rows);
+    //console.table(ledgerTable.rows);
 
     const accountsTable = await rpc.get_table_rows({
       code: accounts,
@@ -823,7 +823,7 @@ describe("Tests for transactions smart contract", async function () {
       json: true,
     });
 
-    console.table(accountsTable.rows);
+    //console.table(accountsTable.rows);
 
     const accountTypesTable = await rpc.get_table_rows({
       code: accounts,
@@ -832,7 +832,7 @@ describe("Tests for transactions smart contract", async function () {
       json: true,
     });
 
-    console.table(accountTypesTable.rows);
+    //table(accountTypesTable.rows);
 
     const UserTable = await rpc.get_table_rows({
       code: projects,
@@ -841,7 +841,7 @@ describe("Tests for transactions smart contract", async function () {
       json: true,
     });
 
-    console.table(UserTable.rows);
+    //console.table(UserTable.rows);
   });
 });
 });
