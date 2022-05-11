@@ -1680,7 +1680,7 @@ describe("Tests for projects smart contract", async function () {
   });
 
   
-  it.only("Remove (builder, issuer, regional center) from project", async () => {
+  it.only("Remove (builder, issuer, regional center) from project before approve it", async () => {
     //Arrange
     let fail
     const project = await ProjectFactory.createWithDefaults({
@@ -1729,12 +1729,12 @@ describe("Tests for projects smart contract", async function () {
       regional_center: regional.params.account,
     });
 
-    await contracts.projects.approveprjct(
-      admin.params.account,
-      0,
-      ...project.getApproveActionParams(),
-      { authorization: `${admin.params.account}@active` }
-    );
+    // await contracts.projects.approveprjct(
+    //   admin.params.account,
+    //   0,
+    //   ...project.getApproveActionParams(),
+    //   { authorization: `${admin.params.account}@active` }
+    // );
     
     // Act
     try {
@@ -1816,3 +1816,5 @@ describe("Tests for projects smart contract", async function () {
   });
 
 });
+
+//add/merge unit test can't delete any actor once project was approved
