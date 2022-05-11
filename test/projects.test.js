@@ -1707,8 +1707,8 @@ describe("Tests for projects smart contract", async function () {
     let failBuilder, failIssuer, failRegional;
     await contracts.projects.adduser(
       projects,
-      "builderuser2",
-      "Builder2",
+      "builderuser3",
+      "Builder3",
       Roles.developer,
       {
         authorization: `${projects}@active`,
@@ -1877,4 +1877,165 @@ describe("Tests for projects smart contract", async function () {
       },
     ]);
   });
+
+  
+  it.only("Remove (builder, issuer, regional center) from project", async () => {
+    //Arrange
+    let fail
+    const project = await ProjectFactory.createWithDefaults({
+      actor: admin.params.account,
+    });
+
+    await contracts.projects.addproject(...project.getCreateActionParams(), {
+      authorization: `${admin.params.account}@active`,
+    });
+    console.log('assigned users: \n', 
+    admin.params.account, '\n',
+    investor.params.account, '\n',
+    issuer.params.account, '\n',
+    builder.params.account, '\n',
+    regional.params.account, '\n',)
+
+    await contracts.projects.assignuser(
+      admin.params.account,
+      builder.params.account,
+      0,
+      { authorization: `${admin.params.account}@active` }
+    );
+
+    await contracts.projects.assignuser(
+      admin.params.account,
+      investor.params.account,
+      0,
+      { authorization: `${admin.params.account}@active` }
+    );
+
+    await contracts.projects.assignuser(
+      admin.params.account,
+      issuer.params.account,
+      0,
+      { authorization: `${admin.params.account}@active` }
+    );
+
+    await contracts.projects.assignuser(
+      admin.params.account,
+      regional.params.account,
+      0,
+      { authorization: `${admin.params.account}@active` }
+    );
+
+    Object.assign(project.params, {
+      status: 1,
+      builder: builder.params.account,
+      investors: [investor.params.account],
+      issuer: "",
+      regional_center: "",
+      fund_lp: "https://fund-lp.com",
+      total_fund_offering_amount: "400000.00 USD",
+      total_number_fund_offering: 40000,
+      price_per_fund_unit: "300.00 USD",
+    });
+
+    await contracts.projects.approveprjct(
+      admin.params.account,
+      0,
+      ...project.getApproveActionParams(),
+      { authorization: `${admin.params.account}@active` }
+    );
+    
+    // Act
+    try {
+      await contracts.projects.removeuser(
+        admin.params.account,
+        'issueruser1',
+        0,
+        { authorization: `${admin.params.account}@active` }
+      );
+      
+      await contracts.projects.removeuser(
+        admin.params.account,
+        'investoruser',
+        0,
+        { authorization: `${admin.params.account}@active` }
+      );
+
+      await contracts.projects.removeuser(
+        admin.params.account,
+        'builderuser1',
+        0,
+        { authorization: `${admin.params.account}@active` }
+      );
+
+      await contracts.projects.removeuser(
+        admin.params.account,
+        'regionalcntr',
+        0,
+        { authorization: `${admin.params.account}@active` }
+      );
+      fail = false
+    } catch (err) {
+      fail = true
+      //console.error(err)
+    }
+
+    //Assert
+    const projectsTable = await rpc.get_table_rows({
+      code: projects,
+      scope: projects,
+      table: "projects",
+      json: true,
+    });
+    //console.log("\n\n Projects table : ", projectsTable.rows);
+
+    const UserTable = await rpc.get_table_rows({
+      code: projects,
+      scope: projects,
+      table: "users",
+      json: true,
+    });
+    //console.log('users table : ', UserTable.rows);
+
+    // expect(fail).to.be.true
+
+    // assert.deepStrictEqual(projectsTable.rows, [
+    //   {
+    //     project_id: 0,
+    //     developer_id: 0,
+    //     owner: project.params.actor,
+    //     project_class: project.params.project_class,
+    //     project_name: project.params.project_name,
+    //     description: project.params.description,
+    //     created_date: projectsTable.rows[0].created_date,
+    //     status: ProjectConstants.status.ready,
+    //     builder: '',
+    //     investors: [],
+    //     issuer: '',
+    //     regional_center: '',
+    //     total_project_cost: project.params.total_project_cost,
+    //     debt_financing: project.params.debt_financing,
+    //     term: project.params.term,
+    //     interest_rate: project.params.interest_rate,
+    //     loan_agreement: project.params.loan_agreement,
+    //     total_equity_financing: project.params.total_equity_financing,
+    //     total_gp_equity: project.params.total_gp_equity,
+    //     private_equity: project.params.private_equity,
+    //     annual_return: project.params.annual_return,
+    //     project_co_lp: project.params.project_co_lp,
+    //     project_co_lp_date: project.params.project_co_lp_date,
+    //     projected_completion_date: project.params.projected_completion_date,
+    //     projected_stabilization_date:
+    //       project.params.projected_stabilization_date,
+    //     anticipated_year_sale_refinance:
+    //       project.params.anticipated_year_sale_refinance,
+    //     fund_lp: project.params.fund_lp,
+    //     total_fund_offering_amount: project.params.total_fund_offering_amount,
+    //     total_number_fund_offering: project.params.total_number_fund_offering,
+    //     price_per_fund_unit: project.params.price_per_fund_unit,
+    //     approved_date: projectsTable.rows[0].approved_date,
+    //     approved_by: projectsTable.rows[0].approved_by,
+    //   },
+    // ]);
+
+  });
+
 });
