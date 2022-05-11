@@ -1680,7 +1680,7 @@ describe("Tests for projects smart contract", async function () {
   });
 
   
-  it.only("Remove (builder, issuer, regional center) from project before approve it", async () => {
+  it("Remove (builder, issuer, regional center) from project before approve it", async () => {
     //Arrange
     let fail
     const project = await ProjectFactory.createWithDefaults({
@@ -1814,6 +1814,7 @@ describe("Tests for projects smart contract", async function () {
     // ])
 
   });
+  
 
 });
 

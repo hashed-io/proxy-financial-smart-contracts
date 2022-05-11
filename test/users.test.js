@@ -187,7 +187,7 @@ describe('Tests for the users on projects smart contract', async function () {
     { testName: 'Create issuer user', parent_id: 2, account_name: 'New soft cost account' }
   ]
   it('Create an user', async function () {
-
+/*
     // Arrange
     const developerEntity = await EntityFactory.createWithDefaults({ role: EntityConstants.developer });
 
@@ -249,5 +249,5 @@ describe('Tests for the users on projects smart contract', async function () {
     }]);
 
   });
-
+*/
 });
