@@ -95,11 +95,7 @@ public:
                      const eosio::name &role);
 
     ACTION approveprjct(name actor,
-                        uint64_t project_id,
-                        string fund_lp,
-                        asset total_fund_offering_amount,
-                        uint64_t total_number_fund_offering,
-                        asset price_per_fund_unit);
+                        uint64_t project_id);
 
     ACTION invest(name actor,
                   uint64_t project_id,

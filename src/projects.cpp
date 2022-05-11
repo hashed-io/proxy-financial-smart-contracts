@@ -274,17 +274,9 @@ ACTION projects::editproject(const eosio::name &actor,
 }
 
 ACTION projects::approveprjct(name actor,
-															uint64_t project_id,
-															string fund_lp,
-															asset total_fund_offering_amount,
-															uint64_t total_number_fund_offering,
-															asset price_per_fund_unit)
+															uint64_t project_id)
 {
 	require_auth(actor);
-
-	check_asset(total_fund_offering_amount, common::contracts::projects);
-	check_asset(price_per_fund_unit, common::contracts::projects);
-
 	check_user_role(actor, common::projects::entity::fund);
 
 	auto project_itr = project_t.find(project_id);
