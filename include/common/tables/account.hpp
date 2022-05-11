@@ -16,7 +16,7 @@ using namespace eosio;
     uint64_t ledger_id;                                           \
     std::string description;                                      \
     uint64_t naics_code;                                          \
-    uint64_t jobs_multiplier;                                    \
+    uint64_t jobs_multiplier;                                     \
     uint64_t account_category;                                    \
                                                                   \
     uint64_t primary_key() const { return account_id; }           \

@@ -5,38 +5,20 @@ using namespace eosio;
   {                                                        \
     uint64_t project_id;                                   \
     uint64_t developer_id;                                 \
+                                                           \
     eosio::name owner; /* who is a project owner? */       \
-    std::string project_class;                             \
-    std::string project_name;                              \
-    std::string description;                               \
-    uint64_t created_date;                                 \
-    uint64_t status;                                       \
     eosio::name builder;                                   \
     vector<eosio::name> investors;                         \
     eosio::name issuer;                                    \
     eosio::name regional_center;                           \
                                                            \
-    eosio::asset total_project_cost;                       \
-    eosio::asset debt_financing;                           \
-    uint8_t term;                                          \
-    uint16_t interest_rate;     /* decimal 2 */            \
-    std::string loan_agreement; /* url */                  \
+    std::string project_name;                              \
+    std::string description;                               \
+    std::string image; /* CID*/                            \
                                                            \
-    eosio::asset total_equity_financing;                   \
-    eosio::asset total_gp_equity;                          \
-    eosio::asset private_equity;                           \
-    uint16_t annual_return;    /* decimal 2 */             \
-    std::string project_co_lp; /* url */                   \
-    uint64_t project_co_lp_date;                           \
-                                                           \
-    uint64_t projected_completion_date;                    \
-    uint64_t projected_stabilization_date;                 \
-    uint64_t anticipated_year_sale_refinance;              \
-                                                           \
-    std::string fund_lp; /* url */                         \
-    eosio::asset total_fund_offering_amount;               \
-    uint64_t total_number_fund_offering;                   \
-    eosio::asset price_per_fund_unit;                      \
+    uint64_t created_date;                                 \
+    uint64_t close_date;                                   \
+    uint64_t status;                                       \
     uint64_t approved_date;                                \
     eosio::name approved_by;                               \
                                                            \

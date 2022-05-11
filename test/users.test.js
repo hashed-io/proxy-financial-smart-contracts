@@ -179,6 +179,13 @@ describe('Tests for the users on projects smart contract', async function () {
 
   });
 
+  const createUsers = [
+    { testName: 'Create admin user', parent_id: 1, account_name: 'New hard cost account' },
+    { testName: 'Create developer user', parent_id: 1, account_name: 'New hard cost account' },
+    { testName: 'Create investor user', parent_id: 1, account_name: 'New hard cost account' },
+    { testName: 'Create regional center user', parent_id: 1, account_name: 'New hard cost account' },
+    { testName: 'Create issuer user', parent_id: 2, account_name: 'New soft cost account' }
+  ]
   it('Create an user', async function () {
 
     // Arrange

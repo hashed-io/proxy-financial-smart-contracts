@@ -284,7 +284,7 @@ class AccountFactory {
     }
 
     if (!jobs_multiplier) {
-      jobs_multiplier = 10;
+      jobs_multiplier = 68321;
     }
 
     return AccountFactory.createEntry({

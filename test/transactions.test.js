@@ -98,7 +98,7 @@ describe("Tests for transactions smart contract", async function () {
     await contracts.projects.addproject(...project.getCreateActionParams(), {
       authorization: `${admin.params.account}@active`,
     });
-
+    
     await contracts.projects.assignuser(
       admin.params.account,
       builder.params.account,
@@ -216,7 +216,7 @@ describe("Tests for transactions smart contract", async function () {
       // console.log(transaction.getCreateParams());
 
       // Act
-      await contracts.transactions.transacts(builder.params.account, project.params.id, drawdown_id, transaction.getCreateParams(), { authorization: `${builder.params.account}@active` });
+      await contracts.transactions.transacts(admin.params.account, project.params.id, drawdown_id, transaction.getCreateParams(), { authorization: `${admin.params.account}@active` });
 
       // Assert    
       const drawdownTable = await rpc.get_table_rows({

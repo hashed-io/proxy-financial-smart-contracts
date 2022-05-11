@@ -282,7 +282,6 @@ ACTION accounts::editaccount(const eosio::name &actor,
 
     require_auth(actor);
 
-
     check(account_name.length() > 0, common::contracts::accounts.to_string() + ": the account name can not be an empty string.");
     check(ACCOUNT_CATEGORIES.is_valid_constant(account_category), common::contracts::accounts.to_string() + ": the account category is invalid.");
 

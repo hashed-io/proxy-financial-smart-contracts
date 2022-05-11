@@ -1,0 +1,1 @@
+cleos -u https://testnet.telos.caleos.io push action proxyv3prjct addproject '["proxyadmin11", "NNN", "Teoakyy Oklhaio", "This is a default project", "435000.00 USD", "2000.00 USD", "2", "25", "https://loan-agreement.com", "3000.00 USD", "2100.00 USD", "5000.00 USD", "600", "https://project-co-lp.com", "1583864481", "1682400175", "1714022575", "2023" ]' -p proxyadmin11@active
