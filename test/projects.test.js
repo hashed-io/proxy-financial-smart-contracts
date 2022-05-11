@@ -104,7 +104,7 @@ describe("Tests for projects smart contract", async function () {
     await EnvironmentUtil.killNode();
   });
 
-  it("Creates a project", async function () {
+  it.only("Creates a project", async function () {
     //Arrange
     const user = await UserFactory.createWithDefaults({ role: Roles.fund });
     await contracts.projects.adduser(projects, ...user.getCreateParams(), {

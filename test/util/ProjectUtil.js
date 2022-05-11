@@ -182,43 +182,21 @@ class ProjectUtil {
 class Project {
   constructor(
     actor,
-    project_class,
     project_name,
+    ipfs,
     description,
-    total_project_cost,
-    debt_financing,
-    term,
-    interest_rate,
-    loan_agreement,
-    total_equity_financing,
-    total_gp_equity,
-    private_equity,
-    annual_return,
-    project_co_lp,
-    project_co_lp_date,
-    projected_completion_date,
-    projected_stabilization_date,
-    anticipated_year_sale_refinance
+    image,
+    projected_starting_date,
+    projected_completion_date
   ) {
     this.params = {
       actor,
-      project_class,
       project_name,
+      ipfs,
       description,
-      total_project_cost,
-      debt_financing,
-      term,
-      interest_rate,
-      loan_agreement,
-      total_equity_financing,
-      total_gp_equity,
-      private_equity,
-      annual_return,
-      project_co_lp,
-      project_co_lp_date,
-      projected_completion_date,
-      projected_stabilization_date,
-      anticipated_year_sale_refinance
+      image,
+      projected_starting_date,
+      projected_completion_date
     }
   }
 
@@ -226,51 +204,29 @@ class Project {
 
     return [
       this.params.actor,
-      this.params.project_class,
       this.params.project_name,
+      this.params.ipfs,
       this.params.description,
-      this.params.total_project_cost, // asset
-      this.params.debt_financing, // asset
-      this.params.term,
-      this.params.interest_rate,
-      this.params.loan_agreement,
-      this.params.total_equity_financing, // asset
-      this.params.total_gp_equity, // asset
-      this.params.private_equity, // asset
-      this.params.annual_return,
-      this.params.project_co_lp,
-      this.params.project_co_lp_date,
-      this.params.projected_completion_date,
-      this.params.projected_stabilization_date,
-      this.params.anticipated_year_sale_refinance
+      this.params.image,
+      this.params.projected_starting_date,
+      this.params.projected_completion_date
     ]
   }
 
   getEditActionParams() {
 
     return [
-      this.params.project_class,
+      this.params.actor,
       this.params.project_name,
+      this.params.ipfs,
       this.params.description,
-      this.params.total_project_cost,
-      this.params.debt_financing,
-      this.params.term,
-      this.params.interest_rate,
-      this.params.loan_agreement,
-      this.params.total_equity_financing,
-      this.params.total_gp_equity,
-      this.params.private_equity,
-      this.params.annual_return,
-      this.params.project_co_lp,
-      this.params.project_co_lp_date,
-      this.params.projected_completion_date,
-      this.params.projected_stabilization_date,
-      this.params.anticipated_year_sale_refinance
+      this.params.image,
+      this.params.projected_starting_date,
+      this.params.projected_completion_date
     ]
   }
 
   getDeleteActionParams() {
-
     return [
       this.params.actor,
     ]
