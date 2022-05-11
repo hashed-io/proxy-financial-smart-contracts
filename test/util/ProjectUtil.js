@@ -136,7 +136,6 @@ class ProjectUtil {
   static async editproject({
     actor,
     project_id,
-    ipfs,
     project_name,
     image,
     description,
@@ -145,7 +144,6 @@ class ProjectUtil {
     await contract.editproject(
       actor,
       project_id,
-      ipfs,
       project_name,
       image,
       description,
@@ -159,7 +157,6 @@ class ProjectUtil {
 class Project {
   constructor(
     actor,
-    ipfs,
     project_name,
     description,
     image,
@@ -168,7 +165,6 @@ class Project {
   ) {
     this.params = {
       actor,
-      ipfs,
       project_name,
       description,
       image,
@@ -181,7 +177,6 @@ class Project {
 
     return [
       this.params.actor,
-      this.params.ipfs,
       this.params.project_name,
       this.params.description,
       this.params.image,
@@ -193,11 +188,9 @@ class Project {
   getEditActionParams() {
 
     return [
-      this.params.actor,
-      this.params.ipfs,
       this.params.project_name,
-      this.params.description,
       this.params.image,
+      this.params.description,
       this.params.projected_starting_date,
       this.params.projected_completion_date
     ]
@@ -226,7 +219,6 @@ class Project {
 class ProjectFactory {
   static createEntry({
     actor,
-    ipfs,
     project_name,
     description,
     image,
@@ -235,7 +227,6 @@ class ProjectFactory {
   }) {
     return new Project(
       actor,
-      ipfs,
       project_name,
       description,
       image,
@@ -246,7 +237,6 @@ class ProjectFactory {
 
   static async createWithDefaults({
     actor,
-    ipfs,
     project_name,
     description,
     image,
@@ -256,9 +246,6 @@ class ProjectFactory {
 
     if (!actor) {
       actor = await createRandomAccount()
-    }
-    if (!ipfs) {
-      ipfs = "QmRA3NWM82ZGynMbYzAgYTSXCVM14Wx1RZ8fKP42G6gjgj:pdf:bitcoin";
     }
 
     if (!project_name) {
@@ -270,7 +257,7 @@ class ProjectFactory {
     }
 
     if (!image) {
-      image = "GynMbYzAgYTSXCVM14Wx1RZ8fKP42.png";
+      image = "GynMbYzAgYTSXCVM14Wx1RZ8fKP42:png";
     }
 
     if (!projected_starting_date) {
@@ -283,7 +270,6 @@ class ProjectFactory {
 
     return ProjectFactory.createEntry({
       actor,
-      ipfs,
       project_name,
       description,
       image,
