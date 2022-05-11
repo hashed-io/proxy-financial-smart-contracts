@@ -111,7 +111,7 @@ function createRandomName() {
     name += characters.charAt(Math.floor(Math.random() * charactersLength)) 
     surname += characters.charAt(Math.floor(Math.random() * charactersLength)) 
   }
-  result = capitalize(name) + ' ' + capitalize(surname)
+  result = 'The ' + capitalize(name) + ' ' + capitalize(surname)
   return result
 }
 

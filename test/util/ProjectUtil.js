@@ -36,8 +36,8 @@ const ProjectConstants = {
 class ProjectUtil {
   static tokenSymbol = '2,USD'
 
-  static async approveprjct({ actor, project_id, fund_lp, total_fund_offering_amount, total_number_fund_offering, price_per_fund_unit, contract, account }) {
-    await contract.approveprjct(actor, project_id, fund_lp, total_fund_offering_amount, total_number_fund_offering, price_per_fund_unit, { authorization: `${account}@active` })
+  static async approveprjct({ actor, project_id, contract, account }) {
+    await contract.approveprjct(actor, project_id, { authorization: `${account}@active` })
   }
 
   static async deleteprojct({ actor, project_id, contract, account }) {
@@ -132,48 +132,25 @@ class ProjectUtil {
       proof_of_transfer, { authorization: `${account}@active` })
   }
 
+
   static async editproject({
     actor,
     project_id,
-    project_class,
+    ipfs,
     project_name,
+    image,
     description,
-    total_project_cost,
-    debt_financing,
-    term,
-    interest_rate,
-    loan_agreement,
-    total_equity_financing,
-    total_gp_equity,
-    private_equity,
-    annual_return,
-    project_co_lp,
-    project_co_lp_date,
-    projected_completion_date,
-    projected_stabilization_date,
-    anticipated_year_sale_refinance,
-    contract,
-    account }) {
+    projected_starting_date,
+    projected_completion_date }) {
     await contract.editproject(
       actor,
       project_id,
-      project_class,
+      ipfs,
       project_name,
+      image,
       description,
-      total_project_cost,
-      debt_financing,
-      term,
-      interest_rate,
-      loan_agreement,
-      total_equity_financing,
-      total_gp_equity,
-      private_equity,
-      annual_return,
-      project_co_lp,
-      project_co_lp_date,
+      projected_starting_date,
       projected_completion_date,
-      projected_stabilization_date,
-      anticipated_year_sale_refinance,
       { authorization: `${account}@active` })
   }
 
@@ -182,8 +159,8 @@ class ProjectUtil {
 class Project {
   constructor(
     actor,
-    project_name,
     ipfs,
+    project_name,
     description,
     image,
     projected_starting_date,
@@ -191,8 +168,8 @@ class Project {
   ) {
     this.params = {
       actor,
-      project_name,
       ipfs,
+      project_name,
       description,
       image,
       projected_starting_date,
@@ -204,8 +181,8 @@ class Project {
 
     return [
       this.params.actor,
-      this.params.project_name,
       this.params.ipfs,
+      this.params.project_name,
       this.params.description,
       this.params.image,
       this.params.projected_starting_date,
@@ -217,8 +194,8 @@ class Project {
 
     return [
       this.params.actor,
-      this.params.project_name,
       this.params.ipfs,
+      this.params.project_name,
       this.params.description,
       this.params.image,
       this.params.projected_starting_date,
@@ -241,11 +218,6 @@ class Project {
    */
   getApproveActionParams() {
     return [
-      this.params.fund_lp,
-      this.params.total_fund_offering_amount,
-      this.params.total_number_fund_offering,
-      this.params.price_per_fund_unit
-
     ]
   }
 
@@ -254,73 +226,39 @@ class Project {
 class ProjectFactory {
   static createEntry({
     actor,
-    project_class,
+    ipfs,
     project_name,
     description,
-    total_project_cost,
-    debt_financing,
-    term,
-    interest_rate,
-    loan_agreement,
-    total_equity_financing,
-    total_gp_equity,
-    private_equity,
-    annual_return,
-    project_co_lp,
-    project_co_lp_date,
-    projected_completion_date,
-    projected_stabilization_date,
-    anticipated_year_sale_refinance
+    image,
+    projected_starting_date,
+    projected_completion_date
   }) {
     return new Project(
       actor,
-      project_class,
+      ipfs,
       project_name,
       description,
-      total_project_cost,
-      debt_financing,
-      term,
-      interest_rate,
-      loan_agreement,
-      total_equity_financing,
-      total_gp_equity,
-      private_equity,
-      annual_return,
-      project_co_lp,
-      project_co_lp_date,
-      projected_completion_date,
-      projected_stabilization_date,
-      anticipated_year_sale_refinance
+      image,
+      projected_starting_date,
+      projected_completion_date
     )
   }
 
   static async createWithDefaults({
     actor,
-    project_class,
+    ipfs,
     project_name,
     description,
-    total_project_cost,
-    debt_financing,
-    term,
-    interest_rate,
-    loan_agreement,
-    total_equity_financing,
-    total_gp_equity,
-    private_equity,
-    annual_return,
-    project_co_lp,
-    project_co_lp_date,
-    projected_completion_date,
-    projected_stabilization_date,
-    anticipated_year_sale_refinance
+    image,
+    projected_starting_date,
+    projected_completion_date
   }) {
 
     if (!actor) {
       actor = await createRandomAccount()
     }
-
-    if (!project_class) {
-      project_class = "NNN";
+    if (!ipfs) {
+      ipfs = "QmRA3NWM82ZGynMbYzAgYTSXCVM14Wx1RZ8fKP42G6gjgj:pdf:bitcoin";
     }
 
     if (!project_name) {
@@ -328,89 +266,29 @@ class ProjectFactory {
     }
 
     if (!description) {
-      description = "This is a default project";
+      description = " This project is for municipal corporation head"
     }
 
-    if (!total_project_cost) {
-      total_project_cost = "435000.00 USD";
+    if (!image) {
+      image = "GynMbYzAgYTSXCVM14Wx1RZ8fKP42.png";
     }
 
-    if (!debt_financing) {
-      debt_financing = "2000.00 USD";
-    }
-
-    if (!term) {
-      term = 2;
-    }
-
-    if (!interest_rate) {
-      interest_rate = 25;
-    }
-
-    if (!loan_agreement) {
-      loan_agreement = "https://loan-agreement.com";
-    }
-
-    if (!total_equity_financing) {
-      total_equity_financing = "3000.00 USD";
-    }
-
-    if (!total_gp_equity) {
-      total_gp_equity = "2100.00 USD";
-    }
-
-    if (!private_equity) {
-      private_equity = "5000.00 USD";
-    }
-
-    if (!annual_return) {
-      annual_return = 600;
-    }
-
-    if (!project_co_lp) {
-      project_co_lp = "https://project-co-lp.com";
-    }
-
-    if (!project_co_lp_date) {
-      project_co_lp_date = 1583864481;
+    if (!projected_starting_date) {
+      projected_starting_date = Date.now();
     }
 
     if (!projected_completion_date) {
-      //ajustar estas fechas con entradas a futuro el lugar de hardcodear
-      const completitionDate = Date.now();
-      projected_completion_date = 1682400175;
+      projected_completion_date = 1714022575;
     }
-
-    if (!projected_stabilization_date) {
-      //ajustar estas fechas con entradas a futuro el lugar de hardcodear
-      projected_stabilization_date = 1714022575;
-    }
-
-    if (!anticipated_year_sale_refinance) {
-      anticipated_year_sale_refinance = 2023;
-    }
-
-
 
     return ProjectFactory.createEntry({
       actor,
-      project_class,
+      ipfs,
       project_name,
       description,
-      total_project_cost,
-      debt_financing,
-      term,
-      interest_rate,
-      loan_agreement,
-      total_equity_financing,
-      total_gp_equity,
-      private_equity,
-      annual_return,
-      project_co_lp,
-      project_co_lp_date,
-      projected_completion_date,
-      projected_stabilization_date,
-      anticipated_year_sale_refinance
+      image,
+      projected_starting_date,
+      projected_completion_date
     })
   }
 }
