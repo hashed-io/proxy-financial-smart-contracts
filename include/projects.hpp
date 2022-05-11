@@ -69,43 +69,21 @@ public:
     ACTION init();
 
     ACTION addproject(const eosio::name &actor,
-                      const std::string &project_class,
+                      const std::string &ipfs,
                       const std::string &project_name,
                       const std::string &description,
-                      const eosio::asset &total_project_cost,
-                      const eosio::asset &debt_financing,
-                      const uint8_t &term,
-                      const uint16_t &interest_rate,
-                      const std::string &loan_agreement, // url
-                      const eosio::asset &total_equity_financing,
-                      const eosio::asset &total_gp_equity,
-                      const eosio::asset &private_equity,
-                      const uint16_t &annual_return,
-                      const std::string &project_co_lp, // url
-                      const uint64_t &project_co_lp_date,
-                      const uint64_t &projected_completion_date,
-                      const uint64_t &projected_stabilization_date,
-                      const uint64_t &anticipated_year_sale_refinance);
+                      const std::string &image,
+                      const uint64_t &projected_starting_date,
+                      const uint64_t &projected_completion_date);
 
     ACTION editproject(const eosio::name &actor,
                        const uint64_t &project_id,
-                       const std::string &project_class,
+                       const std::string &ipfs,
                        const std::string &project_name,
                        const std::string &description,
-                       const eosio::asset &total_project_cost,
-                       const eosio::asset &debt_financing,
-                       const uint8_t &term,
-                       const uint16_t &interest_rate,
-                       const std::string &loan_agreement, // url
-                       const eosio::asset &total_equity_financing,
-                       const eosio::asset &total_gp_equity,
-                       const eosio::asset &private_equity,
-                       const uint16_t &annual_return,
-                       const std::string &project_co_lp, // url
-                       const uint64_t &project_co_lp_date,
-                       const uint64_t &projected_completion_date,
-                       const uint64_t &projected_stabilization_date,
-                       const uint64_t &anticipated_year_sale_refinance);
+                       const std::string &image,
+                       const uint64_t &projected_starting_date,
+                       const uint64_t &projected_completion_date);
 
     ACTION deleteprojct(name actor, uint64_t project_id);
 

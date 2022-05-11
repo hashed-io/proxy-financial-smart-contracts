@@ -16,7 +16,11 @@ using namespace eosio;
     std::string description;                               \
     std::string image; /* CID*/                            \
                                                            \
+    uint64_t projected_starting_date;                      \
+    uint64_t projected_completion_date;                    \
+                                                           \
     uint64_t created_date;                                 \
+    uint64_t updated_date;                                 \
     uint64_t close_date;                                   \
     uint64_t status;                                       \
     uint64_t approved_date;                                \

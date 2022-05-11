@@ -97,7 +97,6 @@ ACTION projects::init()
 	adduser(_self, "issueruser1"_n, "Issuer", common::projects::entity::issuer);
 	adduser(_self, "regionalcntr"_n, "RegionalCenter", common::projects::entity::regional_center);
 
-
 	// hardcoding some entity_t and user_t for mainnet
 	adduser(_self, "proxy.gm"_n, "Admin", common::projects::entity::fund);
 	adduser(_self, "tlalocman.sh"_n, "Admin", common::projects::entity::fund);
@@ -156,9 +155,9 @@ ACTION projects::addproject(const eosio::name &actor,
 														const std::string &ipfs,
 														const std::string &project_name,
 														const std::string &description,
+														const std::string &image,
 														const uint64_t &projected_starting_date,
-														const uint64_t &projected_completion_date
-														)
+														const uint64_t &projected_completion_date)
 {
 
 	require_auth(has_auth(actor) ? actor : get_self());
@@ -186,32 +185,17 @@ ACTION projects::addproject(const eosio::name &actor,
 
 	uint64_t new_project_id = project_t.available_primary_key();
 
-	project_t.emplace(_self, [&](auto &new_project)
+	project_t.emplace(_self, [&](auto &item)
 										{
-		new_project.project_id = new_project_id;
-		new_project.owner = actor;
-		new_project.project_class = project_class;
-		new_project.project_name = project_name;
-		new_project.description = description;
-		new_project.created_date = eosio::current_time_point().sec_since_epoch();
-		new_project.status = PROJECT_STATUS.AWAITING_FUND_APPROVAL;
-
-		new_project.total_project_cost = total_project_cost;
-		new_project.debt_financing = debt_financing;
-		new_project.term = term;
-		new_project.interest_rate = interest_rate;
-		new_project.loan_agreement = loan_agreement;
-		
-		new_project.total_equity_financing = total_equity_financing;
-		new_project.total_gp_equity = total_gp_equity;
-		new_project.private_equity = private_equity;
-		new_project.annual_return = annual_return;
-		new_project.project_co_lp = project_co_lp;
-		new_project.project_co_lp_date = project_co_lp_date;
-
-		new_project.projected_completion_date = projected_completion_date;
-		new_project.projected_stabilization_date = projected_stabilization_date;
-		new_project.anticipated_year_sale_refinance = anticipated_year_sale_refinance; });
+		 item.owner = actor;
+		 item.project_name = project_name;
+		 item.description = description;
+		 item.image = image;
+		 item.created_date = eosio::current_time_point().sec_since_epoch();
+		 item.updated_date = eosio::current_time_point().sec_since_epoch();
+		 item.projected_starting_date = projected_starting_date;
+		 item.projected_completion_date = projected_completion_date;
+		 item.status = common::projects::status::awaiting_fund_approval; });
 }
 
 ACTION projects::deleteprojct(name actor, uint64_t project_id)
@@ -251,23 +235,12 @@ ACTION projects::deleteprojct(name actor, uint64_t project_id)
 
 ACTION projects::editproject(const eosio::name &actor,
 														 const uint64_t &project_id,
-														 const std::string &project_class,
+														 const std::string &ipfs,
 														 const std::string &project_name,
+														 const std::string &image,
 														 const std::string &description,
-														 const eosio::asset &total_project_cost,
-														 const eosio::asset &debt_financing,
-														 const uint8_t &term,
-														 const uint16_t &interest_rate,
-														 const std::string &loan_agreement, // url
-														 const eosio::asset &total_equity_financing,
-														 const eosio::asset &total_gp_equity,
-														 const eosio::asset &private_equity,
-														 const uint16_t &annual_return,
-														 const std::string &project_co_lp, // url
-														 const uint64_t &project_co_lp_date,
-														 const uint64_t &projected_completion_date,
-														 const uint64_t &projected_stabilization_date,
-														 const uint64_t &anticipated_year_sale_refinance)
+														 const uint64_t &projected_starting_date,
+														 const uint64_t &projected_completion_date)
 {
 
 	require_auth(actor);
@@ -279,14 +252,8 @@ ACTION projects::editproject(const eosio::name &actor,
 	check(project_itr->status == PROJECT_STATUS.AWAITING_FUND_APPROVAL,
 				common::contracts::projects.to_string() + ": the project can not be modified as it has been already approved by one fund.");
 
-	check_asset(total_project_cost, common::contracts::projects);
-	check_asset(debt_financing, common::contracts::projects);
-	check_asset(total_equity_financing, common::contracts::projects);
-	check_asset(total_gp_equity, common::contracts::projects);
-	check_asset(private_equity, common::contracts::projects);
-
 	check(projected_completion_date >= eosio::current_time_point().sec_since_epoch(), common::contracts::projects.to_string() + ": the date can not be earlier than now.");
-	check(projected_stabilization_date >= eosio::current_time_point().sec_since_epoch(), common::contracts::projects.to_string() + ": the date can not be earlier than now.");
+	check(projected_completion_date >= eosio::current_time_point().sec_since_epoch(), common::contracts::projects.to_string() + ": the date can not be earlier than now.");
 
 	auto projects_itr = project_t.begin();
 	while (projects_itr != project_t.end())
@@ -298,28 +265,14 @@ ACTION projects::editproject(const eosio::name &actor,
 		projects_itr++;
 	}
 
-	project_t.modify(project_itr, _self, [&](auto &modified_project)
+	project_t.modify(project_itr, _self, [&](auto &item)
 									 {
-													modified_project.project_class = project_class;
-													modified_project.project_name = project_name;
-													modified_project.description = description;
-
-													modified_project.total_project_cost = total_project_cost;
-													modified_project.debt_financing = debt_financing;
-													modified_project.term = term;
-													modified_project.interest_rate = interest_rate;
-													modified_project.loan_agreement = loan_agreement;
-
-													modified_project.total_equity_financing = total_equity_financing;
-													modified_project.total_gp_equity = total_gp_equity;
-													modified_project.private_equity = private_equity;
-													modified_project.annual_return = annual_return;
-													modified_project.project_co_lp = project_co_lp;
-													modified_project.project_co_lp_date = project_co_lp_date;
-
-													modified_project.projected_completion_date = projected_completion_date;
-													modified_project.projected_stabilization_date = projected_stabilization_date;
-													modified_project.anticipated_year_sale_refinance = anticipated_year_sale_refinance; });
+		 item.project_name = project_name;
+		 item.description = description;
+		 item.image = image;
+		 item.updated_date = eosio::current_time_point().sec_since_epoch();
+		 item.projected_starting_date = projected_starting_date;
+		 item.projected_completion_date = projected_completion_date; });
 }
 
 ACTION projects::approveprjct(name actor,
@@ -390,10 +343,6 @@ ACTION projects::approveprjct(name actor,
 
 	project_t.modify(project_itr, _self, [&](auto &modified_project)
 									 {
-		modified_project.fund_lp = fund_lp;
-		modified_project.total_fund_offering_amount = total_fund_offering_amount;
-		modified_project.total_number_fund_offering = total_number_fund_offering;
-		modified_project.price_per_fund_unit = price_per_fund_unit;
 		modified_project.approved_by = actor;
 		modified_project.approved_date = eosio::current_time_point().sec_since_epoch();
 		modified_project.status = PROJECT_STATUS.READY_FOR_INVESTMENT; });
