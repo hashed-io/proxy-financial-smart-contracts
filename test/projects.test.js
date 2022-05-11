@@ -114,9 +114,10 @@ describe("Tests for projects smart contract", async function () {
     const project = await ProjectFactory.createWithDefaults({
       actor: user.params.account,
     });
-    console.log(project);
+    //console.log(project);
 
     Object.assign(project.params, {
+      status: 1,
       builder: "",
       investors: [],
       issuer: "",
@@ -127,12 +128,14 @@ describe("Tests for projects smart contract", async function () {
       price_per_fund_unit: "0 ",
     });
 
+    //console.log(project);
+
     // //Act
     await contracts.projects.addproject(...project.getCreateActionParams(), {
       authorization: `${user.params.account}@active`,
     });
 
-    // // //Assert
+    // //Assert
     const projectsTable = await rpc.get_table_rows({
       code: projects,
       scope: projects,
@@ -140,31 +143,47 @@ describe("Tests for projects smart contract", async function () {
       json: true,
     });
 
-    console.log("\n\n Projects  table : ", projectsTable.rows);
+    // console.log("\n\n Projects  table : ", projectsTable.rows);
+    // console.log("params project is :", project.params);
 
     assert.deepStrictEqual(projectsTable.rows, [
       {
         project_id: projectsTable.rows[0].project_id,
         developer_id: 0,
         owner: project.params.actor,
+        project_class: project.params.project_class,
+        project_name: project.params.project_name,
+        description: project.params.description,
+        created_date: projectsTable.rows[0].created_date,
+        status: project.params.status,
         builder: project.params.builder,
         investors: project.params.investors,
         issuer: project.params.issuer,
         regional_center: project.params.regional_center,
-        project_name: project.params.project_name,
-        description: project.params.description,
-        image: project.params.image,
-        projected_starting_date: projectsTable.rows[0].projected_starting_date,
-        projected_completion_date: projectsTable.rows[0].projected_completion_date,
-        created_date: projectsTable.rows[0].created_date,
-        updated_date: projectsTable.rows[0].updated_date,
-        close_date: projectsTable.rows[0].close_date,
-        status: ProjectConstants.status.awaiting,
-        approved_date: projectsTable.rows[0].approved_date,
-        approved_by: projectsTable.rows[0].approved_by,
+        total_project_cost: project.params.total_project_cost,
+        debt_financing: project.params.debt_financing,
+        term: project.params.term,
+        interest_rate: project.params.interest_rate,
+        loan_agreement: project.params.loan_agreement,
+        total_equity_financing: project.params.total_equity_financing,
+        total_gp_equity: project.params.total_gp_equity,
+        private_equity: project.params.private_equity,
+        annual_return: project.params.annual_return,
+        project_co_lp: project.params.project_co_lp,
+        project_co_lp_date: project.params.project_co_lp_date,
+        projected_completion_date: project.params.projected_completion_date,
+        projected_stabilization_date:
+          project.params.projected_stabilization_date,
+        anticipated_year_sale_refinance:
+          project.params.anticipated_year_sale_refinance,
+        fund_lp: project.params.fund_lp,
+        total_fund_offering_amount: project.params.total_fund_offering_amount,
+        total_number_fund_offering: project.params.total_number_fund_offering,
+        price_per_fund_unit: project.params.price_per_fund_unit,
+        approved_date: 0,
+        approved_by: "",
       },
-    ])
-
+    ]);
   });
 
   it("Assign builder to a project", async () => {
@@ -186,10 +205,14 @@ describe("Tests for projects smart contract", async function () {
 
     Object.assign(project.params, {
       status: 1,
-      builder: builder.params.account,
+      builder: "",
       investors: [],
       issuer: "",
       regional_center: "",
+      fund_lp: "",
+      total_fund_offering_amount: "0 ",
+      total_number_fund_offering: 0,
+      price_per_fund_unit: "0 ",
     });
 
     //Assert
@@ -207,27 +230,48 @@ describe("Tests for projects smart contract", async function () {
         project_id: projectsTable.rows[0].project_id,
         developer_id: 0,
         owner: project.params.actor,
+        project_class: project.params.project_class,
+        project_name: project.params.project_name,
+        description: project.params.description,
+        created_date: projectsTable.rows[0].created_date,
+        status: project.params.status,
         builder: builder.params.account,
         investors: project.params.investors,
         issuer: project.params.issuer,
         regional_center: project.params.regional_center,
-        project_name: project.params.project_name,
-        description: project.params.description,
-        image: project.params.image,
-        projected_starting_date: projectsTable.rows[0].projected_starting_date,
-        projected_completion_date: projectsTable.rows[0].projected_completion_date,
-        created_date: projectsTable.rows[0].created_date,
-        updated_date: projectsTable.rows[0].updated_date,
-        close_date: projectsTable.rows[0].close_date,
-        status: ProjectConstants.status.awaiting,
-        approved_date: projectsTable.rows[0].approved_date,
-        approved_by: projectsTable.rows[0].approved_by,
+        total_project_cost: project.params.total_project_cost,
+        debt_financing: project.params.debt_financing,
+        term: project.params.term,
+        interest_rate: project.params.interest_rate,
+        loan_agreement: project.params.loan_agreement,
+        total_equity_financing: project.params.total_equity_financing,
+        total_gp_equity: project.params.total_gp_equity,
+        private_equity: project.params.private_equity,
+        annual_return: project.params.annual_return,
+        project_co_lp: project.params.project_co_lp,
+        project_co_lp_date: project.params.project_co_lp_date,
+        projected_completion_date: project.params.projected_completion_date,
+        projected_stabilization_date:
+          project.params.projected_stabilization_date,
+        anticipated_year_sale_refinance:
+          project.params.anticipated_year_sale_refinance,
+        fund_lp: project.params.fund_lp,
+        total_fund_offering_amount: project.params.total_fund_offering_amount,
+        total_number_fund_offering: project.params.total_number_fund_offering,
+        price_per_fund_unit: project.params.price_per_fund_unit,
+        approved_date: 0,
+        approved_by: "",
       },
-    ])
-
+    ]);
   });
 
   it("Assign one of each type (Investor, Builder, Regional Center, Issuer)", async () => {
+    // console.log(admin);
+    // console.log(investor);
+    // console.log(builder);
+    // console.log(issuer)
+    // console.log(regional)
+
     //Arrange
     const project = await ProjectFactory.createWithDefaults({
       actor: admin.params.account,
@@ -271,6 +315,10 @@ describe("Tests for projects smart contract", async function () {
       investors: [investor.params.account],
       issuer: issuer.params.account,
       regional_center: regional.params.account,
+      fund_lp: "",
+      total_fund_offering_amount: "0 ",
+      total_number_fund_offering: 0,
+      price_per_fund_unit: "0 ",
     });
 
     //Assert
@@ -281,31 +329,46 @@ describe("Tests for projects smart contract", async function () {
       json: true,
     });
 
-    //console.log("\n\n Projects table : ", projectsTable);
+    // console.log("\n\n Projects table : ", projectsTable);
 
     assert.deepStrictEqual(projectsTable.rows, [
       {
-        project_id: projectsTable.rows[0].project_id,
+        project_id: 0,
         developer_id: 0,
         owner: project.params.actor,
+        project_class: project.params.project_class,
+        project_name: project.params.project_name,
+        description: project.params.description,
+        created_date: projectsTable.rows[0].created_date,
+        status: project.params.status,
         builder: project.params.builder,
         investors: project.params.investors,
         issuer: project.params.issuer,
         regional_center: project.params.regional_center,
-        project_name: project.params.project_name,
-        description: project.params.description,
-        image: project.params.image,
-        projected_starting_date: projectsTable.rows[0].projected_starting_date,
-        projected_completion_date: projectsTable.rows[0].projected_completion_date,
-        created_date: projectsTable.rows[0].created_date,
-        updated_date: projectsTable.rows[0].updated_date,
-        close_date: projectsTable.rows[0].close_date,
-        status: ProjectConstants.status.awaiting,
-        approved_date: projectsTable.rows[0].approved_date,
-        approved_by: projectsTable.rows[0].approved_by,
+        total_project_cost: project.params.total_project_cost,
+        debt_financing: project.params.debt_financing,
+        term: project.params.term,
+        interest_rate: project.params.interest_rate,
+        loan_agreement: project.params.loan_agreement,
+        total_equity_financing: project.params.total_equity_financing,
+        total_gp_equity: project.params.total_gp_equity,
+        private_equity: project.params.private_equity,
+        annual_return: project.params.annual_return,
+        project_co_lp: project.params.project_co_lp,
+        project_co_lp_date: project.params.project_co_lp_date,
+        projected_completion_date: project.params.projected_completion_date,
+        projected_stabilization_date:
+          project.params.projected_stabilization_date,
+        anticipated_year_sale_refinance:
+          project.params.anticipated_year_sale_refinance,
+        fund_lp: project.params.fund_lp,
+        total_fund_offering_amount: project.params.total_fund_offering_amount,
+        total_number_fund_offering: project.params.total_number_fund_offering,
+        price_per_fund_unit: project.params.price_per_fund_unit,
+        approved_date: 0,
+        approved_by: "",
       },
-    ])
-
+    ]);
   });
 
   it("Approve project", async () => {
@@ -338,9 +401,22 @@ describe("Tests for projects smart contract", async function () {
       investors: [investor.params.account],
       issuer: "",
       regional_center: "",
+      fund_lp: "https://fund-lp.com",
+      total_fund_offering_amount: "400000.00 USD",
+      total_number_fund_offering: 40000,
+      price_per_fund_unit: "300.00 USD",
     });
 
     // Act
+
+    /*
+     *ACTION projects::approveprjct(name actor,
+     *															uint64_t project_id,
+     *															string fund_lp,
+     *															asset total_fund_offering_amount,
+     *															uint64_t total_number_fund_offering,
+     *															asset price_per_fund_unit)
+     */
     await contracts.projects.approveprjct(
       admin.params.account,
       0,
@@ -357,32 +433,47 @@ describe("Tests for projects smart contract", async function () {
     });
    //  console.log("\n\n Projects table : ", projectsTable.rows);
 
-   assert.deepStrictEqual(projectsTable.rows, [
-    {
-      project_id: projectsTable.rows[0].project_id,
-      developer_id: 0,
-      owner: project.params.actor,
-      builder: project.params.builder,
-      investors: project.params.investors,
-      issuer: project.params.issuer,
-      regional_center: project.params.regional_center,
-      project_name: project.params.project_name,
-      description: project.params.description,
-      image: project.params.image,
-      projected_starting_date: projectsTable.rows[0].projected_starting_date,
-      projected_completion_date: projectsTable.rows[0].projected_completion_date,
-      created_date: projectsTable.rows[0].created_date,
-      updated_date: projectsTable.rows[0].updated_date,
-      close_date: projectsTable.rows[0].close_date,
-      status: ProjectConstants.status.ready,
-      approved_date: projectsTable.rows[0].approved_date,
-      approved_by: projectsTable.rows[0].approved_by,
-    },
-  ])
-
+    assert.deepStrictEqual(projectsTable.rows, [
+      {
+        project_id: 0,
+        developer_id: 0,
+        owner: project.params.actor,
+        project_class: project.params.project_class,
+        project_name: project.params.project_name,
+        description: project.params.description,
+        created_date: projectsTable.rows[0].created_date,
+        status: ProjectConstants.status.ready,
+        builder: project.params.builder,
+        investors: project.params.investors,
+        issuer: project.params.issuer,
+        regional_center: project.params.regional_center,
+        total_project_cost: project.params.total_project_cost,
+        debt_financing: project.params.debt_financing,
+        term: project.params.term,
+        interest_rate: project.params.interest_rate,
+        loan_agreement: project.params.loan_agreement,
+        total_equity_financing: project.params.total_equity_financing,
+        total_gp_equity: project.params.total_gp_equity,
+        private_equity: project.params.private_equity,
+        annual_return: project.params.annual_return,
+        project_co_lp: project.params.project_co_lp,
+        project_co_lp_date: project.params.project_co_lp_date,
+        projected_completion_date: project.params.projected_completion_date,
+        projected_stabilization_date:
+          project.params.projected_stabilization_date,
+        anticipated_year_sale_refinance:
+          project.params.anticipated_year_sale_refinance,
+        fund_lp: project.params.fund_lp,
+        total_fund_offering_amount: project.params.total_fund_offering_amount,
+        total_number_fund_offering: project.params.total_number_fund_offering,
+        price_per_fund_unit: project.params.price_per_fund_unit,
+        approved_date: projectsTable.rows[0].approved_date,
+        approved_by: projectsTable.rows[0].approved_by,
+      },
+    ]);
   });
 
-  it("Edit project before approve it", async function () {
+  it("Edits description of project with project_id: 0", async function () {
     //Arrange
     const project = await ProjectFactory.createWithDefaults({
       actor: admin.params.account,
@@ -412,13 +503,16 @@ describe("Tests for projects smart contract", async function () {
       investors: [investor.params.account],
       issuer: "",
       regional_center: "",
+      fund_lp: "https://fund-lp.com",
+      total_fund_offering_amount: "400000.00 USD",
+      total_number_fund_offering: 40000,
+      price_per_fund_unit: "300.00 USD",
     });
 
     // Act
     Object.assign(project.params, {
       description: "Desctiption edited",
     });
-
     await contracts.projects.editproject(
       admin.params.account,
       0,
@@ -435,29 +529,46 @@ describe("Tests for projects smart contract", async function () {
     });
     // console.log("\n\n Projects table : ", projectsTable.rows);
 
-   assert.deepStrictEqual(projectsTable.rows, [
-    {
-      project_id: projectsTable.rows[0].project_id,
-      developer_id: 0,
-      owner: project.params.actor,
-      builder: project.params.builder,
-      investors: project.params.investors,
-      issuer: project.params.issuer,
-      regional_center: project.params.regional_center,
-      project_name: project.params.project_name,
-      description: project.params.description,
-      image: project.params.image,
-      projected_starting_date: projectsTable.rows[0].projected_starting_date,
-      projected_completion_date: projectsTable.rows[0].projected_completion_date,
-      created_date: projectsTable.rows[0].created_date,
-      updated_date: projectsTable.rows[0].updated_date,
-      close_date: projectsTable.rows[0].close_date,
-      status: ProjectConstants.status.awaiting,
-      approved_date: projectsTable.rows[0].approved_date,
-      approved_by: projectsTable.rows[0].approved_by,
-    },
-  ])
-
+    assert.deepStrictEqual(projectsTable.rows, [
+      {
+        project_id: 0,
+        developer_id: 0,
+        owner: project.params.actor,
+        project_class: project.params.project_class,
+        project_name: project.params.project_name,
+        description: "Desctiption edited",
+        created_date: projectsTable.rows[0].created_date,
+        status: ProjectConstants.status.awaiting,
+        builder: project.params.builder,
+        investors: project.params.investors,
+        issuer: project.params.issuer,
+        regional_center: project.params.regional_center,
+        total_project_cost: project.params.total_project_cost,
+        debt_financing: project.params.debt_financing,
+        term: project.params.term,
+        interest_rate: project.params.interest_rate,
+        loan_agreement: project.params.loan_agreement,
+        total_equity_financing: project.params.total_equity_financing,
+        total_gp_equity: project.params.total_gp_equity,
+        private_equity: project.params.private_equity,
+        annual_return: project.params.annual_return,
+        project_co_lp: project.params.project_co_lp,
+        project_co_lp_date: project.params.project_co_lp_date,
+        projected_completion_date: project.params.projected_completion_date,
+        projected_stabilization_date:
+          project.params.projected_stabilization_date,
+        anticipated_year_sale_refinance:
+          project.params.anticipated_year_sale_refinance,
+        fund_lp: "",
+        total_fund_offering_amount:
+          projectsTable.rows[0].total_fund_offering_amount,
+        total_number_fund_offering:
+          projectsTable.rows[0].total_number_fund_offering,
+        price_per_fund_unit: projectsTable.rows[0].price_per_fund_unit,
+        approved_date: projectsTable.rows[0].approved_date,
+        approved_by: projectsTable.rows[0].approved_by,
+      },
+    ]);
   });
 
   it("Cannot edit a project when has been approved", async function () {
@@ -517,7 +628,6 @@ describe("Tests for projects smart contract", async function () {
       fail = false;
     } catch (err) {
       fail = true;
-      //console.log(err)
     }
 
     // //Assert
@@ -581,7 +691,7 @@ describe("Tests for projects smart contract", async function () {
       fail = false;
     } catch (err) {
       fail = true;
-      console.log(err);
+      //console.log(err);
     }
 
     // //Assert
@@ -624,6 +734,10 @@ describe("Tests for projects smart contract", async function () {
       investors: [investor.params.account],
       issuer: "",
       regional_center: "",
+      fund_lp: "https://fund-lp.com",
+      total_fund_offering_amount: "400000.00 USD",
+      total_number_fund_offering: 40000,
+      price_per_fund_unit: "300.00 USD",
     });
 
     await contracts.projects.approveprjct(
@@ -651,27 +765,42 @@ describe("Tests for projects smart contract", async function () {
 
     assert.deepStrictEqual(projectsTable.rows, [
       {
-        project_id: projectsTable.rows[0].project_id,
+        project_id: 0,
         developer_id: 0,
         owner: project.params.actor,
+        project_class: project.params.project_class,
+        project_name: project.params.project_name,
+        description: project.params.description,
+        created_date: projectsTable.rows[0].created_date,
+        status: ProjectConstants.status.investment,
         builder: project.params.builder,
         investors: project.params.investors,
         issuer: project.params.issuer,
         regional_center: project.params.regional_center,
-        project_name: project.params.project_name,
-        description: project.params.description,
-        image: project.params.image,
-        projected_starting_date: projectsTable.rows[0].projected_starting_date,
-        projected_completion_date: projectsTable.rows[0].projected_completion_date,
-        created_date: projectsTable.rows[0].created_date,
-        updated_date: projectsTable.rows[0].updated_date,
-        close_date: projectsTable.rows[0].close_date,
-        status: ProjectConstants.status.investment,
+        total_project_cost: project.params.total_project_cost,
+        debt_financing: project.params.debt_financing,
+        term: project.params.term,
+        interest_rate: project.params.interest_rate,
+        loan_agreement: project.params.loan_agreement,
+        total_equity_financing: project.params.total_equity_financing,
+        total_gp_equity: project.params.total_gp_equity,
+        private_equity: project.params.private_equity,
+        annual_return: project.params.annual_return,
+        project_co_lp: project.params.project_co_lp,
+        project_co_lp_date: project.params.project_co_lp_date,
+        projected_completion_date: project.params.projected_completion_date,
+        projected_stabilization_date:
+          project.params.projected_stabilization_date,
+        anticipated_year_sale_refinance:
+          project.params.anticipated_year_sale_refinance,
+        fund_lp: project.params.fund_lp,
+        total_fund_offering_amount: project.params.total_fund_offering_amount,
+        total_number_fund_offering: project.params.total_number_fund_offering,
+        price_per_fund_unit: project.params.price_per_fund_unit,
         approved_date: projectsTable.rows[0].approved_date,
         approved_by: projectsTable.rows[0].approved_by,
       },
-    ])
-
+    ]);
   });
 
   it("Create an investment", async function () {
@@ -702,6 +831,10 @@ describe("Tests for projects smart contract", async function () {
       investors: [investor.params.account],
       issuer: "",
       regional_center: "",
+      fund_lp: "https://fund-lp.com",
+      total_fund_offering_amount: "400000.00 USD",
+      total_number_fund_offering: 40000,
+      price_per_fund_unit: "300.00 USD",
     });
 
     await contracts.projects.approveprjct(
@@ -791,6 +924,10 @@ describe("Tests for projects smart contract", async function () {
       investors: [investor.params.account],
       issuer: "",
       regional_center: "",
+      fund_lp: "https://fund-lp.com",
+      total_fund_offering_amount: "400000.00 USD",
+      total_number_fund_offering: 40000,
+      price_per_fund_unit: "300.00 USD",
     });
 
     await contracts.projects.approveprjct(
@@ -892,6 +1029,10 @@ describe("Tests for projects smart contract", async function () {
       investors: [investor.params.account],
       issuer: "",
       regional_center: "",
+      fund_lp: "https://fund-lp.com",
+      total_fund_offering_amount: "400000.00 USD",
+      total_number_fund_offering: 40000,
+      price_per_fund_unit: "300.00 USD",
     });
 
     await contracts.projects.approveprjct(
@@ -966,6 +1107,10 @@ describe("Tests for projects smart contract", async function () {
       investors: [investor.params.account],
       issuer: "",
       regional_center: "",
+      fund_lp: "https://fund-lp.com",
+      total_fund_offering_amount: "400000.00 USD",
+      total_number_fund_offering: 40000,
+      price_per_fund_unit: "300.00 USD",
     });
 
     await contracts.projects.approveprjct(
@@ -1059,6 +1204,10 @@ describe("Tests for projects smart contract", async function () {
       investors: [investor.params.account],
       issuer: "",
       regional_center: "",
+      fund_lp: "https://fund-lp.com",
+      total_fund_offering_amount: "400000.00 USD",
+      total_number_fund_offering: 40000,
+      price_per_fund_unit: "300.00 USD",
     });
 
     await contracts.projects.approveprjct(
@@ -1156,6 +1305,10 @@ describe("Tests for projects smart contract", async function () {
       investors: [investor.params.account],
       issuer: "",
       regional_center: "",
+      fund_lp: "https://fund-lp.com",
+      total_fund_offering_amount: "400000.00 USD",
+      total_number_fund_offering: 40000,
+      price_per_fund_unit: "300.00 USD",
     });
 
     await contracts.projects.approveprjct(
@@ -1263,6 +1416,10 @@ describe("Tests for projects smart contract", async function () {
       investors: [investor.params.account],
       issuer: "",
       regional_center: "",
+      fund_lp: "https://fund-lp.com",
+      total_fund_offering_amount: "400000.00 USD",
+      total_number_fund_offering: 40000,
+      price_per_fund_unit: "300.00 USD",
     });
 
     await contracts.projects.approveprjct(
@@ -1368,6 +1525,10 @@ describe("Tests for projects smart contract", async function () {
       investors: [investor.params.account],
       issuer: "",
       regional_center: "",
+      fund_lp: "https://fund-lp.com",
+      total_fund_offering_amount: "400000.00 USD",
+      total_number_fund_offering: 40000,
+      price_per_fund_unit: "300.00 USD",
     });
 
     await contracts.projects.approveprjct(
@@ -1458,6 +1619,10 @@ describe("Tests for projects smart contract", async function () {
       investors: [investor.params.account],
       issuer: "",
       regional_center: "",
+      fund_lp: "https://fund-lp.com",
+      total_fund_offering_amount: "400000.00 USD",
+      total_number_fund_offering: 40000,
+      price_per_fund_unit: "300.00 USD",
     });
 
     await contracts.projects.approveprjct(
@@ -1499,27 +1664,42 @@ describe("Tests for projects smart contract", async function () {
 
     assert.deepStrictEqual(projectsTable.rows, [
       {
-        project_id: projectsTable.rows[0].project_id,
+        project_id: 0,
         developer_id: 0,
         owner: project.params.actor,
+        project_class: project.params.project_class,
+        project_name: project.params.project_name,
+        description: project.params.description,
+        created_date: projectsTable.rows[0].created_date,
+        status: ProjectConstants.status.ready,
         builder: project.params.builder,
         investors: project.params.investors,
         issuer: project.params.issuer,
         regional_center: project.params.regional_center,
-        project_name: project.params.project_name,
-        description: project.params.description,
-        image: project.params.image,
-        projected_starting_date: projectsTable.rows[0].projected_starting_date,
-        projected_completion_date: projectsTable.rows[0].projected_completion_date,
-        created_date: projectsTable.rows[0].created_date,
-        updated_date: projectsTable.rows[0].updated_date,
-        close_date: projectsTable.rows[0].close_date,
-        status: ProjectConstants.status.ready,
+        total_project_cost: project.params.total_project_cost,
+        debt_financing: project.params.debt_financing,
+        term: project.params.term,
+        interest_rate: project.params.interest_rate,
+        loan_agreement: project.params.loan_agreement,
+        total_equity_financing: project.params.total_equity_financing,
+        total_gp_equity: project.params.total_gp_equity,
+        private_equity: project.params.private_equity,
+        annual_return: project.params.annual_return,
+        project_co_lp: project.params.project_co_lp,
+        project_co_lp_date: project.params.project_co_lp_date,
+        projected_completion_date: project.params.projected_completion_date,
+        projected_stabilization_date:
+          project.params.projected_stabilization_date,
+        anticipated_year_sale_refinance:
+          project.params.anticipated_year_sale_refinance,
+        fund_lp: project.params.fund_lp,
+        total_fund_offering_amount: project.params.total_fund_offering_amount,
+        total_number_fund_offering: project.params.total_number_fund_offering,
+        price_per_fund_unit: project.params.price_per_fund_unit,
         approved_date: projectsTable.rows[0].approved_date,
         approved_by: projectsTable.rows[0].approved_by,
       },
-    ])
-
+    ]);
   });
 
   it("There can only be one (builder, issuer, regional center) per project", async () => {
@@ -1528,7 +1708,7 @@ describe("Tests for projects smart contract", async function () {
     await contracts.projects.adduser(
       projects,
       "builderuser3",
-      "Builder2",
+      "Builder3",
       Roles.developer,
       {
         authorization: `${projects}@active`,
@@ -1593,8 +1773,12 @@ describe("Tests for projects smart contract", async function () {
       status: 1,
       builder: builder.params.account,
       investors: [investor.params.account],
-      issuer: issuer.params.account,
-      regional_center: regional.params.account,
+      issuer: "",
+      regional_center: "",
+      fund_lp: "https://fund-lp.com",
+      total_fund_offering_amount: "400000.00 USD",
+      total_number_fund_offering: 40000,
+      price_per_fund_unit: "300.00 USD",
     });
 
     await contracts.projects.approveprjct(
@@ -1654,33 +1838,48 @@ describe("Tests for projects smart contract", async function () {
     expect(failIssuer).to.be.true
     expect(failRegional).to.be.true
 
-
     assert.deepStrictEqual(projectsTable.rows, [
       {
-        project_id: projectsTable.rows[0].project_id,
+        project_id: 0,
         developer_id: 0,
         owner: project.params.actor,
-        builder: project.params.builder,
-        investors: project.params.investors,
-        issuer: project.params.issuer,
-        regional_center: project.params.regional_center,
+        project_class: project.params.project_class,
         project_name: project.params.project_name,
         description: project.params.description,
-        image: project.params.image,
-        projected_starting_date: projectsTable.rows[0].projected_starting_date,
-        projected_completion_date: projectsTable.rows[0].projected_completion_date,
         created_date: projectsTable.rows[0].created_date,
-        updated_date: projectsTable.rows[0].updated_date,
-        close_date: projectsTable.rows[0].close_date,
         status: ProjectConstants.status.ready,
+        builder: project.params.builder,
+        investors: project.params.investors,
+        issuer: issuer.params.account,
+        regional_center: regional.params.account,
+        total_project_cost: project.params.total_project_cost,
+        debt_financing: project.params.debt_financing,
+        term: project.params.term,
+        interest_rate: project.params.interest_rate,
+        loan_agreement: project.params.loan_agreement,
+        total_equity_financing: project.params.total_equity_financing,
+        total_gp_equity: project.params.total_gp_equity,
+        private_equity: project.params.private_equity,
+        annual_return: project.params.annual_return,
+        project_co_lp: project.params.project_co_lp,
+        project_co_lp_date: project.params.project_co_lp_date,
+        projected_completion_date: project.params.projected_completion_date,
+        projected_stabilization_date:
+          project.params.projected_stabilization_date,
+        anticipated_year_sale_refinance:
+          project.params.anticipated_year_sale_refinance,
+        fund_lp: project.params.fund_lp,
+        total_fund_offering_amount: project.params.total_fund_offering_amount,
+        total_number_fund_offering: project.params.total_number_fund_offering,
+        price_per_fund_unit: project.params.price_per_fund_unit,
         approved_date: projectsTable.rows[0].approved_date,
         approved_by: projectsTable.rows[0].approved_by,
       },
-    ])
+    ]);
   });
 
   
-  it("Remove (builder, issuer, regional center) from project before approve it", async () => {
+  it.only("Remove (builder, issuer, regional center) from project", async () => {
     //Arrange
     let fail
     const project = await ProjectFactory.createWithDefaults({
@@ -1690,7 +1889,12 @@ describe("Tests for projects smart contract", async function () {
     await contracts.projects.addproject(...project.getCreateActionParams(), {
       authorization: `${admin.params.account}@active`,
     });
-
+    console.log('assigned users: \n', 
+    admin.params.account, '\n',
+    investor.params.account, '\n',
+    issuer.params.account, '\n',
+    builder.params.account, '\n',
+    regional.params.account, '\n',)
 
     await contracts.projects.assignuser(
       admin.params.account,
@@ -1720,21 +1924,24 @@ describe("Tests for projects smart contract", async function () {
       { authorization: `${admin.params.account}@active` }
     );
 
-
     Object.assign(project.params, {
       status: 1,
       builder: builder.params.account,
       investors: [investor.params.account],
-      issuer: issuer.params.account,
-      regional_center: regional.params.account,
+      issuer: "",
+      regional_center: "",
+      fund_lp: "https://fund-lp.com",
+      total_fund_offering_amount: "400000.00 USD",
+      total_number_fund_offering: 40000,
+      price_per_fund_unit: "300.00 USD",
     });
 
-    // await contracts.projects.approveprjct(
-    //   admin.params.account,
-    //   0,
-    //   ...project.getApproveActionParams(),
-    //   { authorization: `${admin.params.account}@active` }
-    // );
+    await contracts.projects.approveprjct(
+      admin.params.account,
+      0,
+      ...project.getApproveActionParams(),
+      { authorization: `${admin.params.account}@active` }
+    );
     
     // Act
     try {
@@ -1768,7 +1975,7 @@ describe("Tests for projects smart contract", async function () {
       fail = false
     } catch (err) {
       fail = true
-      console.error(err)
+      //console.error(err)
     }
 
     //Assert
@@ -1778,7 +1985,7 @@ describe("Tests for projects smart contract", async function () {
       table: "projects",
       json: true,
     });
-    console.log("\n\n Projects table : ", projectsTable.rows);
+    //console.log("\n\n Projects table : ", projectsTable.rows);
 
     const UserTable = await rpc.get_table_rows({
       code: projects,
@@ -1786,36 +1993,49 @@ describe("Tests for projects smart contract", async function () {
       table: "users",
       json: true,
     });
-    console.log('users table : ', UserTable.rows);
+    //console.log('users table : ', UserTable.rows);
 
-    expect(fail).to.be.true
+    // expect(fail).to.be.true
 
     // assert.deepStrictEqual(projectsTable.rows, [
     //   {
-    //     project_id: projectsTable.rows[0].project_id,
+    //     project_id: 0,
     //     developer_id: 0,
     //     owner: project.params.actor,
+    //     project_class: project.params.project_class,
+    //     project_name: project.params.project_name,
+    //     description: project.params.description,
+    //     created_date: projectsTable.rows[0].created_date,
+    //     status: ProjectConstants.status.ready,
     //     builder: '',
     //     investors: [],
     //     issuer: '',
     //     regional_center: '',
-    //     project_name: project.params.project_name,
-    //     description: project.params.description,
-    //     image: project.params.image,
-    //     projected_starting_date: projectsTable.rows[0].projected_starting_date,
-    //     projected_completion_date: projectsTable.rows[0].projected_completion_date,
-    //     created_date: projectsTable.rows[0].created_date,
-    //     updated_date: projectsTable.rows[0].updated_date,
-    //     close_date: projectsTable.rows[0].close_date,
-    //     status: ProjectConstants.status.ready,
+    //     total_project_cost: project.params.total_project_cost,
+    //     debt_financing: project.params.debt_financing,
+    //     term: project.params.term,
+    //     interest_rate: project.params.interest_rate,
+    //     loan_agreement: project.params.loan_agreement,
+    //     total_equity_financing: project.params.total_equity_financing,
+    //     total_gp_equity: project.params.total_gp_equity,
+    //     private_equity: project.params.private_equity,
+    //     annual_return: project.params.annual_return,
+    //     project_co_lp: project.params.project_co_lp,
+    //     project_co_lp_date: project.params.project_co_lp_date,
+    //     projected_completion_date: project.params.projected_completion_date,
+    //     projected_stabilization_date:
+    //       project.params.projected_stabilization_date,
+    //     anticipated_year_sale_refinance:
+    //       project.params.anticipated_year_sale_refinance,
+    //     fund_lp: project.params.fund_lp,
+    //     total_fund_offering_amount: project.params.total_fund_offering_amount,
+    //     total_number_fund_offering: project.params.total_number_fund_offering,
+    //     price_per_fund_unit: project.params.price_per_fund_unit,
     //     approved_date: projectsTable.rows[0].approved_date,
     //     approved_by: projectsTable.rows[0].approved_by,
     //   },
-    // ])
+    // ]);
 
   });
-  
 
 });
-
-//add/merge unit test can't delete any actor once project was approved

@@ -98,7 +98,7 @@ describe("Tests for transactions smart contract", async function () {
     await contracts.projects.addproject(...project.getCreateActionParams(), {
       authorization: `${admin.params.account}@active`,
     });
-    
+
     await contracts.projects.assignuser(
       admin.params.account,
       builder.params.account,
@@ -480,7 +480,6 @@ describe("Tests for transactions smart contract", async function () {
       });
     });
 
-
   it("Create and remove a transaction for the project", async () => {
     // Arrange
     const transaction = await TransactionFactory.createWithDefaults({});
@@ -551,5 +550,26 @@ describe("Tests for transactions smart contract", async function () {
 
     //console.table(UserTable.rows);
   });
+
 });
+// TODO: CHECK WHERE ADMIN CAN EDIT (status)
+// it.only('admin can edit transactions in submit state', async () => {
+//   //arrange
+//   let fail
+//   const transaction = await TransactionFactory.createWithDefaults({flag: 1});
+//   console.log(transaction)
+//   eb5
+
+//   //act
+//   try{
+//     await contracts.transactions.transacts(admin.params.account, project.params.id, 1, transaction.getCreateParams(), { authorization: `${admin.params.account}@active` });
+//     fail = false
+//   } catch (err) {
+//     console.log(err)
+//     fail = true
+//   }
+//   //assert
+//   //expect(fail).to.be.true
+// });
+
 });
