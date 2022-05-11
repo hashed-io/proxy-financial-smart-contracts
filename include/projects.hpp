@@ -69,7 +69,6 @@ public:
     ACTION init();
 
     ACTION addproject(const eosio::name &actor,
-                      const std::string &ipfs,
                       const std::string &project_name,
                       const std::string &description,
                       const std::string &image,
@@ -78,7 +77,6 @@ public:
 
     ACTION editproject(const eosio::name &actor,
                        const uint64_t &project_id,
-                       const std::string &ipfs,
                        const std::string &project_name,
                        const std::string &description,
                        const std::string &image,
