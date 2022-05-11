@@ -32,3 +32,13 @@ void Investor::assign_impl(const eosio::name &account, const uint64_t &project_i
   user_t.modify(user_itr, contract_name, [&](auto &item)
                 { item.related_projects.push_back(project_id); });
 }
+
+void Investor::unassign_impl(const eosio::name &account, const uint64_t &project_id)
+{
+  projects::project_tables project_t(contract_name, contract_name.value);
+  auto project_itr = project_t.find(project_id);
+
+  project_t.modify(project_itr, contract_name, [&](auto &item)
+                   { item.investors.erase(std::remove(item.investors.begin(), item.investors.end(), account), item.investors.end());
+                   });
+}
