@@ -38,20 +38,12 @@ const createRolesCases = (() => {
       entity_id: 3
     },
     {
-<<<<<<< HEAD
       testName: 'Create an Issuer account',
-=======
-      testName: 'Create a Issuer account',
->>>>>>> 10881d929cb0ae7d08d6ecc8135895605619ea99
       role: Roles.issuer,
       entity_id: 4
     },
     {
-<<<<<<< HEAD
       testName: 'Create a Regional center account',
-=======
-      testName: 'Create a Regional Center account',
->>>>>>> 10881d929cb0ae7d08d6ecc8135895605619ea99
       role: Roles.regional_center,
       entity_id: 5
     }
