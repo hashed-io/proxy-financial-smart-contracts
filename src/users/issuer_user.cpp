@@ -6,7 +6,7 @@ void Issuer::create_impl(const eosio::name &account)
   auto user_itr = user_t.find(account.value);
 
   user_t.modify(user_itr, contract_name, [&](auto &item)
-                { item.entity_id = 1; });
+                { item.entity_id = 4; });
 }
 
 void Issuer::update_impl(const eosio::name &account)
