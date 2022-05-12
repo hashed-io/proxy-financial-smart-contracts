@@ -4,7 +4,7 @@
 
 using namespace std;
 
-class EntityTypes // its more like a rol
+class EntityTypes // its more like a role
 {
 public:
     const eosio::name INVESTOR = common::projects::entity::investor;
