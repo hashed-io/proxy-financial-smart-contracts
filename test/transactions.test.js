@@ -98,7 +98,7 @@ describe("Tests for transactions smart contract", async function () {
     await contracts.projects.addproject(...project.getCreateActionParams(), {
       authorization: `${admin.params.account}@active`,
     });
-    
+
     await contracts.projects.assignuser(
       admin.params.account,
       builder.params.account,

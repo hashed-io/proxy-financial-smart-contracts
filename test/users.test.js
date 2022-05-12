@@ -176,6 +176,7 @@ describe('Tests for the users on projects smart contract', async function () {
 
   });
 
+<<<<<<< HEAD
   const addEntitiesCases = [
     {testName: 'Add admin entity', userRole: EntityConstants.fund},
     {testName: 'Add developer entity', userRole: EntityConstants.developer},
@@ -212,6 +213,8 @@ describe('Tests for the users on projects smart contract', async function () {
       }])
     });
   });
+=======
+>>>>>>> local-dev
 
 
 });
