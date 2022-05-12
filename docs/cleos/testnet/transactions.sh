@@ -1,4 +1,4 @@
-cleos -u https://testnet.telos.caleos.io push action proxyv2trnsc transacts '{
+cleos -u https://testnet.telos.caleos.io push action proxyv3trnsc transacts '{
   "actor": "builderuser1",
   "project_id": 0,
   "drawdown_id": 2,
@@ -10,10 +10,6 @@ cleos -u https://testnet.telos.caleos.io push action proxyv2trnsc transacts '{
         {
           "account_id": 6,
           "amount": 10
-        },
-        {
-          "account_id": 6,
-          "amount": -10
         }
       ],
       "description": "lorem",
@@ -32,10 +28,6 @@ cleos -u https://testnet.telos.caleos.io push action proxyv2trnsc transacts '{
         {
           "account_id": 7,
           "amount": 10
-        },
-        {
-          "account_id": 7,
-          "amount": -10
         }
       ],
       "description": "lorem",

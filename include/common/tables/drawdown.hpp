@@ -2,8 +2,6 @@
 
 using namespace eosio;
 
-// TODO add the number of drawdown type
-
 // ! scoped by project_id
 #define DEFINE_DRAWDOWN_TABLE                                                                  \
   TABLE drawdown_table                                                                         \

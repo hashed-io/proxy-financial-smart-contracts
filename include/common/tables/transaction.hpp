@@ -2,7 +2,7 @@
 
 using namespace eosio;
 
-// scoped by project_id
+// ! scoped by project_id
 #define DEFINE_TRANSACTION_TABLE                                  \
   TABLE transaction_table                                         \
   {                                                               \
