@@ -114,28 +114,21 @@ describe("Tests for projects smart contract", async function () {
     const project = await ProjectFactory.createWithDefaults({
       actor: user.params.account,
     });
-    //console.log(project);
+    // console.log(project);
 
     Object.assign(project.params, {
-      status: 1,
       builder: "",
       investors: [],
       issuer: "",
       regional_center: "",
-      fund_lp: "",
-      total_fund_offering_amount: "0 ",
-      total_number_fund_offering: 0,
-      price_per_fund_unit: "0 ",
     });
-
-    //console.log(project);
 
     // //Act
     await contracts.projects.addproject(...project.getCreateActionParams(), {
       authorization: `${user.params.account}@active`,
     });
 
-    // //Assert
+    // // //Assert
     const projectsTable = await rpc.get_table_rows({
       code: projects,
       scope: projects,
@@ -144,46 +137,30 @@ describe("Tests for projects smart contract", async function () {
     });
 
     // console.log("\n\n Projects  table : ", projectsTable.rows);
-    // console.log("params project is :", project.params);
 
     assert.deepStrictEqual(projectsTable.rows, [
       {
         project_id: projectsTable.rows[0].project_id,
         developer_id: 0,
         owner: project.params.actor,
-        project_class: project.params.project_class,
-        project_name: project.params.project_name,
-        description: project.params.description,
-        created_date: projectsTable.rows[0].created_date,
-        status: project.params.status,
         builder: project.params.builder,
         investors: project.params.investors,
         issuer: project.params.issuer,
         regional_center: project.params.regional_center,
-        total_project_cost: project.params.total_project_cost,
-        debt_financing: project.params.debt_financing,
-        term: project.params.term,
-        interest_rate: project.params.interest_rate,
-        loan_agreement: project.params.loan_agreement,
-        total_equity_financing: project.params.total_equity_financing,
-        total_gp_equity: project.params.total_gp_equity,
-        private_equity: project.params.private_equity,
-        annual_return: project.params.annual_return,
-        project_co_lp: project.params.project_co_lp,
-        project_co_lp_date: project.params.project_co_lp_date,
-        projected_completion_date: project.params.projected_completion_date,
-        projected_stabilization_date:
-          project.params.projected_stabilization_date,
-        anticipated_year_sale_refinance:
-          project.params.anticipated_year_sale_refinance,
-        fund_lp: project.params.fund_lp,
-        total_fund_offering_amount: project.params.total_fund_offering_amount,
-        total_number_fund_offering: project.params.total_number_fund_offering,
-        price_per_fund_unit: project.params.price_per_fund_unit,
-        approved_date: 0,
-        approved_by: "",
+        project_name: project.params.project_name,
+        description: project.params.description,
+        image: project.params.image,
+        projected_starting_date: projectsTable.rows[0].projected_starting_date,
+        projected_completion_date: projectsTable.rows[0].projected_completion_date,
+        created_date: projectsTable.rows[0].created_date,
+        updated_date: projectsTable.rows[0].updated_date,
+        close_date: projectsTable.rows[0].close_date,
+        status: ProjectConstants.status.awaiting,
+        approved_date: projectsTable.rows[0].approved_date,
+        approved_by: projectsTable.rows[0].approved_by,
       },
-    ]);
+    ])
+
   });
 
   it("Assign builder to a project", async () => {
@@ -205,14 +182,10 @@ describe("Tests for projects smart contract", async function () {
 
     Object.assign(project.params, {
       status: 1,
-      builder: "",
+      builder: builder.params.account,
       investors: [],
       issuer: "",
       regional_center: "",
-      fund_lp: "",
-      total_fund_offering_amount: "0 ",
-      total_number_fund_offering: 0,
-      price_per_fund_unit: "0 ",
     });
 
     //Assert
@@ -230,48 +203,27 @@ describe("Tests for projects smart contract", async function () {
         project_id: projectsTable.rows[0].project_id,
         developer_id: 0,
         owner: project.params.actor,
-        project_class: project.params.project_class,
-        project_name: project.params.project_name,
-        description: project.params.description,
-        created_date: projectsTable.rows[0].created_date,
-        status: project.params.status,
         builder: builder.params.account,
         investors: project.params.investors,
         issuer: project.params.issuer,
         regional_center: project.params.regional_center,
-        total_project_cost: project.params.total_project_cost,
-        debt_financing: project.params.debt_financing,
-        term: project.params.term,
-        interest_rate: project.params.interest_rate,
-        loan_agreement: project.params.loan_agreement,
-        total_equity_financing: project.params.total_equity_financing,
-        total_gp_equity: project.params.total_gp_equity,
-        private_equity: project.params.private_equity,
-        annual_return: project.params.annual_return,
-        project_co_lp: project.params.project_co_lp,
-        project_co_lp_date: project.params.project_co_lp_date,
-        projected_completion_date: project.params.projected_completion_date,
-        projected_stabilization_date:
-          project.params.projected_stabilization_date,
-        anticipated_year_sale_refinance:
-          project.params.anticipated_year_sale_refinance,
-        fund_lp: project.params.fund_lp,
-        total_fund_offering_amount: project.params.total_fund_offering_amount,
-        total_number_fund_offering: project.params.total_number_fund_offering,
-        price_per_fund_unit: project.params.price_per_fund_unit,
-        approved_date: 0,
-        approved_by: "",
+        project_name: project.params.project_name,
+        description: project.params.description,
+        image: project.params.image,
+        projected_starting_date: projectsTable.rows[0].projected_starting_date,
+        projected_completion_date: projectsTable.rows[0].projected_completion_date,
+        created_date: projectsTable.rows[0].created_date,
+        updated_date: projectsTable.rows[0].updated_date,
+        close_date: projectsTable.rows[0].close_date,
+        status: ProjectConstants.status.awaiting,
+        approved_date: projectsTable.rows[0].approved_date,
+        approved_by: projectsTable.rows[0].approved_by,
       },
-    ]);
+    ])
+
   });
 
   it("Assign one of each type (Investor, Builder, Regional Center, Issuer)", async () => {
-    // console.log(admin);
-    // console.log(investor);
-    // console.log(builder);
-    // console.log(issuer)
-    // console.log(regional)
-
     //Arrange
     const project = await ProjectFactory.createWithDefaults({
       actor: admin.params.account,
@@ -315,10 +267,6 @@ describe("Tests for projects smart contract", async function () {
       investors: [investor.params.account],
       issuer: issuer.params.account,
       regional_center: regional.params.account,
-      fund_lp: "",
-      total_fund_offering_amount: "0 ",
-      total_number_fund_offering: 0,
-      price_per_fund_unit: "0 ",
     });
 
     //Assert
@@ -329,46 +277,31 @@ describe("Tests for projects smart contract", async function () {
       json: true,
     });
 
-    // console.log("\n\n Projects table : ", projectsTable);
+    //console.log("\n\n Projects table : ", projectsTable);
 
     assert.deepStrictEqual(projectsTable.rows, [
       {
-        project_id: 0,
+        project_id: projectsTable.rows[0].project_id,
         developer_id: 0,
         owner: project.params.actor,
-        project_class: project.params.project_class,
-        project_name: project.params.project_name,
-        description: project.params.description,
-        created_date: projectsTable.rows[0].created_date,
-        status: project.params.status,
         builder: project.params.builder,
         investors: project.params.investors,
         issuer: project.params.issuer,
         regional_center: project.params.regional_center,
-        total_project_cost: project.params.total_project_cost,
-        debt_financing: project.params.debt_financing,
-        term: project.params.term,
-        interest_rate: project.params.interest_rate,
-        loan_agreement: project.params.loan_agreement,
-        total_equity_financing: project.params.total_equity_financing,
-        total_gp_equity: project.params.total_gp_equity,
-        private_equity: project.params.private_equity,
-        annual_return: project.params.annual_return,
-        project_co_lp: project.params.project_co_lp,
-        project_co_lp_date: project.params.project_co_lp_date,
-        projected_completion_date: project.params.projected_completion_date,
-        projected_stabilization_date:
-          project.params.projected_stabilization_date,
-        anticipated_year_sale_refinance:
-          project.params.anticipated_year_sale_refinance,
-        fund_lp: project.params.fund_lp,
-        total_fund_offering_amount: project.params.total_fund_offering_amount,
-        total_number_fund_offering: project.params.total_number_fund_offering,
-        price_per_fund_unit: project.params.price_per_fund_unit,
-        approved_date: 0,
-        approved_by: "",
+        project_name: project.params.project_name,
+        description: project.params.description,
+        image: project.params.image,
+        projected_starting_date: projectsTable.rows[0].projected_starting_date,
+        projected_completion_date: projectsTable.rows[0].projected_completion_date,
+        created_date: projectsTable.rows[0].created_date,
+        updated_date: projectsTable.rows[0].updated_date,
+        close_date: projectsTable.rows[0].close_date,
+        status: ProjectConstants.status.awaiting,
+        approved_date: projectsTable.rows[0].approved_date,
+        approved_by: projectsTable.rows[0].approved_by,
       },
-    ]);
+    ])
+
   });
 
   it("Approve project", async () => {
@@ -401,26 +334,12 @@ describe("Tests for projects smart contract", async function () {
       investors: [investor.params.account],
       issuer: "",
       regional_center: "",
-      fund_lp: "https://fund-lp.com",
-      total_fund_offering_amount: "400000.00 USD",
-      total_number_fund_offering: 40000,
-      price_per_fund_unit: "300.00 USD",
     });
 
     // Act
-
-    /*
-     *ACTION projects::approveprjct(name actor,
-     *															uint64_t project_id,
-     *															string fund_lp,
-     *															asset total_fund_offering_amount,
-     *															uint64_t total_number_fund_offering,
-     *															asset price_per_fund_unit)
-     */
     await contracts.projects.approveprjct(
       admin.params.account,
       0,
-      ...project.getApproveActionParams(),
       { authorization: `${admin.params.account}@active` }
     );
 
@@ -433,47 +352,32 @@ describe("Tests for projects smart contract", async function () {
     });
    //  console.log("\n\n Projects table : ", projectsTable.rows);
 
-    assert.deepStrictEqual(projectsTable.rows, [
-      {
-        project_id: 0,
-        developer_id: 0,
-        owner: project.params.actor,
-        project_class: project.params.project_class,
-        project_name: project.params.project_name,
-        description: project.params.description,
-        created_date: projectsTable.rows[0].created_date,
-        status: ProjectConstants.status.ready,
-        builder: project.params.builder,
-        investors: project.params.investors,
-        issuer: project.params.issuer,
-        regional_center: project.params.regional_center,
-        total_project_cost: project.params.total_project_cost,
-        debt_financing: project.params.debt_financing,
-        term: project.params.term,
-        interest_rate: project.params.interest_rate,
-        loan_agreement: project.params.loan_agreement,
-        total_equity_financing: project.params.total_equity_financing,
-        total_gp_equity: project.params.total_gp_equity,
-        private_equity: project.params.private_equity,
-        annual_return: project.params.annual_return,
-        project_co_lp: project.params.project_co_lp,
-        project_co_lp_date: project.params.project_co_lp_date,
-        projected_completion_date: project.params.projected_completion_date,
-        projected_stabilization_date:
-          project.params.projected_stabilization_date,
-        anticipated_year_sale_refinance:
-          project.params.anticipated_year_sale_refinance,
-        fund_lp: project.params.fund_lp,
-        total_fund_offering_amount: project.params.total_fund_offering_amount,
-        total_number_fund_offering: project.params.total_number_fund_offering,
-        price_per_fund_unit: project.params.price_per_fund_unit,
-        approved_date: projectsTable.rows[0].approved_date,
-        approved_by: projectsTable.rows[0].approved_by,
-      },
-    ]);
+   assert.deepStrictEqual(projectsTable.rows, [
+    {
+      project_id: projectsTable.rows[0].project_id,
+      developer_id: 0,
+      owner: project.params.actor,
+      builder: project.params.builder,
+      investors: project.params.investors,
+      issuer: project.params.issuer,
+      regional_center: project.params.regional_center,
+      project_name: project.params.project_name,
+      description: project.params.description,
+      image: project.params.image,
+      projected_starting_date: projectsTable.rows[0].projected_starting_date,
+      projected_completion_date: projectsTable.rows[0].projected_completion_date,
+      created_date: projectsTable.rows[0].created_date,
+      updated_date: projectsTable.rows[0].updated_date,
+      close_date: projectsTable.rows[0].close_date,
+      status: ProjectConstants.status.ready,
+      approved_date: projectsTable.rows[0].approved_date,
+      approved_by: projectsTable.rows[0].approved_by,
+    },
+  ])
+
   });
 
-  it("Edits description of project with project_id: 0", async function () {
+  it("Edit project before approve it", async function () {
     //Arrange
     const project = await ProjectFactory.createWithDefaults({
       actor: admin.params.account,
@@ -503,16 +407,13 @@ describe("Tests for projects smart contract", async function () {
       investors: [investor.params.account],
       issuer: "",
       regional_center: "",
-      fund_lp: "https://fund-lp.com",
-      total_fund_offering_amount: "400000.00 USD",
-      total_number_fund_offering: 40000,
-      price_per_fund_unit: "300.00 USD",
     });
 
     // Act
     Object.assign(project.params, {
       description: "Desctiption edited",
     });
+
     await contracts.projects.editproject(
       admin.params.account,
       0,
@@ -529,46 +430,29 @@ describe("Tests for projects smart contract", async function () {
     });
     // console.log("\n\n Projects table : ", projectsTable.rows);
 
-    assert.deepStrictEqual(projectsTable.rows, [
-      {
-        project_id: 0,
-        developer_id: 0,
-        owner: project.params.actor,
-        project_class: project.params.project_class,
-        project_name: project.params.project_name,
-        description: "Desctiption edited",
-        created_date: projectsTable.rows[0].created_date,
-        status: ProjectConstants.status.awaiting,
-        builder: project.params.builder,
-        investors: project.params.investors,
-        issuer: project.params.issuer,
-        regional_center: project.params.regional_center,
-        total_project_cost: project.params.total_project_cost,
-        debt_financing: project.params.debt_financing,
-        term: project.params.term,
-        interest_rate: project.params.interest_rate,
-        loan_agreement: project.params.loan_agreement,
-        total_equity_financing: project.params.total_equity_financing,
-        total_gp_equity: project.params.total_gp_equity,
-        private_equity: project.params.private_equity,
-        annual_return: project.params.annual_return,
-        project_co_lp: project.params.project_co_lp,
-        project_co_lp_date: project.params.project_co_lp_date,
-        projected_completion_date: project.params.projected_completion_date,
-        projected_stabilization_date:
-          project.params.projected_stabilization_date,
-        anticipated_year_sale_refinance:
-          project.params.anticipated_year_sale_refinance,
-        fund_lp: "",
-        total_fund_offering_amount:
-          projectsTable.rows[0].total_fund_offering_amount,
-        total_number_fund_offering:
-          projectsTable.rows[0].total_number_fund_offering,
-        price_per_fund_unit: projectsTable.rows[0].price_per_fund_unit,
-        approved_date: projectsTable.rows[0].approved_date,
-        approved_by: projectsTable.rows[0].approved_by,
-      },
-    ]);
+   assert.deepStrictEqual(projectsTable.rows, [
+    {
+      project_id: projectsTable.rows[0].project_id,
+      developer_id: 0,
+      owner: project.params.actor,
+      builder: project.params.builder,
+      investors: project.params.investors,
+      issuer: project.params.issuer,
+      regional_center: project.params.regional_center,
+      project_name: project.params.project_name,
+      description: project.params.description,
+      image: project.params.image,
+      projected_starting_date: projectsTable.rows[0].projected_starting_date,
+      projected_completion_date: projectsTable.rows[0].projected_completion_date,
+      created_date: projectsTable.rows[0].created_date,
+      updated_date: projectsTable.rows[0].updated_date,
+      close_date: projectsTable.rows[0].close_date,
+      status: ProjectConstants.status.awaiting,
+      approved_date: projectsTable.rows[0].approved_date,
+      approved_by: projectsTable.rows[0].approved_by,
+    },
+  ])
+
   });
 
   it("Cannot edit a project when has been approved", async function () {
@@ -601,16 +485,11 @@ describe("Tests for projects smart contract", async function () {
       investors: [investor.params.account],
       issuer: "",
       regional_center: "",
-      fund_lp: "https://fund-lp.com",
-      total_fund_offering_amount: "400000.00 USD",
-      total_number_fund_offering: 40000,
-      price_per_fund_unit: "300.00 USD",
     });
 
     await contracts.projects.approveprjct(
       admin.params.account,
       0,
-      ...project.getApproveActionParams(),
       { authorization: `${admin.params.account}@active` }
     );
 
@@ -628,6 +507,7 @@ describe("Tests for projects smart contract", async function () {
       fail = false;
     } catch (err) {
       fail = true;
+      //console.log(err)
     }
 
     // //Assert
@@ -670,16 +550,11 @@ describe("Tests for projects smart contract", async function () {
       investors: [investor.params.account],
       issuer: "",
       regional_center: "",
-      fund_lp: "https://fund-lp.com",
-      total_fund_offering_amount: "400000.00 USD",
-      total_number_fund_offering: 40000,
-      price_per_fund_unit: "300.00 USD",
     });
 
     await contracts.projects.approveprjct(
       admin.params.account,
       0,
-      ...project.getApproveActionParams(),
       { authorization: `${admin.params.account}@active` }
     );
 
@@ -691,7 +566,7 @@ describe("Tests for projects smart contract", async function () {
       fail = false;
     } catch (err) {
       fail = true;
-      //console.log(err);
+      // console.log(err);
     }
 
     // //Assert
@@ -734,16 +609,11 @@ describe("Tests for projects smart contract", async function () {
       investors: [investor.params.account],
       issuer: "",
       regional_center: "",
-      fund_lp: "https://fund-lp.com",
-      total_fund_offering_amount: "400000.00 USD",
-      total_number_fund_offering: 40000,
-      price_per_fund_unit: "300.00 USD",
     });
 
     await contracts.projects.approveprjct(
       admin.params.account,
       0,
-      ...project.getApproveActionParams(),
       { authorization: `${admin.params.account}@active` }
     );
 
@@ -765,42 +635,27 @@ describe("Tests for projects smart contract", async function () {
 
     assert.deepStrictEqual(projectsTable.rows, [
       {
-        project_id: 0,
+        project_id: projectsTable.rows[0].project_id,
         developer_id: 0,
         owner: project.params.actor,
-        project_class: project.params.project_class,
-        project_name: project.params.project_name,
-        description: project.params.description,
-        created_date: projectsTable.rows[0].created_date,
-        status: ProjectConstants.status.investment,
         builder: project.params.builder,
         investors: project.params.investors,
         issuer: project.params.issuer,
         regional_center: project.params.regional_center,
-        total_project_cost: project.params.total_project_cost,
-        debt_financing: project.params.debt_financing,
-        term: project.params.term,
-        interest_rate: project.params.interest_rate,
-        loan_agreement: project.params.loan_agreement,
-        total_equity_financing: project.params.total_equity_financing,
-        total_gp_equity: project.params.total_gp_equity,
-        private_equity: project.params.private_equity,
-        annual_return: project.params.annual_return,
-        project_co_lp: project.params.project_co_lp,
-        project_co_lp_date: project.params.project_co_lp_date,
-        projected_completion_date: project.params.projected_completion_date,
-        projected_stabilization_date:
-          project.params.projected_stabilization_date,
-        anticipated_year_sale_refinance:
-          project.params.anticipated_year_sale_refinance,
-        fund_lp: project.params.fund_lp,
-        total_fund_offering_amount: project.params.total_fund_offering_amount,
-        total_number_fund_offering: project.params.total_number_fund_offering,
-        price_per_fund_unit: project.params.price_per_fund_unit,
+        project_name: project.params.project_name,
+        description: project.params.description,
+        image: project.params.image,
+        projected_starting_date: projectsTable.rows[0].projected_starting_date,
+        projected_completion_date: projectsTable.rows[0].projected_completion_date,
+        created_date: projectsTable.rows[0].created_date,
+        updated_date: projectsTable.rows[0].updated_date,
+        close_date: projectsTable.rows[0].close_date,
+        status: ProjectConstants.status.investment,
         approved_date: projectsTable.rows[0].approved_date,
         approved_by: projectsTable.rows[0].approved_by,
       },
-    ]);
+    ])
+
   });
 
   it("Create an investment", async function () {
@@ -831,16 +686,11 @@ describe("Tests for projects smart contract", async function () {
       investors: [investor.params.account],
       issuer: "",
       regional_center: "",
-      fund_lp: "https://fund-lp.com",
-      total_fund_offering_amount: "400000.00 USD",
-      total_number_fund_offering: 40000,
-      price_per_fund_unit: "300.00 USD",
     });
 
     await contracts.projects.approveprjct(
       admin.params.account,
       0,
-      ...project.getApproveActionParams(),
       { authorization: `${admin.params.account}@active` }
     );
 
@@ -924,16 +774,11 @@ describe("Tests for projects smart contract", async function () {
       investors: [investor.params.account],
       issuer: "",
       regional_center: "",
-      fund_lp: "https://fund-lp.com",
-      total_fund_offering_amount: "400000.00 USD",
-      total_number_fund_offering: 40000,
-      price_per_fund_unit: "300.00 USD",
     });
 
     await contracts.projects.approveprjct(
       admin.params.account,
       0,
-      ...project.getApproveActionParams(),
       { authorization: `${admin.params.account}@active` }
     );
 
@@ -1029,16 +874,11 @@ describe("Tests for projects smart contract", async function () {
       investors: [investor.params.account],
       issuer: "",
       regional_center: "",
-      fund_lp: "https://fund-lp.com",
-      total_fund_offering_amount: "400000.00 USD",
-      total_number_fund_offering: 40000,
-      price_per_fund_unit: "300.00 USD",
     });
 
     await contracts.projects.approveprjct(
       admin.params.account,
       0,
-      ...project.getApproveActionParams(),
       { authorization: `${admin.params.account}@active` }
     );
 
@@ -1107,16 +947,11 @@ describe("Tests for projects smart contract", async function () {
       investors: [investor.params.account],
       issuer: "",
       regional_center: "",
-      fund_lp: "https://fund-lp.com",
-      total_fund_offering_amount: "400000.00 USD",
-      total_number_fund_offering: 40000,
-      price_per_fund_unit: "300.00 USD",
     });
 
     await contracts.projects.approveprjct(
       admin.params.account,
       0,
-      ...project.getApproveActionParams(),
       { authorization: `${admin.params.account}@active` }
     );
 
@@ -1204,16 +1039,11 @@ describe("Tests for projects smart contract", async function () {
       investors: [investor.params.account],
       issuer: "",
       regional_center: "",
-      fund_lp: "https://fund-lp.com",
-      total_fund_offering_amount: "400000.00 USD",
-      total_number_fund_offering: 40000,
-      price_per_fund_unit: "300.00 USD",
     });
 
     await contracts.projects.approveprjct(
       admin.params.account,
       0,
-      ...project.getApproveActionParams(),
       { authorization: `${admin.params.account}@active` }
     );
 
@@ -1305,16 +1135,11 @@ describe("Tests for projects smart contract", async function () {
       investors: [investor.params.account],
       issuer: "",
       regional_center: "",
-      fund_lp: "https://fund-lp.com",
-      total_fund_offering_amount: "400000.00 USD",
-      total_number_fund_offering: 40000,
-      price_per_fund_unit: "300.00 USD",
     });
 
     await contracts.projects.approveprjct(
       admin.params.account,
       0,
-      ...project.getApproveActionParams(),
       { authorization: `${admin.params.account}@active` }
     );
 
@@ -1416,16 +1241,11 @@ describe("Tests for projects smart contract", async function () {
       investors: [investor.params.account],
       issuer: "",
       regional_center: "",
-      fund_lp: "https://fund-lp.com",
-      total_fund_offering_amount: "400000.00 USD",
-      total_number_fund_offering: 40000,
-      price_per_fund_unit: "300.00 USD",
     });
 
     await contracts.projects.approveprjct(
       admin.params.account,
       0,
-      ...project.getApproveActionParams(),
       { authorization: `${admin.params.account}@active` }
     );
 
@@ -1525,16 +1345,11 @@ describe("Tests for projects smart contract", async function () {
       investors: [investor.params.account],
       issuer: "",
       regional_center: "",
-      fund_lp: "https://fund-lp.com",
-      total_fund_offering_amount: "400000.00 USD",
-      total_number_fund_offering: 40000,
-      price_per_fund_unit: "300.00 USD",
     });
 
     await contracts.projects.approveprjct(
       admin.params.account,
       0,
-      ...project.getApproveActionParams(),
       { authorization: `${admin.params.account}@active` }
     );
 
@@ -1619,16 +1434,11 @@ describe("Tests for projects smart contract", async function () {
       investors: [investor.params.account],
       issuer: "",
       regional_center: "",
-      fund_lp: "https://fund-lp.com",
-      total_fund_offering_amount: "400000.00 USD",
-      total_number_fund_offering: 40000,
-      price_per_fund_unit: "300.00 USD",
     });
 
     await contracts.projects.approveprjct(
       admin.params.account,
       0,
-      ...project.getApproveActionParams(),
       { authorization: `${admin.params.account}@active` }
     );
 
@@ -1664,75 +1474,613 @@ describe("Tests for projects smart contract", async function () {
 
     assert.deepStrictEqual(projectsTable.rows, [
       {
-        project_id: 0,
+        project_id: projectsTable.rows[0].project_id,
         developer_id: 0,
         owner: project.params.actor,
-        project_class: project.params.project_class,
-        project_name: project.params.project_name,
-        description: project.params.description,
-        created_date: projectsTable.rows[0].created_date,
-        status: ProjectConstants.status.ready,
         builder: project.params.builder,
         investors: project.params.investors,
         issuer: project.params.issuer,
         regional_center: project.params.regional_center,
-        total_project_cost: project.params.total_project_cost,
-        debt_financing: project.params.debt_financing,
-        term: project.params.term,
-        interest_rate: project.params.interest_rate,
-        loan_agreement: project.params.loan_agreement,
-        total_equity_financing: project.params.total_equity_financing,
-        total_gp_equity: project.params.total_gp_equity,
-        private_equity: project.params.private_equity,
-        annual_return: project.params.annual_return,
-        project_co_lp: project.params.project_co_lp,
-        project_co_lp_date: project.params.project_co_lp_date,
-        projected_completion_date: project.params.projected_completion_date,
-        projected_stabilization_date:
-          project.params.projected_stabilization_date,
-        anticipated_year_sale_refinance:
-          project.params.anticipated_year_sale_refinance,
-        fund_lp: project.params.fund_lp,
-        total_fund_offering_amount: project.params.total_fund_offering_amount,
-        total_number_fund_offering: project.params.total_number_fund_offering,
-        price_per_fund_unit: project.params.price_per_fund_unit,
+        project_name: project.params.project_name,
+        description: project.params.description,
+        image: project.params.image,
+        projected_starting_date: projectsTable.rows[0].projected_starting_date,
+        projected_completion_date: projectsTable.rows[0].projected_completion_date,
+        created_date: projectsTable.rows[0].created_date,
+        updated_date: projectsTable.rows[0].updated_date,
+        close_date: projectsTable.rows[0].close_date,
+        status: ProjectConstants.status.ready,
         approved_date: projectsTable.rows[0].approved_date,
         approved_by: projectsTable.rows[0].approved_by,
       },
-    ]);
+    ])
+
   });
 
-  it("There can only be one (builder, issuer, regional center) per project", async () => {
+  it("There can only be one builder per project", async () => {
     //Arrange
-    let failBuilder, failIssuer, failRegional;
+    let failBuilder;
+
     await contracts.projects.adduser(
       projects,
-      "builderuser2",
-      "Builder2",
+      "builderuser3",
+      "Builder3",
       Roles.developer,
       {
         authorization: `${projects}@active`,
       }
     );
+
+    const project = await ProjectFactory.createWithDefaults({
+      actor: admin.params.account,
+    });
+
+    await contracts.projects.addproject(...project.getCreateActionParams(), {
+      authorization: `${admin.params.account}@active`,
+    });
+
+    await contracts.projects.assignuser(
+      admin.params.account,
+      builder.params.account,
+      0,
+      { authorization: `${admin.params.account}@active` }
+    );
+
+    // Act
+    try {
+      await contracts.projects.assignuser(
+        admin.params.account,
+        'builderuser3',
+        0,
+        { authorization: `${admin.params.account}@active` }
+      );
+      failBuilder = false;
+    } catch (err) {
+      failBuilder = true;
+      //console.log(err)
+    }
+
+    //Assert
+    const projectsTable = await rpc.get_table_rows({
+      code: projects,
+      scope: projects,
+      table: "projects",
+      json: true,
+    });
+    //console.log("\n\n Projects table : ", projectsTable.rows);
+
+    expect(failBuilder).to.be.true
+
+    assert.deepStrictEqual(projectsTable.rows, [
+      {
+        project_id: projectsTable.rows[0].project_id,
+        developer_id: 0,
+        owner: project.params.actor,
+        builder: builder.params.account,
+        investors: [],
+        issuer: '',
+        regional_center: '',
+        project_name: project.params.project_name,
+        description: project.params.description,
+        image: project.params.image,
+        projected_starting_date: projectsTable.rows[0].projected_starting_date,
+        projected_completion_date: projectsTable.rows[0].projected_completion_date,
+        created_date: projectsTable.rows[0].created_date,
+        updated_date: projectsTable.rows[0].updated_date,
+        close_date: projectsTable.rows[0].close_date,
+        status: ProjectConstants.status.awaiting,
+        approved_date: projectsTable.rows[0].approved_date,
+        approved_by: projectsTable.rows[0].approved_by,
+      },
+    ])
+  });
+
+  it("There can only be one issuer per project", async () => {
+    //Arrange
+    let failIssuer;
+
     await contracts.projects.adduser(
       projects,
       "issueruser2",
       "Issuer2",
-      Roles.developer,
-      {
-        authorization: `${projects}@active`,
-      }
-    );
-    await contracts.projects.adduser(
-      projects,
-      "regionlcntr2",
-      "RegionalCenter2",
-      Roles.developer,
+      Roles.issuer,
       {
         authorization: `${projects}@active`,
       }
     );
 
+    const project = await ProjectFactory.createWithDefaults({
+      actor: admin.params.account,
+    });
+
+    await contracts.projects.addproject(...project.getCreateActionParams(), {
+      authorization: `${admin.params.account}@active`,
+    });
+
+    await contracts.projects.assignuser(
+      admin.params.account,
+      issuer.params.account,
+      0,
+      { authorization: `${admin.params.account}@active` }
+    );
+
+    // Act
+    try {
+      await contracts.projects.assignuser(
+        admin.params.account,
+        'issueruser2',
+        0,
+        { authorization: `${admin.params.account}@active` }
+      );
+      failIssuer = false;
+    } catch (err) {
+      failIssuer = true;
+    }
+
+    //Assert
+    const projectsTable = await rpc.get_table_rows({
+      code: projects,
+      scope: projects,
+      table: "projects",
+      json: true,
+    });
+    //console.log("\n\n Projects table : ", projectsTable.rows);
+
+    expect(failIssuer).to.be.true
+
+    assert.deepStrictEqual(projectsTable.rows, [
+      {
+        project_id: projectsTable.rows[0].project_id,
+        developer_id: 0,
+        owner: project.params.actor,
+        builder: '',
+        investors: [],
+        issuer: issuer.params.account,
+        regional_center: '',
+        project_name: project.params.project_name,
+        description: project.params.description,
+        image: project.params.image,
+        projected_starting_date: projectsTable.rows[0].projected_starting_date,
+        projected_completion_date: projectsTable.rows[0].projected_completion_date,
+        created_date: projectsTable.rows[0].created_date,
+        updated_date: projectsTable.rows[0].updated_date,
+        close_date: projectsTable.rows[0].close_date,
+        status: ProjectConstants.status.awaiting,
+        approved_date: projectsTable.rows[0].approved_date,
+        approved_by: projectsTable.rows[0].approved_by,
+      },
+    ])
+  });
+
+  it("There can only be one regional center per project", async () => {
+    //Arrange
+    let failRegional;
+
+    await contracts.projects.adduser(
+      projects,
+      "regionlcntr2",
+      "RegionalCenter2",
+      Roles.regional_center,
+      {
+        authorization: `${projects}@active`,
+      }
+    );
+
+    const project = await ProjectFactory.createWithDefaults({
+      actor: admin.params.account,
+    });
+
+    await contracts.projects.addproject(...project.getCreateActionParams(), {
+      authorization: `${admin.params.account}@active`,
+    });
+
+    await contracts.projects.assignuser(
+      admin.params.account,
+      regional.params.account,
+      0,
+      { authorization: `${admin.params.account}@active` }
+    );
+
+    // Act
+    try {
+      await contracts.projects.assignuser(
+        admin.params.account,
+        'regionlcntr2',
+        0,
+        { authorization: `${admin.params.account}@active` }
+      );
+      failRegional = false;
+    } catch (err) {
+      failRegional = true;
+    }
+
+    //Assert
+    const projectsTable = await rpc.get_table_rows({
+      code: projects,
+      scope: projects,
+      table: "projects",
+      json: true,
+    });
+    //console.log("\n\n Projects table : ", projectsTable.rows);
+
+    expect(failRegional).to.be.true
+
+    assert.deepStrictEqual(projectsTable.rows, [
+      {
+        project_id: projectsTable.rows[0].project_id,
+        developer_id: 0,
+        owner: project.params.actor,
+        builder: '',
+        investors: [],
+        issuer: '',
+        regional_center: regional.params.account,
+        project_name: project.params.project_name,
+        description: project.params.description,
+        image: project.params.image,
+        projected_starting_date: projectsTable.rows[0].projected_starting_date,
+        projected_completion_date: projectsTable.rows[0].projected_completion_date,
+        created_date: projectsTable.rows[0].created_date,
+        updated_date: projectsTable.rows[0].updated_date,
+        close_date: projectsTable.rows[0].close_date,
+        status: ProjectConstants.status.awaiting,
+        approved_date: projectsTable.rows[0].approved_date,
+        approved_by: projectsTable.rows[0].approved_by,
+      },
+    ])
+  });
+
+  it('Remove builder from project before approve it', async () =>{
+    //Arrange
+    let failBuilder
+    const project = await ProjectFactory.createWithDefaults({
+      actor: admin.params.account,
+    });
+
+    await contracts.projects.addproject(...project.getCreateActionParams(), {
+      authorization: `${admin.params.account}@active`,
+    });
+
+    await contracts.projects.assignuser(
+      admin.params.account,
+      builder.params.account,
+      0,
+      { authorization: `${admin.params.account}@active` }
+    );
+
+    // Act
+    try {
+      await contracts.projects.removeuser(
+        admin.params.account,
+        'builderuser1',
+        0,
+        { authorization: `${admin.params.account}@active` }
+      );
+      failBuilder= false
+    } catch (err) {
+      failBuilder = true
+    }
+
+    //Assert
+    const projectsTable = await rpc.get_table_rows({
+      code: projects,
+      scope: projects,
+      table: "projects",
+      json: true,
+    });
+    // console.log("\n\n Projects table : ", projectsTable.rows);
+
+    expect(failBuilder).to.be.false
+
+    assert.deepStrictEqual(projectsTable.rows, [
+      {
+        project_id: projectsTable.rows[0].project_id,
+        developer_id: 0,
+        owner: project.params.actor,
+        builder: '',
+        investors: [],
+        issuer: '',
+        regional_center: '',
+        project_name: project.params.project_name,
+        description: project.params.description,
+        image: project.params.image,
+        projected_starting_date: projectsTable.rows[0].projected_starting_date,
+        projected_completion_date: projectsTable.rows[0].projected_completion_date,
+        created_date: projectsTable.rows[0].created_date,
+        updated_date: projectsTable.rows[0].updated_date,
+        close_date: projectsTable.rows[0].close_date,
+        status: ProjectConstants.status.awaiting,
+        approved_date: projectsTable.rows[0].approved_date,
+        approved_by: projectsTable.rows[0].approved_by,
+      },
+    ])
+
+
+
+
+  });
+
+  it('Remove investor from project before approve it', async () =>{
+    //Arrange
+    let failInvestor
+    const project = await ProjectFactory.createWithDefaults({
+      actor: admin.params.account,
+    });
+
+    await contracts.projects.addproject(...project.getCreateActionParams(), {
+      authorization: `${admin.params.account}@active`,
+    });
+
+    await contracts.projects.assignuser(
+      admin.params.account,
+      investor.params.account,
+      0,
+      { authorization: `${admin.params.account}@active` }
+    );
+
+    // Act
+    try {
+      await contracts.projects.removeuser(
+        admin.params.account,
+        'investoruser',
+        0,
+        { authorization: `${admin.params.account}@active` }
+      );
+      failInvestor = false
+    } catch (err) {
+      failInvestor = true
+    } 
+
+
+    //Assert
+    const projectsTable = await rpc.get_table_rows({
+      code: projects,
+      scope: projects,
+      table: "projects",
+      json: true,
+    });
+    // console.log("\n\n Projects table : ", projectsTable.rows);
+
+    expect(failInvestor).to.be.false
+
+    assert.deepStrictEqual(projectsTable.rows, [
+      {
+        project_id: projectsTable.rows[0].project_id,
+        developer_id: 0,
+        owner: project.params.actor,
+        builder: '',
+        investors: [],
+        issuer: '',
+        regional_center: '',
+        project_name: project.params.project_name,
+        description: project.params.description,
+        image: project.params.image,
+        projected_starting_date: projectsTable.rows[0].projected_starting_date,
+        projected_completion_date: projectsTable.rows[0].projected_completion_date,
+        created_date: projectsTable.rows[0].created_date,
+        updated_date: projectsTable.rows[0].updated_date,
+        close_date: projectsTable.rows[0].close_date,
+        status: ProjectConstants.status.awaiting,
+        approved_date: projectsTable.rows[0].approved_date,
+        approved_by: projectsTable.rows[0].approved_by,
+      },
+    ])
+
+  });
+
+  it('Remove issuer from project before approve it', async () =>{
+    //Arrange
+    let failIssuer
+    const project = await ProjectFactory.createWithDefaults({
+      actor: admin.params.account,
+    });
+
+    await contracts.projects.addproject(...project.getCreateActionParams(), {
+      authorization: `${admin.params.account}@active`,
+    });
+
+    await contracts.projects.assignuser(
+      admin.params.account,
+      issuer.params.account,
+      0,
+      { authorization: `${admin.params.account}@active` }
+    );
+
+    // Act
+    try {
+      await contracts.projects.removeuser(
+        admin.params.account,
+        'issueruser1',
+        0,
+        { authorization: `${admin.params.account}@active` }
+      );
+      failIssuer = false
+    } catch (err){
+      failIssuer = true
+    }
+
+    //Assert
+    const projectsTable = await rpc.get_table_rows({
+      code: projects,
+      scope: projects,
+      table: "projects",
+      json: true,
+    });
+    // console.log("\n\n Projects table : ", projectsTable.rows);
+
+    expect(failIssuer).to.be.false
+
+    assert.deepStrictEqual(projectsTable.rows, [
+      {
+        project_id: projectsTable.rows[0].project_id,
+        developer_id: 0,
+        owner: project.params.actor,
+        builder: '',
+        investors: [],
+        issuer: '',
+        regional_center: '',
+        project_name: project.params.project_name,
+        description: project.params.description,
+        image: project.params.image,
+        projected_starting_date: projectsTable.rows[0].projected_starting_date,
+        projected_completion_date: projectsTable.rows[0].projected_completion_date,
+        created_date: projectsTable.rows[0].created_date,
+        updated_date: projectsTable.rows[0].updated_date,
+        close_date: projectsTable.rows[0].close_date,
+        status: ProjectConstants.status.awaiting,
+        approved_date: projectsTable.rows[0].approved_date,
+        approved_by: projectsTable.rows[0].approved_by,
+      },
+    ])
+
+  });
+
+  it('Remove regional center from project before approve it', async () =>{
+    //Arrange
+    let failRegional
+    const project = await ProjectFactory.createWithDefaults({
+      actor: admin.params.account,
+    });
+
+    await contracts.projects.addproject(...project.getCreateActionParams(), {
+      authorization: `${admin.params.account}@active`,
+    });
+
+    await contracts.projects.assignuser(
+      admin.params.account,
+      regional.params.account,
+      0,
+      { authorization: `${admin.params.account}@active` }
+    );
+
+    // Act
+    try {
+      await contracts.projects.removeuser(
+        admin.params.account,
+        'regionalcntr',
+        0,
+        { authorization: `${admin.params.account}@active` }
+      );
+      failRegional = false
+    } catch (err) {
+      failRegional = true
+      //console.error(err)
+    }
+
+    //Assert
+    const projectsTable = await rpc.get_table_rows({
+      code: projects,
+      scope: projects,
+      table: "projects",
+      json: true,
+    });
+    // console.log("\n\n Projects table : ", projectsTable.rows);
+
+    expect(failRegional).to.be.false
+
+    assert.deepStrictEqual(projectsTable.rows, [
+      {
+        project_id: projectsTable.rows[0].project_id,
+        developer_id: 0,
+        owner: project.params.actor,
+        builder: '',
+        investors: [],
+        issuer: '',
+        regional_center: '',
+        project_name: project.params.project_name,
+        description: project.params.description,
+        image: project.params.image,
+        projected_starting_date: projectsTable.rows[0].projected_starting_date,
+        projected_completion_date: projectsTable.rows[0].projected_completion_date,
+        created_date: projectsTable.rows[0].created_date,
+        updated_date: projectsTable.rows[0].updated_date,
+        close_date: projectsTable.rows[0].close_date,
+        status: ProjectConstants.status.awaiting,
+        approved_date: projectsTable.rows[0].approved_date,
+        approved_by: projectsTable.rows[0].approved_by,
+      },
+    ])
+
+  });
+
+  it('Cannot remove builder from project once the project has been approved', async () =>{
+    //Arrange
+    let failBuilder
+    const project = await ProjectFactory.createWithDefaults({
+      actor: admin.params.account,
+    });
+
+    await contracts.projects.addproject(...project.getCreateActionParams(), {
+      authorization: `${admin.params.account}@active`,
+    });
+
+    await contracts.projects.assignuser(
+      admin.params.account,
+      builder.params.account,
+      0,
+      { authorization: `${admin.params.account}@active` }
+    );
+
+    await contracts.projects.approveprjct(
+      admin.params.account,
+      0,
+      { authorization: `${admin.params.account}@active` }
+    );
+
+    // Act
+    try {
+      await contracts.projects.removeuser(
+        admin.params.account,
+        'builderuser1',
+        0,
+        { authorization: `${admin.params.account}@active` }
+      );
+      failBuilder= false
+    } catch (err) {
+      failBuilder = true
+    }
+
+    //Assert
+    const projectsTable = await rpc.get_table_rows({
+      code: projects,
+      scope: projects,
+      table: "projects",
+      json: true,
+    });
+    // console.log("\n\n Projects table : ", projectsTable.rows);
+
+    expect(failBuilder).to.be.true
+
+    assert.deepStrictEqual(projectsTable.rows, [
+      {
+        project_id: projectsTable.rows[0].project_id,
+        developer_id: 0,
+        owner: project.params.actor,
+        builder: builder.params.account,
+        investors: [],
+        issuer: '',
+        regional_center: '',
+        project_name: project.params.project_name,
+        description: project.params.description,
+        image: project.params.image,
+        projected_starting_date: projectsTable.rows[0].projected_starting_date,
+        projected_completion_date: projectsTable.rows[0].projected_completion_date,
+        created_date: projectsTable.rows[0].created_date,
+        updated_date: projectsTable.rows[0].updated_date,
+        close_date: projectsTable.rows[0].close_date,
+        status: ProjectConstants.status.ready,
+        approved_date: projectsTable.rows[0].approved_date,
+        approved_by: projectsTable.rows[0].approved_by,
+      },
+    ])
+
+
+
+
+  });
+
+  it('Cannot remove investor from project once the project has been approved', async () =>{
+    //Arrange
+    let failInvestor
     const project = await ProjectFactory.createWithDefaults({
       actor: admin.params.account,
     });
@@ -1755,9 +2103,155 @@ describe("Tests for projects smart contract", async function () {
       { authorization: `${admin.params.account}@active` }
     );
 
+    await contracts.projects.approveprjct(
+      admin.params.account,
+      0,
+      { authorization: `${admin.params.account}@active` }
+    );
+
+    //Act
+    try {
+      await contracts.projects.removeuser(
+        admin.params.account,
+        investor.params.account,
+        0,
+        { authorization: `${admin.params.account}@active` }
+      );
+      failInvestor = false
+    } catch (err) {
+      failInvestor = true
+    } 
+
+    //Assert
+    const projectsTable = await rpc.get_table_rows({
+      code: projects,
+      scope: projects,
+      table: "projects",
+      json: true,
+    });
+    // console.log("\n\n Projects table : ", projectsTable.rows);
+
+    expect(failInvestor).to.be.true
+
+    assert.deepStrictEqual(projectsTable.rows, [
+      {
+        project_id: projectsTable.rows[0].project_id,
+        developer_id: 0,
+        owner: project.params.actor,
+        builder:  builder.params.account,
+        investors: [investor.params.account],
+        issuer: '',
+        regional_center: '',
+        project_name: project.params.project_name,
+        description: project.params.description,
+        image: project.params.image,
+        projected_starting_date: projectsTable.rows[0].projected_starting_date,
+        projected_completion_date: projectsTable.rows[0].projected_completion_date,
+        created_date: projectsTable.rows[0].created_date,
+        updated_date: projectsTable.rows[0].updated_date,
+        close_date: projectsTable.rows[0].close_date,
+        status: ProjectConstants.status.ready,
+        approved_date: projectsTable.rows[0].approved_date,
+        approved_by: projectsTable.rows[0].approved_by,
+      },
+    ])
+
+  });
+
+  it('Cannot remove issuer from project once the project has been approved', async () =>{
+    //Arrange
+    let failIssuer
+    const project = await ProjectFactory.createWithDefaults({
+      actor: admin.params.account,
+    });
+
+    await contracts.projects.addproject(...project.getCreateActionParams(), {
+      authorization: `${admin.params.account}@active`,
+    });
+
+    await contracts.projects.assignuser(
+      admin.params.account,
+      builder.params.account,
+      0,
+      { authorization: `${admin.params.account}@active` }
+    );
+
     await contracts.projects.assignuser(
       admin.params.account,
       issuer.params.account,
+      0,
+      { authorization: `${admin.params.account}@active` }
+    );
+
+    await contracts.projects.approveprjct(
+      admin.params.account,
+      0,
+      { authorization: `${admin.params.account}@active` }
+    );
+
+    //Act
+    try {
+      await contracts.projects.removeuser(
+        admin.params.account,
+        'issueruser1',
+        0,
+        { authorization: `${admin.params.account}@active` }
+      );
+      failIssuer = false
+    } catch (err){
+      failIssuer = true
+    }
+
+    //Assert
+    const projectsTable = await rpc.get_table_rows({
+      code: projects,
+      scope: projects,
+      table: "projects",
+      json: true,
+    });
+    // console.log("\n\n Projects table : ", projectsTable.rows);
+
+    expect(failIssuer).to.be.true
+
+    assert.deepStrictEqual(projectsTable.rows, [
+      {
+        project_id: projectsTable.rows[0].project_id,
+        developer_id: 0,
+        owner: project.params.actor,
+        builder:  builder.params.account,
+        investors: [],
+        issuer: issuer.params.account,
+        regional_center: '',
+        project_name: project.params.project_name,
+        description: project.params.description,
+        image: project.params.image,
+        projected_starting_date: projectsTable.rows[0].projected_starting_date,
+        projected_completion_date: projectsTable.rows[0].projected_completion_date,
+        created_date: projectsTable.rows[0].created_date,
+        updated_date: projectsTable.rows[0].updated_date,
+        close_date: projectsTable.rows[0].close_date,
+        status: ProjectConstants.status.ready,
+        approved_date: projectsTable.rows[0].approved_date,
+        approved_by: projectsTable.rows[0].approved_by,
+      },
+    ])
+
+  });
+
+  it('Cannot remove regional center from project once the project has been approved', async () =>{
+    //Arrange
+    let failRegional
+    const project = await ProjectFactory.createWithDefaults({
+      actor: admin.params.account,
+    });
+
+    await contracts.projects.addproject(...project.getCreateActionParams(), {
+      authorization: `${admin.params.account}@active`,
+    });
+
+    await contracts.projects.assignuser(
+      admin.params.account,
+      builder.params.account,
       0,
       { authorization: `${admin.params.account}@active` }
     );
@@ -1769,60 +2263,24 @@ describe("Tests for projects smart contract", async function () {
       { authorization: `${admin.params.account}@active` }
     );
 
-    Object.assign(project.params, {
-      status: 1,
-      builder: builder.params.account,
-      investors: [investor.params.account],
-      issuer: "",
-      regional_center: "",
-      fund_lp: "https://fund-lp.com",
-      total_fund_offering_amount: "400000.00 USD",
-      total_number_fund_offering: 40000,
-      price_per_fund_unit: "300.00 USD",
-    });
-
     await contracts.projects.approveprjct(
       admin.params.account,
       0,
-      ...project.getApproveActionParams(),
       { authorization: `${admin.params.account}@active` }
     );
-    // Act
 
+    //Act
     try {
-      await contracts.projects.assignuser(
+      await contracts.projects.removeuser(
         admin.params.account,
-        'builderuser2',
+        'regionalcntr',
         0,
         { authorization: `${admin.params.account}@active` }
       );
-      failBuilder = false;
+      failRegional = false
     } catch (err) {
-      failBuilder = true;
-    }
-    
-    try {
-      await contracts.projects.assignuser(
-        admin.params.account,
-        'issueruser2',
-        0,
-        { authorization: `${admin.params.account}@active` }
-      );
-      failIssuer = false;
-    } catch (err) {
-      failIssuer = true;
-    }
-
-    try {
-      await contracts.projects.assignuser(
-        admin.params.account,
-        'regionlcntr2',
-        0,
-        { authorization: `${admin.params.account}@active` }
-      );
-      failRegional = false;
-    } catch (err) {
-      failRegional = true;
+      failRegional = true
+      //console.error(err)
     }
 
     //Assert
@@ -1832,49 +2290,33 @@ describe("Tests for projects smart contract", async function () {
       table: "projects",
       json: true,
     });
-    //console.log("\n\n Projects table : ", projectsTable.rows);
+    // console.log("\n\n Projects table : ", projectsTable.rows);
 
-    expect(failBuilder).to.be.true
-    expect(failIssuer).to.be.true
     expect(failRegional).to.be.true
 
     assert.deepStrictEqual(projectsTable.rows, [
       {
-        project_id: 0,
+        project_id: projectsTable.rows[0].project_id,
         developer_id: 0,
         owner: project.params.actor,
-        project_class: project.params.project_class,
+        builder:  builder.params.account,
+        investors: [],
+        issuer: '',
+        regional_center: regional.params.account,
         project_name: project.params.project_name,
         description: project.params.description,
+        image: project.params.image,
+        projected_starting_date: projectsTable.rows[0].projected_starting_date,
+        projected_completion_date: projectsTable.rows[0].projected_completion_date,
         created_date: projectsTable.rows[0].created_date,
+        updated_date: projectsTable.rows[0].updated_date,
+        close_date: projectsTable.rows[0].close_date,
         status: ProjectConstants.status.ready,
-        builder: project.params.builder,
-        investors: project.params.investors,
-        issuer: issuer.params.account,
-        regional_center: regional.params.account,
-        total_project_cost: project.params.total_project_cost,
-        debt_financing: project.params.debt_financing,
-        term: project.params.term,
-        interest_rate: project.params.interest_rate,
-        loan_agreement: project.params.loan_agreement,
-        total_equity_financing: project.params.total_equity_financing,
-        total_gp_equity: project.params.total_gp_equity,
-        private_equity: project.params.private_equity,
-        annual_return: project.params.annual_return,
-        project_co_lp: project.params.project_co_lp,
-        project_co_lp_date: project.params.project_co_lp_date,
-        projected_completion_date: project.params.projected_completion_date,
-        projected_stabilization_date:
-          project.params.projected_stabilization_date,
-        anticipated_year_sale_refinance:
-          project.params.anticipated_year_sale_refinance,
-        fund_lp: project.params.fund_lp,
-        total_fund_offering_amount: project.params.total_fund_offering_amount,
-        total_number_fund_offering: project.params.total_number_fund_offering,
-        price_per_fund_unit: project.params.price_per_fund_unit,
         approved_date: projectsTable.rows[0].approved_date,
         approved_by: projectsTable.rows[0].approved_by,
       },
-    ]);
+    ])
+
   });
+
 });

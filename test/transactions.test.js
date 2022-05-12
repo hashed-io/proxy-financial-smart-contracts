@@ -126,7 +126,6 @@ describe("Tests for transactions smart contract", async function () {
     await contracts.projects.approveprjct(
       admin.params.account,
       project.params.id,
-      ...project.getApproveActionParams(),
       { authorization: `${admin.params.account}@active` }
     );
 
@@ -480,299 +479,6 @@ describe("Tests for transactions smart contract", async function () {
       });
     });
 
-    // const drawdownSubmitCases = [
-    //   { testName: "Submit a EB5 drawdown", drawdown_id: 1 },
-    //   { testName: "Submit a Construction Loan drawdown", drawdown_id: 2 },
-    //   { testName: "Submit a Developer Equity drawdown", drawdown_id: 3 },
-    // ];
-
-    // drawdownSubmitCases.forEach(({ testName, drawdown_id }) => {
-    //   it(testName, async () => {
-    //     // Arrange
-    //     const transaction = await TransactionFactory.createWithDefaults({});
-    //     // console.log(...transaction.getCreateParams());
-
-    //     await contracts.transactions.transacts(
-    //       builder.params.account,
-    //       project.params.id,
-    //       drawdown_id,
-    //       transaction.getCreateParams(),
-    //       { authorization: `${builder.params.account}@active` }
-    //     );
-
-    //     // Act
-    //     await contracts.transactions.movedrawdown(
-    //       builder.params.account,
-    //       project.params.id,
-    //       drawdown_id,
-    //       { authorization: `${builder.params.account}@active` }
-    //     );
-
-    //     // Assert
-    //     const drawdownTable = await rpc.get_table_rows({
-    //       code: transactions,
-    //       scope: project.params.id,
-    //       table: "drawdowns",
-    //       json: true,
-    //     });
-
-    //     expect(drawdownTable.rows[drawdown_id - 1]).to.include({
-    //       state: DrawdownState.submitted,
-    //       total_amount: `${
-    //         transaction.getCreateParams()[0].amounts[0].amount * 0.01
-    //       }.00 USD`,
-    //     });
-
-    //     const transactionsTable = await rpc.get_table_rows({
-    //       code: transactions,
-    //       scope: project.params.id,
-    //       table: "transactions",
-    //       json: true,
-    //     });
-
-    //     expect(transactionsTable.rows).to.deep.equals([
-    //       {
-    //         accounting: [],
-    //         actor: builder.params.account,
-    //         description: "descrip",
-    //         drawdown_id: drawdown_id,
-    //         supporting_files: transaction.getCreateParams()[0].supporting_files,
-    //         timestamp: transactionsTable.rows[0].timestamp,
-    //         total_amount: `${
-    //           transaction.getCreateParams()[0].amounts[0].amount * 0.01
-    //         }.00 USD`,
-    //         transaction_category: 3,
-    //         transaction_id: 1,
-    //       },
-    //     ]);
-
-    //     const accountsTable = await rpc.get_table_rows({
-    //       code: accounts,
-    //       scope: project.params.id,
-    //       table: "accounts",
-    //       json: true,
-    //     });
-
-    //     // console.table(accountsTable.rows);
-
-    //     expect(accountsTable.rows[1]).to.include({
-    //       increase_balance: `${
-    //         transaction.getCreateParams()[0].amounts[0].amount * 0.01
-    //       }.00 USD`,
-    //     });
-    //     expect(accountsTable.rows[5]).to.include({
-    //       increase_balance: `${
-    //         transaction.getCreateParams()[0].amounts[0].amount * 0.01
-    //       }.00 USD`,
-    //     });
-    //   });
-    // });
-
-    // const drawdownApproveCases = [
-    //   { testName: "Approve a submitted EB5 drawdown", drawdown_id: 1 },
-    //   {
-    //     testName: "Approve a submitted Construction Loan drawdown",
-    //     drawdown_id: 2,
-    //   },
-    //   {
-    //     testName: "Approve a submitted Developer Equity drawdown",
-    //     drawdown_id: 3,
-    //   },
-    // ];
-
-    // drawdownApproveCases.forEach(({ testName, drawdown_id }) => {
-    //   it(testName, async () => {
-    //     // Arrange
-    //     const transaction = await TransactionFactory.createWithDefaults({});
-    //     // console.log(...transaction.getCreateParams());
-
-    //     await contracts.transactions.transacts(
-    //       builder.params.account,
-    //       project.params.id,
-    //       drawdown_id,
-    //       transaction.getCreateParams(),
-    //       { authorization: `${builder.params.account}@active` }
-    //     );
-    //     await contracts.transactions.movedrawdown(
-    //       builder.params.account,
-    //       project.params.id,
-    //       drawdown_id,
-    //       { authorization: `${builder.params.account}@active` }
-    //     );
-
-    //     // Act
-    //     await contracts.transactions.acptdrawdown(
-    //       admin.params.account,
-    //       project.params.id,
-    //       drawdown_id,
-    //       { authorization: `${admin.params.account}@active` }
-    //     );
-
-    //     // Assert
-    //     const drawdownTable = await rpc.get_table_rows({
-    //       code: transactions,
-    //       scope: project.params.id,
-    //       table: "drawdowns",
-    //       json: true,
-    //     });
-
-    //     console.table(drawdownTable.rows);
-
-    //     expect(drawdownTable.rows[drawdown_id - 1]).to.include({
-    //       state: DrawdownState.approved,
-    //       total_amount: `${
-    //         transaction.getCreateParams()[0].amounts[0].amount * 0.01
-    //       }.00 USD`,
-    //     });
-
-    //     const transactionsTable = await rpc.get_table_rows({
-    //       code: transactions,
-    //       scope: project.params.id,
-    //       table: "transactions",
-    //       json: true,
-    //     });
-
-    //     expect(transactionsTable.rows).to.deep.equals([
-    //       {
-    //         accounting: [],
-    //         actor: builder.params.account,
-    //         description: "descrip",
-    //         drawdown_id: drawdown_id,
-    //         supporting_files: transaction.getCreateParams()[0].supporting_files,
-    //         timestamp: transactionsTable.rows[0].timestamp,
-    //         total_amount: `${
-    //           transaction.getCreateParams()[0].amounts[0].amount * 0.01
-    //         }.00 USD`,
-    //         transaction_category: 3,
-    //         transaction_id: 1,
-    //       },
-    //     ]);
-
-    //     const accountsTable = await rpc.get_table_rows({
-    //       code: accounts,
-    //       scope: project.params.id,
-    //       table: "accounts",
-    //       json: true,
-    //     });
-
-    //     // console.table(accountsTable.rows);
-
-    //     expect(accountsTable.rows[1]).to.include({
-    //       increase_balance: `${
-    //         transaction.getCreateParams()[0].amounts[0].amount * 0.01
-    //       }.00 USD`,
-    //     });
-    //     expect(accountsTable.rows[5]).to.include({
-    //       increase_balance: `${
-    //         transaction.getCreateParams()[0].amounts[0].amount * 0.01
-    //       }.00 USD`,
-    //     });
-    //   });
-    // });
-
-    // const drawdownRejectCases = [
-    //   { testName: "Reject a submitted EB5 drawdown", drawdown_id: 1 },
-    //   {
-    //     testName: "Reject a submitted Construction Loan drawdown",
-    //     drawdown_id: 2,
-    //   },
-    //   {
-    //     testName: "Reject a submitted Developer Equity drawdown",
-    //     drawdown_id: 3,
-    //   },
-    // ];
-
-    // drawdownRejectCases.forEach(({ testName, drawdown_id }) => {
-    //   it(testName, async () => {
-    //     // Arrange
-    //     const transaction = await TransactionFactory.createWithDefaults({});
-    //     // console.log(...transaction.getCreateParams());
-
-    //     await contracts.transactions.transacts(
-    //       builder.params.account,
-    //       project.params.id,
-    //       drawdown_id,
-    //       transaction.getCreateParams(),
-    //       { authorization: `${builder.params.account}@active` }
-    //     );
-    //     await contracts.transactions.movedrawdown(
-    //       builder.params.account,
-    //       project.params.id,
-    //       drawdown_id,
-    //       { authorization: `${builder.params.account}@active` }
-    //     );
-
-    //     // Act
-    //     await contracts.transactions.rejtdrawdown(
-    //       admin.params.account,
-    //       project.params.id,
-    //       drawdown_id,
-    //       { authorization: `${admin.params.account}@active` }
-    //     );
-
-    //     // Assert
-    //     const drawdownTable = await rpc.get_table_rows({
-    //       code: transactions,
-    //       scope: project.params.id,
-    //       table: "drawdowns",
-    //       json: true,
-    //     });
-
-    //     // console.log(drawdownTable);
-
-    //     expect(drawdownTable.rows[drawdown_id - 1]).to.include({
-    //       state: DrawdownState.daft,
-    //       total_amount: `${
-    //         transaction.getCreateParams()[0].amounts[0].amount * 0.01
-    //       }.00 USD`,
-    //     });
-
-    //     const transactionsTable = await rpc.get_table_rows({
-    //       code: transactions,
-    //       scope: project.params.id,
-    //       table: "transactions",
-    //       json: true,
-    //     });
-
-    //     expect(transactionsTable.rows).to.deep.equals([
-    //       {
-    //         accounting: [],
-    //         actor: builder.params.account,
-    //         description: "descrip",
-    //         drawdown_id: drawdown_id,
-    //         supporting_files: transaction.getCreateParams()[0].supporting_files,
-    //         timestamp: transactionsTable.rows[0].timestamp,
-    //         total_amount: `${
-    //           transaction.getCreateParams()[0].amounts[0].amount * 0.01
-    //         }.00 USD`,
-    //         transaction_category: 3,
-    //         transaction_id: 1,
-    //       },
-    //     ]);
-
-    //     const accountsTable = await rpc.get_table_rows({
-    //       code: accounts,
-    //       scope: project.params.id,
-    //       table: "accounts",
-    //       json: true,
-    //     });
-
-    //     // console.table(accountsTable.rows);
-
-    //     expect(accountsTable.rows[1]).to.include({
-    //       increase_balance: `${
-    //         transaction.getCreateParams()[0].amounts[0].amount * 0.01
-    //       }.00 USD`,
-    //     });
-    //     expect(accountsTable.rows[5]).to.include({
-    //       increase_balance: `${
-    //         transaction.getCreateParams()[0].amounts[0].amount * 0.01
-    //       }.00 USD`,
-    //     });
-    //   });
-    // });
-
-
   it("Create and remove a transaction for the project", async () => {
     // Arrange
     const transaction = await TransactionFactory.createWithDefaults({});
@@ -843,5 +549,26 @@ describe("Tests for transactions smart contract", async function () {
 
     //console.table(UserTable.rows);
   });
+
 });
+// TODO: CHECK WHERE ADMIN CAN EDIT (status)
+// it.only('admin can edit transactions in submit state', async () => {
+//   //arrange
+//   let fail
+//   const transaction = await TransactionFactory.createWithDefaults({flag: 1});
+//   console.log(transaction)
+//   eb5
+
+//   //act
+//   try{
+//     await contracts.transactions.transacts(admin.params.account, project.params.id, 1, transaction.getCreateParams(), { authorization: `${admin.params.account}@active` });
+//     fail = false
+//   } catch (err) {
+//     console.log(err)
+//     fail = true
+//   }
+//   //assert
+//   //expect(fail).to.be.true
+// });
+
 });

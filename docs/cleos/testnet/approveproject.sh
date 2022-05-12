@@ -1,0 +1,1 @@
+cleos -u https://testnet.telos.caleos.io push action proxyv3prjct approveprjct [ 'proxyadmin11', '0', 'https://fund-lp.com', '400000.00 USD', 40000, '300.00 USD' ] -p proxyadmin11@active

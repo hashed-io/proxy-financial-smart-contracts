@@ -78,7 +78,7 @@ describe("Tests for budgets smart contract", async function () {
   afterEach(async function () {
     await EnvironmentUtil.killNode();
   });
-
+/*
   it("Developer creates a new budget", async function () {
     //Arrange
     const developerEntity = await EntityFactory.createWithDefaults({
@@ -889,4 +889,5 @@ describe("Tests for budgets smart contract", async function () {
     });
     console.log("\n\n budgetpriods table : ", budgetsTable2.rows);
   });
+  */
 });

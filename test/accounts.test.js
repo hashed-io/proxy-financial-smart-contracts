@@ -79,7 +79,7 @@ describe('Tests for budget expenditures', async function () {
       price_per_fund_unit: "300.00 USD"
     });
 
-    await contracts.projects.approveprjct(admin.params.account, project.params.id, ...project.getApproveActionParams(),
+    await contracts.projects.approveprjct(admin.params.account, project.params.id,
       { authorization: `${admin.params.account}@active` });
 
 
@@ -101,7 +101,7 @@ describe('Tests for budget expenditures', async function () {
   })
 
 
-  it.only('Create all the project\'s budget expenditures', async () => {
+  it('Create all the project\'s budget expenditures', async () => {
     // Arrange
 
     // Act
@@ -131,7 +131,7 @@ describe('Tests for budget expenditures', async function () {
   ]
 
   addBudgetExpenditures.forEach(({ testName, parent_id, account_name }) => {
-    it.only(testName, async () => {
+    it(testName, async () => {
 
       // Arrange
       const new_account = await AccountFactory.createWithDefaults({ actor: admin.params.account, account_name: account_name, parent_id: parent_id });

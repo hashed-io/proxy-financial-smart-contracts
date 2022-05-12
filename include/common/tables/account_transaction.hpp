@@ -1,6 +1,6 @@
 using namespace eosio;
 
-// scoped by project_id
+// ! scoped by project_id
 #define DEFINE_ACCOUNT_TRANSACTION_TABLE                          \
   TABLE account_transaction_table                                 \
   {                                                               \
