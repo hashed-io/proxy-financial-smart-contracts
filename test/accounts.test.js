@@ -75,7 +75,7 @@ describe('Tests for budget expenditures', async function () {
       investors: [investor.params.account],
     });
 
-    await contracts.projects.approveprjct(admin.params.account, project.params.id, ...project.getApproveActionParams(),
+    await contracts.projects.approveprjct(admin.params.account, project.params.id,
       { authorization: `${admin.params.account}@active` });
 
 

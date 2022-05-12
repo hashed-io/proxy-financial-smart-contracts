@@ -114,7 +114,7 @@ describe("Tests for projects smart contract", async function () {
     const project = await ProjectFactory.createWithDefaults({
       actor: user.params.account,
     });
-    console.log(project);
+    // console.log(project);
 
     Object.assign(project.params, {
       builder: "",
@@ -136,7 +136,7 @@ describe("Tests for projects smart contract", async function () {
       json: true,
     });
 
-    console.log("\n\n Projects  table : ", projectsTable.rows);
+    // console.log("\n\n Projects  table : ", projectsTable.rows);
 
     assert.deepStrictEqual(projectsTable.rows, [
       {
@@ -340,7 +340,6 @@ describe("Tests for projects smart contract", async function () {
     await contracts.projects.approveprjct(
       admin.params.account,
       0,
-      ...project.getApproveActionParams(),
       { authorization: `${admin.params.account}@active` }
     );
 
@@ -491,7 +490,6 @@ describe("Tests for projects smart contract", async function () {
     await contracts.projects.approveprjct(
       admin.params.account,
       0,
-      ...project.getApproveActionParams(),
       { authorization: `${admin.params.account}@active` }
     );
 
@@ -557,7 +555,6 @@ describe("Tests for projects smart contract", async function () {
     await contracts.projects.approveprjct(
       admin.params.account,
       0,
-      ...project.getApproveActionParams(),
       { authorization: `${admin.params.account}@active` }
     );
 
@@ -569,7 +566,7 @@ describe("Tests for projects smart contract", async function () {
       fail = false;
     } catch (err) {
       fail = true;
-      console.log(err);
+      // console.log(err);
     }
 
     // //Assert
@@ -617,7 +614,6 @@ describe("Tests for projects smart contract", async function () {
     await contracts.projects.approveprjct(
       admin.params.account,
       0,
-      ...project.getApproveActionParams(),
       { authorization: `${admin.params.account}@active` }
     );
 
@@ -695,7 +691,6 @@ describe("Tests for projects smart contract", async function () {
     await contracts.projects.approveprjct(
       admin.params.account,
       0,
-      ...project.getApproveActionParams(),
       { authorization: `${admin.params.account}@active` }
     );
 
@@ -784,7 +779,6 @@ describe("Tests for projects smart contract", async function () {
     await contracts.projects.approveprjct(
       admin.params.account,
       0,
-      ...project.getApproveActionParams(),
       { authorization: `${admin.params.account}@active` }
     );
 
@@ -885,7 +879,6 @@ describe("Tests for projects smart contract", async function () {
     await contracts.projects.approveprjct(
       admin.params.account,
       0,
-      ...project.getApproveActionParams(),
       { authorization: `${admin.params.account}@active` }
     );
 
@@ -959,7 +952,6 @@ describe("Tests for projects smart contract", async function () {
     await contracts.projects.approveprjct(
       admin.params.account,
       0,
-      ...project.getApproveActionParams(),
       { authorization: `${admin.params.account}@active` }
     );
 
@@ -1052,7 +1044,6 @@ describe("Tests for projects smart contract", async function () {
     await contracts.projects.approveprjct(
       admin.params.account,
       0,
-      ...project.getApproveActionParams(),
       { authorization: `${admin.params.account}@active` }
     );
 
@@ -1149,7 +1140,6 @@ describe("Tests for projects smart contract", async function () {
     await contracts.projects.approveprjct(
       admin.params.account,
       0,
-      ...project.getApproveActionParams(),
       { authorization: `${admin.params.account}@active` }
     );
 
@@ -1256,7 +1246,6 @@ describe("Tests for projects smart contract", async function () {
     await contracts.projects.approveprjct(
       admin.params.account,
       0,
-      ...project.getApproveActionParams(),
       { authorization: `${admin.params.account}@active` }
     );
 
@@ -1361,7 +1350,6 @@ describe("Tests for projects smart contract", async function () {
     await contracts.projects.approveprjct(
       admin.params.account,
       0,
-      ...project.getApproveActionParams(),
       { authorization: `${admin.params.account}@active` }
     );
 
@@ -1451,7 +1439,6 @@ describe("Tests for projects smart contract", async function () {
     await contracts.projects.approveprjct(
       admin.params.account,
       0,
-      ...project.getApproveActionParams(),
       { authorization: `${admin.params.account}@active` }
     );
 
@@ -1510,9 +1497,10 @@ describe("Tests for projects smart contract", async function () {
 
   });
 
-  it("There can only be one (builder, issuer, regional center) per project", async () => {
+  it("There can only be one builder per project", async () => {
     //Arrange
-    let failBuilder, failIssuer, failRegional;
+    let failBuilder;
+
     await contracts.projects.adduser(
       projects,
       "builderuser3",
@@ -1522,25 +1510,577 @@ describe("Tests for projects smart contract", async function () {
         authorization: `${projects}@active`,
       }
     );
+
+    const project = await ProjectFactory.createWithDefaults({
+      actor: admin.params.account,
+    });
+
+    await contracts.projects.addproject(...project.getCreateActionParams(), {
+      authorization: `${admin.params.account}@active`,
+    });
+
+    await contracts.projects.assignuser(
+      admin.params.account,
+      builder.params.account,
+      0,
+      { authorization: `${admin.params.account}@active` }
+    );
+
+    // Act
+    try {
+      await contracts.projects.assignuser(
+        admin.params.account,
+        'builderuser3',
+        0,
+        { authorization: `${admin.params.account}@active` }
+      );
+      failBuilder = false;
+    } catch (err) {
+      failBuilder = true;
+      //console.log(err)
+    }
+
+    //Assert
+    const projectsTable = await rpc.get_table_rows({
+      code: projects,
+      scope: projects,
+      table: "projects",
+      json: true,
+    });
+    //console.log("\n\n Projects table : ", projectsTable.rows);
+
+    expect(failBuilder).to.be.true
+
+    assert.deepStrictEqual(projectsTable.rows, [
+      {
+        project_id: projectsTable.rows[0].project_id,
+        developer_id: 0,
+        owner: project.params.actor,
+        builder: builder.params.account,
+        investors: [],
+        issuer: '',
+        regional_center: '',
+        project_name: project.params.project_name,
+        description: project.params.description,
+        image: project.params.image,
+        projected_starting_date: projectsTable.rows[0].projected_starting_date,
+        projected_completion_date: projectsTable.rows[0].projected_completion_date,
+        created_date: projectsTable.rows[0].created_date,
+        updated_date: projectsTable.rows[0].updated_date,
+        close_date: projectsTable.rows[0].close_date,
+        status: ProjectConstants.status.awaiting,
+        approved_date: projectsTable.rows[0].approved_date,
+        approved_by: projectsTable.rows[0].approved_by,
+      },
+    ])
+  });
+
+  it("There can only be one issuer per project", async () => {
+    //Arrange
+    let failIssuer;
+
     await contracts.projects.adduser(
       projects,
       "issueruser2",
       "Issuer2",
-      Roles.developer,
-      {
-        authorization: `${projects}@active`,
-      }
-    );
-    await contracts.projects.adduser(
-      projects,
-      "regionlcntr2",
-      "RegionalCenter2",
-      Roles.developer,
+      Roles.issuer,
       {
         authorization: `${projects}@active`,
       }
     );
 
+    const project = await ProjectFactory.createWithDefaults({
+      actor: admin.params.account,
+    });
+
+    await contracts.projects.addproject(...project.getCreateActionParams(), {
+      authorization: `${admin.params.account}@active`,
+    });
+
+    await contracts.projects.assignuser(
+      admin.params.account,
+      issuer.params.account,
+      0,
+      { authorization: `${admin.params.account}@active` }
+    );
+
+    // Act
+    try {
+      await contracts.projects.assignuser(
+        admin.params.account,
+        'issueruser2',
+        0,
+        { authorization: `${admin.params.account}@active` }
+      );
+      failIssuer = false;
+    } catch (err) {
+      failIssuer = true;
+    }
+
+    //Assert
+    const projectsTable = await rpc.get_table_rows({
+      code: projects,
+      scope: projects,
+      table: "projects",
+      json: true,
+    });
+    //console.log("\n\n Projects table : ", projectsTable.rows);
+
+    expect(failIssuer).to.be.true
+
+    assert.deepStrictEqual(projectsTable.rows, [
+      {
+        project_id: projectsTable.rows[0].project_id,
+        developer_id: 0,
+        owner: project.params.actor,
+        builder: '',
+        investors: [],
+        issuer: issuer.params.account,
+        regional_center: '',
+        project_name: project.params.project_name,
+        description: project.params.description,
+        image: project.params.image,
+        projected_starting_date: projectsTable.rows[0].projected_starting_date,
+        projected_completion_date: projectsTable.rows[0].projected_completion_date,
+        created_date: projectsTable.rows[0].created_date,
+        updated_date: projectsTable.rows[0].updated_date,
+        close_date: projectsTable.rows[0].close_date,
+        status: ProjectConstants.status.awaiting,
+        approved_date: projectsTable.rows[0].approved_date,
+        approved_by: projectsTable.rows[0].approved_by,
+      },
+    ])
+  });
+
+  it("There can only be one regional center per project", async () => {
+    //Arrange
+    let failRegional;
+
+    await contracts.projects.adduser(
+      projects,
+      "regionlcntr2",
+      "RegionalCenter2",
+      Roles.regional_center,
+      {
+        authorization: `${projects}@active`,
+      }
+    );
+
+    const project = await ProjectFactory.createWithDefaults({
+      actor: admin.params.account,
+    });
+
+    await contracts.projects.addproject(...project.getCreateActionParams(), {
+      authorization: `${admin.params.account}@active`,
+    });
+
+    await contracts.projects.assignuser(
+      admin.params.account,
+      regional.params.account,
+      0,
+      { authorization: `${admin.params.account}@active` }
+    );
+
+    // Act
+    try {
+      await contracts.projects.assignuser(
+        admin.params.account,
+        'regionlcntr2',
+        0,
+        { authorization: `${admin.params.account}@active` }
+      );
+      failRegional = false;
+    } catch (err) {
+      failRegional = true;
+    }
+
+    //Assert
+    const projectsTable = await rpc.get_table_rows({
+      code: projects,
+      scope: projects,
+      table: "projects",
+      json: true,
+    });
+    //console.log("\n\n Projects table : ", projectsTable.rows);
+
+    expect(failRegional).to.be.true
+
+    assert.deepStrictEqual(projectsTable.rows, [
+      {
+        project_id: projectsTable.rows[0].project_id,
+        developer_id: 0,
+        owner: project.params.actor,
+        builder: '',
+        investors: [],
+        issuer: '',
+        regional_center: regional.params.account,
+        project_name: project.params.project_name,
+        description: project.params.description,
+        image: project.params.image,
+        projected_starting_date: projectsTable.rows[0].projected_starting_date,
+        projected_completion_date: projectsTable.rows[0].projected_completion_date,
+        created_date: projectsTable.rows[0].created_date,
+        updated_date: projectsTable.rows[0].updated_date,
+        close_date: projectsTable.rows[0].close_date,
+        status: ProjectConstants.status.awaiting,
+        approved_date: projectsTable.rows[0].approved_date,
+        approved_by: projectsTable.rows[0].approved_by,
+      },
+    ])
+  });
+
+  it('Remove builder from project before approve it', async () =>{
+    //Arrange
+    let failBuilder
+    const project = await ProjectFactory.createWithDefaults({
+      actor: admin.params.account,
+    });
+
+    await contracts.projects.addproject(...project.getCreateActionParams(), {
+      authorization: `${admin.params.account}@active`,
+    });
+
+    await contracts.projects.assignuser(
+      admin.params.account,
+      builder.params.account,
+      0,
+      { authorization: `${admin.params.account}@active` }
+    );
+
+    // Act
+    try {
+      await contracts.projects.removeuser(
+        admin.params.account,
+        'builderuser1',
+        0,
+        { authorization: `${admin.params.account}@active` }
+      );
+      failBuilder= false
+    } catch (err) {
+      failBuilder = true
+    }
+
+    //Assert
+    const projectsTable = await rpc.get_table_rows({
+      code: projects,
+      scope: projects,
+      table: "projects",
+      json: true,
+    });
+    // console.log("\n\n Projects table : ", projectsTable.rows);
+
+    expect(failBuilder).to.be.false
+
+    assert.deepStrictEqual(projectsTable.rows, [
+      {
+        project_id: projectsTable.rows[0].project_id,
+        developer_id: 0,
+        owner: project.params.actor,
+        builder: '',
+        investors: [],
+        issuer: '',
+        regional_center: '',
+        project_name: project.params.project_name,
+        description: project.params.description,
+        image: project.params.image,
+        projected_starting_date: projectsTable.rows[0].projected_starting_date,
+        projected_completion_date: projectsTable.rows[0].projected_completion_date,
+        created_date: projectsTable.rows[0].created_date,
+        updated_date: projectsTable.rows[0].updated_date,
+        close_date: projectsTable.rows[0].close_date,
+        status: ProjectConstants.status.awaiting,
+        approved_date: projectsTable.rows[0].approved_date,
+        approved_by: projectsTable.rows[0].approved_by,
+      },
+    ])
+
+
+
+
+  });
+
+  it('Remove investor from project before approve it', async () =>{
+    //Arrange
+    let failInvestor
+    const project = await ProjectFactory.createWithDefaults({
+      actor: admin.params.account,
+    });
+
+    await contracts.projects.addproject(...project.getCreateActionParams(), {
+      authorization: `${admin.params.account}@active`,
+    });
+
+    await contracts.projects.assignuser(
+      admin.params.account,
+      investor.params.account,
+      0,
+      { authorization: `${admin.params.account}@active` }
+    );
+
+    // Act
+    try {
+      await contracts.projects.removeuser(
+        admin.params.account,
+        'investoruser',
+        0,
+        { authorization: `${admin.params.account}@active` }
+      );
+      failInvestor = false
+    } catch (err) {
+      failInvestor = true
+    } 
+
+
+    //Assert
+    const projectsTable = await rpc.get_table_rows({
+      code: projects,
+      scope: projects,
+      table: "projects",
+      json: true,
+    });
+    // console.log("\n\n Projects table : ", projectsTable.rows);
+
+    expect(failInvestor).to.be.false
+
+    assert.deepStrictEqual(projectsTable.rows, [
+      {
+        project_id: projectsTable.rows[0].project_id,
+        developer_id: 0,
+        owner: project.params.actor,
+        builder: '',
+        investors: [],
+        issuer: '',
+        regional_center: '',
+        project_name: project.params.project_name,
+        description: project.params.description,
+        image: project.params.image,
+        projected_starting_date: projectsTable.rows[0].projected_starting_date,
+        projected_completion_date: projectsTable.rows[0].projected_completion_date,
+        created_date: projectsTable.rows[0].created_date,
+        updated_date: projectsTable.rows[0].updated_date,
+        close_date: projectsTable.rows[0].close_date,
+        status: ProjectConstants.status.awaiting,
+        approved_date: projectsTable.rows[0].approved_date,
+        approved_by: projectsTable.rows[0].approved_by,
+      },
+    ])
+
+  });
+
+  it('Remove issuer from project before approve it', async () =>{
+    //Arrange
+    let failIssuer
+    const project = await ProjectFactory.createWithDefaults({
+      actor: admin.params.account,
+    });
+
+    await contracts.projects.addproject(...project.getCreateActionParams(), {
+      authorization: `${admin.params.account}@active`,
+    });
+
+    await contracts.projects.assignuser(
+      admin.params.account,
+      issuer.params.account,
+      0,
+      { authorization: `${admin.params.account}@active` }
+    );
+
+    // Act
+    try {
+      await contracts.projects.removeuser(
+        admin.params.account,
+        'issueruser1',
+        0,
+        { authorization: `${admin.params.account}@active` }
+      );
+      failIssuer = false
+    } catch (err){
+      failIssuer = true
+    }
+
+    //Assert
+    const projectsTable = await rpc.get_table_rows({
+      code: projects,
+      scope: projects,
+      table: "projects",
+      json: true,
+    });
+    // console.log("\n\n Projects table : ", projectsTable.rows);
+
+    expect(failIssuer).to.be.false
+
+    assert.deepStrictEqual(projectsTable.rows, [
+      {
+        project_id: projectsTable.rows[0].project_id,
+        developer_id: 0,
+        owner: project.params.actor,
+        builder: '',
+        investors: [],
+        issuer: '',
+        regional_center: '',
+        project_name: project.params.project_name,
+        description: project.params.description,
+        image: project.params.image,
+        projected_starting_date: projectsTable.rows[0].projected_starting_date,
+        projected_completion_date: projectsTable.rows[0].projected_completion_date,
+        created_date: projectsTable.rows[0].created_date,
+        updated_date: projectsTable.rows[0].updated_date,
+        close_date: projectsTable.rows[0].close_date,
+        status: ProjectConstants.status.awaiting,
+        approved_date: projectsTable.rows[0].approved_date,
+        approved_by: projectsTable.rows[0].approved_by,
+      },
+    ])
+
+  });
+
+  it('Remove regional center from project before approve it', async () =>{
+    //Arrange
+    let failRegional
+    const project = await ProjectFactory.createWithDefaults({
+      actor: admin.params.account,
+    });
+
+    await contracts.projects.addproject(...project.getCreateActionParams(), {
+      authorization: `${admin.params.account}@active`,
+    });
+
+    await contracts.projects.assignuser(
+      admin.params.account,
+      regional.params.account,
+      0,
+      { authorization: `${admin.params.account}@active` }
+    );
+
+    // Act
+    try {
+      await contracts.projects.removeuser(
+        admin.params.account,
+        'regionalcntr',
+        0,
+        { authorization: `${admin.params.account}@active` }
+      );
+      failRegional = false
+    } catch (err) {
+      failRegional = true
+      //console.error(err)
+    }
+
+    //Assert
+    const projectsTable = await rpc.get_table_rows({
+      code: projects,
+      scope: projects,
+      table: "projects",
+      json: true,
+    });
+    // console.log("\n\n Projects table : ", projectsTable.rows);
+
+    expect(failRegional).to.be.false
+
+    assert.deepStrictEqual(projectsTable.rows, [
+      {
+        project_id: projectsTable.rows[0].project_id,
+        developer_id: 0,
+        owner: project.params.actor,
+        builder: '',
+        investors: [],
+        issuer: '',
+        regional_center: '',
+        project_name: project.params.project_name,
+        description: project.params.description,
+        image: project.params.image,
+        projected_starting_date: projectsTable.rows[0].projected_starting_date,
+        projected_completion_date: projectsTable.rows[0].projected_completion_date,
+        created_date: projectsTable.rows[0].created_date,
+        updated_date: projectsTable.rows[0].updated_date,
+        close_date: projectsTable.rows[0].close_date,
+        status: ProjectConstants.status.awaiting,
+        approved_date: projectsTable.rows[0].approved_date,
+        approved_by: projectsTable.rows[0].approved_by,
+      },
+    ])
+
+  });
+
+  it('Cannot remove builder from project once the project has been approved', async () =>{
+    //Arrange
+    let failBuilder
+    const project = await ProjectFactory.createWithDefaults({
+      actor: admin.params.account,
+    });
+
+    await contracts.projects.addproject(...project.getCreateActionParams(), {
+      authorization: `${admin.params.account}@active`,
+    });
+
+    await contracts.projects.assignuser(
+      admin.params.account,
+      builder.params.account,
+      0,
+      { authorization: `${admin.params.account}@active` }
+    );
+
+    await contracts.projects.approveprjct(
+      admin.params.account,
+      0,
+      { authorization: `${admin.params.account}@active` }
+    );
+
+    // Act
+    try {
+      await contracts.projects.removeuser(
+        admin.params.account,
+        'builderuser1',
+        0,
+        { authorization: `${admin.params.account}@active` }
+      );
+      failBuilder= false
+    } catch (err) {
+      failBuilder = true
+    }
+
+    //Assert
+    const projectsTable = await rpc.get_table_rows({
+      code: projects,
+      scope: projects,
+      table: "projects",
+      json: true,
+    });
+    // console.log("\n\n Projects table : ", projectsTable.rows);
+
+    expect(failBuilder).to.be.true
+
+    assert.deepStrictEqual(projectsTable.rows, [
+      {
+        project_id: projectsTable.rows[0].project_id,
+        developer_id: 0,
+        owner: project.params.actor,
+        builder: builder.params.account,
+        investors: [],
+        issuer: '',
+        regional_center: '',
+        project_name: project.params.project_name,
+        description: project.params.description,
+        image: project.params.image,
+        projected_starting_date: projectsTable.rows[0].projected_starting_date,
+        projected_completion_date: projectsTable.rows[0].projected_completion_date,
+        created_date: projectsTable.rows[0].created_date,
+        updated_date: projectsTable.rows[0].updated_date,
+        close_date: projectsTable.rows[0].close_date,
+        status: ProjectConstants.status.ready,
+        approved_date: projectsTable.rows[0].approved_date,
+        approved_by: projectsTable.rows[0].approved_by,
+      },
+    ])
+
+
+
+
+  });
+
+  it('Cannot remove investor from project once the project has been approved', async () =>{
+    //Arrange
+    let failInvestor
     const project = await ProjectFactory.createWithDefaults({
       actor: admin.params.account,
     });
@@ -1563,71 +2103,24 @@ describe("Tests for projects smart contract", async function () {
       { authorization: `${admin.params.account}@active` }
     );
 
-    await contracts.projects.assignuser(
-      admin.params.account,
-      issuer.params.account,
-      0,
-      { authorization: `${admin.params.account}@active` }
-    );
-
-    await contracts.projects.assignuser(
-      admin.params.account,
-      regional.params.account,
-      0,
-      { authorization: `${admin.params.account}@active` }
-    );
-
-    Object.assign(project.params, {
-      status: 1,
-      builder: builder.params.account,
-      investors: [investor.params.account],
-      issuer: issuer.params.account,
-      regional_center: regional.params.account,
-    });
-
     await contracts.projects.approveprjct(
       admin.params.account,
       0,
-      ...project.getApproveActionParams(),
       { authorization: `${admin.params.account}@active` }
     );
-    // Act
 
+    //Act
     try {
-      await contracts.projects.assignuser(
+      await contracts.projects.removeuser(
         admin.params.account,
-        'builderuser2',
+        investor.params.account,
         0,
         { authorization: `${admin.params.account}@active` }
       );
-      failBuilder = false;
+      failInvestor = false
     } catch (err) {
-      failBuilder = true;
-    }
-    
-    try {
-      await contracts.projects.assignuser(
-        admin.params.account,
-        'issueruser2',
-        0,
-        { authorization: `${admin.params.account}@active` }
-      );
-      failIssuer = false;
-    } catch (err) {
-      failIssuer = true;
-    }
-
-    try {
-      await contracts.projects.assignuser(
-        admin.params.account,
-        'regionlcntr2',
-        0,
-        { authorization: `${admin.params.account}@active` }
-      );
-      failRegional = false;
-    } catch (err) {
-      failRegional = true;
-    }
+      failInvestor = true
+    } 
 
     //Assert
     const projectsTable = await rpc.get_table_rows({
@@ -1636,21 +2129,19 @@ describe("Tests for projects smart contract", async function () {
       table: "projects",
       json: true,
     });
-    //console.log("\n\n Projects table : ", projectsTable.rows);
+    // console.log("\n\n Projects table : ", projectsTable.rows);
 
-    expect(failBuilder).to.be.true
-    expect(failIssuer).to.be.true
-    expect(failRegional).to.be.true
+    expect(failInvestor).to.be.true
 
     assert.deepStrictEqual(projectsTable.rows, [
       {
         project_id: projectsTable.rows[0].project_id,
         developer_id: 0,
         owner: project.params.actor,
-        builder: project.params.builder,
-        investors: project.params.investors,
-        issuer: project.params.issuer,
-        regional_center: project.params.regional_center,
+        builder:  builder.params.account,
+        investors: [investor.params.account],
+        issuer: '',
+        regional_center: '',
         project_name: project.params.project_name,
         description: project.params.description,
         image: project.params.image,
@@ -1664,198 +2155,168 @@ describe("Tests for projects smart contract", async function () {
         approved_by: projectsTable.rows[0].approved_by,
       },
     ])
-  });
-  
-  const removeUserCases = [ 
-    { testName: 'Remove builder from project before approve it', account_u:  builder.params.accoun },
-    { testName: 'Remove investor from project before approve it', account_u:  investor.params.accoun },
-    { testName: 'Remove issuer from project before approve it', account_u:  issuer.params.accoun },
-    { testName: 'Remove regional center from project before approve it', account_u:  regional.params.accoun }
-  ]
 
-  removeUserCases.forEach(({ testName }) => {
-    it.only(testName, async () =>{
-      let fail
-      const project = await ProjectFactory.createWithDefaults({
-        actor: admin.params.account,
-      });
-  
-      await contracts.projects.addproject(...project.getCreateActionParams(), {
-        authorization: `${admin.params.account}@active`,
-      });
-  
-      await contracts.projects.assignuser(
+  });
+
+  it('Cannot remove issuer from project once the project has been approved', async () =>{
+    //Arrange
+    let failIssuer
+    const project = await ProjectFactory.createWithDefaults({
+      actor: admin.params.account,
+    });
+
+    await contracts.projects.addproject(...project.getCreateActionParams(), {
+      authorization: `${admin.params.account}@active`,
+    });
+
+    await contracts.projects.assignuser(
+      admin.params.account,
+      builder.params.account,
+      0,
+      { authorization: `${admin.params.account}@active` }
+    );
+
+    await contracts.projects.assignuser(
+      admin.params.account,
+      issuer.params.account,
+      0,
+      { authorization: `${admin.params.account}@active` }
+    );
+
+    await contracts.projects.approveprjct(
+      admin.params.account,
+      0,
+      { authorization: `${admin.params.account}@active` }
+    );
+
+    //Act
+    try {
+      await contracts.projects.removeuser(
         admin.params.account,
-        account_u,
+        'issueruser1',
         0,
         { authorization: `${admin.params.account}@active` }
       );
+      failIssuer = false
+    } catch (err){
+      failIssuer = true
+    }
 
-      const projectsTable = await rpc.get_table_rows({
-        code: projects,
-        scope: projects,
-        table: "projects",
-        json: true,
-      });
-      console.log("\n\n Projects table : ", projectsTable.rows);
+    //Assert
+    const projectsTable = await rpc.get_table_rows({
+      code: projects,
+      scope: projects,
+      table: "projects",
+      json: true,
+    });
+    // console.log("\n\n Projects table : ", projectsTable.rows);
 
+    expect(failIssuer).to.be.true
 
-
-    })
-
+    assert.deepStrictEqual(projectsTable.rows, [
+      {
+        project_id: projectsTable.rows[0].project_id,
+        developer_id: 0,
+        owner: project.params.actor,
+        builder:  builder.params.account,
+        investors: [],
+        issuer: issuer.params.account,
+        regional_center: '',
+        project_name: project.params.project_name,
+        description: project.params.description,
+        image: project.params.image,
+        projected_starting_date: projectsTable.rows[0].projected_starting_date,
+        projected_completion_date: projectsTable.rows[0].projected_completion_date,
+        created_date: projectsTable.rows[0].created_date,
+        updated_date: projectsTable.rows[0].updated_date,
+        close_date: projectsTable.rows[0].close_date,
+        status: ProjectConstants.status.ready,
+        approved_date: projectsTable.rows[0].approved_date,
+        approved_by: projectsTable.rows[0].approved_by,
+      },
+    ])
 
   });
 
-  //  it.only("Remove (builder, issuer, regional center) from project", async () => {
-  //   //Arrange
-  //   let fail
-  //   const project = await ProjectFactory.createWithDefaults({
-  //     actor: admin.params.account,
-  //   });
+  it('Cannot remove regional center from project once the project has been approved', async () =>{
+    //Arrange
+    let failRegional
+    const project = await ProjectFactory.createWithDefaults({
+      actor: admin.params.account,
+    });
 
-  //   await contracts.projects.addproject(...project.getCreateActionParams(), {
-  //     authorization: `${admin.params.account}@active`,
-  //   });
+    await contracts.projects.addproject(...project.getCreateActionParams(), {
+      authorization: `${admin.params.account}@active`,
+    });
 
-  //   await contracts.projects.assignuser(
-  //     admin.params.account,
-  //     builder.params.account,
-  //     0,
-  //     { authorization: `${admin.params.account}@active` }
-  //   );
+    await contracts.projects.assignuser(
+      admin.params.account,
+      builder.params.account,
+      0,
+      { authorization: `${admin.params.account}@active` }
+    );
 
-  //   await contracts.projects.assignuser(
-  //     admin.params.account,
-  //     investor.params.account,
-  //     0,
-  //     { authorization: `${admin.params.account}@active` }
-  //   );
+    await contracts.projects.assignuser(
+      admin.params.account,
+      regional.params.account,
+      0,
+      { authorization: `${admin.params.account}@active` }
+    );
 
-  //   await contracts.projects.assignuser(
-  //     admin.params.account,
-  //     issuer.params.account,
-  //     0,
-  //     { authorization: `${admin.params.account}@active` }
-  //   );
+    await contracts.projects.approveprjct(
+      admin.params.account,
+      0,
+      { authorization: `${admin.params.account}@active` }
+    );
 
-  //   await contracts.projects.assignuser(
-  //     admin.params.account,
-  //     regional.params.account,
-  //     0,
-  //     { authorization: `${admin.params.account}@active` }
-  //   );
+    //Act
+    try {
+      await contracts.projects.removeuser(
+        admin.params.account,
+        'regionalcntr',
+        0,
+        { authorization: `${admin.params.account}@active` }
+      );
+      failRegional = false
+    } catch (err) {
+      failRegional = true
+      //console.error(err)
+    }
 
-  //   Object.assign(project.params, {
-  //     status: 1,
-  //     builder: builder.params.account,
-  //     investors: [investor.params.account],
-  //     issuer: "",
-  //     regional_center: "",
-  //   });
+    //Assert
+    const projectsTable = await rpc.get_table_rows({
+      code: projects,
+      scope: projects,
+      table: "projects",
+      json: true,
+    });
+    // console.log("\n\n Projects table : ", projectsTable.rows);
 
-  //   await contracts.projects.approveprjct(
-  //     admin.params.account,
-  //     0,
-  //     ...project.getApproveActionParams(),
-  //     { authorization: `${admin.params.account}@active` }
-  //   );
-    
-  //   // Act
-  //   try {
-  //     await contracts.projects.removeuser(
-  //       admin.params.account,
-  //       'issueruser1',
-  //       0,
-  //       { authorization: `${admin.params.account}@active` }
-  //     );
-      
-  //     await contracts.projects.removeuser(
-  //       admin.params.account,
-  //       'investoruser',
-  //       0,
-  //       { authorization: `${admin.params.account}@active` }
-  //     );
+    expect(failRegional).to.be.true
 
-  //     await contracts.projects.removeuser(
-  //       admin.params.account,
-  //       'builderuser1',
-  //       0,
-  //       { authorization: `${admin.params.account}@active` }
-  //     );
+    assert.deepStrictEqual(projectsTable.rows, [
+      {
+        project_id: projectsTable.rows[0].project_id,
+        developer_id: 0,
+        owner: project.params.actor,
+        builder:  builder.params.account,
+        investors: [],
+        issuer: '',
+        regional_center: regional.params.account,
+        project_name: project.params.project_name,
+        description: project.params.description,
+        image: project.params.image,
+        projected_starting_date: projectsTable.rows[0].projected_starting_date,
+        projected_completion_date: projectsTable.rows[0].projected_completion_date,
+        created_date: projectsTable.rows[0].created_date,
+        updated_date: projectsTable.rows[0].updated_date,
+        close_date: projectsTable.rows[0].close_date,
+        status: ProjectConstants.status.ready,
+        approved_date: projectsTable.rows[0].approved_date,
+        approved_by: projectsTable.rows[0].approved_by,
+      },
+    ])
 
-  //     await contracts.projects.removeuser(
-  //       admin.params.account,
-  //       'regionalcntr',
-  //       0,
-  //       { authorization: `${admin.params.account}@active` }
-  //     );
-  //     fail = false
-  //   } catch (err) {
-  //     fail = true
-  //     //console.error(err)
-  //   }
-
-  //   //Assert
-  //   const projectsTable = await rpc.get_table_rows({
-  //     code: projects,
-  //     scope: projects,
-  //     table: "projects",
-  //     json: true,
-  //   });
-  //   //console.log("\n\n Projects table : ", projectsTable.rows);
-
-  //   const UserTable = await rpc.get_table_rows({
-  //     code: projects,
-  //     scope: projects,
-  //     table: "users",
-  //     json: true,
-  //   });
-  //   //console.log('users table : ', UserTable.rows);
-
-  //   // expect(fail).to.be.true
-
-  //   // assert.deepStrictEqual(projectsTable.rows, [
-  //   //   {
-  //   //     project_id: 0,
-  //   //     developer_id: 0,
-  //   //     owner: project.params.actor,
-  //   //     project_class: project.params.project_class,
-  //   //     project_name: project.params.project_name,
-  //   //     description: project.params.description,
-  //   //     created_date: projectsTable.rows[0].created_date,
-  //   //     status: ProjectConstants.status.ready,
-  //   //     builder: '',
-  //   //     investors: [],
-  //   //     issuer: '',
-  //   //     regional_center: '',
-  //   //     total_project_cost: project.params.total_project_cost,
-  //   //     debt_financing: project.params.debt_financing,
-  //   //     term: project.params.term,
-  //   //     interest_rate: project.params.interest_rate,
-  //   //     loan_agreement: project.params.loan_agreement,
-  //   //     total_equity_financing: project.params.total_equity_financing,
-  //   //     total_gp_equity: project.params.total_gp_equity,
-  //   //     private_equity: project.params.private_equity,
-  //   //     annual_return: project.params.annual_return,
-  //   //     project_co_lp: project.params.project_co_lp,
-  //   //     project_co_lp_date: project.params.project_co_lp_date,
-  //   //     projected_completion_date: project.params.projected_completion_date,
-  //   //     projected_stabilization_date:
-  //   //       project.params.projected_stabilization_date,
-  //   //     anticipated_year_sale_refinance:
-  //   //       project.params.anticipated_year_sale_refinance,
-  //   //     fund_lp: project.params.fund_lp,
-  //   //     total_fund_offering_amount: project.params.total_fund_offering_amount,
-  //   //     total_number_fund_offering: project.params.total_number_fund_offering,
-  //   //     price_per_fund_unit: project.params.price_per_fund_unit,
-  //   //     approved_date: projectsTable.rows[0].approved_date,
-  //   //     approved_by: projectsTable.rows[0].approved_by,
-  //   //   },
-  //   // ]);
-
-  // });
-
+  });
 
 });
-
-//add/merge unit test can't delete any actor once project was approved
