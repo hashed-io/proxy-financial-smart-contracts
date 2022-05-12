@@ -87,11 +87,13 @@ class AccountUtil {
   }
 
   static async deleteaccnt({
+    actor,
     project_id,
     account_id,
     contract,
     contractAccount }) {
     await contract.deleteaccnt(
+      actor,
       project_id,
       account_id, { authorization: `${contractAccount}@active` })
   }
