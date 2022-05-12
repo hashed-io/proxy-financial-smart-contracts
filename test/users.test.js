@@ -16,7 +16,8 @@ const { Console } = require('console');
 
 const expect = require('chai').expect;
 
-const { projects, transactions } = contractNames;
+const { accounts, projects, budgets, permissions, transactions } = contractNames
+
 
 const createRolesCases = (() => {
   return [
@@ -56,11 +57,10 @@ describe('Tests for the users on projects smart contract', async function () {
     await sleep(4000);
     await EnvironmentUtil.deployContracts(configContracts);
 
-    contracts = await getContracts([projects, transactions]);
+    contracts = await getContracts([projects, accounts, budgets, permissions, transactions])
 
     await updatePermissions();
     console.log('\n');
-
   })
 
   afterEach(async function () {
@@ -180,7 +180,7 @@ describe('Tests for the users on projects smart contract', async function () {
   });
 
   it('Create an user', async function () {
-    // TODO: Sole this test
+    // TODO: Fix this test
     // Arrange
     // const developerEntity = await EntityFactory.createWithDefaults({ role: EntityConstants.developer });
 
@@ -243,4 +243,6 @@ describe('Tests for the users on projects smart contract', async function () {
 
   });
 
+
 });
+

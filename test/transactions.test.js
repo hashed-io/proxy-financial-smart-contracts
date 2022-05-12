@@ -126,7 +126,6 @@ describe("Tests for transactions smart contract", async function () {
     await contracts.projects.approveprjct(
       admin.params.account,
       project.params.id,
-      ...project.getApproveActionParams(),
       { authorization: `${admin.params.account}@active` }
     );
 
