@@ -247,7 +247,8 @@ describe('Tests for the users on projects smart contract', async function () {
       related_projects: [],
       role: EntityConstants.fund
     }]);
-
+    
+    */
   });
-*/
+  
 });
