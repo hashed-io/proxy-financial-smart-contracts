@@ -158,13 +158,96 @@ describe('Tests for budget expenditures', async function () {
 
   });
 
-
-  it('Edit NAIC code to a given budget expenditure', async () => {
+  it('Only admin can create new accounts', async () => {
     // Arrange
+    let fail 
+    const new_account = await AccountFactory.createWithDefaults({ actor: admin.params.account });
 
     // Act
+    try{
+      await contracts.accounts.addaccount(...new_account.getCreateActionParams(), { authorization: `${investor.params.account}@active` });
+      fail = false
+    } catch (err) {
+      //console.error(err)
+      fail = true
+    }
+
 
     // Assert
+    const accountsTable = await rpc.get_table_rows({
+      code: accounts,
+      scope: project.params.id,
+      table: 'accounts',
+      json: true,
+      limit: 100
+    });
+    //console.table(accountsTable.rows[accountsTable.rows.length - 1]);
+
+    expect(fail).to.be.true
+
+
+  })
+
+  it.only('Edit NAIC code to a given budget expenditure', async () => {
+    // Arrange
+    const new_account = await AccountFactory.createWithDefaults({actor: admin.params.account, budget_amount: "100.00 USD"});
+    await contracts.accounts.addaccount(...new_account.getCreateActionParams(), { authorization: `${admin.params.account}@active` });
+    console.log('new account params: ', new_account.params)
+
+    // Act
+    await AccountUtil.editaccount({
+      actor: new_account.params.actor,
+      project_id: new_account.params.project_id,
+      account_id: 24,
+      account_name: new_account.params.account_name,
+      description: new_account.params.description,
+      account_category: new_account.params.account_category,
+      budget_amount: new_account.params.budget_amount,
+      budget_amount: "10.00 USD",
+      naics_code: 6665166,
+      jobs_multiplier: new_account.params.jobs_multiplier,
+      contract: contracts.accounts,
+      contractAccount: admin.params.account
+    })
+
+    // Assert
+    const accountsTable = await rpc.get_table_rows({
+      code: accounts,
+      scope: project.params.id,
+      table: 'accounts',
+      json: true,
+      limit: 100
+    });
+
+    const ledgerTable = await rpc.get_table_rows({
+      code: accounts,
+      scope: project.params.id,
+      table: 'ledgers',
+      json: true,
+    });
+
+    const budgetsTable = await rpc.get_table_rows({
+      code: budgets,
+      scope: project.params.id,
+      table: 'budgets',
+      json: true,
+    });
+
+    const UserTable = await rpc.get_table_rows({
+      code: projects,
+      scope: projects,
+      table: "users",
+      json: true,
+    });
+
+
+
+    //console.log('\nledger table: ', ledgerTable);
+    //console.log('\n users table: ', UserTable);
+    console.log('\n budgets table: ', budgetsTable);
+    console.table(accountsTable.rows[accountsTable.rows.length - 1]);
+
+    
 
 
   });
