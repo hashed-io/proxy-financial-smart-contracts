@@ -13,6 +13,7 @@ const { UserFactory, Roles } = require('./util/UserUtil');
 const { func } = require('promisify');
 const assert = require('assert');
 const { Console } = require('console');
+const { hasUncaughtExceptionCaptureCallback } = require('process');
 
 const expect = require('chai').expect;
 
@@ -35,6 +36,16 @@ const createRolesCases = (() => {
       testName: 'Create a Builder account',
       role: Roles.developer,
       entity_id: 3
+    },
+    {
+      testName: 'Create an Issuer account',
+      role: Roles.issuer,
+      entity_id: 4
+    },
+    {
+      testName: 'Create a Regional center account',
+      role: Roles.regional_center,
+      entity_id: 5
     }
 
   ]
@@ -75,6 +86,7 @@ describe('Tests for the users on projects smart contract', async function () {
       const user = await UserFactory.createWithDefaults({ role: role });
 
       user.params.entity_id = entity_id;
+      console.log('user paramas is: ', user.params)
       // console.table(user);
 
       // Act
@@ -88,7 +100,7 @@ describe('Tests for the users on projects smart contract', async function () {
         json: true
       });
 
-      // console.table(usersTable.rows);
+      console.table(usersTable.rows);
 
       expect(usersTable.rows).to.deep.include.members([{
         account: user.params.account,
@@ -129,118 +141,76 @@ describe('Tests for the users on projects smart contract', async function () {
 
   });
 
-
-  it('Add test entities', async function () {
-
+  it('Cannot init action twice', async () => {
     // Arrange
-    const developerEntity = await EntityFactory.createWithDefaults({ role: EntityConstants.developer });
-    const developerParams = developerEntity.getActionParams()
+    let fail
+    await contracts.projects.init({ authorization: `${projects}@active` })
 
-    const investorEntity = await EntityFactory.createWithDefaults({ role: EntityConstants.investor });
-    const investorParams = investorEntity.getActionParams()
+    // Act
+   try {
+    await contracts.projects.init({ authorization: `${projects}@active` })
+    fail = false;
+   } catch (err) {
+     fail = true
+   }
 
-    const fundEntity = await EntityFactory.createWithDefaults({ role: EntityConstants.fund });
-    const fundParams = fundEntity.getActionParams()
-
-
-    console.log(developerEntity, investorEntity, fundEntity)
-    //Act
-    await contracts.projects.addentity(...developerParams, { authorization: `${developerParams[0]}@active` })
-
-    await contracts.projects.addentity(...investorParams, { authorization: `${investorParams[0]}@active` })
-
-    await contracts.projects.addentity(...fundParams, { authorization: `${fundParams[0]}@active` })
+    // Assert
+    const usersTable = await rpc.get_table_rows({
+      code: projects,
+      scope: projects,
+      table: 'users',
+      json: true
+    });
 
     const entitiesTable = await rpc.get_table_rows({
       code: projects,
       scope: projects,
       table: 'entities',
       json: true
-    })
-    console.table(entitiesTable.rows); 4
+    });
 
-    // Assert
-    assert.deepStrictEqual(entitiesTable.rows, [{
-      entity_id: 1,
-      entity_name: developerEntity.params.entity_name,
-      description: developerEntity.params.description,
-      role: developerEntity.params.role
-    }, {
-      entity_id: 2,
-      entity_name: investorEntity.params.entity_name,
-      description: investorEntity.params.description,
-      role: investorEntity.params.role
-    }, {
-      entity_id: 3,
-      entity_name: fundEntity.params.entity_name,
-      description: fundEntity.params.description,
-      role: fundEntity.params.role
-    }])
+    expect(fail).to.be.true 
+
+    console.table(usersTable.rows);
+    console.table(entitiesTable.rows);
 
   });
 
-  it('Create an user', async function () {
-    // TODO: Fix this test
-    // Arrange
-    // const developerEntity = await EntityFactory.createWithDefaults({ role: EntityConstants.developer });
+  const addEntitiesCases = [
+    {testName: 'Add admin entity', userRole: EntityConstants.fund},
+    {testName: 'Add developer entity', userRole: EntityConstants.developer},
+    {testName: 'Add investor', userRole: EntityConstants.investor},
+    {testName: 'Add issuer entity', userRole: EntityConstants.issuer},
+    {testName: 'Add regional center entity', userRole: EntityConstants.regional},
+  ]
 
-    // const investorEntity = await EntityFactory.createWithDefaults({ role: EntityConstants.investor });
+  addEntitiesCases.forEach(({testName, userRole}) => {
+    it(testName, async () => {
+      //Arrange
+      const user = await EntityFactory.createWithDefaults({ role: userRole});
+      const userParams = user.getActionParams()
+      console.log(userParams)
 
-    // const fundEntity = await EntityFactory.createWithDefaults({ role: EntityConstants.fund });
+      //Act
+      await contracts.projects.addentity(...user.getActionParams(), { authorization: `${userParams[0]}@active` })
 
+      // Assert
+      const entitiesTable = await rpc.get_table_rows({
+        code: projects,
+        scope: projects,
+        table: 'entities',
+        json: true
+      })
+      console.table(entitiesTable.rows); 
+      console.log(userParams[0])
 
-    // await contracts.projects.addentity(...developerEntity.getActionParams(), { authorization: `${developerEntity.params.actor}@active` });
-
-    // await contracts.projects.addentity(...investorEntity.getActionParams(), { authorization: `${investorEntity.params.actor}@active` });
-
-    // await contracts.projects.addentity(...fundEntity.getActionParams(), { authorization: `${fundEntity.params.actor}@active` });
-
-    // //Act  name user, string user_name, uint64_t entity_id
-    // await contracts.projects.addtestuser(developerEntity.params.actor, developerEntity.params.entity_name, 1, { authorization: `${developerEntity.params.actor}@active` });
-
-    // await contracts.projects.addtestuser(investorEntity.params.actor, investorEntity.params.entity_name, 2, { authorization: `${investorEntity.params.actor}@active` });
-
-    // await contracts.projects.addtestuser(fundEntity.params.actor, fundEntity.params.entity_name, 3, { authorization: `${fundEntity.params.actor}@active` });
-
-    // const entitiesTable = await rpc.get_table_rows({
-    //   code: projects,
-    //   scope: projects,
-    //   table: 'entities',
-    //   json: true
-    // });
-
-    // console.table(entitiesTable.rows);
-
-    // const usersTable = await rpc.get_table_rows({
-    //   code: projects,
-    //   scope: projects,
-    //   table: 'users',
-    //   json: true
-    // });
-
-    // console.table(usersTable.rows);
-
-    // // Assert
-    // expect(usersTable.rows).to.deep.include.members([{
-    //   account: developerEntity.params.actor,
-    //   user_name: developerEntity.params.entity_name,
-    //   entity_id: 1,
-    //   related_projects: [],
-    //   role: EntityConstants.developer
-    // }, {
-    //   account: investorEntity.params.actor,
-    //   user_name: investorEntity.params.entity_name,
-    //   entity_id: 2,
-    //   related_projects: [],
-    //   role: EntityConstants.investor
-    // }, {
-    //   account: fundEntity.params.actor,
-    //   user_name: fundEntity.params.entity_name,
-    //   entity_id: 3,
-    //   related_projects: [],
-    //   role: EntityConstants.fund
-    // }]);
-
+      assert.deepStrictEqual(entitiesTable.rows, [{
+        entity_id: 1,
+        entity_name: userParams[1],
+        description: userParams[2],
+        role: userParams[3]
+      }])
+    });
   });
 
 
