@@ -73,10 +73,6 @@ describe('Tests for budget expenditures', async function () {
       id: 0,
       builder: builder.params.account,
       investors: [investor.params.account],
-      fund_lp: "https://fund-lp.com",
-      total_fund_offering_amount: "400000.00 USD",
-      total_number_fund_offering: 40000,
-      price_per_fund_unit: "300.00 USD"
     });
 
     await contracts.projects.approveprjct(admin.params.account, project.params.id,
@@ -162,33 +158,158 @@ describe('Tests for budget expenditures', async function () {
 
   });
 
+  it('Only admin can create new accounts', async () => {
+    // Arrange
+    let fail 
+    const new_account = await AccountFactory.createWithDefaults({ actor: admin.params.account });
+
+    // Act
+    try{
+      await contracts.accounts.addaccount(...new_account.getCreateActionParams(), { authorization: `${investor.params.account}@active` });
+      fail = false
+    } catch (err) {
+      //console.error(err)
+      fail = true
+    }
+
+
+    // Assert
+    const accountsTable = await rpc.get_table_rows({
+      code: accounts,
+      scope: project.params.id,
+      table: 'accounts',
+      json: true,
+      limit: 100
+    });
+    //console.table(accountsTable.rows[accountsTable.rows.length - 1]);
+
+    expect(fail).to.be.true
+
+
+  })
 
   it('Edit NAIC code to a given budget expenditure', async () => {
     // Arrange
+    const new_account = await AccountFactory.createWithDefaults({actor: admin.params.account, budget_amount: "100.00 USD"});
+    await contracts.accounts.addaccount(...new_account.getCreateActionParams(), { authorization: `${admin.params.account}@active` });
 
     // Act
+    await AccountUtil.editaccount({
+      actor: new_account.params.actor,
+      project_id: new_account.params.project_id,
+      account_id: 24,
+      account_name: new_account.params.account_name,
+      description: new_account.params.description,
+      account_category: new_account.params.account_category,
+      budget_amount: new_account.params.budget_amount,
+      naics_code: 6665166,
+      jobs_multiplier: new_account.params.jobs_multiplier,
+      contract: contracts.accounts,
+      contractAccount: admin.params.account
+    })
 
     // Assert
-
+    const accountsTable = await rpc.get_table_rows({
+      code: accounts,
+      scope: project.params.id,
+      table: 'accounts',
+      json: true,
+      limit: 100
+    });
+    console.table(accountsTable.rows[accountsTable.rows.length - 1]);
+    
+    expect(accountsTable.rows[accountsTable.rows.length - 1]).to.include({
+      account_id: 24,
+      parent_id: new_account.params.parent_id,
+      account_name: new_account.params.account_name,
+      description: new_account.params.description,
+      naics_code: 6665166,
+      jobs_multiplier: new_account.params.jobs_multiplier,
+    })
 
   });
 
   it('Edit Jobs multiplier to a given budget expenditure', async () => {
     // Arrange
-
+    const new_account = await AccountFactory.createWithDefaults({actor: admin.params.account, budget_amount: "100.00 USD"});
+    await contracts.accounts.addaccount(...new_account.getCreateActionParams(), { authorization: `${admin.params.account}@active` });
+    console.log('params is: ', new_account.params)
+   
     // Act
+    await AccountUtil.editaccount({
+      actor: new_account.params.actor,
+      project_id: new_account.params.project_id,
+      account_id: 24,
+      account_name: new_account.params.account_name,
+      description: new_account.params.description,
+      account_category: new_account.params.account_category,
+      budget_amount: new_account.params.budget_amount,
+      naics_code: new_account.params.naics_code,
+      jobs_multiplier: 89445,
+      contract: contracts.accounts,
+      contractAccount: admin.params.account
+    })
 
     // Assert
-
+    const accountsTable = await rpc.get_table_rows({
+      code: accounts,
+      scope: project.params.id,
+      table: 'accounts',
+      json: true,
+      limit: 100
+    });
+    console.table(accountsTable.rows[accountsTable.rows.length - 1]);
+    
+    expect(accountsTable.rows[accountsTable.rows.length - 1]).to.include({
+      account_id: 24,
+      parent_id: new_account.params.parent_id,
+      account_name: new_account.params.account_name,
+      description: new_account.params.description,
+      naics_code: new_account.params.naics_code,
+      jobs_multiplier: 89445,
+    })
 
   });
 
   it('Edit name to a given budget expenditure', async () => {
     // Arrange
-
+    const new_account = await AccountFactory.createWithDefaults({actor: admin.params.account, budget_amount: "100.00 USD"});
+    await contracts.accounts.addaccount(...new_account.getCreateActionParams(), { authorization: `${admin.params.account}@active` });
+    console.log('params is: ', new_account.params)
+   
     // Act
+    await AccountUtil.editaccount({
+      actor: new_account.params.actor,
+      project_id: new_account.params.project_id,
+      account_id: 24,
+      account_name: 'Name was edited',
+      description: new_account.params.description,
+      account_category: new_account.params.account_category,
+      budget_amount: new_account.params.budget_amount,
+      naics_code: new_account.params.naics_code,
+      jobs_multiplier: new_account.params.jobs_multiplier,
+      contract: contracts.accounts,
+      contractAccount: admin.params.account
+    })
 
     // Assert
+    const accountsTable = await rpc.get_table_rows({
+      code: accounts,
+      scope: project.params.id,
+      table: 'accounts',
+      json: true,
+      limit: 100
+    });
+    console.table(accountsTable.rows[accountsTable.rows.length - 1]);
+    
+    expect(accountsTable.rows[accountsTable.rows.length - 1]).to.include({
+      account_id: 24,
+      parent_id: new_account.params.parent_id,
+      account_name: 'Name was edited',
+      description: new_account.params.description,
+      naics_code: new_account.params.naics_code,
+      jobs_multiplier: new_account.params.jobs_multiplier,
+    })
 
 
   });

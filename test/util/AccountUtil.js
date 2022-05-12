@@ -13,6 +13,11 @@ const AccountConstants = {
     debit: "Debit",
     credit: "Credit"
   },
+  name:{
+    none:"None",
+    hard: "Hard Cost",
+    soft: "Soft_cost",
+  },
   subtype: {
     assets: "Assets",
     equity: "Equity",
@@ -21,8 +26,32 @@ const AccountConstants = {
     liabilities: "Liabilities"
   },
   hard_cost: {
+    construction: "Construction",
+    furniture_fixtures_allowance: "Furniture, Fixtures & Allowance",
+    hard_cost_contingency_allowance: "Hard Cost contingency & Allowance",
+  }, 
+  soft_cost: {
+    architect_design: "Architect & Design",
+    building_permits_impact_fees: "Building Permits & Impact Fees",
+    developer_reimbursable: "Developer Reimbursable",
+    builder_risk_insurance: "Builder Risk Insurance",
+    environment_soils_survey: "Environment / Soils / Survey",
+    testing_inspections: "Testing & Inspections",
+    legal_professional: "Legal & Professional",
+    real_estate_taxes_owners_liability_insurance: "Real Estate Taxes & Owner's Liability Insurance",
+    predevelopment_fee: "Pre - Development Fee",
+    equity_management_fee: "Equity Management Fee",
+    bank_origination_fee: "Bank Origination Fee",
+    lender_debt_placement_fee: "Lender Debt Placement Fee",
+    title_appraisal_feasibility_plan_review_closing: "Title, Appraisal, Feasibility, Plan Review & Closing",
+    interest_carry_during_construction: "Interest Carry during Construction",
+    ops_stabilization_interest_carry_reserve: "Ops Stabilization & Interest Carry Reserve",
+    sales_marketing: "Sales & Marketing",
+    preopening_expenses: "Pre - Opening Expenses",
+    contingency: "Contingency",
 
-  }, soft_cost: {}
+
+  }
 }
 
 
@@ -33,28 +62,6 @@ class AccountUtil {
     await contract.addledger(project_id, entity_id, { authorization: `${contractAccount}@active` })
   }
 
-  static async addaccount({
-    actor,
-    project_id,
-    account_name,
-    parent_id,
-    account_currency,
-    description,
-    account_category,
-    budget_amount,
-    contract,
-    contractAccount }) {
-    await contract.addaccount(
-      actor,
-      project_id,
-      account_name,
-      parent_id,
-      account_currency,
-      description,
-      account_category,
-      budget_amount, { authorization: `${contractAccount}@active` })
-  }
-
   static async editaccount({
     actor,
     project_id,
@@ -63,8 +70,10 @@ class AccountUtil {
     description,
     account_category,
     budget_amount,
+    naics_code,
+    jobs_multiplier,
     contract,
-    contractAccount }) {
+    contractAccount}) {
     await contract.editaccount(
       actor,
       project_id,
@@ -72,17 +81,17 @@ class AccountUtil {
       account_name,
       description,
       account_category,
-      budget_amount, { authorization: `${contractAccount}@active` })
+      budget_amount,
+      naics_code,
+      jobs_multiplier, { authorization: `${contractAccount}@active` })
   }
 
   static async deleteaccnt({
-    actor,
     project_id,
     account_id,
     contract,
     contractAccount }) {
     await contract.deleteaccnt(
-      actor,
       project_id,
       account_id, { authorization: `${contractAccount}@active` })
   }
@@ -189,6 +198,7 @@ class Account {
     ]
   }
 
+
   getCreateActionParams() {
     return [
       this.params.actor,
@@ -260,7 +270,7 @@ class AccountFactory {
     }
 
     if (!parent_id) {
-      parent_id = 0
+      parent_id = 1
     }
 
     if (!account_currency) {
@@ -276,15 +286,15 @@ class AccountFactory {
     }
 
     if (!budget_amount) {
-      budget_amount = '0.00 USD';
+      budget_amount = '0.00 USD'
     }
 
     if (!naics_code) {
-      naics_code = 44122; // NAICS Industry
+      naics_code = 44122 // NAICS Industry
     }
 
     if (!jobs_multiplier) {
-      jobs_multiplier = 68321;
+      jobs_multiplier = 68321
     }
 
     return AccountFactory.createEntry({

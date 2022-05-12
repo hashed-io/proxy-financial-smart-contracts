@@ -293,12 +293,12 @@ ACTION accounts::editaccount(const eosio::name &actor,
     auto itr_account = accounts.find(account_id);
     check(itr_account != accounts.end(), common::contracts::accounts.to_string() + ": the account does not exist.");
 
-    action(
-        permission_level(common::contracts::permissions, "active"_n),
-        common::contracts::permissions,
-        "checkledger"_n,
-        std::make_tuple(actor, project_id, itr_account->ledger_id))
-        .send();
+    // action(
+    //     permission_level(common::contracts::permissions, "active"_n),
+    //     common::contracts::permissions,
+    //     "checkledger"_n,
+    //     std::make_tuple(actor, project_id, itr_account->ledger_id))
+    //     .send();
 
     auto accounts_by_ledger = accounts.get_index<"byledger"_n>();
     auto itr_accounts = accounts_by_ledger.find(itr_account->ledger_id);
@@ -315,7 +315,10 @@ ACTION accounts::editaccount(const eosio::name &actor,
                     {
         modified_account.account_name = account_name;
         modified_account.description = description;
-        modified_account.account_category = account_category; });
+        modified_account.account_category = account_category; 
+        modified_account.naics_code = naics_code;
+        modified_account.jobs_multiplier = jobs_multiplier;
+        });
 
     budget_tables budgets(common::contracts::budgets, project_id);
     auto budgets_by_account = budgets.get_index<"byaccount"_n>();

@@ -117,10 +117,6 @@ describe("Tests for transactions smart contract", async function () {
       id: 0,
       builder: builder.params.account,
       investors: [investor.params.account],
-      fund_lp: "https://fund-lp.com",
-      total_fund_offering_amount: "400000.00 USD",
-      total_number_fund_offering: 40000,
-      price_per_fund_unit: "300.00 USD",
     });
 
     await contracts.projects.approveprjct(
@@ -552,7 +548,7 @@ describe("Tests for transactions smart contract", async function () {
 
 });
 // TODO: CHECK WHERE ADMIN CAN EDIT (status)
-// it.only('admin can edit transactions in submit state', async () => {
+// it('admin can edit transactions in submit state', async () => {
 //   //arrange
 //   let fail
 //   const transaction = await TransactionFactory.createWithDefaults({flag: 1});
