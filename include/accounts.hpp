@@ -88,7 +88,7 @@ public:
                       const uint64_t &account_category,
                       const eosio::asset &budget_amount,
                       const uint64_t &naics_code,
-                      const uint64_t &job_multiplayer);
+                      const uint64_t &jobs_multiplayer);
 
     ACTION editaccount(const eosio::name &actor,
                        const uint64_t &project_id,
@@ -98,7 +98,7 @@ public:
                        const uint64_t &account_category,
                        const eosio::asset &budget_amount,
                        const uint64_t &naics_code,
-                       const uint64_t &job_multiplayer);
+                       const uint64_t &jobs_multiplayer);
 
     ACTION deleteaccnt(const eosio::name &actor,
                        const uint64_t &project_id,

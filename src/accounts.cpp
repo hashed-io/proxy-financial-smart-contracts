@@ -432,6 +432,8 @@ ACTION accounts::addaccount(const eosio::name &actor,
 
     require_auth(actor);
 
+    print("he");
+
     auto admin_itr = users.find(actor.value);
     check(admin_itr->role == common::projects::entity::fund , actor.to_string() + " is not an admin!");
 
