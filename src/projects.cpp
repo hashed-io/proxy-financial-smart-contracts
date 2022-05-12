@@ -80,6 +80,7 @@ ACTION projects::reset()
 
 ACTION projects::init()
 {
+	//TODO: check("cannot init twice")
 	require_auth(_self);
 
 	addentity(_self, "Proxy Capital", "Entity for Proxy Capital", ENTITY_TYPES.FUND);
