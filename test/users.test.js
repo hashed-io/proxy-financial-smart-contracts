@@ -35,6 +35,16 @@ const createRolesCases = (() => {
       testName: 'Create a Builder account',
       role: Roles.developer,
       entity_id: 3
+    },
+    {
+      testName: 'Create a Issuer account',
+      role: Roles.issuer,
+      entity_id: 4
+    },
+    {
+      testName: 'Create a Regional Center account',
+      role: Roles.regional_center,
+      entity_id: 5
     }
 
   ]
@@ -179,69 +189,6 @@ describe('Tests for the users on projects smart contract', async function () {
 
   });
 
-  it('Create an user', async function () {
-    // TODO: Fix this test
-    // Arrange
-    // const developerEntity = await EntityFactory.createWithDefaults({ role: EntityConstants.developer });
-
-    // const investorEntity = await EntityFactory.createWithDefaults({ role: EntityConstants.investor });
-
-    // const fundEntity = await EntityFactory.createWithDefaults({ role: EntityConstants.fund });
-
-
-    // await contracts.projects.addentity(...developerEntity.getActionParams(), { authorization: `${developerEntity.params.actor}@active` });
-
-    // await contracts.projects.addentity(...investorEntity.getActionParams(), { authorization: `${investorEntity.params.actor}@active` });
-
-    // await contracts.projects.addentity(...fundEntity.getActionParams(), { authorization: `${fundEntity.params.actor}@active` });
-
-    // //Act  name user, string user_name, uint64_t entity_id
-    // await contracts.projects.addtestuser(developerEntity.params.actor, developerEntity.params.entity_name, 1, { authorization: `${developerEntity.params.actor}@active` });
-
-    // await contracts.projects.addtestuser(investorEntity.params.actor, investorEntity.params.entity_name, 2, { authorization: `${investorEntity.params.actor}@active` });
-
-    // await contracts.projects.addtestuser(fundEntity.params.actor, fundEntity.params.entity_name, 3, { authorization: `${fundEntity.params.actor}@active` });
-
-    // const entitiesTable = await rpc.get_table_rows({
-    //   code: projects,
-    //   scope: projects,
-    //   table: 'entities',
-    //   json: true
-    // });
-
-    // console.table(entitiesTable.rows);
-
-    // const usersTable = await rpc.get_table_rows({
-    //   code: projects,
-    //   scope: projects,
-    //   table: 'users',
-    //   json: true
-    // });
-
-    // console.table(usersTable.rows);
-
-    // // Assert
-    // expect(usersTable.rows).to.deep.include.members([{
-    //   account: developerEntity.params.actor,
-    //   user_name: developerEntity.params.entity_name,
-    //   entity_id: 1,
-    //   related_projects: [],
-    //   role: EntityConstants.developer
-    // }, {
-    //   account: investorEntity.params.actor,
-    //   user_name: investorEntity.params.entity_name,
-    //   entity_id: 2,
-    //   related_projects: [],
-    //   role: EntityConstants.investor
-    // }, {
-    //   account: fundEntity.params.actor,
-    //   user_name: fundEntity.params.entity_name,
-    //   entity_id: 3,
-    //   related_projects: [],
-    //   role: EntityConstants.fund
-    // }]);
-
-  });
 
 
 });
