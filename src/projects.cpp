@@ -95,7 +95,7 @@ ACTION projects::init()
 	adduser(_self, "investorusr2"_n, "Investor 2", common::projects::entity::investor);
 	adduser(_self, "builderuser1"_n, "Builder", common::projects::entity::developer);
 	adduser(_self, "builderuser2"_n, "Builder", common::projects::entity::developer);
-	adduser(_self, "issueruser1"_n, "Issuer", common::projects::entity::issuer);
+	adduser(_self, "issueruser11"_n, "Issuer", common::projects::entity::issuer);
 	adduser(_self, "regionalcntr"_n, "RegionalCenter", common::projects::entity::regional_center);
 
 	// hardcoding some entity_t and user_t for mainnet
