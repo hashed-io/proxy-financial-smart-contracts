@@ -82,7 +82,7 @@ describe("Tests for projects smart contract", async function () {
     });
     issuer = await UserFactory.createWithDefaults({
       role: Roles.issuer,
-      account: "issueruser1",
+      account: "issueruser11",
       user_name: "Issuer",
       entity_id: 4,
     });
@@ -1889,7 +1889,7 @@ describe("Tests for projects smart contract", async function () {
     try {
       await contracts.projects.removeuser(
         admin.params.account,
-        'issueruser1',
+        'issueruser11',
         0,
         { authorization: `${admin.params.account}@active` }
       );
@@ -2193,7 +2193,7 @@ describe("Tests for projects smart contract", async function () {
     try {
       await contracts.projects.removeuser(
         admin.params.account,
-        'issueruser1',
+        'issueruser11',
         0,
         { authorization: `${admin.params.account}@active` }
       );

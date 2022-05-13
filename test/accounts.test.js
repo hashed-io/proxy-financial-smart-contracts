@@ -189,7 +189,7 @@ describe('Tests for budget expenditures', async function () {
 
   })
 
-  it.only('cannot create budget expenditure under another parent (soft/hard cost)', async () => {
+  it('cannot create budget expenditure under another parent (soft/hard cost)', async () => {
     // Arrange
     let fail
     const new_account = await AccountFactory.createWithDefaults({ actor: admin.params.account, parent_id: 3 });
