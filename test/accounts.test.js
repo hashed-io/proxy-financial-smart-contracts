@@ -161,7 +161,7 @@ describe('Tests for budget expenditures', async function () {
   it('Only admin can create new accounts', async () => {
     // Arrange
     let fail 
-    const new_account = await AccountFactory.createWithDefaults({ actor: admin.params.account });
+    const new_account = await AccountFactory.createWithDefaults({ actor: investor.params.account });
 
     // Act
     try{
@@ -593,7 +593,7 @@ describe('Tests for budget expenditures', async function () {
     })
   });
 
-  it.only('Admin can delete ALL budgets expenditures', async () => {
+  it('Admin can delete ALL budgets expenditures', async () => {
     // Arrange
     const new_account = await AccountFactory.createWithDefaults({actor: admin.params.account, budget_amount: "100.00 USD"});
     await contracts.accounts.addaccount(...new_account.getCreateActionParams(), { authorization: `${admin.params.account}@active` });
