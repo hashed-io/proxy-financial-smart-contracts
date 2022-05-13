@@ -310,8 +310,7 @@ describe('Tests for budget expenditures', async function () {
       naics_code: new_account.params.naics_code,
       jobs_multiplier: new_account.params.jobs_multiplier,
     })
-
-
+    
   });
 
   it('Delete a budget expenditure of a given project', async () => {
@@ -593,7 +592,7 @@ describe('Tests for budget expenditures', async function () {
     })
   });
 
-  it.only('Admin can delete ALL budgets expenditures', async () => {
+  it('Admin can delete ALL budgets expenditures', async () => {
     // Arrange
     const new_account = await AccountFactory.createWithDefaults({actor: admin.params.account, budget_amount: "100.00 USD"});
     await contracts.accounts.addaccount(...new_account.getCreateActionParams(), { authorization: `${admin.params.account}@active` });
