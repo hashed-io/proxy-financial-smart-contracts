@@ -80,6 +80,7 @@ ACTION projects::reset()
 
 ACTION projects::init()
 {
+	// TODO: check("cannot init twice")
 	require_auth(_self);
 
 	addentity(_self, "Proxy Capital", "Entity for Proxy Capital", ENTITY_TYPES.FUND);
@@ -172,7 +173,6 @@ ACTION projects::addproject(const eosio::name &actor,
 	// check_asset(total_gp_equity, common::contracts::projects);
 	// check_asset(private_equity, common::contracts::projects);
 
-	check(projected_starting_date >= eosio::current_time_point().sec_since_epoch(), common::contracts::projects.to_string() + ": the date can not be earlier than now.");
 	check(projected_completion_date >= eosio::current_time_point().sec_since_epoch(), common::contracts::projects.to_string() + ": the date can not be earlier than now.");
 
 	auto project_itr = project_t.begin();
@@ -186,15 +186,16 @@ ACTION projects::addproject(const eosio::name &actor,
 
 	project_t.emplace(_self, [&](auto &item)
 										{
-		 item.owner = actor;
-		 item.project_name = project_name;
-		 item.description = description;
-		 item.image = image;
-		 item.created_date = eosio::current_time_point().sec_since_epoch();
-		 item.updated_date = eosio::current_time_point().sec_since_epoch();
-		 item.projected_starting_date = projected_starting_date;
-		 item.projected_completion_date = projected_completion_date;
-		 item.status = common::projects::status::awaiting_fund_approval; });
+		item.project_id = new_project_id;
+		item.owner = actor;
+		item.project_name = project_name;
+		item.description = description;
+		item.image = image;
+		item.created_date = eosio::current_time_point().sec_since_epoch();
+		item.updated_date = eosio::current_time_point().sec_since_epoch();
+		item.projected_starting_date = projected_starting_date;
+		item.projected_completion_date = projected_completion_date;
+		item.status = PROJECT_STATUS.AWAITING_FUND_APPROVAL; });
 }
 
 ACTION projects::deleteprojct(name actor, uint64_t project_id)

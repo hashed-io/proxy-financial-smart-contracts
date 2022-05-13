@@ -190,7 +190,7 @@ describe('Tests for budget expenditures', async function () {
 
   it('Edit NAIC code to a given budget expenditure', async () => {
     // Arrange
-    const new_account = await AccountFactory.createWithDefaults({actor: admin.params.account, budget_amount: "100.00 USD"});
+    const new_account = await AccountFactory.createWithDefaults({actor: admin.params.account});
     await contracts.accounts.addaccount(...new_account.getCreateActionParams(), { authorization: `${admin.params.account}@active` });
 
     // Act
@@ -231,7 +231,7 @@ describe('Tests for budget expenditures', async function () {
 
   it('Edit Jobs multiplier to a given budget expenditure', async () => {
     // Arrange
-    const new_account = await AccountFactory.createWithDefaults({actor: admin.params.account, budget_amount: "100.00 USD"});
+    const new_account = await AccountFactory.createWithDefaults({actor: admin.params.account});
     await contracts.accounts.addaccount(...new_account.getCreateActionParams(), { authorization: `${admin.params.account}@active` });
     console.log('params is: ', new_account.params)
    
@@ -273,7 +273,7 @@ describe('Tests for budget expenditures', async function () {
 
   it('Edit name to a given budget expenditure', async () => {
     // Arrange
-    const new_account = await AccountFactory.createWithDefaults({actor: admin.params.account, budget_amount: "100.00 USD"});
+    const new_account = await AccountFactory.createWithDefaults({actor: admin.params.account});
     await contracts.accounts.addaccount(...new_account.getCreateActionParams(), { authorization: `${admin.params.account}@active` });
     console.log('params is: ', new_account.params)
    
@@ -314,41 +314,21 @@ describe('Tests for budget expenditures', async function () {
 
   });
 
-
   it('Delete a budget expenditure of a given project', async () => {
-    // Arrange
-
-    // Act
+    //Arrange
+    const new_account = await AccountFactory.createWithDefaults({actor: admin.params.account});
+    await contracts.accounts.addaccount(...new_account.getCreateActionParams(), { authorization: `${admin.params.account}@active` });
+   
+    //Act
+    await AccountUtil.deleteaccnt({
+      actor: new_account.params.actor,
+      project_id: new_account.params.project_id,
+      account_id: 24,
+      contract: contracts.accounts,
+      contractAccount: admin.params.account
+    })
 
     // Assert
-
-    const drawdownTable = await rpc.get_table_rows({
-      code: transactions,
-      scope: project.params.id,
-      table: 'drawdowns',
-      json: true
-    });
-
-    console.table(drawdownTable.rows);
-
-    const transactionsTable = await rpc.get_table_rows({
-      code: transactions,
-      scope: project.params.id,
-      table: 'transactions',
-      json: true
-    });
-
-    console.table(transactionsTable.rows);
-
-    const ledgerTable = await rpc.get_table_rows({
-      code: accounts,
-      scope: project.params.id,
-      table: 'ledgers',
-      json: true
-    });
-
-    console.table(ledgerTable.rows);
-
     const accountsTable = await rpc.get_table_rows({
       code: accounts,
       scope: project.params.id,
@@ -356,27 +336,287 @@ describe('Tests for budget expenditures', async function () {
       json: true,
       limit: 100
     });
+    console.table(accountsTable.rows[accountsTable.rows.length - 1]);
 
-    console.table(accountsTable.rows);
+    //account id = 23 'cause new_account was 24. 
+    expect(accountsTable.rows[accountsTable.rows.length - 1]).to.include({
+      account_id: 23,
+    })
 
-    const accountTypesTable = await rpc.get_table_rows({
+  });
+
+  it('Delete a budget expenditure of a given project', async () => {
+    //Arrange
+    const new_account = await AccountFactory.createWithDefaults({actor: admin.params.account});
+    await contracts.accounts.addaccount(...new_account.getCreateActionParams(), { authorization: `${admin.params.account}@active` });
+   
+    //Act
+    await AccountUtil.deleteaccnt({
+      actor: new_account.params.actor,
+      project_id: new_account.params.project_id,
+      account_id: 24,
+      contract: contracts.accounts,
+      contractAccount: admin.params.account
+    })
+
+    // Assert
+    const accountsTable = await rpc.get_table_rows({
       code: accounts,
-      scope: accounts,
-      table: 'accnttypes',
-      json: true
+      scope: project.params.id,
+      table: 'accounts',
+      json: true,
+      limit: 100
     });
+    console.table(accountsTable.rows[accountsTable.rows.length - 1]);
 
-    console.table(accountTypesTable.rows);
+    //account id = 23 'cause new_account was 24. 
+    expect(accountsTable.rows[accountsTable.rows.length - 1]).to.include({
+      account_id: 23,
+    })
 
-    const UserTable = await rpc.get_table_rows({
-      code: projects,
-      scope: projects,
-      table: 'users',
-      json: true
+  });
+
+  it('Automatically creates a budget when the new account has an initial budget.', async () => {
+    // Arrange
+    const new_account = await AccountFactory.createWithDefaults({actor: admin.params.account, budget_amount: "100.00 USD"});
+   
+    //Act
+    await contracts.accounts.addaccount(...new_account.getCreateActionParams(), { authorization: `${admin.params.account}@active` });
+
+    // Assert
+    const accountsTable = await rpc.get_table_rows({
+      code: accounts,
+      scope: project.params.id,
+      table: 'accounts',
+      json: true,
+      limit: 100
     });
+    console.table(accountsTable.rows[accountsTable.rows.length - 1]);
+    
+    const budgetsTable = await rpc.get_table_rows({
+      code: budgets,
+      scope: 0,
+      table: "budgets",
+      json: true,
+    });
+    console.log("\n\n budgets table : ", budgetsTable.rows);
+    
+    assert.deepStrictEqual(budgetsTable.rows, [
+      {
+        budget_id: 1,
+        account_id: 24,
+        amount: "100.00 USD",
+        budget_creation_date: budgetsTable.rows[0].budget_creation_date,
+        budget_update_date: budgetsTable.rows[0].budget_update_date,
+        budget_period_id: 1,
+        budget_type_id: 1,
+      },
+      {
+        budget_id: 2,
+        account_id: 1,
+        amount: "100.00 USD",
+        budget_creation_date: budgetsTable.rows[0].budget_creation_date,
+        budget_update_date: budgetsTable.rows[0].budget_update_date,
+        budget_period_id: 1,
+        budget_type_id: 1,
+      }
+    ]);
 
-    console.table(UserTable.rows);
+  });
 
+  it('Add balance to a budget expenditure of a given project', async () => {
+    // Arrange
+    const new_account = await AccountFactory.createWithDefaults({actor: admin.params.account, budget_amount: "100.00 USD"});
+    await contracts.accounts.addaccount(...new_account.getCreateActionParams(), { authorization: `${admin.params.account}@active` });
+
+    //Act
+    await AccountUtil.addbalance({
+      project_id: 0,
+      account_id: 24,
+      amount: "500.00 USD",
+      contract: contracts.accounts,
+      contractAccount: accounts
+    })
+
+    // Assert
+    const accountsTable = await rpc.get_table_rows({
+      code: accounts,
+      scope: project.params.id,
+      table: 'accounts',
+      json: true,
+      limit: 100
+    });
+    // console.log(accountsTable)
+    console.table(accountsTable.rows[accountsTable.rows.length - 1]);
+    
+    expect(accountsTable.rows[accountsTable.rows.length - 1]).to.include({
+      account_id: 24,
+      parent_id: new_account.params.parent_id,
+      account_name: new_account.params.account_name,
+      description: new_account.params.description,
+      naics_code: new_account.params.naics_code,
+      jobs_multiplier: new_account.params.jobs_multiplier,
+      increase_balance: "500.00 USD"
+    })
+
+  });
+
+  it('Sub balance to a budget expenditure of a given project', async () => {
+    // Arrange
+    const new_account = await AccountFactory.createWithDefaults({actor: admin.params.account, budget_amount: "100.00 USD"});
+    await contracts.accounts.addaccount(...new_account.getCreateActionParams(), { authorization: `${admin.params.account}@active` });
+    await AccountUtil.addbalance({
+      project_id: 0,
+      account_id: 24,
+      amount: "500.00 USD",
+      contract: contracts.accounts,
+      contractAccount: accounts
+    })
+
+    //Act
+    await AccountUtil.subbalance({
+      project_id: 0,
+      account_id: 24,
+      amount: "100.00 USD",
+      contract: contracts.accounts,
+      contractAccount: accounts
+    })
+
+    // Assert
+    const accountsTable = await rpc.get_table_rows({
+      code: accounts,
+      scope: project.params.id,
+      table: 'accounts',
+      json: true,
+      limit: 100
+    });
+    // console.log(accountsTable)
+    console.table(accountsTable.rows[accountsTable.rows.length - 1]);
+    
+    expect(accountsTable.rows[accountsTable.rows.length - 1]).to.include({
+      account_id: 24,
+      parent_id: new_account.params.parent_id,
+      account_name: new_account.params.account_name,
+      description: new_account.params.description,
+      naics_code: new_account.params.naics_code,
+      jobs_multiplier: new_account.params.jobs_multiplier,
+      increase_balance: "500.00 USD",
+      decrease_balance: "100.00 USD"
+    })
+  });
+
+  it('Cancel add balance to a budget expenditure of a given project', async () => {
+    // Arrange
+    const new_account = await AccountFactory.createWithDefaults({actor: admin.params.account, budget_amount: "100.00 USD"});
+    await contracts.accounts.addaccount(...new_account.getCreateActionParams(), { authorization: `${admin.params.account}@active` });
+    await AccountUtil.addbalance({
+      project_id: 0,
+      account_id: 24,
+      amount: "500.00 USD",
+      contract: contracts.accounts,
+      contractAccount: accounts
+    })
+
+    //Act
+    await AccountUtil.canceladd({
+      project_id: 0,
+      account_id: 24,
+      amount: "70.00 USD",
+      contract: contracts.accounts,
+      contractAccount: accounts
+    })
+
+    // Assert
+    const accountsTable = await rpc.get_table_rows({
+      code: accounts,
+      scope: project.params.id,
+      table: 'accounts',
+      json: true,
+      limit: 100
+    });
+    console.log(accountsTable)
+    console.table(accountsTable.rows[accountsTable.rows.length - 1]);
+    
+    expect(accountsTable.rows[accountsTable.rows.length - 1]).to.include({
+      account_id: 24,
+      parent_id: new_account.params.parent_id,
+      account_name: new_account.params.account_name,
+      description: new_account.params.description,
+      naics_code: new_account.params.naics_code,
+      jobs_multiplier: new_account.params.jobs_multiplier,
+      increase_balance: "430.00 USD",
+      decrease_balance: "0.00 USD"
+    })
+  });
+
+  it('cancel sub balance to a budget expenditure of a given project', async () => {
+    // Arrange
+    const new_account = await AccountFactory.createWithDefaults({actor: admin.params.account, budget_amount: "100.00 USD"});
+    await contracts.accounts.addaccount(...new_account.getCreateActionParams(), { authorization: `${admin.params.account}@active` });
+    await AccountUtil.subbalance({
+      project_id: 0,
+      account_id: 24,
+      amount: "100.00 USD",
+      contract: contracts.accounts,
+      contractAccount: accounts
+    })
+
+    //Act
+    await AccountUtil.cancelsub({
+      project_id: 0,
+      account_id: 24,
+      amount: "70.00 USD",
+      contract: contracts.accounts,
+      contractAccount: accounts
+    })
+
+    // Assert
+    const accountsTable = await rpc.get_table_rows({
+      code: accounts,
+      scope: project.params.id,
+      table: 'accounts',
+      json: true,
+      limit: 100
+    });
+    // console.log(accountsTable)
+    // console.table(accountsTable.rows[accountsTable.rows.length - 1]);
+    
+    expect(accountsTable.rows[accountsTable.rows.length - 1]).to.include({
+      account_id: 24,
+      parent_id: new_account.params.parent_id,
+      account_name: new_account.params.account_name,
+      description: new_account.params.description,
+      naics_code: new_account.params.naics_code,
+      jobs_multiplier: new_account.params.jobs_multiplier,
+      increase_balance: "0.00 USD",
+      decrease_balance: "30.00 USD"
+    })
+  });
+
+  it.only('Admin can delete ALL budgets expenditures', async () => {
+    // Arrange
+    const new_account = await AccountFactory.createWithDefaults({actor: admin.params.account, budget_amount: "100.00 USD"});
+    await contracts.accounts.addaccount(...new_account.getCreateActionParams(), { authorization: `${admin.params.account}@active` });
+
+    //Act
+    await AccountUtil.deleteaccnts({
+      project_id: 0,
+      contract: contracts.accounts,
+      contractAccount: accounts
+    })
+
+    // Assert
+    const accountsTable = await rpc.get_table_rows({
+      code: accounts,
+      scope: project.params.id,
+      table: 'accounts',
+      json: true,
+      limit: 100
+    });
+    console.log(accountsTable)
+    console.table(accountsTable.rows[accountsTable.rows.length - 1]);
+    
+    assert.deepStrictEqual(accountsTable.rows, [])
   });
 
 });

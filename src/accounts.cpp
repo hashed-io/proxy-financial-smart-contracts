@@ -66,7 +66,7 @@ ACTION accounts::reset()
 ACTION accounts::init()
 
 {
-
+//TODO: check("cannot init twice")
     reset();
 
     vector<common::types::account_types> account_types_vv;
@@ -394,12 +394,12 @@ ACTION accounts::deleteaccnt(const eosio::name &actor,
     auto account = accounts.find(account_id);
     check(account != accounts.end(), common::contracts::accounts.to_string() + ": the account does not exist.");
 
-    action(
-        permission_level(common::contracts::permissions, "active"_n),
-        common::contracts::permissions,
-        "checkledger"_n,
-        std::make_tuple(actor, project_id, account->ledger_id))
-        .send();
+    // action(
+    //     permission_level(common::contracts::permissions, "active"_n),
+    //     common::contracts::permissions,
+    //     "checkledger"_n,
+    //     std::make_tuple(actor, project_id, account->ledger_id))
+    //     .send();
 
     check(account->num_children == 0, common::contracts::accounts.to_string() + ": the account has subaccounts and can not be deleted.");
     check(account->increase_balance == asset(0, common::currency), common::contracts::accounts.to_string() + ": the account has an increase balance grater than 0 and can not be deleted.");
