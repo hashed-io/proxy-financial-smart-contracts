@@ -7,7 +7,7 @@ cleos -u https://testnet.telos.caleos.io push action proxyv2accnt editaccount '{
   "account_name" : "Construction",
   "description" : "template descripion",
   "account_category" : "2",
-  "budget_amount" : "10.00 USD",
+  "budget_amount" : "2560.00 USD",
   "naics_code" : "411",
   "jobs_multiplier" : "52448"
 }' -p proxyadmin11@active
@@ -19,7 +19,7 @@ cleos -u https://testnet.telos.caleos.io push action proxyv2accnt editaccount '{
   "account_name" : "Furniture, Fixtures & Allowance",
   "description" : "template descripion",
   "account_category" : "2",
-  "budget_amount" : "10.00 USD",
+  "budget_amount" : "12384.00 USD",
   "naics_code" : "411",
   "jobs_multiplier" : "52448"
 }' -p proxyadmin11@active
@@ -31,7 +31,7 @@ cleos -u https://testnet.telos.caleos.io push action proxyv2accnt editaccount '{
   "account_name" : "Hard Cost contingency & Allowance",
   "description" : "template descripion",
   "account_category" : "2",
-  "budget_amount" : "10.00 USD",
+  "budget_amount" : "1000.00 USD",
   "naics_code" : "411",
   "jobs_multiplier" : "52448"
 }' -p proxyadmin11@active
@@ -45,7 +45,7 @@ cleos -u https://testnet.telos.caleos.io push action proxyv2accnt editaccount '{
   "account_name" : "Architect & Design",
   "description" : "template descripion",
   "account_category" : "3",
-  "budget_amount" : "10.00 USD",
+  "budget_amount" : "8950.00 USD",
   "naics_code" : "411",
   "jobs_multiplier" : "52448"
 }' -p proxyadmin11@active
@@ -57,7 +57,7 @@ cleos -u https://testnet.telos.caleos.io push action proxyv2accnt editaccount '{
   "account_name" : "Building Permits & Impact Fees",
   "description" : "template descripion",
   "account_category" : "3",
-  "budget_amount" : "10.00 USD",
+  "budget_amount" : "5680.00 USD",
   "naics_code" : "411",
   "jobs_multiplier" : "52448"
 }' -p proxyadmin11@active
@@ -69,7 +69,7 @@ cleos -u https://testnet.telos.caleos.io push action proxyv2accnt editaccount '{
   "account_name" : "Developer Reimbursable",
   "description" : "template descripion",
   "account_category" : "3",
-  "budget_amount" : "10.00 USD",
+  "budget_amount" : "9813.00 USD",
   "naics_code" : "411",
   "jobs_multiplier" : "52448"
 }' -p proxyadmin11@active
@@ -81,7 +81,7 @@ cleos -u https://testnet.telos.caleos.io push action proxyv2accnt editaccount '{
   "account_name" : "Builder Risk Insurance",
   "description" : "template descripion",
   "account_category" : "3",
-  "budget_amount" : "10.00 USD",
+  "budget_amount" : "9850.00 USD",
   "naics_code" : "411",
   "jobs_multiplier" : "52448"
 }' -p proxyadmin11@active
@@ -93,7 +93,7 @@ cleos -u https://testnet.telos.caleos.io push action proxyv2accnt editaccount '{
   "account_name" : "Environment / Soils / Survey",
   "description" : "template descripion",
   "account_category" : "3",
-  "budget_amount" : "10.00 USD",
+  "budget_amount" : "99800.00 USD",
   "naics_code" : "411",
   "jobs_multiplier" : "52448"
 }' -p proxyadmin11@active
@@ -105,7 +105,7 @@ cleos -u https://testnet.telos.caleos.io push action proxyv2accnt editaccount '{
   "account_name" :  "Testing & Inspections",
   "description" : "template descripion",
   "account_category" : "3",
-  "budget_amount" : "10.00 USD",
+  "budget_amount" : "1200.00 USD",
   "naics_code" : "411",
   "jobs_multiplier" : "52448"
 }' -p proxyadmin11@active
@@ -117,7 +117,7 @@ cleos -u https://testnet.telos.caleos.io push action proxyv2accnt editaccount '{
   "account_name" :  "Legal & Professional",
   "description" : "template descripion",
   "account_category" : "3",
-  "budget_amount" : "10.00 USD",
+  "budget_amount" : "6500.00 USD",
   "naics_code" : "411",
   "jobs_multiplier" : "52448"
 }' -p proxyadmin11@active
@@ -129,7 +129,7 @@ cleos -u https://testnet.telos.caleos.io push action proxyv2accnt editaccount '{
   "account_name" :  "Real Estate Taxes & Owners Liability Insurance",
   "description" : "template descripion",
   "account_category" : "3",
-  "budget_amount" : "10.00 USD",
+  "budget_amount" : "9800.00 USD",
   "naics_code" : "411",
   "jobs_multiplier" : "52448"
 }' -p proxyadmin11@active
@@ -141,7 +141,7 @@ cleos -u https://testnet.telos.caleos.io push action proxyv2accnt editaccount '{
   "account_name" : "Pre - Development Fee",
   "description" : "template descripion",
   "account_category" : "3",
-  "budget_amount" : "10.00 USD",
+  "budget_amount" : "7800.00 USD",
   "naics_code" : "411",
   "jobs_multiplier" : "52448"
 }' -p proxyadmin11@active
@@ -153,7 +153,7 @@ cleos -u https://testnet.telos.caleos.io push action proxyv2accnt editaccount '{
   "account_name" : "Equity Management Fee",
   "description" : "template descripion",
   "account_category" : "3",
-  "budget_amount" : "10.00 USD",
+  "budget_amount" : "95800.00 USD",
   "naics_code" : "411",
   "jobs_multiplier" : "52448"
 }' -p proxyadmin11@active
@@ -165,7 +165,7 @@ cleos -u https://testnet.telos.caleos.io push action proxyv2accnt editaccount '{
   "account_name" : "Bank Origination Fee",
   "description" : "template descripion",
   "account_category" : "3",
-  "budget_amount" : "10.00 USD",
+  "budget_amount" : "1250.00 USD",
   "naics_code" : "411",
   "jobs_multiplier" : "52448"
 }' -p proxyadmin11@active
@@ -177,7 +177,7 @@ cleos -u https://testnet.telos.caleos.io push action proxyv2accnt editaccount '{
   "account_name" :  "Lender Debt Placement Fee",
   "description" : "template descripion",
   "account_category" : "3",
-  "budget_amount" : "10.00 USD",
+  "budget_amount" : "3650.00 USD",
   "naics_code" : "411",
   "jobs_multiplier" : "52448"
 }' -p proxyadmin11@active
@@ -189,7 +189,7 @@ cleos -u https://testnet.telos.caleos.io push action proxyv2accnt editaccount '{
   "account_name" :  "Title, Appraisal, Feasibility, Plan Review & Closing",
   "description" : "template descripion",
   "account_category" : "3",
-  "budget_amount" : "10.00 USD",
+  "budget_amount" : "6590.00 USD",
   "naics_code" : "411",
   "jobs_multiplier" : "52448"
 }' -p proxyadmin11@active
@@ -201,7 +201,7 @@ cleos -u https://testnet.telos.caleos.io push action proxyv2accnt editaccount '{
   "account_name" :  "Interest Carry during Construction",
   "description" : "template descripion",
   "account_category" : "3",
-  "budget_amount" : "10.00 USD",
+  "budget_amount" : "7890.00 USD",
   "naics_code" : "411",
   "jobs_multiplier" : "52448"
 }' -p proxyadmin11@active
@@ -213,7 +213,7 @@ cleos -u https://testnet.telos.caleos.io push action proxyv2accnt editaccount '{
   "account_name" :  "Ops Stabilization & Interest Carry Reserve",
   "description" : "template descripion",
   "account_category" : "3",
-  "budget_amount" : "10.00 USD",
+  "budget_amount" : "12385.00 USD",
   "naics_code" : "411",
   "jobs_multiplier" : "52448"
 }' -p proxyadmin11@active
@@ -225,7 +225,7 @@ cleos -u https://testnet.telos.caleos.io push action proxyv2accnt editaccount '{
   "account_name" :  "Sales & Marketing",
   "description" : "template descripion",
   "account_category" : "3",
-  "budget_amount" : "10.00 USD",
+  "budget_amount" : "585.00 USD",
   "naics_code" : "411",
   "jobs_multiplier" : "52448"
 }' -p proxyadmin11@active
@@ -237,7 +237,7 @@ cleos -u https://testnet.telos.caleos.io push action proxyv2accnt editaccount '{
   "account_name" :  "Pre - Opening Expenses",
   "description" : "template descripion",
   "account_category" : "3",
-  "budget_amount" : "10.00 USD",
+  "budget_amount" : "100.00 USD",
   "naics_code" : "411",
   "jobs_multiplier" : "52448"
 }' -p proxyadmin11@active
@@ -249,7 +249,7 @@ cleos -u https://testnet.telos.caleos.io push action proxyv2accnt editaccount '{
   "account_name" :  "Contingency",
   "description" : "template descripion",
   "account_category" : "3",
-  "budget_amount" : "10.00 USD",
+  "budget_amount" : "90.00 USD",
   "naics_code" : "411",
   "jobs_multiplier" : "52448"
 }' -p proxyadmin11@active
