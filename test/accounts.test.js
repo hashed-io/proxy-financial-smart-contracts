@@ -181,9 +181,38 @@ describe('Tests for budget expenditures', async function () {
       json: true,
       limit: 100
     });
+    console.log(accountsTable)
     //console.table(accountsTable.rows[accountsTable.rows.length - 1]);
 
     expect(fail).to.be.true
+
+
+  })
+
+  it.only('cannot create budget expenditure under another parent (soft/hard cost)', async () => {
+    // Arrange
+    let fail 
+    const new_account = await AccountFactory.createWithDefaults({ actor: admin.params.account, parent_id:3});
+    console.log(new_account)
+
+    // Act
+    try{
+      await contracts.accounts.addaccount(...new_account.getCreateActionParams(), { authorization: `${admin.params.account}@active` });
+      fail = false
+    } catch (err) {
+      console.error(err)
+      fail = true
+    }
+
+    const accountsTable = await rpc.get_table_rows({
+      code: accounts,
+      scope: project.params.id,
+      table: 'accounts',
+      json: true,
+      limit: 100
+    });
+    // console.log(accountsTable)
+    console.table(accountsTable.rows[accountsTable.rows.length - 1]);
 
 
   })
