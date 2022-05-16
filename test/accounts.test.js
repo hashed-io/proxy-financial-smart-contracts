@@ -23,7 +23,7 @@ const { accounts, projects, budgets, permissions, transactions } = contractNames
 
 describe('Tests for budget expenditures', async function () {
 
-  let contracts
+  let contracts, admin, builder, investor;
 
   before(async function () {
     if (!isLocalNode()) {
@@ -158,7 +158,7 @@ describe('Tests for budget expenditures', async function () {
 
   });
 
-  it('Only admin can create new accounts', async () => {
+  it('Only admin can create new Budget Expenditures', async () => {
     // Arrange
     let fail
     const new_account = await AccountFactory.createWithDefaults({ actor: investor.params.account });
@@ -189,7 +189,7 @@ describe('Tests for budget expenditures', async function () {
 
   })
 
-  it('cannot create budget expenditure under another parent (soft/hard cost)', async () => {
+  it('Cannot create budget expenditures under another parent_id (soft/hard cost)', async () => {
     // Arrange
     let fail
     const new_account = await AccountFactory.createWithDefaults({ actor: admin.params.account, parent_id: 3 });
@@ -211,7 +211,7 @@ describe('Tests for budget expenditures', async function () {
       limit: 100
     });
     // console.log(accountsTable)
-    console.table(accountsTable.rows);
+    console.log(accountsTable.rows);
 
 
     expect(fail).to.be.true
