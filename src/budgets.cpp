@@ -326,6 +326,9 @@ ACTION budgets::addbudget (  name actor,
 
     require_auth(actor);
 
+    auto admin_itr = users.find(actor.value);
+    check(admin_itr->role == common::projects::entity::fund , actor.to_string() + " is not an admin!");
+
     account_tables accounts(common::contracts::accounts, project_id);
 
     auto accnt_itr = accounts.find(account_id);
