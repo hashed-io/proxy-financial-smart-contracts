@@ -19,6 +19,7 @@
 #include <common/tables/budget_period.hpp>
 #include <common/tables/budget_type.hpp>
 #include <common/tables/account.hpp>
+#include <common/tables/user.hpp>
 
 
 using namespace eosio;
@@ -31,8 +32,10 @@ CONTRACT budgets : public contract {
         using contract::contract;
         budgets(name receiver, name code, datastream<const char*> ds)
             : contract(receiver, code, ds),
-              budget_types(receiver, receiver.value)
-              {}
+              budget_types(receiver, receiver.value),
+              users(common::contracts::projects, common::contracts::projects.value)
+        {
+        }
 
         DEFINE_BUDGET_TABLE
 
@@ -49,6 +52,10 @@ CONTRACT budgets : public contract {
         DEFINE_ACCOUNT_TABLE
 
         DEFINE_ACCOUNT_TABLE_MULTI_INDEX
+
+        DEFINE_USER_TABLE
+
+	    DEFINE_USER_TABLE_MULTI_INDEX
         
         ACTION reset ();
 
@@ -89,6 +96,9 @@ CONTRACT budgets : public contract {
         };
 
         budget_type_tables budget_types;
+        user_tables users;
+
+
 
         bool overlap(uint64_t begin, uint64_t end, uint64_t new_begin, uint64_t new_end);
         bool match (uint64_t begin, uint64_t end, uint64_t new_begin, uint64_t new_end);
