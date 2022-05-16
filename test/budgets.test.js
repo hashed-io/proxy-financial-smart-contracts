@@ -16,12 +16,13 @@ const { AccountFactory, AccountConstants, AccountUtil } = require('./util/Accoun
 const { func } = require('promisify')
 const assert = require('assert')
 const { Console } = require('console')
+const exp = require('constants')
 
 const expect = require('chai').expect
 
 const { accounts, projects, budgets, permissions, transactions } = contractNames
 
-describe('Tests for budgets ', async function () {
+describe.test('Tests for budgets ', async function () {
   let contracts, admin, builder, investor;
 
   before(async function () {
@@ -97,6 +98,7 @@ describe('Tests for budgets ', async function () {
 
   it('Automatically creates a budget when the new Budget Expenditure has an initial amount.', async () => {
     // Arrange
+    let fail
     const new_account = await AccountFactory.createWithDefaults({ actor: admin.params.account, budget_amount: "100.00 USD" });
 
     //Act
@@ -110,7 +112,7 @@ describe('Tests for budgets ', async function () {
       json: true,
       limit: 100
     });
-    console.table(accountsTable.rows[accountsTable.rows.length - 1]);
+    //console.table(accountsTable.rows[accountsTable.rows.length - 1]);
 
     const budgetsTable = await rpc.get_table_rows({
       code: budgets,
@@ -118,7 +120,7 @@ describe('Tests for budgets ', async function () {
       table: "budgets",
       json: true,
     });
-    console.log("\n\n budgets table : ", budgetsTable.rows);
+    //console.log("\n\n budgets table : ", budgetsTable.rows);
 
     assert.deepStrictEqual(budgetsTable.rows, [
       {
@@ -139,27 +141,42 @@ describe('Tests for budgets ', async function () {
         budget_period_id: 1,
         budget_type_id: 1,
       }
-    ]);
+    ])
 
   });
 
-  it.only('Create a new budget', async ()=>{
+  it('Only admin can create a new budget', async ()=>{
     // Arrange
     const new_account = await AccountFactory.createWithDefaults({ actor: admin.params.account, budget_amount: "100.00 USD" });
-    console.log(new_account)
-    //await contracts.accounts.addaccount(...new_account.getCreateActionParams(), { authorization: `${admin.params.account}@active` });
+    await contracts.accounts.addaccount(...new_account.getCreateActionParams(), { authorization: `${admin.params.account}@active` });
 
+    const newBudget = await BudgetFactory.createWithDefaults({
+      actor: builder.params.account,
+      budget_type_id: 0,
+      });
 
     //Act
-    const newBudget = await BudgetFactory.createWithDefaults({
-    actor: builder.params.account,
-    budget_type_id: 0,
-    });
-    console.log(newBudget)
-    const budgetParams = newBudget.getActionParams();
+    try{
+      await BudgetUtil.addbudget({
+        actor: newBudget.params.actor,
+        project_id: 0,
+        account_id: 24,
+        amount: newBudget.params.amount,
+        budget_type_id: newBudget.params.budget_type_id,
+        begin_date: newBudget.params.begin_date,
+        end_date: newBudget.params.end_date,
+        modify_parents: newBudget.params.modify_parents,
+        contract: contracts.budgets,
+        contractAccount: newBudget.params.actor,
+      })
+      fail = false;
+    }catch(err){
+      fail = true;
+      //console.error(err)
+    }
 
     await BudgetUtil.addbudget({
-      actor: newBudget.params.actor,
+      actor: budgets,
       project_id: 0,
       account_id: 24,
       amount: newBudget.params.amount,
@@ -168,10 +185,11 @@ describe('Tests for budgets ', async function () {
       end_date: newBudget.params.end_date,
       modify_parents: newBudget.params.modify_parents,
       contract: contracts.budgets,
-      contractAccount: newBudget.params.actor,
+      contractAccount: budgets
     })
 
     //Assert
+
     const budgetsTable = await rpc.get_table_rows({
       code: budgets,
       scope: 0,
@@ -187,49 +205,439 @@ describe('Tests for budgets ', async function () {
       json: true,
       limit: 100
     });
-    console.table(accountsTable.rows[accountsTable.rows.length - 1]);
+    //console.table(accountsTable.rows[accountsTable.rows.length - 1]);
+
+    expect(fail).to.be.true
+
+    assert.deepStrictEqual(budgetsTable.rows, [
+      {
+        budget_id: 1,
+        account_id: 24,
+        amount: "100.00 USD",
+        budget_creation_date: budgetsTable.rows[0].budget_creation_date,
+        budget_update_date: budgetsTable.rows[0].budget_update_date,
+        budget_period_id: 1,
+        budget_type_id: 1,
+      },
+      {
+        budget_id: 2,
+        account_id: 1,
+        amount: "100.00 USD",
+        budget_creation_date: budgetsTable.rows[0].budget_creation_date,
+        budget_update_date: budgetsTable.rows[0].budget_update_date,
+        budget_period_id: 1,
+        budget_type_id: 1,
+      },{
+        budget_id: 3,
+        account_id: 24,
+        amount: "10000.00 USD",
+        budget_creation_date: budgetsTable.rows[0].budget_creation_date,
+        budget_update_date: budgetsTable.rows[0].budget_update_date,
+        budget_period_id: 2,
+        budget_type_id: 2,
+      }
+    ])
+
   });
 
+  it('Only admin can edit a given budget', async ()=>{
+    // Arrange
+    let fail 
+    const new_account = await AccountFactory.createWithDefaults({ actor: admin.params.account, budget_amount: "100.00 USD" });
+    await contracts.accounts.addaccount(...new_account.getCreateActionParams(), { authorization: `${admin.params.account}@active` });
+    
+    const newBudget = await BudgetFactory.createWithDefaults({
+      actor: builder.params.account,
+      budget_type_id: 0,
+      });
+
+    //Act
+    try{
+      await BudgetUtil.editbudget({
+        actor: newBudget.params.actor,
+        project_id: 0,
+        budget_id: 1,
+        amount: "20.00 USD",
+        budget_type_id: newBudget.params.budget_type_id,
+        begin_date: newBudget.params.begin_date,
+        end_date: newBudget.params.end_date,
+        modify_parents: newBudget.params.modify_parents,
+        contract: contracts.budgets,
+        contractAccount: newBudget.params.actor,
+      })
+      fail = false;
+    } catch (err) {
+      fail = true;
+    }
+
+    await BudgetUtil.editbudget({
+      actor: budgets,
+      project_id: 0,
+      budget_id: 1,
+      amount: "20.00 USD",
+      budget_type_id: newBudget.params.budget_type_id,
+      begin_date: newBudget.params.begin_date,
+      end_date: newBudget.params.end_date,
+      modify_parents: newBudget.params.modify_parents,
+      contract: contracts.budgets,
+      contractAccount: budgets,
+    })
+
+
+    //Assert
+
+    const budgetsTable = await rpc.get_table_rows({
+      code: budgets,
+      scope: 0,
+      table: "budgets",
+      json: true,
+    });
+    console.log("\n\n budgets table : ", budgetsTable.rows);
+
+    const accountsTable = await rpc.get_table_rows({
+      code: accounts,
+      scope: project.params.id,
+      table: 'accounts',
+      json: true,
+      limit: 100
+    });
+    //console.table(accountsTable.rows[accountsTable.rows.length - 1]);
+
+    expect(fail).to.be.true
+
+    assert.deepStrictEqual(budgetsTable.rows, [
+      {
+        budget_id: 2,
+        account_id: 1,
+        amount: "100.00 USD",
+        budget_creation_date: budgetsTable.rows[0].budget_creation_date,
+        budget_update_date: budgetsTable.rows[0].budget_update_date,
+        budget_period_id: 1,
+        budget_type_id: 1,
+      },
+      {
+        budget_id: 3,
+        account_id: 24,
+        amount: "20.00 USD",
+        budget_creation_date: budgetsTable.rows[0].budget_creation_date,
+        budget_update_date: budgetsTable.rows[0].budget_update_date,
+        budget_period_id: 2,
+        budget_type_id: 2,
+      }
+    ])
+
+  });
+
+  it('Only admin can delete a given budget', async ()=>{
+    // Arrange
+    let fail
+    const new_account = await AccountFactory.createWithDefaults({ actor: admin.params.account, budget_amount: "100.00 USD" });
+    await contracts.accounts.addaccount(...new_account.getCreateActionParams(), { authorization: `${admin.params.account}@active` });
+
+    const newBudget = await BudgetFactory.createWithDefaults({
+      actor: builder.params.account,
+      budget_type_id: 0,
+      });
+  
+    //Act
+    try {
+      await BudgetUtil.deletebudget({
+        actor: newBudget.params.actor,
+        project_id: 0,
+        budget_id: 1,
+        modify_parents: newBudget.params.modify_parents,
+        contract: contracts.budgets,
+        contractAccount: newBudget.params.actor,
+      })
+      fail = false;
+    } catch (err) {
+      fail = true;
+      //console.error(err)
+    }
+
+    await BudgetUtil.deletebudget({
+      actor: budgets,
+      project_id: 0,
+      budget_id: 1,
+      modify_parents: newBudget.params.modify_parents,
+      contract: contracts.budgets,
+      contractAccount: budgets,
+    })
+
+    //Assert
+
+    const budgetsTable = await rpc.get_table_rows({
+      code: budgets,
+      scope: 0,
+      table: "budgets",
+      json: true,
+    });
+    //console.log("\n\n budgets table : ", budgetsTable.rows);
+
+    const accountsTable = await rpc.get_table_rows({
+      code: accounts,
+      scope: project.params.id,
+      table: 'accounts',
+      json: true,
+      limit: 100
+    });
+    //console.table(accountsTable.rows[accountsTable.rows.length - 1]);
+    
+    expect(fail).to.be.true
+
+    assert.deepStrictEqual(budgetsTable.rows, [
+      {
+        budget_id: 2,
+        account_id: 1,
+        amount: "100.00 USD",
+        budget_creation_date: budgetsTable.rows[0].budget_creation_date,
+        budget_update_date: budgetsTable.rows[0].budget_update_date,
+        budget_period_id: 1,
+        budget_type_id: 1,
+      }
+    ])
+
+  });
+
+  it('Only admin can delete ALL budgtes related to a given budget expenditure', async ()=>{
+    // Arrange
+    let fail
+    const new_account = await AccountFactory.createWithDefaults({ actor: admin.params.account, budget_amount: "100.00 USD" });
+    await contracts.accounts.addaccount(...new_account.getCreateActionParams(), { authorization: `${admin.params.account}@active` });
+
+    const newBudget = await BudgetFactory.createWithDefaults({
+      actor: builder.params.account,
+      budget_type_id: 0,
+      });
+  
+    await BudgetUtil.addbudget({
+      actor: budgets,
+      project_id: 0,
+      account_id: 24,
+      amount: "500.00 USD",
+      budget_type_id: newBudget.params.budget_type_id,
+      begin_date: newBudget.params.begin_date,
+      end_date: newBudget.params.end_date,
+      modify_parents: newBudget.params.modify_parents,
+      contract: contracts.budgets,
+      contractAccount: budgets
+    })
+
+    //Act
+    try {
+      await BudgetUtil.delbdgtsacct({
+        project_id: 0,
+        account_id: 1,
+        contract: contracts.budgets,
+        contractAccount: newBudget.params.actor,
+      })
+      fail = false;
+    } catch (err) {
+      fail = true;
+      //console.error(err);
+    }
+
+    await BudgetUtil.delbdgtsacct({
+      project_id: 0,
+      account_id: 24,
+      contract: contracts.budgets,
+      contractAccount: budgets,
+    })
+
+    //Assert
+
+    const budgetsTable = await rpc.get_table_rows({
+      code: budgets,
+      scope: 0,
+      table: "budgets",
+      json: true,
+    });
+    //console.log("\n\n budgets table : ", budgetsTable.rows);
+
+    const accountsTable = await rpc.get_table_rows({
+      code: accounts,
+      scope: project.params.id,
+      table: 'accounts',
+      json: true,
+      limit: 100
+    });
+    //console.table(accountsTable.rows[accountsTable.rows.length - 1]);
+
+    expect(fail).to.be.true
+    
+    assert.deepStrictEqual(budgetsTable.rows, [
+      {
+        budget_id: 2,
+        account_id: 1,
+        amount: "100.00 USD",
+        budget_creation_date: budgetsTable.rows[0].budget_creation_date,
+        budget_update_date: budgetsTable.rows[0].budget_update_date,
+        budget_period_id: 1,
+        budget_type_id: 1,
+      }
+    ])
+
+  });
+
+  it('Recalculate budgets for certain budget period', async ()=>{
+    // Arrange
+    const new_account = await AccountFactory.createWithDefaults({ actor: admin.params.account, budget_amount: "100.00 USD" });
+    await contracts.accounts.addaccount(...new_account.getCreateActionParams(), { authorization: `${admin.params.account}@active` });
+
+    const newBudget = await BudgetFactory.createWithDefaults({
+      actor: builder.params.account,
+      budget_type_id: 0,
+    });
+
+    await BudgetUtil.addbudget({
+      actor: budgets,
+      project_id: 0,
+      account_id: 24,
+      amount: newBudget.params.amount,
+      budget_type_id: newBudget.params.budget_type_id,
+      begin_date: newBudget.params.begin_date,
+      end_date: newBudget.params.end_date,
+      modify_parents: newBudget.params.modify_parents,
+      contract: contracts.budgets,
+      contractAccount: budgets
+    })
+
+    await BudgetUtil.addbudget({
+      actor: budgets,
+      project_id: 0,
+      account_id: 4,
+      amount: "300.00 USD",
+      budget_type_id: newBudget.params.budget_type_id,
+      begin_date: newBudget.params.begin_date,
+      end_date: newBudget.params.end_date,
+      modify_parents: newBudget.params.modify_parents,
+      contract: contracts.budgets,
+      contractAccount: budgets
+    })
+
+
+    //Act
+    await BudgetUtil.rcalcbudgets({
+      actor: budgets,
+      project_id: 0,
+      account_id: 24,
+      budget_period_id: 2,
+      contract: contracts.budgets,
+      contractAccount: budgets,
+    });
+
+    //Assert
+
+    const budgetsTable = await rpc.get_table_rows({
+      code: budgets,
+      scope: 0,
+      table: "budgets",
+      json: true,
+    });
+    //console.log("\n\n budgets table : ", budgetsTable.rows);
+
+    const accountsTable = await rpc.get_table_rows({
+      code: accounts,
+      scope: project.params.id,
+      table: 'accounts',
+      json: true,
+      limit: 100
+    });
+    //console.log('accounts is: ', accountsTable)
+    //console.table(accountsTable.rows[accountsTable.rows.length - 1]);
+
+    assert.deepStrictEqual(budgetsTable.rows, [
+      {
+        budget_id: 1,
+        account_id: 24,
+        amount: "100.00 USD",
+        budget_creation_date: budgetsTable.rows[0].budget_creation_date,
+        budget_update_date: budgetsTable.rows[0].budget_update_date,
+        budget_period_id: 1,
+        budget_type_id: 1,
+      },
+      {
+        budget_id: 2,
+        account_id: 1,
+        amount: "100.00 USD",
+        budget_creation_date: budgetsTable.rows[0].budget_creation_date,
+        budget_update_date: budgetsTable.rows[0].budget_update_date,
+        budget_period_id: 1,
+        budget_type_id: 1,
+      },{
+        budget_id: 3,
+        account_id: 24,
+        amount: "10000.00 USD",
+        budget_creation_date: budgetsTable.rows[0].budget_creation_date,
+        budget_update_date: budgetsTable.rows[0].budget_update_date,
+        budget_period_id: 2,
+        budget_type_id: 2,
+      },{
+        budget_id: 4,
+        account_id: 4,
+        amount: "300.00 USD",
+        budget_creation_date: budgetsTable.rows[0].budget_creation_date,
+        budget_update_date: budgetsTable.rows[0].budget_update_date,
+        budget_period_id: 2,
+        budget_type_id: 2,
+      },{
+        budget_id: 5,
+        account_id: 1,
+        amount: "10300.00 USD",
+        budget_creation_date: budgetsTable.rows[0].budget_creation_date,
+        budget_update_date: budgetsTable.rows[0].budget_update_date,
+        budget_period_id: 2,
+        budget_type_id: 2,
+      }
+    ])
+
+  });
+
+  it('Modify parents: true', async ()=>{
+    // Arrange
+    let fail 
+    const new_account = await AccountFactory.createWithDefaults({ actor: admin.params.account, budget_amount: "100.00 USD"});
+    
+    await contracts.accounts.addaccount(...new_account.getCreateActionParams(), { authorization: `${admin.params.account}@active` });
+    
+    const newBudget = await BudgetFactory.createWithDefaults({
+      actor: builder.params.account,
+      budget_type_id: 0,
+      modify_parents: true
+    });
+
+    //Act
+
+    await BudgetUtil.editbudget({
+      actor: budgets,
+      project_id: 0,
+      budget_id: 1,
+      amount: "20.00 USD",
+      budget_type_id: newBudget.params.budget_type_id,
+      begin_date: newBudget.params.begin_date,
+      end_date: newBudget.params.end_date,
+      modify_parents: newBudget.params.modify_parents,
+      contract: contracts.budgets,
+      contractAccount: budgets,
+    })
+
+    //Assert
+    const budgetsTable = await rpc.get_table_rows({
+      code: budgets,
+      scope: 0,
+      table: "budgets",
+      json: true,
+    });
+    //console.log("\n\n budgets table : ", budgetsTable.rows);
+
+    const accountsTable = await rpc.get_table_rows({
+      code: accounts,
+      scope: project.params.id,
+      table: 'accounts',
+      json: true,
+      limit: 100
+    });
+    //console.table(accountsTable.rows[accountsTable.rows.length - 1]);
+
+  });
 });
-
-
-// it("Developer creates a new budget", async function () {
-
-//   //Act
-//   const newBudget = await BudgetFactory.createWithDefaults({
-//     actor: developerParams[0],
-//     budget_type_id: 0,
-//   });
-//   const budgetParams = newBudget.getActionParams();
-//   await BudgetUtil.addbudget({
-//     actor: developerParams[0],
-//     project_id: 0,
-//     account_id: 11,
-//     amount: budgetParams[3],
-//     budget_type_id: budgetParams[4],
-//     begin_date: budgetParams[5],
-//     end_date: budgetParams[6],
-//     modify_parents: budgetParams[7],
-//     contract: contracts.budgets,
-//     contractAccount: developerParams[0],
-//   });
-//   //Assert
-//   const budgetsTable = await rpc.get_table_rows({
-//     code: budgets,
-//     scope: 0,
-//     table: "budgets",
-//     json: true,
-//   });
-//   console.log("\n\n budgets table : ", budgetsTable.rows);
-//   assert.deepStrictEqual(budgetsTable.rows, [
-//     {
-//       budget_id: 1,
-//       account_id: 11,
-//       amount: "10000.00 USD",
-//       budget_creation_date: budgetsTable.rows[0].budget_creation_date,
-//       budget_update_date: budgetsTable.rows[0].budget_update_date,
-//       budget_period_id: 1,
-//       budget_type_id: 2,
-//     },
-//   ]);
-// });
