@@ -324,10 +324,7 @@ ACTION budgets::addbudget (  name actor,
                              uint64_t end_date,
                              bool modify_parents ) {
 
-    require_auth(actor);
-
-    auto admin_itr = users.find(actor.value);
-    check(admin_itr->role == common::projects::entity::fund , actor.to_string() + " is not an admin!");
+    require_auth(get_self());
 
     account_tables accounts(common::contracts::accounts, project_id);
 
@@ -374,7 +371,7 @@ ACTION budgets::editbudget ( name actor,
                               uint64_t end_date,
                               bool modify_parents ) {
 
-    require_auth(actor);
+    require_auth(get_self());
 
     budget_tables budgets(_self, project_id);
     account_tables accounts(common::contracts::accounts, project_id);
@@ -417,7 +414,7 @@ ACTION budgets::editbudget ( name actor,
 
 
 ACTION budgets::deletebudget (name actor, uint64_t project_id, uint64_t budget_id, bool modify_parents) {
-    require_auth(actor);
+    require_auth(get_self());
 
     budget_tables budgets(_self, project_id);
     account_tables accounts(common::contracts::accounts, project_id);
