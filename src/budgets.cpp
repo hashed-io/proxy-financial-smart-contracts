@@ -217,7 +217,7 @@ ACTION budgets::reset () {
 
 ACTION budgets::rcalcbudgets (name actor, uint64_t project_id, uint64_t account_id, uint64_t budget_period_id) {
 
-    require_auth(actor);
+    require_auth(get_self());
 
     budget_tables budgets(_self, project_id);
     budget_period_tables budget_periods(_self, project_id);
