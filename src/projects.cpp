@@ -236,8 +236,8 @@ ACTION projects::deleteprojct(name actor, uint64_t project_id)
 ACTION projects::editproject(const eosio::name &actor,
 														 const uint64_t &project_id,
 														 const std::string &project_name,
-														 const std::string &image,
 														 const std::string &description,
+														 const std::string &image,
 														 const uint64_t &projected_starting_date,
 														 const uint64_t &projected_completion_date)
 {
