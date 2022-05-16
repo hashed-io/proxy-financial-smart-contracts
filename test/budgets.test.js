@@ -22,7 +22,7 @@ const expect = require('chai').expect
 
 const { accounts, projects, budgets, permissions, transactions } = contractNames
 
-describe.test('Tests for budgets ', async function () {
+describe('Tests for budgets ', async function () {
   let contracts, admin, builder, investor;
 
   before(async function () {
@@ -196,7 +196,7 @@ describe.test('Tests for budgets ', async function () {
       table: "budgets",
       json: true,
     });
-    console.log("\n\n budgets table : ", budgetsTable.rows);
+    //console.log("\n\n budgets table : ", budgetsTable.rows);
 
     const accountsTable = await rpc.get_table_rows({
       code: accounts,
@@ -292,7 +292,7 @@ describe.test('Tests for budgets ', async function () {
       table: "budgets",
       json: true,
     });
-    console.log("\n\n budgets table : ", budgetsTable.rows);
+    //console.log("\n\n budgets table : ", budgetsTable.rows);
 
     const accountsTable = await rpc.get_table_rows({
       code: accounts,
