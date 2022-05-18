@@ -14,7 +14,7 @@ public:
   virtual void check_requirements();
 
   virtual void create(const eosio::name &drawdown_type, const uint64_t &drawdown_number);
-  virtual void update(const uint64_t &drawdown_id, const eosio::asset &total_amount);
+  virtual void update(const uint64_t &drawdown_id, const eosio::asset &total_amount, const bool &is_add_balance);
 
   virtual void submit(const uint64_t &drawdown_id);
 
@@ -24,7 +24,7 @@ public:
 protected:
 
   virtual void create_impl(const eosio::name &drawdown_type, const uint64_t &drawdown_number) = 0;
-  virtual void update_impl(const uint64_t &drawdown_id, const eosio::asset &total_amount) = 0;
+  virtual void update_impl(const uint64_t &drawdown_id, const eosio::asset &total_amount, const bool &is_add_balance) = 0;
 
   uint64_t project_id;
   transactions &m_contract;
