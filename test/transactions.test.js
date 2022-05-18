@@ -720,6 +720,7 @@ describe("Tests for transactions smart contract", async function () {
 
   it('Issuer can approve EB5 drawdowns in submitted state (-> approved state)', async () => {
     // TODO, waiting for its implementation
+    // Issuer need to approve eb5 drawdowns to release the founds
   });
   
   const drawdownDaftTransactionsCasesEb5 = [
@@ -1317,60 +1318,9 @@ describe("Tests for transactions smart contract", async function () {
   });
 
 
-
-
-
-
-
-
-
-  it('Complete workflow, return drawdowns to builder', async () => { // TODO  
-    // Arrange
-    const transaction = await TransactionFactory.createWithDefaults({});
-
-    await contracts.transactions.transacts(
-      builder.params.account,
-      project.params.id,
-      1,
-      transaction.getCreateParams(),
-      { authorization: `${builder.params.account}@active` }
-    );
-
-
-    // Assert
-    const drawdownTable = await rpc.get_table_rows({
-      code: transactions,
-      scope: project.params.id,
-      table: "drawdowns",
-      json: true,
-    });
-    // console.log('\n drawdown table is: ', drawdownTable.rows);
-
-    const transactionsTable = await rpc.get_table_rows({
-      code: transactions,
-      scope: project.params.id,
-      table: "transactions",
-      json: true,
-    });
-    // console.log('\n transactions table is: ', transactionsTable.rows);
-  });
-
-  it('Issuer need to approve eb5 drawdowns to release the founds', async () =>{
-    //TODO  
-  });
-
   it('Rejected drawdowns are sent back to the builder', async () =>{
     // TODO 
   });
-
-  it('Proxy Admin is NOT able to edit EB-5 drawdowns before approval', async () =>{
-    // TODO
-  });
-
-  it('Proxy Admin is NOT able to edit EB-5 drawdowns after approval', async () =>{
-    // TODO
-  });
-
 
 
   });
