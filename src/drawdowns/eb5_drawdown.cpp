@@ -34,7 +34,7 @@ void EB5Drawdown::create_impl(const eosio::name &drawdown_type, const uint64_t &
 		item.close_date = 0; });
 }
 
-void EB5Drawdown::update_impl(const uint64_t &drawdown_id, const eosio::asset &total_amount)
+void EB5Drawdown::update_impl(const uint64_t &drawdown_id, const eosio::asset &total_amount, const bool &is_add_balance)
 {
   transactions::drawdown_tables drawdown_t(contract_name, project_id);
   auto drawdown_itr = drawdown_t.find(drawdown_id);
@@ -47,7 +47,13 @@ void EB5Drawdown::update_impl(const uint64_t &drawdown_id, const eosio::asset &t
 
   require_auth(project_itr->builder);
 
-  drawdown_t.modify(drawdown_itr, contract_name, [&](auto &item)
+  if (is_add_balance) {
+      drawdown_t.modify(drawdown_itr, contract_name, [&](auto &item)
                     { item.total_amount += total_amount; });
+  }
+  else {
+      drawdown_t.modify(drawdown_itr, contract_name, [&](auto &item)
+                    { item.total_amount -= total_amount; });
+  }
 
 }
