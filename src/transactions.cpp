@@ -111,12 +111,12 @@ void transactions::make_transaction(name actor,
 
 	check(ledger_id > 0, common::contracts::transactions.to_string() + ": no ledger will be modified.");
 
-	action(
-			permission_level(common::contracts::permissions, "active"_n),
-			common::contracts::permissions,
-			"checkledger"_n,
-			std::make_tuple(actor, project_id, ledger_id))
-			.send();
+	// action(
+	// 		permission_level(common::contracts::permissions, "active"_n),
+	// 		common::contracts::permissions,
+	// 		"checkledger"_n,
+	// 		std::make_tuple(actor, project_id, ledger_id))
+	// 		.send();
 
 	// TODO checar esta validacion
 	check(total == 0, common::contracts::transactions.to_string() + ": the transaction total balance must be zero.");
@@ -182,6 +182,7 @@ void transactions::delete_transaction(name actor,
 		auto itr_account = accounts.find(itr_amount->account_id);
 		ledger_id = itr_account->ledger_id;
 	}
+	
 	// ! same as generate_transaction
 	// action(
 	// 		permission_level(common::contracts::permissions, "active"_n),
@@ -630,12 +631,12 @@ void transactions::generate_transaction(const eosio::name &actor,
 
 	check(ledger_id > 0, common::contracts::transactions.to_string() + ": no ledger will be modified.");
 
-	action(
-			permission_level(common::contracts::permissions, "active"_n),
-			common::contracts::permissions,
-			"checkledger"_n,
-			std::make_tuple(actor, project_id, ledger_id))
-			.send();
+	// action(
+	// 		permission_level(common::contracts::permissions, "active"_n),
+	// 		common::contracts::permissions,
+	// 		"checkledger"_n,
+	// 		std::make_tuple(actor, project_id, ledger_id))
+	// 		.send();
 
 	// TODO checar esta validacion
 	// ! remove this when the validation is complete
