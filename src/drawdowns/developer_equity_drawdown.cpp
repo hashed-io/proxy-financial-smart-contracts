@@ -5,7 +5,7 @@ void DeveloperEquityDrawdown::create_impl(const eosio::name &drawdown_type, cons
   transactions::drawdown_tables drawdown_t(contract_name, project_id);
 
   // TODO fix this validation
-  
+
   // auto drawdowns_by_type = drawdown_t.get_index<"bytype"_n>();
   // auto drawdown_itr = drawdowns_by_type.find(common::transactions::drawdown::type::developer_equity.value);
 
@@ -58,4 +58,19 @@ void DeveloperEquityDrawdown::update_impl(const uint64_t &drawdown_id, const eos
 
   drawdown_t.modify(drawdown_itr, contract_name, [&](auto &item)
                     { item.total_amount += total_amount; });
+}
+
+void DeveloperEquityDrawdown::approve_impl(const uint64_t &drawdown_id)
+{
+  transactions::drawdown_tables drawdown_t(contract_name, project_id);
+
+  auto drawdown_itr = drawdown_t.find(drawdown_id);
+
+  check(drawdown_itr != drawdown_t.end(), "Drawdown not found");
+
+  check(drawdown_itr->state == common::transactions::drawdown::status::submitted, "Drawdown is not in a submitted state!");
+
+  drawdown_t.modify(drawdown_itr, contract_name, [&](auto item)
+                    { item.state = common::transactions::drawdown::status::approved;
+                    item.close_date = eosio::current_time_point().sec_since_epoch(); });
 }

@@ -24,7 +24,9 @@ public:
 protected:
 
   virtual void create_impl(const eosio::name &drawdown_type, const uint64_t &drawdown_number) = 0;
+
   virtual void update_impl(const uint64_t &drawdown_id, const eosio::asset &total_amount) = 0;
+  virtual void approve_impl(const uint64_t &drawdown_id) = 0;
 
   uint64_t project_id;
   transactions &m_contract;

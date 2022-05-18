@@ -286,8 +286,12 @@ ACTION projects::approveprjct(name actor,
 
 	uint64_t role_id = 0;
 
+
+	check(project_itr->builder.value != 0, "A builder must be assigned to the project!");
+
 	uint64_t developer_entity = get_user_entity(project_itr->builder);
 	uint64_t fund_entity = get_user_entity(actor);
+
 
 	action(
 			permission_level(common::contracts::accounts, "active"_n),

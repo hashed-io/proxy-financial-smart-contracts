@@ -49,5 +49,35 @@ void EB5Drawdown::update_impl(const uint64_t &drawdown_id, const eosio::asset &t
 
   drawdown_t.modify(drawdown_itr, contract_name, [&](auto &item)
                     { item.total_amount += total_amount; });
+}
 
+void EB5Drawdown::approve_impl(const uint64_t &drawdown_id)
+{
+  transactions::drawdown_tables drawdown_t(contract_name, project_id);
+  auto drawdown_itr = drawdown_t.find(drawdown_id);
+
+  check(drawdown_itr != drawdown_t.end(), "Drawdown not found");
+
+  check(drawdown_itr->state == common::transactions::drawdown::status::submitted, "Drawdown is not in a submitted state!");
+
+  transactions::project_tables project_t(common::contracts::projects, common::contracts::projects.value);
+  auto project_itr = project_t.find(project_id);
+
+  if (drawdown_itr->state == common::transactions::drawdown::status::submitted)
+  {
+
+    require_auth(project_itr->owner);
+
+    drawdown_t.modify(drawdown_itr, contract_name, [&](auto item)
+                      { item.state = common::transactions::drawdown::status::reviewed;
+                    item.close_date = eosio::current_time_point().sec_since_epoch(); });
+  }
+  else if (drawdown_itr->state == common::transactions::drawdown::status::reviewed)
+  {
+
+    require_auth(project_itr->issuer);
+    drawdown_t.modify(drawdown_itr, contract_name, [&](auto item)
+                      { item.state = common::transactions::drawdown::status::approved;
+                    item.close_date = eosio::current_time_point().sec_since_epoch(); });
+  }
 }

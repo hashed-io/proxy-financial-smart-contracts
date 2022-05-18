@@ -343,7 +343,7 @@ describe("Tests for projects smart contract", async function () {
       { authorization: `${admin.params.account}@active` }
     );
 
-    // //Assert
+    //Assert
     const projectsTable = await rpc.get_table_rows({
       code: projects,
       scope: projects,

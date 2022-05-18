@@ -14,4 +14,6 @@ class ConstructionLoanDrawdown : public Drawdown {
     virtual void create_impl(const eosio::name &drawdown_type, const uint64_t &drawdown_number);
     virtual void update_impl(const uint64_t &drawdown_id, const eosio::asset &total_amount);
 
+    virtual void approve_impl(const uint64_t &drawdown_id);
+
 };
