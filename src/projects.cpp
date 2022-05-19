@@ -196,6 +196,7 @@ ACTION projects::addproject(const eosio::name &actor,
 		item.projected_starting_date = projected_starting_date;
 		item.projected_completion_date = projected_completion_date;
 		item.status = PROJECT_STATUS.AWAITING_FUND_APPROVAL; });
+
 }
 
 ACTION projects::deleteprojct(name actor, uint64_t project_id)
@@ -292,21 +293,13 @@ ACTION projects::approveprjct(name actor,
 	uint64_t developer_entity = get_user_entity(project_itr->builder);
 	uint64_t fund_entity = get_user_entity(actor);
 
-
+	// TODO update ledger to be admin ledger
 	action(
 			permission_level(common::contracts::accounts, "active"_n),
 			common::contracts::accounts,
 			"addledger"_n,
-			std::make_tuple(project_id, developer_entity))
+			std::make_tuple(project_id, fund_entity))
 			.send();
-
-	// ! this transaction should be removed in the future
-	// action(
-	// 		permission_level(common::contracts::accounts, "active"_n),
-	// 		common::contracts::accounts,
-	// 		"addledger"_n,
-	// 		std::make_tuple(project_id, fund_entity))
-	// 		.send();
 
 	action(
 			permission_level(common::contracts::permissions, "active"_n),
