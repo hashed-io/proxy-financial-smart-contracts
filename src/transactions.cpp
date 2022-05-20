@@ -625,12 +625,9 @@ ACTION transactions::bulktransact(const eosio::name &actor,
 
 	for (int i = 0; i < transactions.size(); i++)
 	{ 
-		if (transactions[i].add_file == common::transactions::drawdown::bulk::add) 
-		{
-
-			check_asset(transactions[i].amount, common::contracts::transactions);
-
-			generate_bulk_files(actor, 
+		check_asset(transactions[i].amount, common::contracts::transactions);
+		
+		generate_bulk_files(actor, 
 							project_id,
 							drawdown_id,
 							transactions[i].supporting_files,
@@ -638,7 +635,7 @@ ACTION transactions::bulktransact(const eosio::name &actor,
 							transactions[i].date,
 							transactions[i].amount,
 							transactions[i].add_file);	
-		}		
+	
 	}
 
 }
@@ -650,7 +647,7 @@ void transactions::generate_bulk_files(const eosio::name &actor,
 																			const std::string &description,
 																			const uint64_t &date,
 																			const eosio::asset &amount,
-																			const bool &add_file)
+																			const uint8_t &add_file)
 {
 	auto project_itr = project_t.find(project_id);
 	check(project_itr != project_t.end(), "Project not found!");
