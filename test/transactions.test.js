@@ -1345,27 +1345,30 @@ describe.only("Tests for transactions smart contract", async function () {
         description: "description test",
         date: Date.now(),
         amount: "200.00 USD",
-        add_file: true 
-      },
+        add_file: 1 
+      }
+    ]
+
+    const bulk2 = [ 
       {
         supporting_files:[
           {  
-            filename: "Hello there 1",
+            filename: "Hello there 1 was modified",
             address: "fvlNKbnKLBNKLhLJN8999hlgf89:png",
           },
           {  
-            filename: "Hello there 2",
+            filename: "Hello there 2 was modified",
             address: "fvlNKbnKLBNKLhLJN8999hlgf89:pdf",
           },
           {  
-            filename: "Hello there 3",
+            filename: "Hello there 3 was modified",
             address: "fvlNKbnKLBNKLhLJN8999hlgf89:txt",
           }
         ],
-        description: "description test 2",
+        description: "description test was modified",
         date: Date.now(),
-        amount: "300.00 USD",
-        add_file: false 
+        amount: "200.00 USD",
+        add_file: 0
       }
     ]
 
@@ -1373,7 +1376,12 @@ describe.only("Tests for transactions smart contract", async function () {
 
     // Act
     await contracts.transactions.bulktransact(builder.params.account, 0, 3, bulk, { authorization: `${builder.params.account}@active` });
-
+    
+    try {
+      await contracts.transactions.bulktransact(builder.params.account, 0, 3, bulk2, { authorization: `${builder.params.account}@active` });
+    } catch(err){
+      console.error(err)
+    }
 
     // Assert    
     const drawdownTable = await rpc.get_table_rows({
