@@ -511,7 +511,7 @@ describe("Tests for transactions smart contract", async function () {
         await contracts.transactions.acptdrawdown(admin.params.account, project.params.id, drawdown_id, { authorization: `${admin.params.account}@active` });
         
       } catch (e) {
-        console.log(e);
+        //console.log(e);
       }
       
 
@@ -1372,7 +1372,7 @@ describe("Tests for transactions smart contract", async function () {
       }
     ]
 
-    console.log('bulk is: ', bulk)
+    // console.log('bulk is: ', bulk)
 
     // Act
     await contracts.transactions.bulktransact(builder.params.account, 0, 3, bulk, { authorization: `${builder.params.account}@active` });
@@ -1390,7 +1390,7 @@ describe("Tests for transactions smart contract", async function () {
       table: 'drawdowns',
       json: true
     });
-    console.log('\n drawdown table is: ', JSON.stringify(drawdownTable.rows[2], ' ', 2));
+    // console.log('\n drawdown table is: ', JSON.stringify(drawdownTable.rows[2], ' ', 2));
 
     const transactionsTable = await rpc.get_table_rows({
       code: transactions,
@@ -1398,7 +1398,7 @@ describe("Tests for transactions smart contract", async function () {
       table: 'transactions',
       json: true
     });
-    console.log('\n transactions table is: ', transactionsTable.rows);
+    // console.log('\n transactions table is: ', transactionsTable.rows);
 
   });
 

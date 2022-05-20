@@ -86,7 +86,7 @@ describe('Tests for the users on projects smart contract', async function () {
       const user = await UserFactory.createWithDefaults({ role: role });
 
       user.params.entity_id = entity_id;
-      console.log('user paramas is: ', user.params)
+      // console.log('user paramas is: ', user.params)
       // console.table(user);
 
       // Act
@@ -100,7 +100,7 @@ describe('Tests for the users on projects smart contract', async function () {
         json: true
       });
 
-      console.table(usersTable.rows);
+      // console.table(usersTable.rows);
 
       expect(usersTable.rows).to.deep.include.members([{
         account: user.params.account,
@@ -136,8 +136,8 @@ describe('Tests for the users on projects smart contract', async function () {
       json: true
     });
 
-    console.table(usersTable.rows);
-    console.table(entitiesTable.rows);
+    // console.table(usersTable.rows);
+    // console.table(entitiesTable.rows);
 
   });
 
@@ -171,8 +171,8 @@ describe('Tests for the users on projects smart contract', async function () {
 
     expect(fail).to.be.true 
 
-    console.table(usersTable.rows);
-    console.table(entitiesTable.rows);
+    // console.table(usersTable.rows);
+    // console.table(entitiesTable.rows);
 
   });
 
@@ -189,7 +189,7 @@ describe('Tests for the users on projects smart contract', async function () {
       //Arrange
       const user = await EntityFactory.createWithDefaults({ role: userRole});
       const userParams = user.getActionParams()
-      console.log(userParams)
+      // console.log(userParams)
 
       //Act
       await contracts.projects.addentity(...user.getActionParams(), { authorization: `${userParams[0]}@active` })
@@ -201,8 +201,8 @@ describe('Tests for the users on projects smart contract', async function () {
         table: 'entities',
         json: true
       })
-      console.table(entitiesTable.rows); 
-      console.log(userParams[0])
+      // console.table(entitiesTable.rows); 
+      // console.log(userParams[0])
 
       assert.deepStrictEqual(entitiesTable.rows, [{
         entity_id: 1,
