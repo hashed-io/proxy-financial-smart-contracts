@@ -5,7 +5,7 @@ void ConstructionLoanDrawdown::create_impl(const eosio::name &drawdown_type, con
   transactions::drawdown_tables drawdown_t(contract_name, project_id);
 
   // TODO fix this validation
-  
+
   // auto drawdowns_by_type = drawdown_t.get_index<"bytype"_n>();
   // auto drawdown_itr = drawdowns_by_type.find(common::transactions::drawdown::type::construction_loan.value);
 
@@ -13,7 +13,7 @@ void ConstructionLoanDrawdown::create_impl(const eosio::name &drawdown_type, con
   // {
   //   if (drawdown_itr->type == drawdown_type)
   //   {
-  //     check(drawdown_itr->state != common::transactions::drawdown::status::approved, "Cannot create a drawdown, one already in process" 
+  //     check(drawdown_itr->state != common::transactions::drawdown::status::approved, "Cannot create a drawdown, one already in process"
   //     + drawdown_itr->type.to_string());
   //     break;
   //   }
@@ -57,23 +57,24 @@ void ConstructionLoanDrawdown::update_impl(const uint64_t &drawdown_id, const eo
     check(false, "Drawdown can not be edited at this state!");
   }
 
-  if (is_add_balance) {
-      drawdown_t.modify(drawdown_itr, contract_name, [&](auto &item)
-                    { item.total_amount += total_amount; });
+  if (is_add_balance)
+  {
+    drawdown_t.modify(drawdown_itr, contract_name, [&](auto &item)
+                      { item.total_amount += total_amount; });
   }
-  else {
-      drawdown_t.modify(drawdown_itr, contract_name, [&](auto &item)
-                    { item.total_amount -= total_amount; });
+  else
+  {
+    drawdown_t.modify(drawdown_itr, contract_name, [&](auto &item)
+                      { item.total_amount -= total_amount; });
   }
-
 }
 
 void ConstructionLoanDrawdown::edit_impl(const uint64_t &drawdown_id,
-  									vector<common::types::url_information> supporting_files,
-                    const std::string &description,
-                    const uint64_t &date,
-                    const eosio::asset &amount,
-                    const uint8_t &add_file)
-{  
-  check(false,"You do not have the authorization to call this action");
+                                         vector<common::types::url_information> supporting_files,
+                                         const std::string &description,
+                                         const uint64_t &date,
+                                         const eosio::asset &amount,
+                                         const uint8_t &add_file)
+{
+  check(false, "You do not have the authorization to call this action");
 }

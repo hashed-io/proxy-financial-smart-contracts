@@ -67,17 +67,16 @@ void Drawdown::reject(const uint64_t &drawdown_id)
 }
 
 void Drawdown::edit(const uint64_t &drawdown_id,
-  									vector<common::types::url_information> supporting_files,
+                    vector<common::types::url_information> supporting_files,
                     const std::string &description,
                     const uint64_t &date,
                     const eosio::asset &amount,
                     const uint8_t &add_file)
-{ 
+{
   transactions::drawdown_tables drawdown_t(contract_name, project_id);
   auto drawdown_itr = drawdown_t.find(drawdown_id);
 
   check(drawdown_itr != drawdown_t.end(), "Drawdown not found");
 
   edit_impl(drawdown_id, supporting_files, description, date, amount, add_file);
-
 }

@@ -175,9 +175,8 @@ void transactions::delete_transaction(name actor,
 		auto itr_account = accounts.find(itr_amount->account_id);
 		ledger_id = itr_account->ledger_id;
 	}
-	
-	// ! same as generate_transaction
 
+	// ! same as generate_transaction
 
 	while (itr_amount != account_transacion_t_by_transactions.end() &&
 				 itr_amount->transaction_id == transaction_id)
@@ -210,7 +209,6 @@ void transactions::delete_transaction(name actor,
 
 		std::unique_ptr<Drawdown> drawdown = std::unique_ptr<Drawdown>(DrawdownFactory::Factory(project_id, *this, drawdown_itr->type));
 		drawdown->update(itr_trxn->drawdown_id, total_amount, common::transactions::drawdown::flag::remove_balance);
-
 	}
 
 	transactions.erase(itr_trxn);
@@ -339,13 +337,13 @@ ACTION transactions::submitdrwdn(name actor,
 }
 
 ACTION transactions::initdrawdown(const uint64_t &project_id)
-{ 
+{
 	require_auth(_self);
-	
+
 	drawdown_tables drawdown_t(_self, project_id);
 	auto drawdown_itr = drawdown_t.find(1);
 	check(drawdown_itr == drawdown_t.end(), "Drawdowns have already started");
-	
+
 	std::unique_ptr<Drawdown> drawdown_eb5 = std::unique_ptr<Drawdown>(DrawdownFactory::Factory(project_id, *this, common::transactions::drawdown::type::eb5));
 	drawdown_eb5->create(common::transactions::drawdown::type::eb5, 1);
 
@@ -455,7 +453,6 @@ ACTION transactions::acptdrawdown(const eosio::name &actor,
 										item.state = common::transactions::drawdown::status::approved;
 										item.close_date = eosio::current_time_point().sec_since_epoch(); });
 
-	
 	create_drawdown(project_id, drawdown_itr->type, drawdown_itr->drawdown_number + 1);
 
 	// TODO: check why this is not working
@@ -577,7 +574,7 @@ void transactions::generate_transaction(const eosio::name &actor,
 			action_accnt = "addbalance"_n;
 			total_positive += itr_amounts->amount;
 		}
-// action name doesn't exist
+		// action name doesn't exist
 		action(
 				permission_level(common::contracts::accounts, "active"_n),
 				common::contracts::accounts,
@@ -616,38 +613,36 @@ void transactions::generate_transaction(const eosio::name &actor,
 		} });
 }
 
-ACTION transactions::bulktransact(const eosio::name &actor, 
-										const uint64_t &project_id,  
-										const uint64_t &drawdown_id, 
-										vector<common::types::extended_url_information_param> transactions)
-{ 
+ACTION transactions::bulktransact(const eosio::name &actor,
+																	const uint64_t &project_id,
+																	const uint64_t &drawdown_id,
+																	vector<common::types::extended_url_information_param> transactions)
+{
 	require_auth(actor);
 
 	for (int i = 0; i < transactions.size(); i++)
-	{ 
+	{
 		check_asset(transactions[i].amount, common::contracts::transactions);
-		
-		generate_bulk_files(actor, 
-							project_id,
-							drawdown_id,
-							transactions[i].supporting_files,
-							transactions[i].description,
-							transactions[i].date,
-							transactions[i].amount,
-							transactions[i].add_file);	
-	
-	}
 
+		generate_bulk_files(actor,
+												project_id,
+												drawdown_id,
+												transactions[i].supporting_files,
+												transactions[i].description,
+												transactions[i].date,
+												transactions[i].amount,
+												transactions[i].add_file);
+	}
 }
 
 void transactions::generate_bulk_files(const eosio::name &actor,
-																			const uint64_t &project_id,
-																			const uint64_t &drawdown_id,
-																			vector<common::types::url_information> supporting_files,
-																			const std::string &description,
-																			const uint64_t &date,
-																			const eosio::asset &amount,
-																			const uint8_t &add_file)
+																			 const uint64_t &project_id,
+																			 const uint64_t &drawdown_id,
+																			 vector<common::types::url_information> supporting_files,
+																			 const std::string &description,
+																			 const uint64_t &date,
+																			 const eosio::asset &amount,
+																			 const uint8_t &add_file)
 {
 	auto project_itr = project_t.find(project_id);
 	check(project_itr != project_t.end(), "Project not found!");
@@ -658,6 +653,4 @@ void transactions::generate_bulk_files(const eosio::name &actor,
 
 	std::unique_ptr<Drawdown> drawdown = std::unique_ptr<Drawdown>(DrawdownFactory::Factory(project_id, *this, drawdown_itr->type));
 	drawdown->edit(drawdown_id, supporting_files, description, date, amount, add_file);
-
-
 }

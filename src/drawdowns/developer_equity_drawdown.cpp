@@ -5,7 +5,7 @@ void DeveloperEquityDrawdown::create_impl(const eosio::name &drawdown_type, cons
   transactions::drawdown_tables drawdown_t(contract_name, project_id);
 
   // TODO fix this validation
-  
+
   // auto drawdowns_by_type = drawdown_t.get_index<"bytype"_n>();
   // auto drawdown_itr = drawdowns_by_type.find(common::transactions::drawdown::type::developer_equity.value);
 
@@ -56,53 +56,52 @@ void DeveloperEquityDrawdown::update_impl(const uint64_t &drawdown_id, const eos
     check(false, "Drawdown can not be edited at this state!");
   }
 
-  if (is_add_balance) {
-      drawdown_t.modify(drawdown_itr, contract_name, [&](auto &item)
-                    { item.total_amount += total_amount; });
+  if (is_add_balance)
+  {
+    drawdown_t.modify(drawdown_itr, contract_name, [&](auto &item)
+                      { item.total_amount += total_amount; });
   }
-  else {
-      drawdown_t.modify(drawdown_itr, contract_name, [&](auto &item)
-                    { item.total_amount -= total_amount; });
+  else
+  {
+    drawdown_t.modify(drawdown_itr, contract_name, [&](auto &item)
+                      { item.total_amount -= total_amount; });
   }
-
 }
 
 void DeveloperEquityDrawdown::edit_impl(const uint64_t &drawdown_id,
-  									vector<common::types::url_information> supporting_files,
-                    const std::string &description,
-                    const uint64_t &date,
-                    const eosio::asset &amount,
-                    const uint8_t &add_file)
+                                        vector<common::types::url_information> supporting_files,
+                                        const std::string &description,
+                                        const uint64_t &date,
+                                        const eosio::asset &amount,
+                                        const uint8_t &add_file)
 {
   transactions::drawdown_tables drawdown_t(contract_name, project_id);
   auto drawdown_itr = drawdown_t.find(drawdown_id);
 
   check(drawdown_itr != drawdown_t.end(), "Drawdown not found");
 
-  if (add_file == common::transactions::drawdown::bulk::create) 
-  { 
-    check(!drawdown_itr -> files.size() > 0,"cannot send create twice, you need to edit/delete data fisrt");
+  if (add_file == common::transactions::drawdown::bulk::create)
+  {
+    check(!drawdown_itr->files.size() > 0, "cannot send create twice, you need to edit/delete data fisrt");
 
     drawdown_t.modify(drawdown_itr, contract_name, [&](auto &item)
-	 					{item.files.push_back((common::types::extended_url_information){supporting_files, description, date, amount}); });
-  } 
-  else if (add_file == common::transactions::drawdown::bulk::edit) 
-  {   
-    check(drawdown_itr -> files.size() > 0,"there's no previuos data, nothing to be modified");
+                      { item.files.push_back((common::types::extended_url_information){supporting_files, description, date, amount}); });
+  }
+  else if (add_file == common::transactions::drawdown::bulk::edit)
+  {
+    check(drawdown_itr->files.size() > 0, "there's no previuos data, nothing to be modified");
 
     drawdown_t.modify(drawdown_itr, contract_name, [&](auto &item)
-	 					{item.files.clear(); });
+                      { item.files.clear(); });
 
     drawdown_t.modify(drawdown_itr, contract_name, [&](auto &item)
-	 					{item.files.push_back((common::types::extended_url_information){supporting_files, description, date, amount}); });
+                      { item.files.push_back((common::types::extended_url_information){supporting_files, description, date, amount}); });
   }
   else if (add_file == common::transactions::drawdown::bulk::remove)
-  { 
-    check(drawdown_itr -> files.size() > 0,"there's no previous data, nothing to be deleted");
+  {
+    check(drawdown_itr->files.size() > 0, "there's no previous data, nothing to be deleted");
 
     drawdown_t.modify(drawdown_itr, contract_name, [&](auto &item)
-    	 			{item.files.clear(); });
-
+                      { item.files.clear(); });
   }
-
 }

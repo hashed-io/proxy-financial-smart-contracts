@@ -132,11 +132,11 @@ public:
 
 	ACTION toggledrdwn(uint64_t project_id,
 										 uint64_t drawdown_id);
-	
-	ACTION bulktransact(const eosio::name &actor, 
-										const uint64_t &project_id,  
-										const uint64_t &drawdown_id, 
-										vector<common::types::extended_url_information_param> transactions);
+
+	ACTION bulktransact(const eosio::name &actor,
+											const uint64_t &project_id,
+											const uint64_t &drawdown_id,
+											vector<common::types::extended_url_information_param> transactions);
 
 private:
 	account_type_tables account_types_t;
@@ -169,11 +169,11 @@ private:
 												vector<common::types::url_information> & supporting_files);
 
 	void generate_bulk_files(const eosio::name &actor,
-													const uint64_t &project_id,
-													const uint64_t &drawdown_id,
-													vector<common::types::url_information> supporting_files,
-													const std::string &description,
-													const uint64_t &date,
-													const eosio::asset &amount,
-													const uint8_t &add_file);
+													 const uint64_t &project_id,
+													 const uint64_t &drawdown_id,
+													 vector<common::types::url_information> supporting_files,
+													 const std::string &description,
+													 const uint64_t &date,
+													 const eosio::asset &amount,
+													 const uint8_t &add_file);
 };

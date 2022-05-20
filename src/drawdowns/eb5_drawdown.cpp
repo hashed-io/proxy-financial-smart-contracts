@@ -47,24 +47,24 @@ void EB5Drawdown::update_impl(const uint64_t &drawdown_id, const eosio::asset &t
 
   require_auth(project_itr->builder);
 
-  if (is_add_balance) {
-      drawdown_t.modify(drawdown_itr, contract_name, [&](auto &item)
-                    { item.total_amount += total_amount; });
+  if (is_add_balance)
+  {
+    drawdown_t.modify(drawdown_itr, contract_name, [&](auto &item)
+                      { item.total_amount += total_amount; });
   }
-  else {
-      drawdown_t.modify(drawdown_itr, contract_name, [&](auto &item)
-                    { item.total_amount -= total_amount; });
+  else
+  {
+    drawdown_t.modify(drawdown_itr, contract_name, [&](auto &item)
+                      { item.total_amount -= total_amount; });
   }
-
 }
 
 void EB5Drawdown::edit_impl(const uint64_t &drawdown_id,
-  									vector<common::types::url_information> supporting_files,
-                    const std::string &description,
-                    const uint64_t &date,
-                    const eosio::asset &amount,
-                    const uint8_t &add_file)
+                            vector<common::types::url_information> supporting_files,
+                            const std::string &description,
+                            const uint64_t &date,
+                            const eosio::asset &amount,
+                            const uint8_t &add_file)
 {
-  check(false,"You do not have the authorization to call this action");
+  check(false, "You do not have the authorization to call this action");
 }
-
