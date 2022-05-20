@@ -448,7 +448,7 @@ ACTION accounts::addaccount(const eosio::name &actor,
 
     ledger_tables ledger_t(_self, project_id);
     auto ledger_t_by_entity = ledger_t.get_index<"byentity"_n>();
-    auto itr_ledger = ledger_t_by_entity.find(user_itr->entity_id);
+    auto itr_ledger = ledger_t_by_entity.find(admin_itr->entity_id);
     
     check(itr_ledger != ledger_t_by_entity.end(), common::contracts::accounts.to_string() + ": there is no ledger associated with that entity.");
 
