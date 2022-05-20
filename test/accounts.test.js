@@ -75,10 +75,6 @@ describe('Tests for budget expenditures', async function () {
       investors: [investor.params.account],
     });
 
-    await contracts.projects.approveprjct(admin.params.account, project.params.id,
-      { authorization: `${admin.params.account}@active` });
-
-
     const projectsTable = await rpc.get_table_rows({
       code: projects,
       scope: projects,
