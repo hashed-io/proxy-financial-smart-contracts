@@ -86,7 +86,7 @@ describe('Tests for the users on projects smart contract', async function () {
       const user = await UserFactory.createWithDefaults({ role: role });
 
       user.params.entity_id = entity_id;
-      // console.log('user paramas is: ', user.params)
+      // console.log('user params is: ', user.params)
       // console.table(user);
 
       // Act
