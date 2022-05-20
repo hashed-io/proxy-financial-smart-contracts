@@ -57,3 +57,14 @@ void EB5Drawdown::update_impl(const uint64_t &drawdown_id, const eosio::asset &t
   }
 
 }
+
+void EB5Drawdown::edit_impl(const uint64_t &drawdown_id,
+  									vector<common::types::url_information> supporting_files,
+                    const std::string &description,
+                    const uint64_t &date,
+                    const eosio::asset &amount,
+                    const bool &add_file)
+{
+ //TODO
+}
+

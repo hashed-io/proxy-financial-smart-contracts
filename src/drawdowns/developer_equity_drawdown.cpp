@@ -66,3 +66,21 @@ void DeveloperEquityDrawdown::update_impl(const uint64_t &drawdown_id, const eos
   }
 
 }
+
+void DeveloperEquityDrawdown::edit_impl(const uint64_t &drawdown_id,
+  									vector<common::types::url_information> supporting_files,
+                    const std::string &description,
+                    const uint64_t &date,
+                    const eosio::asset &amount,
+                    const bool &add_file)
+{
+  transactions::drawdown_tables drawdown_t(contract_name, project_id);
+  auto drawdown_itr = drawdown_t.find(drawdown_id);
+
+  check(drawdown_itr != drawdown_t.end(), "Drawdown not found");
+
+  drawdown_t.modify(drawdown_itr, contract_name, [&](auto &item)
+						{item.files.push_back((common::types::extended_url_information){supporting_files, description, date, amount}); });
+
+
+}
