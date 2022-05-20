@@ -68,7 +68,7 @@ void User::unassign(const eosio::name &account, const uint64_t &project_id)
     }
   }
 
-  check(project_itr -> status < common::projects::status::ready_for_investment, "cannot delete any actor once project was approved");
+  // check(project_itr -> status < common::projects::status::ready_for_investment, "cannot delete any actor once project was approved");
   check(is_assigned, "User is not assigned to this project!");
 
   user_t.modify(user_itr, contract_name, [&](auto & item){
