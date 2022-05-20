@@ -65,6 +65,11 @@ namespace common
         constexpr bool remove_balance = false;
       }
 
+      namespace bulk {
+        constexpr bool add = true;
+        constexpr bool remove = false;
+      }
+
       constexpr uint64_t status_open = 1;
       constexpr uint64_t status_close = 2;
 
