@@ -66,8 +66,9 @@ namespace common
       }
 
       namespace bulk {
-        constexpr bool add = true;
-        constexpr bool remove = false;
+        constexpr uint8_t remove = 0;
+        constexpr uint8_t create = 1;
+        constexpr uint8_t edit = 2;
       }
 
       constexpr uint64_t status_open = 1;
