@@ -90,33 +90,33 @@ class ProjectUtil {
 
   static async maketransfer({
     actor,
-    amount,  
-    investment_id,  
-    proof_of_transfer,  
+    amount,
+    investment_id,
+    proof_of_transfer,
     transfer_date,
     contract,
     account }) {
     await contract.maketransfer(
       actor,
-      amount,  
-      investment_id,  
-      proof_of_transfer,  
+      amount,
+      investment_id,
+      proof_of_transfer,
       transfer_date, { authorization: `${account}@active` })
   }
 
   static async edittransfer({
     actor,
     transfer_id,
-    amount,   
-    proof_of_transfer,  
+    amount,
+    proof_of_transfer,
     date,
     contract,
     account }) {
     await contract.edittransfer(
       actor,
       transfer_id,
-      amount,    
-      proof_of_transfer,  
+      amount,
+      proof_of_transfer,
       date, { authorization: `${account}@active` })
   }
 
@@ -125,7 +125,7 @@ class ProjectUtil {
     transfer_id,
     proof_of_transfer,
     contract,
-    account}) {
+    account }) {
     await contract.confrmtrnsfr(
       actor,
       transfer_id,
@@ -137,16 +137,16 @@ class ProjectUtil {
     actor,
     project_id,
     project_name,
-    image,
     description,
+    image,
     projected_starting_date,
     projected_completion_date }) {
     await contract.editproject(
       actor,
       project_id,
       project_name,
-      image,
       description,
+      image,
       projected_starting_date,
       projected_completion_date,
       { authorization: `${account}@active` })
@@ -189,8 +189,8 @@ class Project {
 
     return [
       this.params.project_name,
-      this.params.image,
       this.params.description,
+      this.params.image,
       this.params.projected_starting_date,
       this.params.projected_completion_date
     ]
