@@ -10,7 +10,7 @@ void Drawdown::create(const eosio::name &drawdown_type, const uint64_t &drawdown
   create_impl(drawdown_type, drawdown_number);
 }
 
-void Drawdown::update(const uint64_t &drawdown_id, const eosio::asset &total_amount)
+void Drawdown::update(const uint64_t &drawdown_id, const eosio::asset &total_amount, const bool &is_add_balance)
 {
 
   transactions::drawdown_tables drawdown_t(contract_name, project_id);
@@ -18,7 +18,7 @@ void Drawdown::update(const uint64_t &drawdown_id, const eosio::asset &total_amo
 
   check(drawdown_itr != drawdown_t.end(), "Drawdown not found");
 
-  update_impl(drawdown_id, total_amount);
+  update_impl(drawdown_id, total_amount, is_add_balance);
 }
 
 void Drawdown::submit(const uint64_t &drawdown_id)

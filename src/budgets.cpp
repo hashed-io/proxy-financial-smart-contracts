@@ -217,7 +217,7 @@ ACTION budgets::reset () {
 
 ACTION budgets::rcalcbudgets (name actor, uint64_t project_id, uint64_t account_id, uint64_t budget_period_id) {
 
-    require_auth(actor);
+    require_auth(get_self());
 
     budget_tables budgets(_self, project_id);
     budget_period_tables budget_periods(_self, project_id);
@@ -324,7 +324,7 @@ ACTION budgets::addbudget (  name actor,
                              uint64_t end_date,
                              bool modify_parents ) {
 
-    require_auth(actor);
+    require_auth(get_self());
 
     account_tables accounts(common::contracts::accounts, project_id);
 
@@ -371,7 +371,7 @@ ACTION budgets::editbudget ( name actor,
                               uint64_t end_date,
                               bool modify_parents ) {
 
-    require_auth(actor);
+    require_auth(get_self());
 
     budget_tables budgets(_self, project_id);
     account_tables accounts(common::contracts::accounts, project_id);
@@ -414,7 +414,7 @@ ACTION budgets::editbudget ( name actor,
 
 
 ACTION budgets::deletebudget (name actor, uint64_t project_id, uint64_t budget_id, bool modify_parents) {
-    require_auth(actor);
+    require_auth(get_self());
 
     budget_tables budgets(_self, project_id);
     account_tables accounts(common::contracts::accounts, project_id);
@@ -465,7 +465,7 @@ ACTION budgets::deletebudget (name actor, uint64_t project_id, uint64_t budget_i
 
 
 ACTION budgets::delbdgtsacct (uint64_t project_id, uint64_t account_id) {
-    require_auth(_self);
+    require_auth(get_self());
 
     print("delbudgets");
 

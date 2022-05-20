@@ -32,7 +32,7 @@ void DeveloperEquityDrawdown::create_impl(const eosio::name &drawdown_type, cons
 		item.close_date = 0; });
 }
 
-void DeveloperEquityDrawdown::update_impl(const uint64_t &drawdown_id, const eosio::asset &total_amount)
+void DeveloperEquityDrawdown::update_impl(const uint64_t &drawdown_id, const eosio::asset &total_amount, const bool &is_add_balance)
 {
   transactions::drawdown_tables drawdown_t(contract_name, project_id);
   auto drawdown_itr = drawdown_t.find(drawdown_id);
@@ -56,6 +56,13 @@ void DeveloperEquityDrawdown::update_impl(const uint64_t &drawdown_id, const eos
     check(false, "Drawdown can not be edited at this state!");
   }
 
-  drawdown_t.modify(drawdown_itr, contract_name, [&](auto &item)
+  if (is_add_balance) {
+      drawdown_t.modify(drawdown_itr, contract_name, [&](auto &item)
                     { item.total_amount += total_amount; });
+  }
+  else {
+      drawdown_t.modify(drawdown_itr, contract_name, [&](auto &item)
+                    { item.total_amount -= total_amount; });
+  }
+
 }

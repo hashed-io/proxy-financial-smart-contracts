@@ -6,7 +6,7 @@ using namespace eosio;
     eosio::name account;               /* eosio account name */                                       \
     std::string user_name;             /* a custom name for the user (this may be the actual name) */ \
     uint64_t entity_id;                /* this may be deprecated */                                   \
-    eosio::name role;                  /* admin, builder, investor */                                 \
+    eosio::name role;                  /* admin, builder, investor, issuer, regional center*/                                 \
     vector<uint64_t> related_projects; /* ids of projects */                                          \
     std::string description;           /* ids of projects */                                          \
                                                                                                       \

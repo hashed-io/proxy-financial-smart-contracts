@@ -111,12 +111,12 @@ void transactions::make_transaction(name actor,
 
 	check(ledger_id > 0, common::contracts::transactions.to_string() + ": no ledger will be modified.");
 
-	action(
-			permission_level(common::contracts::permissions, "active"_n),
-			common::contracts::permissions,
-			"checkledger"_n,
-			std::make_tuple(actor, project_id, ledger_id))
-			.send();
+	// action(
+	// 		permission_level(common::contracts::permissions, "active"_n),
+	// 		common::contracts::permissions,
+	// 		"checkledger"_n,
+	// 		std::make_tuple(actor, project_id, ledger_id))
+	// 		.send();
 
 	// TODO checar esta validacion
 	check(total == 0, common::contracts::transactions.to_string() + ": the transaction total balance must be zero.");
@@ -182,13 +182,14 @@ void transactions::delete_transaction(name actor,
 		auto itr_account = accounts.find(itr_amount->account_id);
 		ledger_id = itr_account->ledger_id;
 	}
+	
 	// ! same as generate_transaction
-	action(
-			permission_level(common::contracts::permissions, "active"_n),
-			common::contracts::permissions,
-			"checkledger"_n,
-			std::make_tuple(actor, project_id, ledger_id))
-			.send();
+	// action(
+	// 		permission_level(common::contracts::permissions, "active"_n),
+	// 		common::contracts::permissions,
+	// 		"checkledger"_n,
+	// 		std::make_tuple(actor, project_id, ledger_id))
+	// 		.send();
 
 	while (itr_amount != account_transacion_t_by_transactions.end() &&
 				 itr_amount->transaction_id == transaction_id)
@@ -219,8 +220,9 @@ void transactions::delete_transaction(name actor,
 		drawdown_tables drawdown_t(_self, project_id);
 		auto drawdown_itr = drawdown_t.find(itr_trxn->drawdown_id);
 
-		drawdown_t.modify(drawdown_itr, _self, [&](auto &item)
-											{ item.total_amount -= total_amount; });
+		std::unique_ptr<Drawdown> drawdown = std::unique_ptr<Drawdown>(DrawdownFactory::Factory(project_id, *this, drawdown_itr->type));
+		drawdown->update(itr_trxn->drawdown_id, total_amount, common::transactions::drawdown::flag::remove_balance);
+
 	}
 
 	transactions.erase(itr_trxn);
@@ -501,6 +503,13 @@ ACTION transactions::transacts(const eosio::name &actor,
 															 std::vector<common::types::transaction_param> transactions)
 {
 	require_auth(actor);
+	/*
+	create an (helper)
+	if(drawdown_id -> type = 'eb5' && actor -> role = admin )
+	*/
+	// drawdown_tables drawdowns(_self, project_id);
+	// auto drawdown_itr = drawdowns.find(drawdown_id);
+	// check(drawdown_itr -> state < common::transactions::drawdown::status::submitted, "cannot add/modify/remove transactions once the current drawdown has started submitted phase");
 
 	for (int i = 0; i < transactions.size(); i++)
 	{
@@ -622,12 +631,12 @@ void transactions::generate_transaction(const eosio::name &actor,
 
 	check(ledger_id > 0, common::contracts::transactions.to_string() + ": no ledger will be modified.");
 
-	action(
-			permission_level(common::contracts::permissions, "active"_n),
-			common::contracts::permissions,
-			"checkledger"_n,
-			std::make_tuple(actor, project_id, ledger_id))
-			.send();
+	// action(
+	// 		permission_level(common::contracts::permissions, "active"_n),
+	// 		common::contracts::permissions,
+	// 		"checkledger"_n,
+	// 		std::make_tuple(actor, project_id, ledger_id))
+	// 		.send();
 
 	// TODO checar esta validacion
 	// ! remove this when the validation is complete
@@ -638,7 +647,7 @@ void transactions::generate_transaction(const eosio::name &actor,
 	auto drawdown_itr = drawdown_t.find(drawdown_id);
 
 	std::unique_ptr<Drawdown> drawdown = std::unique_ptr<Drawdown>(DrawdownFactory::Factory(project_id, *this, drawdown_itr->type));
-	drawdown->update(drawdown_id, asset(total_positive, common::currency));
+	drawdown->update(drawdown_id, asset(total_positive, common::currency), common::transactions::drawdown::flag::add_balance);
 
 	transactions_t.emplace(_self, [&](auto &item)
 												 {

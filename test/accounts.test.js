@@ -23,7 +23,7 @@ const { accounts, projects, budgets, permissions, transactions } = contractNames
 
 describe('Tests for budget expenditures', async function () {
 
-  let contracts
+  let contracts, admin, builder, investor;
 
   before(async function () {
     if (!isLocalNode()) {
@@ -158,13 +158,13 @@ describe('Tests for budget expenditures', async function () {
 
   });
 
-  it('Only admin can create new accounts', async () => {
+  it('Only admin can create new Budget Expenditures', async () => {
     // Arrange
-    let fail 
-    const new_account = await AccountFactory.createWithDefaults({ actor: admin.params.account });
+    let fail
+    const new_account = await AccountFactory.createWithDefaults({ actor: investor.params.account });
 
     // Act
-    try{
+    try {
       await contracts.accounts.addaccount(...new_account.getCreateActionParams(), { authorization: `${investor.params.account}@active` });
       fail = false
     } catch (err) {
@@ -181,6 +181,7 @@ describe('Tests for budget expenditures', async function () {
       json: true,
       limit: 100
     });
+    console.log(accountsTable)
     //console.table(accountsTable.rows[accountsTable.rows.length - 1]);
 
     expect(fail).to.be.true
@@ -188,9 +189,38 @@ describe('Tests for budget expenditures', async function () {
 
   })
 
+  it('Cannot create budget expenditures under another parent_id (soft/hard cost)', async () => {
+    // Arrange
+    let fail
+    const new_account = await AccountFactory.createWithDefaults({ actor: admin.params.account, parent_id: 3 });
+    console.log(new_account)
+
+    // Act
+    try {
+      await contracts.accounts.addaccount(...new_account.getCreateActionParams(), { authorization: `${admin.params.account}@active` });
+      fail = false
+    } catch (err) {
+      fail = true
+    }
+
+    const accountsTable = await rpc.get_table_rows({
+      code: accounts,
+      scope: project.params.id,
+      table: 'accounts',
+      json: true,
+      limit: 100
+    });
+    // console.log(accountsTable)
+    console.log(accountsTable.rows);
+
+
+    expect(fail).to.be.true
+
+  })
+
   it('Edit NAIC code to a given budget expenditure', async () => {
     // Arrange
-    const new_account = await AccountFactory.createWithDefaults({actor: admin.params.account});
+    const new_account = await AccountFactory.createWithDefaults({ actor: admin.params.account });
     await contracts.accounts.addaccount(...new_account.getCreateActionParams(), { authorization: `${admin.params.account}@active` });
 
     // Act
@@ -217,7 +247,7 @@ describe('Tests for budget expenditures', async function () {
       limit: 100
     });
     console.table(accountsTable.rows[accountsTable.rows.length - 1]);
-    
+
     expect(accountsTable.rows[accountsTable.rows.length - 1]).to.include({
       account_id: 24,
       parent_id: new_account.params.parent_id,
@@ -231,10 +261,10 @@ describe('Tests for budget expenditures', async function () {
 
   it('Edit Jobs multiplier to a given budget expenditure', async () => {
     // Arrange
-    const new_account = await AccountFactory.createWithDefaults({actor: admin.params.account});
+    const new_account = await AccountFactory.createWithDefaults({ actor: admin.params.account });
     await contracts.accounts.addaccount(...new_account.getCreateActionParams(), { authorization: `${admin.params.account}@active` });
     console.log('params is: ', new_account.params)
-   
+
     // Act
     await AccountUtil.editaccount({
       actor: new_account.params.actor,
@@ -259,7 +289,7 @@ describe('Tests for budget expenditures', async function () {
       limit: 100
     });
     console.table(accountsTable.rows[accountsTable.rows.length - 1]);
-    
+
     expect(accountsTable.rows[accountsTable.rows.length - 1]).to.include({
       account_id: 24,
       parent_id: new_account.params.parent_id,
@@ -273,10 +303,10 @@ describe('Tests for budget expenditures', async function () {
 
   it('Edit name to a given budget expenditure', async () => {
     // Arrange
-    const new_account = await AccountFactory.createWithDefaults({actor: admin.params.account});
+    const new_account = await AccountFactory.createWithDefaults({ actor: admin.params.account });
     await contracts.accounts.addaccount(...new_account.getCreateActionParams(), { authorization: `${admin.params.account}@active` });
     console.log('params is: ', new_account.params)
-   
+
     // Act
     await AccountUtil.editaccount({
       actor: new_account.params.actor,
@@ -301,7 +331,7 @@ describe('Tests for budget expenditures', async function () {
       limit: 100
     });
     console.table(accountsTable.rows[accountsTable.rows.length - 1]);
-    
+
     expect(accountsTable.rows[accountsTable.rows.length - 1]).to.include({
       account_id: 24,
       parent_id: new_account.params.parent_id,
@@ -311,14 +341,13 @@ describe('Tests for budget expenditures', async function () {
       jobs_multiplier: new_account.params.jobs_multiplier,
     })
 
-
   });
 
   it('Delete a budget expenditure of a given project', async () => {
     //Arrange
-    const new_account = await AccountFactory.createWithDefaults({actor: admin.params.account});
+    const new_account = await AccountFactory.createWithDefaults({ actor: admin.params.account });
     await contracts.accounts.addaccount(...new_account.getCreateActionParams(), { authorization: `${admin.params.account}@active` });
-   
+
     //Act
     await AccountUtil.deleteaccnt({
       actor: new_account.params.actor,
@@ -347,9 +376,9 @@ describe('Tests for budget expenditures', async function () {
 
   it('Delete a budget expenditure of a given project', async () => {
     //Arrange
-    const new_account = await AccountFactory.createWithDefaults({actor: admin.params.account});
+    const new_account = await AccountFactory.createWithDefaults({ actor: admin.params.account });
     await contracts.accounts.addaccount(...new_account.getCreateActionParams(), { authorization: `${admin.params.account}@active` });
-   
+
     //Act
     await AccountUtil.deleteaccnt({
       actor: new_account.params.actor,
@@ -378,8 +407,8 @@ describe('Tests for budget expenditures', async function () {
 
   it('Automatically creates a budget when the new account has an initial budget.', async () => {
     // Arrange
-    const new_account = await AccountFactory.createWithDefaults({actor: admin.params.account, budget_amount: "100.00 USD"});
-   
+    const new_account = await AccountFactory.createWithDefaults({ actor: admin.params.account, budget_amount: "100.00 USD" });
+
     //Act
     await contracts.accounts.addaccount(...new_account.getCreateActionParams(), { authorization: `${admin.params.account}@active` });
 
@@ -392,7 +421,7 @@ describe('Tests for budget expenditures', async function () {
       limit: 100
     });
     console.table(accountsTable.rows[accountsTable.rows.length - 1]);
-    
+
     const budgetsTable = await rpc.get_table_rows({
       code: budgets,
       scope: 0,
@@ -400,7 +429,7 @@ describe('Tests for budget expenditures', async function () {
       json: true,
     });
     console.log("\n\n budgets table : ", budgetsTable.rows);
-    
+
     assert.deepStrictEqual(budgetsTable.rows, [
       {
         budget_id: 1,
@@ -426,7 +455,7 @@ describe('Tests for budget expenditures', async function () {
 
   it('Add balance to a budget expenditure of a given project', async () => {
     // Arrange
-    const new_account = await AccountFactory.createWithDefaults({actor: admin.params.account, budget_amount: "100.00 USD"});
+    const new_account = await AccountFactory.createWithDefaults({ actor: admin.params.account, budget_amount: "100.00 USD" });
     await contracts.accounts.addaccount(...new_account.getCreateActionParams(), { authorization: `${admin.params.account}@active` });
 
     //Act
@@ -448,7 +477,7 @@ describe('Tests for budget expenditures', async function () {
     });
     // console.log(accountsTable)
     console.table(accountsTable.rows[accountsTable.rows.length - 1]);
-    
+
     expect(accountsTable.rows[accountsTable.rows.length - 1]).to.include({
       account_id: 24,
       parent_id: new_account.params.parent_id,
@@ -463,7 +492,7 @@ describe('Tests for budget expenditures', async function () {
 
   it('Sub balance to a budget expenditure of a given project', async () => {
     // Arrange
-    const new_account = await AccountFactory.createWithDefaults({actor: admin.params.account, budget_amount: "100.00 USD"});
+    const new_account = await AccountFactory.createWithDefaults({ actor: admin.params.account, budget_amount: "100.00 USD" });
     await contracts.accounts.addaccount(...new_account.getCreateActionParams(), { authorization: `${admin.params.account}@active` });
     await AccountUtil.addbalance({
       project_id: 0,
@@ -492,7 +521,7 @@ describe('Tests for budget expenditures', async function () {
     });
     // console.log(accountsTable)
     console.table(accountsTable.rows[accountsTable.rows.length - 1]);
-    
+
     expect(accountsTable.rows[accountsTable.rows.length - 1]).to.include({
       account_id: 24,
       parent_id: new_account.params.parent_id,
@@ -507,7 +536,7 @@ describe('Tests for budget expenditures', async function () {
 
   it('Cancel add balance to a budget expenditure of a given project', async () => {
     // Arrange
-    const new_account = await AccountFactory.createWithDefaults({actor: admin.params.account, budget_amount: "100.00 USD"});
+    const new_account = await AccountFactory.createWithDefaults({ actor: admin.params.account, budget_amount: "100.00 USD" });
     await contracts.accounts.addaccount(...new_account.getCreateActionParams(), { authorization: `${admin.params.account}@active` });
     await AccountUtil.addbalance({
       project_id: 0,
@@ -536,7 +565,7 @@ describe('Tests for budget expenditures', async function () {
     });
     console.log(accountsTable)
     console.table(accountsTable.rows[accountsTable.rows.length - 1]);
-    
+
     expect(accountsTable.rows[accountsTable.rows.length - 1]).to.include({
       account_id: 24,
       parent_id: new_account.params.parent_id,
@@ -551,7 +580,7 @@ describe('Tests for budget expenditures', async function () {
 
   it('cancel sub balance to a budget expenditure of a given project', async () => {
     // Arrange
-    const new_account = await AccountFactory.createWithDefaults({actor: admin.params.account, budget_amount: "100.00 USD"});
+    const new_account = await AccountFactory.createWithDefaults({ actor: admin.params.account, budget_amount: "100.00 USD" });
     await contracts.accounts.addaccount(...new_account.getCreateActionParams(), { authorization: `${admin.params.account}@active` });
     await AccountUtil.subbalance({
       project_id: 0,
@@ -580,7 +609,7 @@ describe('Tests for budget expenditures', async function () {
     });
     // console.log(accountsTable)
     // console.table(accountsTable.rows[accountsTable.rows.length - 1]);
-    
+
     expect(accountsTable.rows[accountsTable.rows.length - 1]).to.include({
       account_id: 24,
       parent_id: new_account.params.parent_id,
@@ -593,9 +622,9 @@ describe('Tests for budget expenditures', async function () {
     })
   });
 
-  it.only('Admin can delete ALL budgets expenditures', async () => {
+  it('Admin can delete ALL budgets expenditures', async () => {
     // Arrange
-    const new_account = await AccountFactory.createWithDefaults({actor: admin.params.account, budget_amount: "100.00 USD"});
+    const new_account = await AccountFactory.createWithDefaults({ actor: admin.params.account, budget_amount: "100.00 USD" });
     await contracts.accounts.addaccount(...new_account.getCreateActionParams(), { authorization: `${admin.params.account}@active` });
 
     //Act
@@ -615,7 +644,7 @@ describe('Tests for budget expenditures', async function () {
     });
     console.log(accountsTable)
     console.table(accountsTable.rows[accountsTable.rows.length - 1]);
-    
+
     assert.deepStrictEqual(accountsTable.rows, [])
   });
 
