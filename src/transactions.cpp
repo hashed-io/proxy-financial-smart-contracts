@@ -111,13 +111,6 @@ void transactions::make_transaction(name actor,
 
 	check(ledger_id > 0, common::contracts::transactions.to_string() + ": no ledger will be modified.");
 
-	// action(
-	// 		permission_level(common::contracts::permissions, "active"_n),
-	// 		common::contracts::permissions,
-	// 		"checkledger"_n,
-	// 		std::make_tuple(actor, project_id, ledger_id))
-	// 		.send();
-
 	// TODO checar esta validacion
 	check(total == 0, common::contracts::transactions.to_string() + ": the transaction total balance must be zero.");
 
@@ -184,12 +177,7 @@ void transactions::delete_transaction(name actor,
 	}
 	
 	// ! same as generate_transaction
-	// action(
-	// 		permission_level(common::contracts::permissions, "active"_n),
-	// 		common::contracts::permissions,
-	// 		"checkledger"_n,
-	// 		std::make_tuple(actor, project_id, ledger_id))
-	// 		.send();
+
 
 	while (itr_amount != account_transacion_t_by_transactions.end() &&
 				 itr_amount->transaction_id == transaction_id)
@@ -273,13 +261,6 @@ ACTION transactions::transact(name actor,
 
 	require_auth(actor);
 
-	/* action (
-				permission_level(common::contracts::permissions, "active"_n),
-				common::contracts::permissions,
-				"checkprmissn"_n,
-				std::make_tuple(actor, project_id, ACTION_NAMES.TRANSACTIONS_ADD)
-		).send(); */
-
 	auto project_itr = project_t.find(project_id);
 	check(project_itr != project_t.end(), common::contracts::transactions.to_string() + ": the project with the id = " + to_string(project_id) + " does not exist.");
 
@@ -289,13 +270,6 @@ ACTION transactions::transact(name actor,
 ACTION transactions::deletetrxn(name actor, uint64_t project_id, uint64_t transaction_id)
 {
 	require_auth(actor);
-
-	/* action (
-				permission_level(common::contracts::permissions, "active"_n),
-				common::contracts::permissions,
-				"checkprmissn"_n,
-				std::make_tuple(actor, project_id, ACTION_NAMES.TRANSACTIONS_REMOVE)
-		).send(); */
 
 	delete_transaction(actor, project_id, transaction_id);
 }
@@ -314,13 +288,6 @@ ACTION transactions::edittrxn(name actor,
 	require_auth(actor);
 
 	check(DRAWDOWN_TYPES.is_valid_constant(drawdown_type), "Unkown drawdown type");
-
-	/* action (
-				permission_level(common::contracts::permissions, "active"_n),
-				common::contracts::permissions,
-				"checkprmissn"_n,
-				std::make_tuple(actor, project_id, ACTION_NAMES.TRANSACTIONS_EDIT)
-		).send(); */
 
 	auto project_itr = project_t.find(project_id);
 	check(project_itr != project_t.end(), common::contracts::transactions.to_string() + ": the project with the id = " + to_string(project_id) + " does not exist.");
@@ -373,7 +340,6 @@ ACTION transactions::submitdrwdn(name actor,
 
 ACTION transactions::initdrawdown(const uint64_t &project_id)
 { 
-	// TODO: impleemnt permissions check to only run once per project
 	require_auth(_self);
 	
 	drawdown_tables drawdown_t(_self, project_id);
@@ -503,13 +469,6 @@ ACTION transactions::transacts(const eosio::name &actor,
 															 std::vector<common::types::transaction_param> transactions)
 {
 	require_auth(actor);
-	/*
-	create an (helper)
-	if(drawdown_id -> type = 'eb5' && actor -> role = admin )
-	*/
-	// drawdown_tables drawdowns(_self, project_id);
-	// auto drawdown_itr = drawdowns.find(drawdown_id);
-	// check(drawdown_itr -> state < common::transactions::drawdown::status::submitted, "cannot add/modify/remove transactions once the current drawdown has started submitted phase");
 
 	for (int i = 0; i < transactions.size(); i++)
 	{
@@ -631,13 +590,6 @@ void transactions::generate_transaction(const eosio::name &actor,
 
 	check(ledger_id > 0, common::contracts::transactions.to_string() + ": no ledger will be modified.");
 
-	// action(
-	// 		permission_level(common::contracts::permissions, "active"_n),
-	// 		common::contracts::permissions,
-	// 		"checkledger"_n,
-	// 		std::make_tuple(actor, project_id, ledger_id))
-	// 		.send();
-
 	// TODO checar esta validacion
 	// ! remove this when the validation is complete
 	// check(total == 0, common::contracts::transactions.to_string() + ": the transaction total balance must be zero.");
@@ -662,4 +614,53 @@ void transactions::generate_transaction(const eosio::name &actor,
 		for (int i = 0; i < supporting_files.size(); i++) {
 			item.supporting_files.push_back(supporting_files[i]);
 		} });
+}
+
+ACTION transactions::bulktransact(const eosio::name &actor, 
+										const uint64_t &project_id,  
+										const uint64_t &drawdown_id, 
+										vector<common::types::extended_url_information_param> transactions)
+{ 
+	require_auth(actor);
+
+	for (int i = 0; i < transactions.size(); i++)
+	{ 
+		if (transactions[i].add_file == common::transactions::drawdown::bulk::add) 
+		{
+
+			check_asset(transactions[i].amount, common::contracts::transactions);
+
+			generate_bulk_files(actor, 
+							project_id,
+							drawdown_id,
+							transactions[i].supporting_files,
+							transactions[i].description,
+							transactions[i].date,
+							transactions[i].amount,
+							transactions[i].add_file);	
+		}		
+	}
+
+}
+
+void transactions::generate_bulk_files(const eosio::name &actor,
+																			const uint64_t &project_id,
+																			const uint64_t &drawdown_id,
+																			vector<common::types::url_information> supporting_files,
+																			const std::string &description,
+																			const uint64_t &date,
+																			const eosio::asset &amount,
+																			const bool &add_file)
+{
+	auto project_itr = project_t.find(project_id);
+	check(project_itr != project_t.end(), "Project not found!");
+
+	drawdown_tables drawdown_t(_self, project_id);
+	auto drawdown_itr = drawdown_t.find(drawdown_id);
+	check(drawdown_itr != drawdown_t.end(), "Drawdown not found");
+
+	std::unique_ptr<Drawdown> drawdown = std::unique_ptr<Drawdown>(DrawdownFactory::Factory(project_id, *this, drawdown_itr->type));
+	drawdown->edit(drawdown_id, supporting_files, description, date, amount, add_file);
+
+
 }
