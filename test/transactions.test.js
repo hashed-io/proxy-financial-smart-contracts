@@ -38,7 +38,7 @@ const expect = require("chai").expect;
 const { projects, accounts, budgets, permissions, transactions } =
   contractNames;
 
-describe.only("Tests for transactions smart contract", async function () {
+describe("Tests for transactions smart contract", async function () {
   let contracts, admin, builder, investor, project, fail;
 
   before(async function () {
@@ -1322,86 +1322,7 @@ describe.only("Tests for transactions smart contract", async function () {
     // TODO 
   });
 
-  it('Create a bulk ', async () =>{
-    // Arrange
-    // TODO: crear en el util un bulk por default
-
-    const bulk = [
-      {
-        supporting_files:[
-          {  
-            filename: "Hello there 1",
-            address: "fvlNKbnKLBNKLhLJN8999hlgf89:png",
-          },
-          {  
-            filename: "Hello there 2",
-            address: "fvlNKbnKLBNKLhLJN8999hlgf89:pdf",
-          },
-          {  
-            filename: "Hello there 3",
-            address: "fvlNKbnKLBNKLhLJN8999hlgf89:txt",
-          }
-        ],
-        description: "description test",
-        date: Date.now(),
-        amount: "200.00 USD",
-        add_file: 1 
-      }
-    ]
-
-    const bulk2 = [ 
-      {
-        supporting_files:[
-          {  
-            filename: "Hello there 1 was modified",
-            address: "fvlNKbnKLBNKLhLJN8999hlgf89:png",
-          },
-          {  
-            filename: "Hello there 2 was modified",
-            address: "fvlNKbnKLBNKLhLJN8999hlgf89:pdf",
-          },
-          {  
-            filename: "Hello there 3 was modified",
-            address: "fvlNKbnKLBNKLhLJN8999hlgf89:txt",
-          }
-        ],
-        description: "description test was modified",
-        date: Date.now(),
-        amount: "200.00 USD",
-        add_file: 0
-      }
-    ]
-
-    console.log('bulk is: ', bulk)
-
-    // Act
-    await contracts.transactions.bulktransact(builder.params.account, 0, 3, bulk, { authorization: `${builder.params.account}@active` });
-    
-    try {
-      await contracts.transactions.bulktransact(builder.params.account, 0, 3, bulk2, { authorization: `${builder.params.account}@active` });
-    } catch(err){
-      console.error(err)
-    }
-
-    // Assert    
-    const drawdownTable = await rpc.get_table_rows({
-      code: transactions,
-      scope: project.params.id,
-      table: 'drawdowns',
-      json: true
-    });
-    console.log('\n drawdown table is: ', JSON.stringify(drawdownTable.rows[2], ' ', 2));
-
-    const transactionsTable = await rpc.get_table_rows({
-      code: transactions,
-      scope: project.params.id,
-      table: 'transactions',
-      json: true
-    });
-    console.log('\n transactions table is: ', transactionsTable.rows);
-
-  });
-  it.only('Testing bulktransact & extended_url_information', async () =>{
+  it('Testing bulktransact & extended_url_information', async () =>{
     // Arrange
     // TODO: crear en el util un bulk por default
 
@@ -1454,7 +1375,7 @@ describe.only("Tests for transactions smart contract", async function () {
     console.log('bulk is: ', bulk)
 
     // Act
-    //await contracts.transactions.bulktransact(builder.params.account, 0, 3, bulk, { authorization: `${builder.params.account}@active` });
+    await contracts.transactions.bulktransact(builder.params.account, 0, 3, bulk, { authorization: `${builder.params.account}@active` });
     
     try {
       await contracts.transactions.bulktransact(builder.params.account, 0, 3, bulk2, { authorization: `${builder.params.account}@active` });
