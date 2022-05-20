@@ -72,15 +72,37 @@ void DeveloperEquityDrawdown::edit_impl(const uint64_t &drawdown_id,
                     const std::string &description,
                     const uint64_t &date,
                     const eosio::asset &amount,
-                    const bool &add_file)
+                    const uint8_t &add_file)
 {
   transactions::drawdown_tables drawdown_t(contract_name, project_id);
   auto drawdown_itr = drawdown_t.find(drawdown_id);
 
   check(drawdown_itr != drawdown_t.end(), "Drawdown not found");
 
-  drawdown_t.modify(drawdown_itr, contract_name, [&](auto &item)
-						{item.files.push_back((common::types::extended_url_information){supporting_files, description, date, amount}); });
+  if (add_file == common::transactions::drawdown::bulk::create) 
+  { 
+    check(!drawdown_itr -> files.size() > 0,"cannot send create twice, you need to edit/delete data fisrt");
 
+    drawdown_t.modify(drawdown_itr, contract_name, [&](auto &item)
+	 					{item.files.push_back((common::types::extended_url_information){supporting_files, description, date, amount}); });
+  } 
+  else if (add_file == common::transactions::drawdown::bulk::edit) 
+  {   
+    check(drawdown_itr -> files.size() > 0,"there's no previuos data, nothing to be modified");
+
+    drawdown_t.modify(drawdown_itr, contract_name, [&](auto &item)
+	 					{item.files.clear(); });
+
+    drawdown_t.modify(drawdown_itr, contract_name, [&](auto &item)
+	 					{item.files.push_back((common::types::extended_url_information){supporting_files, description, date, amount}); });
+  }
+  else if (add_file == common::transactions::drawdown::bulk::remove)
+  { 
+    check(drawdown_itr -> files.size() > 0,"there's no previous data, nothing to be deleted");
+
+    drawdown_t.modify(drawdown_itr, contract_name, [&](auto &item)
+    	 			{item.files.clear(); });
+
+  }
 
 }
