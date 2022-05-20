@@ -177,7 +177,7 @@ describe('Tests for budget expenditures', async function () {
       json: true,
       limit: 100
     });
-    console.log(accountsTable)
+    // console.log(accountsTable)
     //console.table(accountsTable.rows[accountsTable.rows.length - 1]);
 
     expect(fail).to.be.true
@@ -189,7 +189,7 @@ describe('Tests for budget expenditures', async function () {
     // Arrange
     let fail
     const new_account = await AccountFactory.createWithDefaults({ actor: admin.params.account, parent_id: 3 });
-    console.log(new_account)
+    // console.log(new_account)
 
     // Act
     try {
@@ -207,7 +207,7 @@ describe('Tests for budget expenditures', async function () {
       limit: 100
     });
     // console.log(accountsTable)
-    console.log(accountsTable.rows);
+    // console.log(accountsTable.rows);
 
 
     expect(fail).to.be.true
@@ -242,7 +242,7 @@ describe('Tests for budget expenditures', async function () {
       json: true,
       limit: 100
     });
-    console.table(accountsTable.rows[accountsTable.rows.length - 1]);
+    // console.table(accountsTable.rows[accountsTable.rows.length - 1]);
 
     expect(accountsTable.rows[accountsTable.rows.length - 1]).to.include({
       account_id: 24,
@@ -259,7 +259,7 @@ describe('Tests for budget expenditures', async function () {
     // Arrange
     const new_account = await AccountFactory.createWithDefaults({ actor: admin.params.account });
     await contracts.accounts.addaccount(...new_account.getCreateActionParams(), { authorization: `${admin.params.account}@active` });
-    console.log('params is: ', new_account.params)
+    // console.log('params is: ', new_account.params)
 
     // Act
     await AccountUtil.editaccount({
@@ -284,7 +284,7 @@ describe('Tests for budget expenditures', async function () {
       json: true,
       limit: 100
     });
-    console.table(accountsTable.rows[accountsTable.rows.length - 1]);
+    // console.table(accountsTable.rows[accountsTable.rows.length - 1]);
 
     expect(accountsTable.rows[accountsTable.rows.length - 1]).to.include({
       account_id: 24,
@@ -301,7 +301,7 @@ describe('Tests for budget expenditures', async function () {
     // Arrange
     const new_account = await AccountFactory.createWithDefaults({ actor: admin.params.account });
     await contracts.accounts.addaccount(...new_account.getCreateActionParams(), { authorization: `${admin.params.account}@active` });
-    console.log('params is: ', new_account.params)
+    // console.log('params is: ', new_account.params)
 
     // Act
     await AccountUtil.editaccount({
@@ -326,7 +326,7 @@ describe('Tests for budget expenditures', async function () {
       json: true,
       limit: 100
     });
-    console.table(accountsTable.rows[accountsTable.rows.length - 1]);
+    // console.table(accountsTable.rows[accountsTable.rows.length - 1]);
 
     expect(accountsTable.rows[accountsTable.rows.length - 1]).to.include({
       account_id: 24,
@@ -361,7 +361,7 @@ describe('Tests for budget expenditures', async function () {
       json: true,
       limit: 100
     });
-    console.table(accountsTable.rows[accountsTable.rows.length - 1]);
+    // console.table(accountsTable.rows[accountsTable.rows.length - 1]);
 
     //account id = 23 'cause new_account was 24. 
     expect(accountsTable.rows[accountsTable.rows.length - 1]).to.include({
@@ -392,7 +392,7 @@ describe('Tests for budget expenditures', async function () {
       json: true,
       limit: 100
     });
-    console.table(accountsTable.rows[accountsTable.rows.length - 1]);
+    // console.table(accountsTable.rows[accountsTable.rows.length - 1]);
 
     //account id = 23 'cause new_account was 24. 
     expect(accountsTable.rows[accountsTable.rows.length - 1]).to.include({
@@ -416,7 +416,7 @@ describe('Tests for budget expenditures', async function () {
       json: true,
       limit: 100
     });
-    console.table(accountsTable.rows[accountsTable.rows.length - 1]);
+    // console.table(accountsTable.rows[accountsTable.rows.length - 1]);
 
     const budgetsTable = await rpc.get_table_rows({
       code: budgets,
@@ -424,7 +424,7 @@ describe('Tests for budget expenditures', async function () {
       table: "budgets",
       json: true,
     });
-    console.log("\n\n budgets table : ", budgetsTable.rows);
+    // console.log("\n\n budgets table : ", budgetsTable.rows);
 
     assert.deepStrictEqual(budgetsTable.rows, [
       {
@@ -472,7 +472,7 @@ describe('Tests for budget expenditures', async function () {
       limit: 100
     });
     // console.log(accountsTable)
-    console.table(accountsTable.rows[accountsTable.rows.length - 1]);
+    // console.table(accountsTable.rows[accountsTable.rows.length - 1]);
 
     expect(accountsTable.rows[accountsTable.rows.length - 1]).to.include({
       account_id: 24,
@@ -516,7 +516,7 @@ describe('Tests for budget expenditures', async function () {
       limit: 100
     });
     // console.log(accountsTable)
-    console.table(accountsTable.rows[accountsTable.rows.length - 1]);
+    // console.table(accountsTable.rows[accountsTable.rows.length - 1]);
 
     expect(accountsTable.rows[accountsTable.rows.length - 1]).to.include({
       account_id: 24,
@@ -559,8 +559,8 @@ describe('Tests for budget expenditures', async function () {
       json: true,
       limit: 100
     });
-    console.log(accountsTable)
-    console.table(accountsTable.rows[accountsTable.rows.length - 1]);
+    // console.log(accountsTable)
+    // console.table(accountsTable.rows[accountsTable.rows.length - 1]);
 
     expect(accountsTable.rows[accountsTable.rows.length - 1]).to.include({
       account_id: 24,
@@ -638,8 +638,8 @@ describe('Tests for budget expenditures', async function () {
       json: true,
       limit: 100
     });
-    console.log(accountsTable)
-    console.table(accountsTable.rows[accountsTable.rows.length - 1]);
+    // console.log(accountsTable)
+    // console.table(accountsTable.rows[accountsTable.rows.length - 1]);
 
     assert.deepStrictEqual(accountsTable.rows, [])
   });
