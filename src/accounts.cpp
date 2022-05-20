@@ -66,7 +66,6 @@ ACTION accounts::reset()
 ACTION accounts::init()
 
 {
-//TODO: check("cannot init twice")
     reset();
 
     vector<common::types::account_types> account_types_vv;

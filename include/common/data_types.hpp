@@ -22,6 +22,24 @@ namespace common
       std::string address;
     };
 
+    struct extended_url_information
+    { // ! store budget expenditures
+      std::vector<url_information> supporting_files;
+      std::string description;
+      uint64_t date;
+      eosio::asset amount;
+    }; 
+
+    struct extended_url_information_param
+    { // ! store budget expenditures
+      std::vector<url_information> supporting_files;
+      std::string description;
+      uint64_t date;
+      eosio::asset amount;
+      uint8_t add_file; // remove = 0, create = 1, edit = 2
+    }; 
+
+
     struct account_types
     {
       std::string type_name;
