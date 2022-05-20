@@ -65,6 +65,6 @@ void EB5Drawdown::edit_impl(const uint64_t &drawdown_id,
                     const eosio::asset &amount,
                     const uint8_t &add_file)
 {
- //TODO
+  check(false,"You do not have the authorization to call this action");
 }
 
