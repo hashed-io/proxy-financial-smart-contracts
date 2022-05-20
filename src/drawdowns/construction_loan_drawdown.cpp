@@ -73,7 +73,7 @@ void ConstructionLoanDrawdown::edit_impl(const uint64_t &drawdown_id,
                     const std::string &description,
                     const uint64_t &date,
                     const eosio::asset &amount,
-                    const bool &add_file)
+                    const uint8_t &add_file)
 {  
    //TODO
 }

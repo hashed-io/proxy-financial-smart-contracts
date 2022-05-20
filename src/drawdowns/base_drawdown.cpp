@@ -71,7 +71,7 @@ void Drawdown::edit(const uint64_t &drawdown_id,
                     const std::string &description,
                     const uint64_t &date,
                     const eosio::asset &amount,
-                    const bool &add_file)
+                    const uint8_t &add_file)
 { 
   transactions::drawdown_tables drawdown_t(contract_name, project_id);
   auto drawdown_itr = drawdown_t.find(drawdown_id);

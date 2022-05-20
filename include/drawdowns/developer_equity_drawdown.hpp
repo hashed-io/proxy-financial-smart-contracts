@@ -18,6 +18,6 @@ class DeveloperEquityDrawdown : public Drawdown {
                     const std::string &description,
                     const uint64_t &date,
                     const eosio::asset &amount,
-                    const bool &add_file);
+                    const uint8_t &add_file);
 
 };

@@ -36,7 +36,7 @@ namespace common
       std::string description;
       uint64_t date;
       eosio::asset amount;
-      bool add_file; // true = add, false = remove
+      uint8_t add_file; // remove = 0, create = 1, edit = 2
     }; 
 
 

@@ -25,7 +25,7 @@ public:
                     const std::string &description,
                     const uint64_t &date,
                     const eosio::asset &amount,
-                    const bool &add_file);
+                    const uint8_t &add_file);
 
 protected:
 
@@ -36,7 +36,7 @@ protected:
                     const std::string &description,
                     const uint64_t &date,
                     const eosio::asset &amount,
-                    const bool &add_file) = 0;
+                    const uint8_t &add_file) = 0;
 
   uint64_t project_id;
   transactions &m_contract;
