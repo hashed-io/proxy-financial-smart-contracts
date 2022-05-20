@@ -68,7 +68,8 @@ async function addActorPermission (target, targetRole, actor, actorRole) {
     )
 
     if (existingPermission)
-      return console.log(`permission ${actor}@${actorRole} already exists for ${target}@${targetRole}`)
+      return 0
+      // console.log(`permission ${actor}@${actorRole} already exists for ${target}@${targetRole}`)
 
     const permissions = {
       account: target,

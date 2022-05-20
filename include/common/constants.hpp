@@ -60,6 +60,11 @@ namespace common
         constexpr uint64_t approved = 3;
       } // namespace status
 
+      namespace flag {
+        constexpr bool add_balance = true;
+        constexpr bool remove_balance = false;
+      }
+
       constexpr uint64_t status_open = 1;
       constexpr uint64_t status_close = 2;
 

@@ -20,7 +20,6 @@
 #include <common/tables/budget_type.hpp>
 #include <common/tables/account.hpp>
 
-
 using namespace eosio;
 using namespace std;
 
@@ -32,7 +31,8 @@ CONTRACT budgets : public contract {
         budgets(name receiver, name code, datastream<const char*> ds)
             : contract(receiver, code, ds),
               budget_types(receiver, receiver.value)
-              {}
+        {
+        }
 
         DEFINE_BUDGET_TABLE
 
@@ -89,6 +89,7 @@ CONTRACT budgets : public contract {
         };
 
         budget_type_tables budget_types;
+
 
         bool overlap(uint64_t begin, uint64_t end, uint64_t new_begin, uint64_t new_end);
         bool match (uint64_t begin, uint64_t end, uint64_t new_begin, uint64_t new_end);

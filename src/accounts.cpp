@@ -471,6 +471,8 @@ ACTION accounts::addaccount(const eosio::name &actor,
     check(account_currency == common::currency, common::contracts::accounts.to_string() + ": the currency must be the same.");
     check(parent_id != 0, common::contracts::accounts.to_string() + ": addaccount -> the parent id must be grater than zero.");
 
+    check(parent_id == 1 || parent_id == 2, common::contracts::accounts.to_string() + "no pareten accounts");
+
     auto parent = accounts.find(parent_id);
     check(parent != accounts.end(), common::contracts::accounts.to_string() + ": the parent account does not exist.");
 
