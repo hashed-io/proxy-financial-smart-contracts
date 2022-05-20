@@ -38,7 +38,7 @@ const expect = require("chai").expect;
 const { projects, accounts, budgets, permissions, transactions } =
   contractNames;
 
-describe("Tests for transactions smart contract", async function () {
+describe.only("Tests for transactions smart contract", async function () {
   let contracts, admin, builder, investor, project, fail;
 
   before(async function () {
@@ -1036,7 +1036,7 @@ describe("Tests for transactions smart contract", async function () {
       table: 'drawdowns',
       json: true
     });
-    console.log('\n drawdown table is: ', drawdownTable.rows);
+    // console.log('\n drawdown table is: ', drawdownTable.rows);
 
     const transactionsTable = await rpc.get_table_rows({
       code: transactions,
@@ -1044,7 +1044,7 @@ describe("Tests for transactions smart contract", async function () {
       table: 'transactions',
       json: true
     });
-    console.log('\n transactions table is: ', transactionsTable.rows);
+    // console.log('\n transactions table is: ', transactionsTable.rows);
 
     expect(fail).to.be.true
 
@@ -1117,7 +1117,7 @@ describe("Tests for transactions smart contract", async function () {
       table: 'drawdowns',
       json: true
     });
-    console.log('\n drawdown table is: ', drawdownTable.rows);
+    // console.log('\n drawdown table is: ', drawdownTable.rows);
 
     const transactionsTable = await rpc.get_table_rows({
       code: transactions,
@@ -1125,7 +1125,7 @@ describe("Tests for transactions smart contract", async function () {
       table: 'transactions',
       json: true
     });
-    console.log('\n transactions table is: ', transactionsTable.rows);
+    // console.log('\n transactions table is: ', transactionsTable.rows);
 
     expect(fail).to.be.true
 
@@ -1289,7 +1289,7 @@ describe("Tests for transactions smart contract", async function () {
       table: 'drawdowns',
       json: true
     });
-    console.log('\n drawdown table is: ', drawdownTable.rows);
+    // console.log('\n drawdown table is: ', drawdownTable.rows);
 
     const transactionsTable = await rpc.get_table_rows({
       code: transactions,
@@ -1297,7 +1297,7 @@ describe("Tests for transactions smart contract", async function () {
       table: 'transactions',
       json: true
     });
-    console.log('\n transactions table is: ', transactionsTable.rows);
+    // console.log('\n transactions table is: ', transactionsTable.rows);
 
     expect(fail).to.be.true
 
@@ -1322,6 +1322,77 @@ describe("Tests for transactions smart contract", async function () {
     // TODO 
   });
 
+  it.only('Testing bulktransact & extended_url_information', async () =>{
+    // Arrange
+    // TODO: crear en el util un bulk por default
+
+    const bulk = [
+      {
+        supporting_files:[
+          {  
+            filename: "Hello there 1",
+            address: "fvlNKbnKLBNKLhLJN8999hlgf89:png",
+          },
+          {  
+            filename: "Hello there 2",
+            address: "fvlNKbnKLBNKLhLJN8999hlgf89:pdf",
+          },
+          {  
+            filename: "Hello there 3",
+            address: "fvlNKbnKLBNKLhLJN8999hlgf89:txt",
+          }
+        ],
+        description: "description test",
+        date: Date.now(),
+        amount: "200.00 USD",
+        add_file: true 
+      },
+      {
+        supporting_files:[
+          {  
+            filename: "Hello there 1",
+            address: "fvlNKbnKLBNKLhLJN8999hlgf89:png",
+          },
+          {  
+            filename: "Hello there 2",
+            address: "fvlNKbnKLBNKLhLJN8999hlgf89:pdf",
+          },
+          {  
+            filename: "Hello there 3",
+            address: "fvlNKbnKLBNKLhLJN8999hlgf89:txt",
+          }
+        ],
+        description: "description test 2",
+        date: Date.now(),
+        amount: "300.00 USD",
+        add_file: false 
+      }
+    ]
+
+    console.log('bulk is: ', bulk)
+
+    // Act
+    await contracts.transactions.bulktransact(builder.params.account, 0, 3, bulk, { authorization: `${builder.params.account}@active` });
+
+
+    // Assert    
+    const drawdownTable = await rpc.get_table_rows({
+      code: transactions,
+      scope: project.params.id,
+      table: 'drawdowns',
+      json: true
+    });
+    console.log('\n drawdown table is: ', JSON.stringify(drawdownTable.rows[2], ' ', 2));
+
+    const transactionsTable = await rpc.get_table_rows({
+      code: transactions,
+      scope: project.params.id,
+      table: 'transactions',
+      json: true
+    });
+    console.log('\n transactions table is: ', transactionsTable.rows);
+
+  });
 
   });
 
