@@ -8,14 +8,13 @@
     "url": "git+https://github.com/hashed-io/proxy-financial-smart-contracts"
   },
   "scripts": {
-    "initAll": "node scripts/commands.js init",
-    "initContract": "node scripts/commands.js run $1",
     "build": "CHAIN_NAME=local ./scripts/commander.js compile all",
-    "compile": "node scripts/commands.js compile $1",
-    "setParams": "node scripts/commands.js set params",
-    "setPermissions": "node scripts/commands.js set permissions",
-    "test": "mocha --timeout 0",
-    "coverage": "nyc npm run test"
+    "compile": "CHAIN_NAME=local ./scripts/commander.js compile $1",
+    "coverage": "nyc npm run test",
+    "deploy:tesnet" : "CHAIN_NAME=telosTestnet ./scripts/commander.js init",
+    "initAll": "CHAIN_NAME=local ./scripts/commander.js init",
+    "initContract": "CHAIN_NAME=local ./scripts/commander.js run $1",
+    "test": "mocha --timeout 0"
   },
   "author": "",
   "license": "ISC",
