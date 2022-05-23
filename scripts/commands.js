@@ -6,6 +6,8 @@ const { setParamsValue } = require('./contract-settings')
 const { updatePermissions } = require('./permissions')
 const prompt = require('prompt-sync')()
 
+const { warnings, errors, success, start, finish, flag } = require('./ui')
+
 
 async function manageDeployment(contract) {
   console.log('create account:', contract.nameOnChain)
@@ -19,19 +21,19 @@ async function manageDeployment(contract) {
   } catch (err) {
     accountExists(err)
   }
-  console.log('deploy contract for:', contract.nameOnChain)
+  start('deploy contract for: ' + contract.nameOnChain)
   try {
     await deployContract(contract)
   } catch (err) {
     contractRunningSameCode(err)
   }
-  console.log('done\n')
+  finish('done')
 }
 
 async function init() {
 
   // compile contracts
-  console.log('COMPILING CONTRACTS\n')
+  start('COMPILING CONTRACTS')
 
   await Promise.all(contracts.map(contract => {
     return compileContract({
@@ -40,25 +42,23 @@ async function init() {
     })
   }))
 
-  console.log('compilation finished\n\n')
+  success('compilation finished')
 
   // deploy contracts
-  console.log('DEPLOYING CONTRACTS\n')
+  start('DEPLOYING CONTRACTS')
 
   for (const contract of contracts) {
     await manageDeployment(contract)
     await sleep(1000)
   }
 
-  console.log('deployment finished\n\n')
+  success('deployment finished')
 
-  console.log('UPDATE PERMISSIONS\n')
+  start('UPDATE PERMISSIONS')
   await updatePermissions()
-  console.log('update permissions finished\n\n')
+  success('update permissions finished')
 
-  // console.log('SETTING CONTRACTS PARAMETERS\n')
-  // await setParamsValue()
-  // console.log('setting parameters finished\n\n')
+  finish('nice');
 
 }
 
@@ -68,7 +68,7 @@ async function run(contractName) {
   if (contract.length > 0) {
     contract = contract[0]
   } else {
-    console.log('contract not found')
+    errors('contract not found')
     return
   }
 
@@ -84,7 +84,7 @@ async function run(contractName) {
 async function compile() {
 
   // compile contracts
-  console.log('COMPILING CONTRACTS\n')
+  start('COMPILING CONTRACTS')
 
   await Promise.all(contracts.map(contract => {
     return compileContract({
@@ -93,7 +93,7 @@ async function compile() {
     })
   }))
 
-  console.log('compilation finished\n\n')
+  finish('compilation finished')
 
 }
 
@@ -104,7 +104,7 @@ async function compile_contract(contractName) {
   if (contract.length > 0) {
     contract = contract[0]
   } else {
-    console.log('contract not found')
+    errors('contract not found')
     return
   }
 
@@ -113,7 +113,7 @@ async function compile_contract(contractName) {
     path: `./src/${contract.name}.cpp`
   })
 
-  console.log('compilation finished\n\n')
+  success(`${contract.name} compiled successfully!`)
 
 }
 
@@ -151,9 +151,9 @@ async function main() {
         await setParamsValue()
 
       } else if (args[1] == 'permissions') {
-        console.log('UPDATE PERMISSIONS\n')
+        console.log('UPDATE PERMISSIONS')
         await updatePermissions()
-        console.log('update permissions finished\n\n')
+        console.log('update permissions finished')
 
       } else {
         console.log('Invalid input')
