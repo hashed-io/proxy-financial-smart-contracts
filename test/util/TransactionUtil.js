@@ -1,4 +1,6 @@
 const { createRandomAccount, createRandomName } = require('../../scripts/eosio-util')
+const { generate_title, generate_description, generate_long_text, generate_cid, generate_name } = require('./lorem')
+
 
 const Flag = {
   remove: 0,
@@ -106,15 +108,14 @@ class TransactionFactory {
     if (!date) { date = 1636610400 }
     // ! note, make sure the amount is a number greater than 100, otherwise tests will fail
     if (!amounts) { amounts = [{ account_id: 6, amount: 1000 }] }
-    if (!description) { description = 'descrip' }
+    if (!description) { description = await generate_description(5) }
     if (!supporting_files) {
       supporting_files = [{
-        filename: 'lorem_ipsum',
-        address: 'bafk...'
+        filename: await generate_title(3),
+        address: await generate_cid()
       }]
     }
-    // debido a esata conddicion, si mandamos flag.remove = 0, lo tomarà como falso
-    // y devolverà uno. 
+
     if (!flag) { flag = Flag.create }
 
     return TransactionFactory.createEntry({
