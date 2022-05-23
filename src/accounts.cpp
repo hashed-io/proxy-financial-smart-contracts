@@ -434,8 +434,6 @@ ACTION accounts::addaccount(const eosio::name &actor,
 
     require_auth(actor);
 
-    print("he");
-
     auto admin_itr = users.find(actor.value);
     check(admin_itr->role == common::projects::entity::fund , actor.to_string() + " is not an admin!");
 
@@ -607,7 +605,7 @@ void accounts::add_account(const uint64_t &entity_id,
     accounts.modify(parent, _self, [&](auto &modified_account)
                     { modified_account.num_children += 1; });
 
-    if (budget_amount > asset(0, common::currency))
+    if (budget_amount >= asset(0, common::currency))
     {
         uint64_t budget_type_id = 1;
         uint64_t date = 0;

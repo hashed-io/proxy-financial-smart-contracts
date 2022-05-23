@@ -356,7 +356,7 @@ ACTION budgets::addbudget (  name actor,
         end_date = 0;
     }
 
-    check_asset(amount,common::contracts::budgets);
+	check(amount.symbol == common::currency, _self.to_string() + ": the symbols must be the same. " + amount.to_string() + ". amount symbol:" + amount.symbol.code().to_string() + "!=" + common::currency.code().to_string());
 
     create_budget_aux(actor, project_id, account_id, amount, budget_type_id, begin_date, end_date, modify_parents);
 }
