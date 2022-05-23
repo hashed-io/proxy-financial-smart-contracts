@@ -40,7 +40,6 @@ describe('Tests for budget expenditures', async function () {
     contracts = await getContracts([projects, accounts, budgets, permissions, transactions])
 
     await updatePermissions()
-    console.log('\n')
 
     // clear old data
     await contracts.projects.reset({ authorization: `${projects}@active` });
@@ -74,10 +73,6 @@ describe('Tests for budget expenditures', async function () {
       builder: builder.params.account,
       investors: [investor.params.account],
     });
-
-    await contracts.projects.approveprjct(admin.params.account, project.params.id,
-      { authorization: `${admin.params.account}@active` });
-
 
     const projectsTable = await rpc.get_table_rows({
       code: projects,

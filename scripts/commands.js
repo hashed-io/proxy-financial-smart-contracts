@@ -166,4 +166,15 @@ async function main() {
 
 }
 
-main()
+// main()
+
+module.exports = {
+  init,
+  compile,
+  compile_contract,
+  run,
+  setParamsValue,
+  updatePermissions,
+  manageDeployment
+
+}

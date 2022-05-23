@@ -196,6 +196,13 @@ ACTION projects::addproject(const eosio::name &actor,
 		item.projected_starting_date = projected_starting_date;
 		item.projected_completion_date = projected_completion_date;
 		item.status = PROJECT_STATUS.AWAITING_FUND_APPROVAL; });
+
+	action(
+			permission_level(_self, "active"_n),
+			_self,
+			"approveprjct"_n,
+			std::make_tuple(actor, new_project_id))
+			.send();
 }
 
 ACTION projects::deleteprojct(name actor, uint64_t project_id)
@@ -236,8 +243,8 @@ ACTION projects::deleteprojct(name actor, uint64_t project_id)
 ACTION projects::editproject(const eosio::name &actor,
 														 const uint64_t &project_id,
 														 const std::string &project_name,
-														 const std::string &image,
 														 const std::string &description,
+														 const std::string &image,
 														 const uint64_t &projected_starting_date,
 														 const uint64_t &projected_completion_date)
 {
@@ -248,8 +255,8 @@ ACTION projects::editproject(const eosio::name &actor,
 	auto project_itr = project_t.find(project_id);
 	check(project_itr != project_t.end(), common::contracts::projects.to_string() + ": the project does not exist.");
 	check(project_itr->owner == actor, common::contracts::projects.to_string() + ": only the project owner can do this.");
-	check(project_itr->status == PROJECT_STATUS.AWAITING_FUND_APPROVAL,
-				common::contracts::projects.to_string() + ": the project can not be modified as it has been already approved by one fund.");
+	// check(project_itr->status == PROJECT_STATUS.AWAITING_FUND_APPROVAL,
+	// 			common::contracts::projects.to_string() + ": the project can not be modified as it has been already approved by one fund.");
 
 	check(projected_completion_date >= eosio::current_time_point().sec_since_epoch(), common::contracts::projects.to_string() + ": the date can not be earlier than now.");
 	check(projected_completion_date >= eosio::current_time_point().sec_since_epoch(), common::contracts::projects.to_string() + ": the date can not be earlier than now.");
@@ -277,8 +284,10 @@ ACTION projects::editproject(const eosio::name &actor,
 ACTION projects::approveprjct(name actor,
 															uint64_t project_id)
 {
-	require_auth(actor);
+
 	check_user_role(actor, common::projects::entity::fund);
+
+	require_auth(has_auth(actor) ? actor : get_self());
 
 	auto project_itr = project_t.find(project_id);
 	check(project_itr != project_t.end(), common::contracts::projects.to_string() + ": the project does not exist.");
@@ -286,23 +295,15 @@ ACTION projects::approveprjct(name actor,
 
 	uint64_t role_id = 0;
 
-	uint64_t developer_entity = get_user_entity(project_itr->builder);
+	// uint64_t developer_entity = get_user_entity(project_itr->builder);
 	uint64_t fund_entity = get_user_entity(actor);
 
 	action(
 			permission_level(common::contracts::accounts, "active"_n),
 			common::contracts::accounts,
 			"addledger"_n,
-			std::make_tuple(project_id, developer_entity))
+			std::make_tuple(project_id, fund_entity))
 			.send();
-
-	// ! this transaction should be removed in the future
-	// action(
-	// 		permission_level(common::contracts::accounts, "active"_n),
-	// 		common::contracts::accounts,
-	// 		"addledger"_n,
-	// 		std::make_tuple(project_id, fund_entity))
-	// 		.send();
 
 	action(
 			permission_level(common::contracts::permissions, "active"_n),
