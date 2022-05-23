@@ -40,7 +40,6 @@ describe('Tests for budget expenditures', async function () {
     contracts = await getContracts([projects, accounts, budgets, permissions, transactions])
 
     await updatePermissions()
-    console.log('\n')
 
     // clear old data
     await contracts.projects.reset({ authorization: `${projects}@active` });

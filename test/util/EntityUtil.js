@@ -63,7 +63,7 @@ class EntityFactory {
     }
 
     if (!entity_name) { 
-      entity_name = generate_title(2) 
+      entity_name = await generate_title(2) 
     }
 
     if (!description) {

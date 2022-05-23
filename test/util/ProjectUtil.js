@@ -244,7 +244,7 @@ class ProjectFactory {
     }
 
     if (!project_name) {
-      project_name = generate_title(3);
+      project_name = await generate_title(3);
     }
 
     if (!description) {

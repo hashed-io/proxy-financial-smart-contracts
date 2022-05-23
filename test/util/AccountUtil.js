@@ -270,7 +270,7 @@ class AccountFactory {
     }
 
     if (!account_name) {
-      account_name = createRandomName()
+      account_name = await generate_description()
     }
 
     if (!parent_id) {
