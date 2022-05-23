@@ -650,6 +650,11 @@ void transactions::generate_bulk_files(const eosio::name &actor,
 	drawdown_tables drawdown_t(_self, project_id);
 	auto drawdown_itr = drawdown_t.find(drawdown_id);
 	check(drawdown_itr != drawdown_t.end(), "Drawdown not found");
+	
+	auto user_itr = user_t.find(actor.value);
+	check(user_itr != user_t.end(), "User not found");
+	check(user_itr -> role == common::projects::entity::developer && drawdown_itr -> state < common::transactions::drawdown::status::submitted, "builder role cannot create/modify/delete beyond this drawdown state");
+
 
 	std::unique_ptr<Drawdown> drawdown = std::unique_ptr<Drawdown>(DrawdownFactory::Factory(project_id, *this, drawdown_itr->type));
 	drawdown->edit(drawdown_id, supporting_files, description, date, amount, add_file);
