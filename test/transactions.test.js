@@ -1329,7 +1329,6 @@ describe("Tests for transactions smart contract", async function () {
   it('Builder can create bulktransactions for Developer equity drawdown', async ()=>{1
     //Arrange
     const bulk = await bulkTransactionFactory.createWithDefaults({});
-    console.log('params is: ', bulk.getCreateParams())
 
     // Act    
     try {
@@ -1578,7 +1577,7 @@ describe("Tests for transactions smart contract", async function () {
       table: 'drawdowns',
       json: true
     });
-    console.log('\n drawdown table is: ', JSON.stringify(drawdownTable.rows[1], ' ', 2));
+    //console.log('\n drawdown table is: ', JSON.stringify(drawdownTable.rows[1], ' ', 2));
 
     assert.deepStrictEqual(drawdownTable.rows[1], {
       drawdown_id: drawdownTable.rows[1].drawdown_id,
