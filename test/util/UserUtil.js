@@ -1,4 +1,5 @@
 const { createRandomAccount, createRandomName } = require('../../scripts/eosio-util')
+const { generate_name, generate_description } = require('./lorem')
 
 const Roles = {
   investor: "investor",
@@ -71,7 +72,7 @@ class UserFactory {
     }
 
     if (!user_name) {
-      user_name = createRandomName()
+      user_name = await generate_name()
     }
 
     if (!entity_id) {
@@ -87,7 +88,7 @@ class UserFactory {
     }
 
     if (!description) {
-      description = ""
+      description = await generate_description(3)
     }
 
     return UserFactory.createEntry({

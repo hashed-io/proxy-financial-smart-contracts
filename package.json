@@ -31,6 +31,7 @@
     "eosjs": "^21.0.4",
     "fs-extra": "^9.1.0",
     "handlebars": "^4.7.6",
+    "lorem-ipsum": "^2.0.4",
     "node-fetch": "^2.6.1",
     "promisify": "^0.0.3",
     "prompt-sync": "^4.2.0",
