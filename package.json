@@ -11,7 +11,7 @@
     "build": "CHAIN_NAME=local ./scripts/commander.js compile all",
     "compile": "CHAIN_NAME=local ./scripts/commander.js compile $1",
     "coverage": "nyc npm run test",
-    "deploy:tesnet" : "CHAIN_NAME=telosTestnet ./scripts/commander.js init",
+    "deploy:testnet" : "CHAIN_NAME=telosTestnet ./scripts/commander.js init",
     "initAll": "CHAIN_NAME=local ./scripts/commander.js init",
     "initContract": "CHAIN_NAME=local ./scripts/commander.js run $1",
     "test": "mocha --timeout 0"
