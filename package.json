@@ -8,14 +8,13 @@
     "url": "git+https://github.com/hashed-io/proxy-financial-smart-contracts"
   },
   "scripts": {
-    "initAll": "node scripts/commands.js init",
-    "initContract": "node scripts/commands.js run $1",
-    "build": "node scripts/commands.js compile",
-    "compile": "node scripts/commands.js compile $1",
-    "setParams": "node scripts/commands.js set params",
-    "setPermissions": "node scripts/commands.js set permissions",
-    "test": "mocha --timeout 0",
-    "coverage": "nyc npm run test"
+    "build": "CHAIN_NAME=local ./scripts/commander.js compile all",
+    "compile": "CHAIN_NAME=local ./scripts/commander.js compile $1",
+    "coverage": "nyc npm run test",
+    "deploy:testnet" : "CHAIN_NAME=telosTestnet ./scripts/commander.js init",
+    "initAll": "CHAIN_NAME=local ./scripts/commander.js init",
+    "initContract": "CHAIN_NAME=local ./scripts/commander.js run $1",
+    "test": "mocha --timeout 0"
   },
   "author": "",
   "license": "ISC",
@@ -25,17 +24,21 @@
   "homepage": "https://github.com/hashed-io/proxy-financial-smart-contracts#readme",
   "dependencies": {
     "chai": "^4.3.4",
+    "commander": "^9.2.0",
     "dotenv": "^8.6.0",
     "elliptic": "^6.5.4",
     "eosjs": "^21.0.4",
     "fs-extra": "^9.1.0",
     "handlebars": "^4.7.6",
+    "lorem-ipsum": "^2.0.4",
     "node-fetch": "^2.6.1",
     "promisify": "^0.0.3",
-    "prompt-sync": "^4.2.0"
+    "prompt-sync": "^4.2.0",
+    "riteway": "^6.0.3",
+    "tap-nirvana": "^1.1.0"
   },
   "devDependencies": {
-    "mocha": "^8.4.0",
+    "mocha": "^10.0.0",
     "nyc": "^15.1.0"
   }
 }

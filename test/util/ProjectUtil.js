@@ -1,5 +1,7 @@
 const { dateToBlockTimestamp } = require('eosjs/dist/eosjs-serialize')
 const { createRandomAccount, createRandomName } = require('../../scripts/eosio-util')
+const { generate_title, generate_description, generate_long_text, generate_cid, generate_name } = require('./lorem')
+
 
 const ProjectConstants = {
   type: {
@@ -242,15 +244,15 @@ class ProjectFactory {
     }
 
     if (!project_name) {
-      project_name = createRandomName();
+      project_name = await generate_title(3);
     }
 
     if (!description) {
-      description = " This project is for municipal corporation head"
+      description = await generate_description(5);
     }
 
     if (!image) {
-      image = "GynMbYzAgYTSXCVM14Wx1RZ8fKP42:png";
+      image = await generate_cid();
     }
 
     if (!projected_starting_date) {

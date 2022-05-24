@@ -57,6 +57,7 @@ describe("Tests for projects smart contract", async function () {
     ]);
 
     await updatePermissions();
+
     console.log("\n");
 
     // clear old data
@@ -67,6 +68,7 @@ describe("Tests for projects smart contract", async function () {
     await contracts.transactions.reset({ authorization: `${transactions}@active` });
 
     // setup contracts
+
     await contracts.projects.init({ authorization: `${projects}@active` });
     await contracts.accounts.init({ authorization: `${accounts}@active` });
 
@@ -1582,7 +1584,7 @@ describe("Tests for projects smart contract", async function () {
       failBuilder= false
     } catch (err) {
       failBuilder = true
-      console.log(err)
+      // console.log(err)
     }
 
     //Assert

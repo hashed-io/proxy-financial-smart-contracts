@@ -27,6 +27,9 @@ const {
   TransactionFactory,
   Flag,
   DrawdownState,
+  bulkTransaction, 
+  bulkTransactionFactory,
+  TransactionConstants
 } = require("./util/TransactionUtil");
 
 const { func } = require("promisify");
@@ -62,6 +65,7 @@ describe("Tests for transactions smart contract", async function () {
     ]);
 
     await updatePermissions();
+
     console.log("\n");
 
     // clear old data
@@ -240,7 +244,7 @@ describe("Tests for transactions smart contract", async function () {
         {
           accounting: [],
           actor: builder.params.account,
-          description: 'descrip',
+          description: transaction.params.description,
           drawdown_id: drawdown_id,
           supporting_files: transaction.getCreateParams()[0].supporting_files,
           timestamp: transactionsTable.rows[0].timestamp,
@@ -278,7 +282,7 @@ describe("Tests for transactions smart contract", async function () {
     it(testName, async () => {
       // Arrange
       const transaction = await TransactionFactory.createWithDefaults({});
-      const transaction2 = await TransactionFactory.createWithDefaults({
+      const transaction_to_edit = await TransactionFactory.createWithDefaults({
         id:1, 
         flag:2, 
         description: "description was edited",
@@ -293,19 +297,12 @@ describe("Tests for transactions smart contract", async function () {
         { authorization: `${builder.params.account}@active` }
       )
 
-      const drawdownTable2 = await rpc.get_table_rows({
-        code: transactions,
-        scope: project.params.id,
-        table: 'drawdowns',
-        json: true
-      });
-      // console.log('\n drawdown2 table is: ', drawdownTable2.rows);
 
       await contracts.transactions.transacts(
         builder.params.account, 
         project.params.id, 
         drawdown_id, 
-        transaction2.getCreateParams(), 
+        transaction_to_edit.getCreateParams(), 
         { authorization: `${builder.params.account}@active` }
       )
 
@@ -316,7 +313,6 @@ describe("Tests for transactions smart contract", async function () {
         table: 'drawdowns',
         json: true
       });
-      // console.log('\n drawdown table is: ', drawdownTable.rows);
 
 
       // expect(drawdownTable.rows[drawdown_id - 1]).to.include({
@@ -337,11 +333,11 @@ describe("Tests for transactions smart contract", async function () {
         {
           accounting: [],
           actor: builder.params.account,
-          description: 'description was edited',
+          description: transaction_to_edit.params.description,
           drawdown_id: drawdown_id,
-          supporting_files: transaction.getCreateParams()[0].supporting_files,
+          supporting_files: transaction_to_edit.getCreateParams()[0].supporting_files,
           timestamp: transactionsTable.rows[0].timestamp,
-          total_amount: `${transaction.getCreateParams()[0].amounts[0].amount * 0.01}.00 USD`,
+          total_amount: `${transaction_to_edit.getCreateParams()[0].amounts[0].amount * 0.01}.00 USD`,
           transaction_category: 3,
           transaction_id: 1
         }
@@ -374,8 +370,8 @@ describe("Tests for transactions smart contract", async function () {
     it(testName, async () => {
       // Arrange
       const transaction = await TransactionFactory.createWithDefaults({});
-      const transaction2 = await TransactionFactory.createWithDefaults({id: 1});
-      Object.assign(transaction2.params, {
+      const transaction_to_remove = await TransactionFactory.createWithDefaults({id: 1});
+      Object.assign(transaction_to_remove.params, {
         flag:0
       });
       
@@ -391,7 +387,7 @@ describe("Tests for transactions smart contract", async function () {
         builder.params.account, 
         project.params.id, 
         drawdown_id, 
-        transaction2.getCreateParams(), 
+        transaction_to_remove.getCreateParams(), 
         { authorization: `${builder.params.account}@active` })
 
       // Assert    
@@ -466,7 +462,7 @@ describe("Tests for transactions smart contract", async function () {
         {
           accounting: [],
           actor: builder.params.account,
-          description: 'descrip',
+          description: transaction.params.description,
           drawdown_id: drawdown_id,
           supporting_files: transaction.getCreateParams()[0].supporting_files,
           timestamp: transactionsTable.rows[0].timestamp,
@@ -544,7 +540,7 @@ describe("Tests for transactions smart contract", async function () {
         {
           accounting: [],
           actor: builder.params.account,
-          description: 'descrip',
+          description: transaction.params.description,
           drawdown_id: drawdown_id,
           supporting_files: transaction.getCreateParams()[0].supporting_files,
           timestamp: transactionsTable.rows[0].timestamp,
@@ -616,7 +612,7 @@ describe("Tests for transactions smart contract", async function () {
         {
           accounting: [],
           actor: builder.params.account,
-          description: 'descrip',
+          description: transaction.params.description,
           drawdown_id: drawdown_id,
           supporting_files: transaction.getCreateParams()[0].supporting_files,
           timestamp: transactionsTable.rows[0].timestamp,
@@ -641,12 +637,12 @@ describe("Tests for transactions smart contract", async function () {
   it('admin cannot edit an EB5 drawdown in daft state, only builder can', async () => {
     // Arrange
     const transaction = await TransactionFactory.createWithDefaults({});
-    const transaction2 = await TransactionFactory.createWithDefaults({
+    const transaction_edited_by_builder = await TransactionFactory.createWithDefaults({
       id: 1, 
       flag: 2,
       description: 'description was edited by builder'
     });
-    const transaction3 = await TransactionFactory.createWithDefaults({
+    const transaction_edited_by_admin = await TransactionFactory.createWithDefaults({
       id: 1, 
       flag: 2,
       description: 'description was edited by admin'
@@ -662,7 +658,7 @@ describe("Tests for transactions smart contract", async function () {
     await contracts.transactions.transacts(builder.params.account, 
       project.params.id, 
       1, 
-      transaction2.getCreateParams(), {
+      transaction_edited_by_builder.getCreateParams(), {
       authorization: `${builder.params.account}@active` }
     );
 
@@ -672,7 +668,7 @@ describe("Tests for transactions smart contract", async function () {
         admin.params.account, 
         project.params.id, 
         1, 
-        transaction3.getCreateParams(), 
+        transaction_edited_by_admin.getCreateParams(), 
         { authorization: `${admin.params.account}@active` }
       );
       fail = false;
@@ -705,11 +701,11 @@ describe("Tests for transactions smart contract", async function () {
       {
         accounting: [],
         actor: builder.params.account,
-        description: 'description was edited by builder',
+        description: transaction_edited_by_builder.params.description,
         drawdown_id: 1,
-        supporting_files: transaction.getCreateParams()[0].supporting_files,
+        supporting_files: transaction_edited_by_builder.getCreateParams()[0].supporting_files,
         timestamp: transactionsTable.rows[0].timestamp,
-        total_amount: `${transaction.getCreateParams()[0].amounts[0].amount * 0.01}.00 USD`,
+        total_amount: `${transaction_edited_by_builder.getCreateParams()[0].amounts[0].amount * 0.01}.00 USD`,
         transaction_category: 3,
         transaction_id: 1
       }
@@ -736,8 +732,8 @@ describe("Tests for transactions smart contract", async function () {
     it(testName, async () => {
       // Arrange
       const transaction = await TransactionFactory.createWithDefaults({});
-      const transaction2 = await TransactionFactory.createWithDefaults({});
-      Object.assign(transaction2.params, {
+      const transaction_executed = await TransactionFactory.createWithDefaults({});
+      Object.assign(transaction_executed.params, {
         id: id_transac,
         flag: flag_id
       })
@@ -752,7 +748,7 @@ describe("Tests for transactions smart contract", async function () {
           builder.params.account, 
           project.params.id, 
           drawdown_id, 
-          transaction2.getCreateParams(), 
+          transaction_executed.getCreateParams(), 
           { authorization: `${builder.params.account}@active` }
         );
         fail = false;
@@ -784,7 +780,7 @@ describe("Tests for transactions smart contract", async function () {
         {
           accounting: [],
           actor: builder.params.account,
-          description: 'descrip',
+          description: transaction.params.description,
           drawdown_id: drawdown_id,
           supporting_files: transaction.getCreateParams()[0].supporting_files,
           timestamp: transactionsTable.rows[0].timestamp,
@@ -815,12 +811,12 @@ describe("Tests for transactions smart contract", async function () {
   it('admin cannot edit a Construction load drawdown in daft state, only builder can', async () => {
     // Arrange
     const transaction = await TransactionFactory.createWithDefaults({});
-    const transaction2 = await TransactionFactory.createWithDefaults({
+    const transaction_edited_by_builder = await TransactionFactory.createWithDefaults({
       id: 1, 
       flag: 2,
       description: 'description was edited by builder'
     });
-    const transaction3 = await TransactionFactory.createWithDefaults({
+    const transaction_edited_by_admin = await TransactionFactory.createWithDefaults({
       id: 1, 
       flag: 2,
       description: 'description was edited by admin'
@@ -836,7 +832,7 @@ describe("Tests for transactions smart contract", async function () {
     await contracts.transactions.transacts(builder.params.account, 
       project.params.id, 
       2, 
-      transaction2.getCreateParams(), {
+      transaction_edited_by_builder.getCreateParams(), {
       authorization: `${builder.params.account}@active` }
     );
 
@@ -846,7 +842,7 @@ describe("Tests for transactions smart contract", async function () {
         admin.params.account, 
         project.params.id, 
         2, 
-        transaction3.getCreateParams(), 
+        transaction_edited_by_admin.getCreateParams(), 
         { authorization: `${admin.params.account}@active` }
       );
       fail = false;
@@ -879,11 +875,11 @@ describe("Tests for transactions smart contract", async function () {
       {
         accounting: [],
         actor: builder.params.account,
-        description: 'description was edited by builder',
+        description: transaction_edited_by_builder.params.description,
         drawdown_id: 2,
-        supporting_files: transaction.getCreateParams()[0].supporting_files,
+        supporting_files: transaction_edited_by_builder.getCreateParams()[0].supporting_files,
         timestamp: transactionsTable.rows[0].timestamp,
-        total_amount: `${transaction.getCreateParams()[0].amounts[0].amount * 0.01}.00 USD`,
+        total_amount: `${transaction_edited_by_builder.getCreateParams()[0].amounts[0].amount * 0.01}.00 USD`,
         transaction_category: 3,
         transaction_id: 1
       }
@@ -905,8 +901,8 @@ describe("Tests for transactions smart contract", async function () {
     it(testName, async () => {
       // Arrange
       const transaction = await TransactionFactory.createWithDefaults({});
-      const transaction2 = await TransactionFactory.createWithDefaults({});
-      Object.assign(transaction2.params, {
+      const transaction_executed = await TransactionFactory.createWithDefaults({});
+      Object.assign(transaction_executed.params, {
         id: id_transac,
         flag: flag_id
       })
@@ -921,7 +917,7 @@ describe("Tests for transactions smart contract", async function () {
           builder.params.account, 
           project.params.id, 
           drawdown_id, 
-          transaction2.getCreateParams(), 
+          transaction_executed.getCreateParams(), 
           { authorization: `${builder.params.account}@active` }
         );
         fail = false;
@@ -953,7 +949,7 @@ describe("Tests for transactions smart contract", async function () {
         {
           accounting: [],
           actor: builder.params.account,
-          description: 'descrip',
+          description: transaction.params.description,
           drawdown_id: drawdown_id,
           supporting_files: transaction.getCreateParams()[0].supporting_files,
           timestamp: transactionsTable.rows[0].timestamp,
@@ -984,12 +980,12 @@ describe("Tests for transactions smart contract", async function () {
     // TODO: It should be for reviewed state, waiting for its implementation
     // Arrange
     const transaction = await TransactionFactory.createWithDefaults({});
-    const transaction2 = await TransactionFactory.createWithDefaults({
+    const transaction_edited_by_builder = await TransactionFactory.createWithDefaults({
       id: 1, 
       flag: 2,
       description: 'description was edited by builder'
     });
-    const transaction3 = await TransactionFactory.createWithDefaults({
+    const transaction_edited_by_admin = await TransactionFactory.createWithDefaults({
       id: 1, 
       flag: 2,
       description: 'description was edited by admin'
@@ -1013,7 +1009,7 @@ describe("Tests for transactions smart contract", async function () {
       admin.params.account, 
       project.params.id, 
       2, 
-      transaction3.getCreateParams(), {
+      transaction_edited_by_admin.getCreateParams(), {
       authorization: `${admin.params.account}@active` }
     );
 
@@ -1023,7 +1019,7 @@ describe("Tests for transactions smart contract", async function () {
         builder.params.account, 
         project.params.id, 
         2, 
-        transaction2.getCreateParams(), 
+        transaction_edited_by_builder.getCreateParams(), 
         { authorization: `${builder.params.account}@active` }
       );
       fail = false;
@@ -1055,11 +1051,11 @@ describe("Tests for transactions smart contract", async function () {
       {
         accounting: [],
         actor: admin.params.account,
-        description: 'description was edited by admin',
+        description: transaction_edited_by_admin.params.description,
         drawdown_id: 2,
-        supporting_files: transaction.getCreateParams()[0].supporting_files,
+        supporting_files: transaction_edited_by_admin.getCreateParams()[0].supporting_files,
         timestamp: transactionsTable.rows[0].timestamp,
-        total_amount: `${transaction.getCreateParams()[0].amounts[0].amount * 0.01}.00 USD`,
+        total_amount: `${transaction_edited_by_admin.getCreateParams()[0].amounts[0].amount * 0.01}.00 USD`,
         transaction_category: 3,
         transaction_id: 1
       }
@@ -1072,12 +1068,12 @@ describe("Tests for transactions smart contract", async function () {
   it('admin cannot edit a Developer Equity drawdown in daft state, only builder can', async () => {
     // Arrange
     const transaction = await TransactionFactory.createWithDefaults({});
-    const transaction2 = await TransactionFactory.createWithDefaults({
+    const transaction_edited_by_builder = await TransactionFactory.createWithDefaults({
       id: 1, 
       flag: 2,
       description: 'description was edited by builder'
     });
-    const transaction3 = await TransactionFactory.createWithDefaults({
+    const transaction_edited_by_admin = await TransactionFactory.createWithDefaults({
       id: 1, 
       flag: 2,
       description: 'description was edited by admin'
@@ -1093,7 +1089,7 @@ describe("Tests for transactions smart contract", async function () {
     await contracts.transactions.transacts(builder.params.account, 
       project.params.id, 
       3, 
-      transaction2.getCreateParams(), {
+      transaction_edited_by_builder.getCreateParams(), {
       authorization: `${builder.params.account}@active` }
     );
 
@@ -1103,7 +1099,7 @@ describe("Tests for transactions smart contract", async function () {
         admin.params.account, 
         project.params.id, 
         3, 
-        transaction3.getCreateParams(), 
+        transaction_edited_by_admin.getCreateParams(), 
         { authorization: `${admin.params.account}@active` }
       );
       fail = false;
@@ -1136,11 +1132,11 @@ describe("Tests for transactions smart contract", async function () {
       {
         accounting: [],
         actor: builder.params.account,
-        description: 'description was edited by builder',
+        description: transaction_edited_by_builder.params.description,
         drawdown_id: 3,
-        supporting_files: transaction.getCreateParams()[0].supporting_files,
+        supporting_files: transaction_edited_by_builder.getCreateParams()[0].supporting_files,
         timestamp: transactionsTable.rows[0].timestamp,
-        total_amount: `${transaction.getCreateParams()[0].amounts[0].amount * 0.01}.00 USD`,
+        total_amount: `${transaction_edited_by_builder.getCreateParams()[0].amounts[0].amount * 0.01}.00 USD`,
         transaction_category: 3,
         transaction_id: 1
       }
@@ -1158,8 +1154,8 @@ describe("Tests for transactions smart contract", async function () {
     it(testName, async () => {
       // Arrange
       const transaction = await TransactionFactory.createWithDefaults({});
-      const transaction2 = await TransactionFactory.createWithDefaults({});
-      Object.assign(transaction2.params, {
+      const transaction_executed = await TransactionFactory.createWithDefaults({});
+      Object.assign(transaction_executed.params, {
         id: id_transac,
         flag: flag_id
       })
@@ -1174,7 +1170,7 @@ describe("Tests for transactions smart contract", async function () {
           builder.params.account, 
           project.params.id, 
           drawdown_id, 
-          transaction2.getCreateParams(), 
+          transaction_executed.getCreateParams(), 
           { authorization: `${builder.params.account}@active` }
         );
         fail = false;
@@ -1206,7 +1202,7 @@ describe("Tests for transactions smart contract", async function () {
         {
           accounting: [],
           actor: builder.params.account,
-          description: 'descrip',
+          description: transaction.params.description,
           drawdown_id: drawdown_id,
           supporting_files: transaction.getCreateParams()[0].supporting_files,
           timestamp: transactionsTable.rows[0].timestamp,
@@ -1237,12 +1233,12 @@ describe("Tests for transactions smart contract", async function () {
     // TODO: It should be for reviewed state, waiting for its implementation
     // Arrange
     const transaction = await TransactionFactory.createWithDefaults({});
-    const transaction2 = await TransactionFactory.createWithDefaults({
+    const transaction_edited_by_builder = await TransactionFactory.createWithDefaults({
       id: 1, 
       flag: 2,
       description: 'description was edited by builder'
     });
-    const transaction3 = await TransactionFactory.createWithDefaults({
+    const transaction_edited_by_admin = await TransactionFactory.createWithDefaults({
       id: 1, 
       flag: 2,
       description: 'description was edited by admin'
@@ -1266,7 +1262,7 @@ describe("Tests for transactions smart contract", async function () {
       admin.params.account, 
       project.params.id, 
       3, 
-      transaction3.getCreateParams(), {
+      transaction_edited_by_admin.getCreateParams(), {
       authorization: `${admin.params.account}@active` }
     );
 
@@ -1276,7 +1272,7 @@ describe("Tests for transactions smart contract", async function () {
         builder.params.account, 
         project.params.id, 
         3, 
-        transaction2.getCreateParams(), 
+        transaction_edited_by_builder.getCreateParams(), 
         { authorization: `${builder.params.account}@active` }
       );
       fail = false;
@@ -1308,11 +1304,11 @@ describe("Tests for transactions smart contract", async function () {
       {
         accounting: [],
         actor: admin.params.account,
-        description: 'description was edited by admin',
+        description: transaction_edited_by_admin.params.description,
         drawdown_id: 3,
-        supporting_files: transaction.getCreateParams()[0].supporting_files,
+        supporting_files: transaction_edited_by_admin.getCreateParams()[0].supporting_files,
         timestamp: transactionsTable.rows[0].timestamp,
-        total_amount: `${transaction.getCreateParams()[0].amounts[0].amount * 0.01}.00 USD`,
+        total_amount: `${transaction_edited_by_admin.getCreateParams()[0].amounts[0].amount * 0.01}.00 USD`,
         transaction_category: 3,
         transaction_id: 1
       }
@@ -1325,63 +1321,200 @@ describe("Tests for transactions smart contract", async function () {
     // TODO 
   });
 
-  it('Testing bulktransact & extended_url_information', async () =>{
+  //Bulktransaction Developer Equity
+  it('Builder can create bulktransactions for Developer equity drawdown', async ()=>{1
+    //Arrange
+    const bulk = await bulkTransactionFactory.createWithDefaults({});
+
+    // Act    
+    try {
+      await contracts.transactions.bulktransact(builder.params.account, 0, 3, bulk.params, 
+        { authorization: `${builder.params.account}@active` });
+    } catch(err){
+      //console.error(err)
+    }
+
+    // Assert    
+    const drawdownTable = await rpc.get_table_rows({
+      code: transactions,
+      scope: project.params.id,
+      table: 'drawdowns',
+      json: true
+    });
+    //console.log('\n drawdown table is: ', JSON.stringify(drawdownTable.rows[2], ' ', 2));
+
+    assert.deepStrictEqual(drawdownTable.rows[2], {
+      drawdown_id: drawdownTable.rows[2].drawdown_id,
+      drawdown_number: drawdownTable.rows[2].drawdown_number,
+      type_str: TransactionConstants.type_str.devEquity,
+      type: TransactionConstants.type.devEquity,
+      total_amount: drawdownTable.rows[2].total_amount,
+      files: [{
+        supporting_files: bulk.params[0].supporting_files,
+        description:bulk.params[0].description,
+        date:String(bulk.params[0].date),
+        amount:bulk.params[0].amount,
+      }],
+      state: 0,
+      open_date: drawdownTable.rows[2].open_date,
+      close_date: drawdownTable.rows[2].close_date,
+      creator: drawdownTable.rows[2].creator
+    });
+
+  });
+
+  it('Builder can modify bulktransactions for Developer equity drawdowns', async ()=>{
     // Arrange
-    // TODO: crear en el util un bulk por default
+    const bulk = await bulkTransactionFactory.createWithDefaults({});
+    const bulk2 = await bulkTransactionFactory.createWithDefaults({
+      description: "description was modified",
+      add_file:2});
 
-    const bulk = [
-      {
-        supporting_files:[
-          {  
-            filename: "Hello there 1",
-            address: "fvlNKbnKLBNKLhLJN8999hlgf89:png",
-          },
-          {  
-            filename: "Hello there 2",
-            address: "fvlNKbnKLBNKLhLJN8999hlgf89:pdf",
-          },
-          {  
-            filename: "Hello there 3",
-            address: "fvlNKbnKLBNKLhLJN8999hlgf89:txt",
-          }
-        ],
-        description: "description test",
-        date: Date.now(),
-        amount: "200.00 USD",
-        add_file: 1
-      }
-    ]
-
-    const bulk2 = [ 
-      {
-        supporting_files:[
-          {  
-            filename: "Hello there 1 was modified",
-            address: "fvlNKbnKLBNKLhLJN8999hlgf89:png",
-          },
-          {  
-            filename: "Hello there 2 was modified",
-            address: "fvlNKbnKLBNKLhLJN8999hlgf89:pdf",
-          },
-          {  
-            filename: "Hello there 3 was modified",
-            address: "fvlNKbnKLBNKLhLJN8999hlgf89:txt",
-          }
-        ],
-        description: "description test was modified",
-        date: Date.now(),
-        amount: "200.00 USD",
-        add_file: 2
-      }
-    ]
-
-    // console.log('bulk is: ', bulk)
+    await contracts.transactions.bulktransact(builder.params.account, 0, 3, bulk.params, { authorization: `${builder.params.account}@active` });
 
     // Act
-    await contracts.transactions.bulktransact(builder.params.account, 0, 3, bulk, { authorization: `${builder.params.account}@active` });
-    
     try {
-      await contracts.transactions.bulktransact(builder.params.account, 0, 3, bulk2, { authorization: `${builder.params.account}@active` });
+      await contracts.transactions.bulktransact(builder.params.account, 0, 3, bulk2.params, { authorization: `${builder.params.account}@active` });
+    } catch(err){
+      //console.error(err)
+    }
+
+    // Assert    
+    const drawdownTable = await rpc.get_table_rows({
+      code: transactions,
+      scope: project.params.id,
+      table: 'drawdowns',
+      json: true
+    });
+    //console.log('\n drawdown table is: ', JSON.stringify(drawdownTable.rows[2], ' ', 2));
+
+    assert.deepStrictEqual(drawdownTable.rows[2], {
+      drawdown_id: drawdownTable.rows[2].drawdown_id,
+      drawdown_number: drawdownTable.rows[2].drawdown_number,
+      type_str: TransactionConstants.type_str.devEquity,
+      type: TransactionConstants.type.devEquity,
+      total_amount: drawdownTable.rows[2].total_amount,
+      files: [{
+        supporting_files: bulk2.params[0].supporting_files,
+        description:bulk2.params[0].description,
+        date:String(bulk2.params[0].date),
+        amount:bulk2.params[0].amount,
+      }],
+      state: 0,
+      open_date: drawdownTable.rows[2].open_date,
+      close_date: drawdownTable.rows[2].close_date,
+      creator: drawdownTable.rows[2].creator
+    });
+    
+  });
+
+  it('Builder can delete bulktransactions for Developer equity drawdowns', async ()=>{
+    // Arrange
+    const bulk = await bulkTransactionFactory.createWithDefaults({});
+    const bulk2 = await bulkTransactionFactory.createWithDefaults({
+      add_file: 0
+    });
+
+    await contracts.transactions.bulktransact(builder.params.account, 0, 3, bulk.params, { authorization: `${builder.params.account}@active` });
+
+    // Act
+    try {
+      await contracts.transactions.bulktransact(builder.params.account, 0, 3, bulk2.params, { authorization: `${builder.params.account}@active` });
+    } catch(err){
+      //console.error(err)
+    }
+
+    // Assert    
+    const drawdownTable = await rpc.get_table_rows({
+      code: transactions,
+      scope: project.params.id,
+      table: 'drawdowns',
+      json: true
+    });
+    //console.log('\n drawdown table is: ', JSON.stringify(drawdownTable.rows[2], ' ', 2));
+    
+    assert.deepStrictEqual(drawdownTable.rows[2], {
+      drawdown_id: drawdownTable.rows[2].drawdown_id,
+      drawdown_number: drawdownTable.rows[2].drawdown_number,
+      type_str: TransactionConstants.type_str.devEquity,
+      type: TransactionConstants.type.devEquity,
+      total_amount: drawdownTable.rows[2].total_amount,
+      files: [],
+      state: 0,
+      open_date: drawdownTable.rows[2].open_date,
+      close_date: drawdownTable.rows[2].close_date,
+      creator: drawdownTable.rows[2].creator
+    });
+    
+  });
+
+  const builderDevEquityBulkCases = [
+    {testName: "Builder cannot create bulktransactions for Developer equity drawdowns once bulktransactions was submitted", numberFile: 1},
+    {testName: "Builder cannot edit bulktransactions for Developer equity drawdowns once bulktransactions was submitted", numberFile: 2},
+    {testName: "Builder cannot delete bulktransactions for Developer equity drawdowns once bulktransactions was submitted", numberFile: 0}
+  ]
+
+  builderDevEquityBulkCases.forEach(({testName, numberFile}) => {
+    it(testName, async () =>{
+      //Arrange
+      const bulk = await bulkTransactionFactory.createWithDefaults({});
+      const bulk2 = await bulkTransactionFactory.createWithDefaults({
+        add_file: numberFile
+      });
+
+      await contracts.transactions.bulktransact(builder.params.account, 0, 3, bulk.params, { authorization: `${builder.params.account}@active` });
+      await contracts.transactions.movedrawdown(builder.params.account, 0, 3, { authorization: `${builder.params.account}@active` });
+
+      //Act
+      try{
+        await contracts.transactions.bulktransact(builder.params.account, 0, 3, bulk2.params, { authorization: `${builder.params.account}@active` });
+        fail = false;
+      } catch (err) {
+        fail = true;
+        //console.error(err);
+      }
+
+      //Assert
+      const drawdownTable = await rpc.get_table_rows({
+        code: transactions,
+        scope: project.params.id,
+        table: 'drawdowns',
+        json: true
+      });
+      //console.log('\n drawdown table is: ', JSON.stringify(drawdownTable.rows[2], ' ', 2));
+  
+      expect(fail).to.be.true;
+
+      assert.deepStrictEqual(drawdownTable.rows[2], {
+        drawdown_id: drawdownTable.rows[2].drawdown_id,
+        drawdown_number: drawdownTable.rows[2].drawdown_number,
+        type_str: TransactionConstants.type_str.devEquity,
+        type: TransactionConstants.type.devEquity,
+        total_amount: drawdownTable.rows[2].total_amount,
+        files: [{
+          supporting_files: bulk.params[0].supporting_files,
+          description:bulk.params[0].description,
+          date:String(bulk.params[0].date),
+          amount:bulk.params[0].amount,
+        }],
+        state: 1,
+        open_date: drawdownTable.rows[2].open_date,
+        close_date: drawdownTable.rows[2].close_date,
+        creator: builder.params.account
+      });
+
+    });
+  });
+
+  //Bulktransaction Construction Loan
+  it('Builder can create bulktransactions for Construction Loan drawdown', async ()=>{1
+    //Arrange
+    const bulk = await bulkTransactionFactory.createWithDefaults({});
+
+    // Act    
+    try {
+      await contracts.transactions.bulktransact(builder.params.account, 0, 2, bulk.params, 
+        { authorization: `${builder.params.account}@active` });
     } catch(err){
       // console.error(err)
     }
@@ -1393,53 +1526,171 @@ describe("Tests for transactions smart contract", async function () {
       table: 'drawdowns',
       json: true
     });
-    // console.log('\n drawdown table is: ', JSON.stringify(drawdownTable.rows[2], ' ', 2));
+    //console.log('\n drawdown table is: ', JSON.stringify(drawdownTable.rows[1], ' ', 2));
 
-    const transactionsTable = await rpc.get_table_rows({
+
+    assert.deepStrictEqual(drawdownTable.rows[1], {
+      drawdown_id: drawdownTable.rows[1].drawdown_id,
+      drawdown_number: drawdownTable.rows[1].drawdown_number,
+      type_str: TransactionConstants.type_str.consLoan,
+      type: TransactionConstants.type.consLoan,
+      total_amount: drawdownTable.rows[1].total_amount,
+      files: [{
+        supporting_files: bulk.params[0].supporting_files,
+        description:bulk.params[0].description,
+        date:String(bulk.params[0].date),
+        amount:bulk.params[0].amount,
+      }],
+      state: 0,
+      open_date: drawdownTable.rows[1].open_date,
+      close_date: drawdownTable.rows[1].close_date,
+      creator: drawdownTable.rows[1].creator
+    });
+
+  });
+
+  it('Builder can modify bulktransactions for Construction Loan drawdown', async ()=>{1
+    //Arrange
+    const bulk = await bulkTransactionFactory.createWithDefaults({});
+    const bulk2 = await bulkTransactionFactory.createWithDefaults({
+      description: "description was modified",
+      add_file:2});
+
+    await contracts.transactions.bulktransact(builder.params.account, 0, 2, bulk.params, { authorization: `${builder.params.account}@active` });
+
+    // Act    
+    try {
+      await contracts.transactions.bulktransact(builder.params.account, 0, 2, bulk2.params, 
+        { authorization: `${builder.params.account}@active` });
+    } catch(err){
+      //console.error(err)
+    }
+
+    // Assert    
+    const drawdownTable = await rpc.get_table_rows({
       code: transactions,
       scope: project.params.id,
-      table: 'transactions',
+      table: 'drawdowns',
       json: true
     });
-    // console.log('\n transactions table is: ', transactionsTable.rows);
+    //console.log('\n drawdown table is: ', JSON.stringify(drawdownTable.rows[1], ' ', 2));
+
+    assert.deepStrictEqual(drawdownTable.rows[1], {
+      drawdown_id: drawdownTable.rows[1].drawdown_id,
+      drawdown_number: drawdownTable.rows[1].drawdown_number,
+      type_str: TransactionConstants.type_str.consLoan,
+      type: TransactionConstants.type.consLoan,
+      total_amount: drawdownTable.rows[1].total_amount,
+      files: [{
+        supporting_files: bulk2.params[0].supporting_files,
+        description:bulk2.params[0].description,
+        date:String(bulk2.params[0].date),
+        amount:bulk2.params[0].amount,
+      }],
+      state: 0,
+      open_date: drawdownTable.rows[1].open_date,
+      close_date: drawdownTable.rows[1].close_date,
+      creator: drawdownTable.rows[1].creator
+    });
 
   });
 
+  it('Builder can delete bulktransactions for Construction Loan drawdown', async ()=>{1
+    //Arrange
+    const bulk = await bulkTransactionFactory.createWithDefaults({});
+    const bulk2 = await bulkTransactionFactory.createWithDefaults({
+      add_file: 0
+    });
+
+    await contracts.transactions.bulktransact(builder.params.account, 0, 2, bulk.params, { authorization: `${builder.params.account}@active` });
+
+    // Act    
+    try {
+      await contracts.transactions.bulktransact(builder.params.account, 0, 2, bulk2.params, 
+        { authorization: `${builder.params.account}@active` });
+    } catch(err){
+      //console.error(err)
+    }
+
+    // Assert    
+    const drawdownTable = await rpc.get_table_rows({
+      code: transactions,
+      scope: project.params.id,
+      table: 'drawdowns',
+      json: true
+    });
+    //console.log('\n drawdown table is: ', JSON.stringify(drawdownTable.rows[1], ' ', 2));
+   
+    assert.deepStrictEqual(drawdownTable.rows[1], {
+      drawdown_id: drawdownTable.rows[1].drawdown_id,
+      drawdown_number: drawdownTable.rows[1].drawdown_number,
+      type_str: TransactionConstants.type_str.consLoan,
+      type: TransactionConstants.type.consLoan,
+      total_amount: drawdownTable.rows[1].total_amount,
+      files: [],
+      state: 0,
+      open_date: drawdownTable.rows[1].open_date,
+      close_date: drawdownTable.rows[1].close_date,
+      creator: drawdownTable.rows[1].creator
+    });;
+
   });
 
-/*
-const ledgerTable = await rpc.get_table_rows({
-  code: accounts,
-  scope: project.params.id,
-  table: "ledgers",
-  json: true,
-});
-//console.table(ledgerTable.rows);
+  const builderConsLoanBulkCases = [
+    {testName: "Builder cannot create bulktransactions for Construction Loan drawdowns once bulktransactions was submitted", numberFile: 1},
+    {testName: "Builder cannot edit bulktransactions for Construction Loan drawdowns once bulktransactions was submitted", numberFile: 2},
+    {testName: "Builder cannot delete bulktransactions for Construction Loan drawdowns once bulktransactions was submitted", numberFile: 0}
+  ]
 
-const accountsTable = await rpc.get_table_rows({
-  code: accounts,
-  scope: project.params.id,
-  table: "accounts",
-  json: true,
-});
+  builderConsLoanBulkCases.forEach(({testName, numberFile}) => {
+    it(testName, async () =>{
+      //Arrange
+      const bulk = await bulkTransactionFactory.createWithDefaults({});
+      const bulk2 = await bulkTransactionFactory.createWithDefaults({
+        add_file: numberFile
+      });
+      await contracts.transactions.bulktransact(builder.params.account, 0, 2, bulk.params, { authorization: `${builder.params.account}@active` });
+      await contracts.transactions.movedrawdown(builder.params.account, 0, 2, { authorization: `${builder.params.account}@active` });
 
-//console.table(accountsTable.rows);
+      //Act
+      try{
+        await contracts.transactions.bulktransact(builder.params.account, 0, 2, bulk2, { authorization: `${builder.params.account}@active` });
+        fail = false;
+      } catch (err) {
+        fail = true;
+        //console.error(err);
+      }
 
-const accountTypesTable = await rpc.get_table_rows({
-  code: accounts,
-  scope: accounts,
-  table: "accnttypes",
-  json: true,
-});
+      //Assert
+      const drawdownTable = await rpc.get_table_rows({
+        code: transactions,
+        scope: project.params.id,
+        table: 'drawdowns',
+        json: true
+      });
+      //console.log('\n drawdown table is: ', JSON.stringify(drawdownTable.rows[1], ' ', 2));
+  
+      expect(fail).to.be.true;
 
-//table(accountTypesTable.rows);
+      assert.deepStrictEqual(drawdownTable.rows[1], {
+        drawdown_id: drawdownTable.rows[1].drawdown_id,
+        drawdown_number: drawdownTable.rows[1].drawdown_number,
+        type_str: TransactionConstants.type_str.consLoan,
+        type: TransactionConstants.type.consLoan,
+        total_amount: drawdownTable.rows[1].total_amount,
+        files: [{
+          supporting_files: bulk.params[0].supporting_files,
+          description:bulk.params[0].description,
+          date:String(bulk.params[0].date),
+          amount:bulk.params[0].amount,
+        }],
+        state: 1,
+        open_date: drawdownTable.rows[1].open_date,
+        close_date: drawdownTable.rows[1].close_date,
+        creator: builder.params.account
+      });
 
-const UserTable = await rpc.get_table_rows({
-  code: projects,
-  scope: projects,
-  table: "users",
-  json: true,
-});
+    });
+  });
 
-//console.table(UserTable.rows);
-*/
+ });
