@@ -445,7 +445,7 @@ describe.only('Tests for budgets ', async function () {
       fail = false;
     } catch (err) {
       fail = true;
-      console.error(err);
+      //console.error(err);
     }
 
     //Assert
@@ -457,7 +457,7 @@ describe.only('Tests for budgets ', async function () {
       json: true,
       limit: 100
     });
-    console.log("\n\n budgets table : ", budgetsTable.rows);
+    //console.log("\n\n budgets table : ", budgetsTable.rows);
 
     const accountsTable = await rpc.get_table_rows({
       code: accounts,
@@ -466,7 +466,7 @@ describe.only('Tests for budgets ', async function () {
       json: true,
       limit: 100
     });
-    console.table(accountsTable.rows[accountsTable.rows.length - 1]);
+    //console.table(accountsTable.rows[accountsTable.rows.length - 1]);
 
     expect(fail).to.be.true
 
@@ -578,7 +578,7 @@ describe.only('Tests for budgets ', async function () {
       json: true,
       limit: 100
     });
-    console.log("\n\n budgets table : ", budgetsTable.rows);
+    //console.log("\n\n budgets table : ", budgetsTable.rows);
 
     const accountsTable = await rpc.get_table_rows({
       code: accounts,
@@ -587,7 +587,7 @@ describe.only('Tests for budgets ', async function () {
       json: true,
       limit: 100
     });
-    console.table(accountsTable.rows[accountsTable.rows.length - 1]);
+    //console.table(accountsTable.rows[accountsTable.rows.length - 1]);
 
     expect(fail).to.be.true;
 
