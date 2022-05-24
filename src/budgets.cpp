@@ -350,13 +350,14 @@ ACTION budgets::addbudget (  name actor,
 
     // the project type must be total
     if (budget_type_id != get_id_budget_type(BUDGET_TYPES.TOTAL)) {
-        check(begin_date < end_date,common::contracts::budgets.to_string() + ": the begin date can not be grater than the end date.");
+        check(begin_date < end_date,common::contracts::budgets.to_string() + ": addbudget -> the begin date can not be grater than the end date.");
     } else {
         begin_date = 0;
         end_date = 0;
     }
 
-	check(amount.symbol == common::currency, _self.to_string() + ": the symbols must be the same. " + amount.to_string() + ". amount symbol:" + amount.symbol.code().to_string() + "!=" + common::currency.code().to_string());
+	check(amount.symbol == common::currency, _self.to_string() + ": addbudget -> the symbols must be the same. " + amount.to_string() + ". amount symbol:" + amount.symbol.code().to_string() + "!=" + common::currency.code().to_string());
+	check(amount >= asset(0, common::currency), _self.to_string() + ": addbudget -> the amount cannot be negative.");
 
     create_budget_aux(actor, project_id, account_id, amount, budget_type_id, begin_date, end_date, modify_parents);
 }
@@ -402,11 +403,14 @@ ACTION budgets::editbudget ( name actor,
 
      // the project type must be total
     if (budget_type_id != get_id_budget_type(BUDGET_TYPES.TOTAL)) {
-        check(begin_date < end_date,common::contracts::budgets.to_string() + ": the begin date can not be grater than the end date.");
+        check(begin_date < end_date,common::contracts::budgets.to_string() + ": editbudget -> the begin date can not be grater than the end date.");
     } else {
         begin_date = 0;
         end_date = 0;
     }
+
+    check(amount.symbol == common::currency, _self.to_string() + ": editbudget -> the symbols must be the same. " + amount.to_string() + ". amount symbol:" + amount.symbol.code().to_string() + "!=" + common::currency.code().to_string());
+	check(amount >= asset(0, common::currency), _self.to_string() + ": editbudget -> the amount cannot be negative.");
 
     deletebudget(actor, project_id, budget_id, modify_parents);
     create_budget_aux(actor, project_id, budget_itr -> account_id, amount, budget_type_id, begin_date, end_date, modify_parents);
