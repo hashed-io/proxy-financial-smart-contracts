@@ -1,3 +1,5 @@
+const { warnings, errors, success, start, finish, flag } = require('./ui')
+
 require('dotenv').config()
 
 const { exec } = require('child_process')
@@ -29,7 +31,7 @@ async function compileContract ({
   } else {
     cmd = `docker run --rm --name eosio.cdt_v1.7.0-rc1 --volume ${join(__dirname, '../')}:/project -w /project eostudio/eosio.cdt:v1.7.0-rc1 /bin/bash -c "echo 'starting';eosio-cpp -abigen -I ./include -contract ${contract} -o ./compiled/${contract}.wasm ${path}"`
   }
-  console.log("compiler command: " + cmd, '\n')
+  start("compiler command: " + cmd)
 
   if (!fs.existsSync(compiled)) {
     fs.mkdirSync(compiled)

@@ -1,6 +1,8 @@
 const { dateToBlockTimestamp } = require('eosjs/dist/eosjs-serialize')
 const { contractNames } = require('../../scripts/config')
 const { createRandomAccount, createRandomName } = require('../../scripts/eosio-util')
+const { generate_title, generate_description, generate_long_text, generate_cid, generate_name } = require('./lorem')
+
 
 
 const AccountConstants = {
@@ -268,7 +270,7 @@ class AccountFactory {
     }
 
     if (!account_name) {
-      account_name = createRandomName()
+      account_name = await generate_description()
     }
 
     if (!parent_id) {
@@ -280,7 +282,7 @@ class AccountFactory {
     }
 
     if (!description) {
-      description = "Basic account to test"
+      description = await generate_description(5)
     }
 
     if (!account_category) {

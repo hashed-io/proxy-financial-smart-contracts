@@ -440,7 +440,7 @@ ACTION accounts::addaccount(const eosio::name &actor,
     auto project_itr = projects_table.find(project_id);
     check(project_itr != projects_table.end(), "The project does not exists");
 
-    auto user_itr = users.find(project_itr->builder.value);
+    auto user_itr = users.find(project_itr->owner.value);
     check(user_itr != users.end(), common::contracts::accounts.to_string() + ": the user does not exist.");
 
     ledger_tables ledger_t(_self, project_id);
