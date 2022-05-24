@@ -22,7 +22,7 @@ const expect = require('chai').expect
 
 const { accounts, projects, budgets, permissions, transactions } = contractNames
 
-describe.only('Tests for budgets ', async function () {
+describe('Tests for budgets ', async function () {
   let contracts, admin, builder, investor, project;
 
   before(async function () {
@@ -221,7 +221,7 @@ describe.only('Tests for budgets ', async function () {
 
   });
 
-  it('Cannot create a new Budget Expenditure with an negative budget_amount.', async () => {
+  it('Cannot create a new Budget Expenditure with a negative budget_amount.', async () => {
     // Arrangh
     let fail
     const new_account = await AccountFactory.createWithDefaults({ 
@@ -538,7 +538,7 @@ describe.only('Tests for budgets ', async function () {
 
   });
 
-  it('Only admin can delete ALL budgtes expenditures related to a given project', async () => {
+  it('Only admin can delete ALL budgets expenditures related to a given project', async () => {
     // Arrange
     let fail
     const new_account = await AccountFactory.createWithDefaults({ actor: admin.params.account, budget_amount: "100.00 USD" });
