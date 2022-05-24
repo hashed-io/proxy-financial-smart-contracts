@@ -339,7 +339,7 @@ describe('Tests for budgets ', async function () {
   });
 
   it('Only admin can edit a given budget', async () => {
-    // TODO: Reviwe editbudget is deleting actual budget_id and opne a new budget with
+    // TODO: Review editbudget, is deleting actual budget_id and opne a new budget with
     // a new period. when is solved: add an expect case.
     // Arrange
     let fail
@@ -593,6 +593,60 @@ describe('Tests for budgets ', async function () {
       account_id: budgetsTable.rows.length,
       amount: "0.00 USD"
     })
+
+  });
+
+  it("Editbudget shouldn't delete the selected budget_id", async () => {
+    //Arrange
+    let fail
+    const new_account = await AccountFactory.createWithDefaults({ actor: admin.params.account, budget_amount: "100.00 USD" });
+    await contracts.accounts.addaccount(...new_account.getCreateActionParams(), { authorization: `${admin.params.account}@active` });
+
+    const newBudget = await BudgetFactory.createWithDefaults({
+      actor: builder.params.account,
+      budget_type_id: 0,
+    });
+
+    //Act
+    await BudgetUtil.editbudget({
+      actor: budgets,
+      project_id: 0,
+      budget_id: 1,
+      amount: "20.00 USD",
+      budget_type_id: newBudget.params.budget_type_id,
+      begin_date: newBudget.params.begin_date,
+      end_date: newBudget.params.end_date,
+      modify_parents: newBudget.params.modify_parents,
+      contract: contracts.budgets,
+      contractAccount: budgets,
+    })
+
+    //Assert
+
+    const budgetsTable = await rpc.get_table_rows({
+      code: budgets,
+      scope: 0,
+      table: "budgets",
+      json: true,
+      limit: 100
+    });
+    console.log("\n\n budgets table : ", budgetsTable.rows);
+
+    const accountsTable = await rpc.get_table_rows({
+      code: accounts,
+      scope: project.params.id,
+      table: 'accounts',
+      json: true,
+      limit: 100
+    });
+    console.log(accountsTable.rows[accountsTable.rows.length - 1]);
+
+    // expect(fail).to.be.true
+
+    // expect(budgetsTable.rows[budgetsTable.rows.length - 1]).to.include({
+    //   account_id: budgetsTable.rows.length,
+    //   amount: "20.00 USD"
+    // });
 
 
   });
