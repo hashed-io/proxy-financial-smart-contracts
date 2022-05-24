@@ -356,9 +356,7 @@ ACTION budgets::addbudget (  name actor,
         end_date = 0;
     }
 
-	check(amount.symbol == common::currency, _self.to_string() + ": addbudget -> the symbols must be the same. " + amount.to_string() + ". amount symbol:" + amount.symbol.code().to_string() + "!=" + common::currency.code().to_string());
-	check(amount >= asset(0, common::currency), _self.to_string() + ": addbudget -> the amount cannot be negative.");
-
+    check_asset(amount, common::contracts::budgets);
     create_budget_aux(actor, project_id, account_id, amount, budget_type_id, begin_date, end_date, modify_parents);
 }
 
@@ -409,9 +407,7 @@ ACTION budgets::editbudget ( name actor,
         end_date = 0;
     }
 
-    check(amount.symbol == common::currency, _self.to_string() + ": editbudget -> the symbols must be the same. " + amount.to_string() + ". amount symbol:" + amount.symbol.code().to_string() + "!=" + common::currency.code().to_string());
-	check(amount >= asset(0, common::currency), _self.to_string() + ": editbudget -> the amount cannot be negative.");
-
+    check_asset(amount, common::contracts::budgets);
     deletebudget(actor, project_id, budget_id, modify_parents);
     create_budget_aux(actor, project_id, budget_itr -> account_id, amount, budget_type_id, begin_date, end_date, modify_parents);
 }
@@ -470,8 +466,6 @@ ACTION budgets::deletebudget (name actor, uint64_t project_id, uint64_t budget_i
 
 ACTION budgets::delbdgtsacct (uint64_t project_id, uint64_t account_id) {
     require_auth(get_self());
-
-    print("delbudgets");
 
     account_tables accounts(common::contracts::accounts, project_id);
     budget_tables budgets(_self, project_id);
