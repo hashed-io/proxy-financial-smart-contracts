@@ -23,7 +23,7 @@ const { accounts, projects, budgets, permissions, transactions } = contractNames
 
 describe('Tests for budget expenditures', async function () {
 
-  let contracts, admin, builder, investor;
+  let contracts, admin, builder, investor, project;
 
   before(async function () {
     if (!isLocalNode()) {
@@ -423,29 +423,29 @@ describe('Tests for budget expenditures', async function () {
       scope: 0,
       table: "budgets",
       json: true,
+      limit: 100
     });
     // console.log("\n\n budgets table : ", budgetsTable.rows);
 
-    assert.deepStrictEqual(budgetsTable.rows, [
-      {
-        budget_id: 1,
-        account_id: 24,
-        amount: "100.00 USD",
-        budget_creation_date: budgetsTable.rows[0].budget_creation_date,
-        budget_update_date: budgetsTable.rows[0].budget_update_date,
-        budget_period_id: 1,
-        budget_type_id: 1,
-      },
-      {
-        budget_id: 2,
-        account_id: 1,
-        amount: "100.00 USD",
-        budget_creation_date: budgetsTable.rows[0].budget_creation_date,
-        budget_update_date: budgetsTable.rows[0].budget_update_date,
-        budget_period_id: 1,
-        budget_type_id: 1,
-      }
-    ]);
+    expect(budgetsTable.rows[budgetsTable.rows.length - 1]).to.include({
+      budget_id: 24,
+      account_id: 24,
+      amount: "100.00 USD",
+      budget_creation_date: budgetsTable.rows[budgetsTable.rows.length - 1].budget_creation_date,
+      budget_update_date: budgetsTable.rows[budgetsTable.rows.length - 1].budget_update_date,
+      budget_period_id: 1,
+      budget_type_id: 1,
+    });
+
+    expect(budgetsTable.rows[1]).to.include({
+      budget_id: 2,
+      account_id: 1,
+      amount: "100.00 USD",
+      budget_creation_date: budgetsTable.rows[1].budget_creation_date,
+      budget_update_date: budgetsTable.rows[1].budget_update_date,
+      budget_period_id: 1,
+      budget_type_id: 1,
+    });
 
   });
 

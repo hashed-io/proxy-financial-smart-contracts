@@ -59,6 +59,14 @@ describe("Tests for projects smart contract", async function () {
     await updatePermissions();
     console.log("\n");
 
+    // clear old data
+    await contracts.projects.reset({ authorization: `${projects}@active` });
+    await contracts.accounts.reset({ authorization: `${accounts}@active` });
+    await contracts.budgets.reset({ authorization: `${budgets}@active` });
+    await contracts.permissions.reset({ authorization: `${permissions}@active` });
+    await contracts.transactions.reset({ authorization: `${transactions}@active` });
+
+    // setup contracts
     await contracts.projects.init({ authorization: `${projects}@active` });
     await contracts.accounts.init({ authorization: `${accounts}@active` });
 
