@@ -350,13 +350,14 @@ ACTION budgets::addbudget (  name actor,
 
     // the project type must be total
     if (budget_type_id != get_id_budget_type(BUDGET_TYPES.TOTAL)) {
-        check(begin_date < end_date,common::contracts::budgets.to_string() + ": addbudget -> the begin date can not be grater than the end date.");
+        check(begin_date < end_date,common::contracts::budgets.to_string() + ": the begin date can not be grater than the end date.");
     } else {
         begin_date = 0;
         end_date = 0;
     }
 
-    check_asset(amount, common::contracts::budgets);
+    check_asset(amount,common::contracts::budgets);
+
     create_budget_aux(actor, project_id, account_id, amount, budget_type_id, begin_date, end_date, modify_parents);
 }
 
@@ -401,13 +402,12 @@ ACTION budgets::editbudget ( name actor,
 
      // the project type must be total
     if (budget_type_id != get_id_budget_type(BUDGET_TYPES.TOTAL)) {
-        check(begin_date < end_date,common::contracts::budgets.to_string() + ": editbudget -> the begin date can not be grater than the end date.");
+        check(begin_date < end_date,common::contracts::budgets.to_string() + ": the begin date can not be grater than the end date.");
     } else {
         begin_date = 0;
         end_date = 0;
     }
 
-    check_asset(amount, common::contracts::budgets);
     deletebudget(actor, project_id, budget_id, modify_parents);
     create_budget_aux(actor, project_id, budget_itr -> account_id, amount, budget_type_id, begin_date, end_date, modify_parents);
 }
@@ -466,6 +466,8 @@ ACTION budgets::deletebudget (name actor, uint64_t project_id, uint64_t budget_i
 
 ACTION budgets::delbdgtsacct (uint64_t project_id, uint64_t account_id) {
     require_auth(get_self());
+
+    print("delbudgets");
 
     account_tables accounts(common::contracts::accounts, project_id);
     budget_tables budgets(_self, project_id);

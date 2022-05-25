@@ -65,17 +65,8 @@ describe("Tests for transactions smart contract", async function () {
     ]);
 
     await updatePermissions();
-    
-    // clear old data
-    await contracts.projects.reset({ authorization: `${projects}@active` });
-    await contracts.accounts.reset({ authorization: `${accounts}@active` });
-    await contracts.budgets.reset({ authorization: `${budgets}@active` });
-    await contracts.permissions.reset({ authorization: `${permissions}@active` });
-    await contracts.transactions.reset({ authorization: `${transactions}@active` });
-
-
-    // setup contracts
     await contracts.projects.init({ authorization: `${projects}@active` });
+
     await contracts.accounts.init({ authorization: `${accounts}@active` });
 
     admin = await UserFactory.createWithDefaults({
@@ -104,7 +95,6 @@ describe("Tests for transactions smart contract", async function () {
     project = await ProjectFactory.createWithDefaults({
       actor: admin.params.account,
     });
-    //console.log('project params is: ', project)
 
     await contracts.projects.addproject(...project.getCreateActionParams(), {
       authorization: `${admin.params.account}@active`,
@@ -921,7 +911,6 @@ describe("Tests for transactions smart contract", async function () {
         fail = false;
       } catch (err) {
         fail = true;
-        // console.error(err);
       }
 
       // Assert    
@@ -1023,7 +1012,6 @@ describe("Tests for transactions smart contract", async function () {
       fail = false;
     } catch (err) {
       fail = true;
-      // console.error(err)
     }
 
     // Assert    
@@ -1276,7 +1264,7 @@ describe("Tests for transactions smart contract", async function () {
       fail = false;
     } catch (err) {
       fail = true;
-      // console.error(err)
+
     }
 
     // Assert    
@@ -1514,7 +1502,7 @@ describe("Tests for transactions smart contract", async function () {
       await contracts.transactions.bulktransact(builder.params.account, 0, 2, bulk.params, 
         { authorization: `${builder.params.account}@active` });
     } catch(err){
-      // console.error(err)
+
     }
 
     // Assert    

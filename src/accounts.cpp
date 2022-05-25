@@ -434,6 +434,8 @@ ACTION accounts::addaccount(const eosio::name &actor,
 
     require_auth(actor);
 
+    print("he");
+
     auto admin_itr = users.find(actor.value);
     check(admin_itr->role == common::projects::entity::fund , actor.to_string() + " is not an admin!");
 
@@ -466,11 +468,9 @@ ACTION accounts::addaccount(const eosio::name &actor,
     check(ACCOUNT_CATEGORIES.is_valid_constant(account_category), common::contracts::accounts.to_string() + ": the account category is invalid.");
 
     check(account_currency == common::currency, common::contracts::accounts.to_string() + ": the currency must be the same.");
-    check(budget_amount >= asset(0, common::currency), _self.to_string() + ": addaccount -> the amount cannot be negative.");
-
     check(parent_id != 0, common::contracts::accounts.to_string() + ": addaccount -> the parent id must be grater than zero.");
 
-    check(parent_id == 1 || parent_id == 2, common::contracts::accounts.to_string() + ": addaccount -> the given parent_id does not exist");
+    check(parent_id == 1 || parent_id == 2, common::contracts::accounts.to_string() + "no pareten accounts");
 
     auto parent = accounts.find(parent_id);
     check(parent != accounts.end(), common::contracts::accounts.to_string() + ": the parent account does not exist.");
@@ -504,7 +504,7 @@ ACTION accounts::addaccount(const eosio::name &actor,
     accounts.modify(parent, _self, [&](auto &modified_account)
                     { modified_account.num_children += 1; });
 
-    if (budget_amount >= asset(0, common::currency))
+    if (budget_amount > asset(0, common::currency))
     {
         uint64_t budget_type_id = 1;
         uint64_t date = 0;
@@ -575,12 +575,10 @@ void accounts::add_account(const uint64_t &entity_id,
     check(ACCOUNT_CATEGORIES.is_valid_constant(account_category), common::contracts::accounts.to_string() + ": the account category is invalid.");
 
     check(account_currency == common::currency, common::contracts::accounts.to_string() + ": the currency must be the same.");
-    check(budget_amount >= asset(0, common::currency), _self.to_string() + ": add_account -> the amount cannot be negative.");
-
     check(parent_id != 0, common::contracts::accounts.to_string() + ": add_account -> the parent id must be grater than zero.");
 
     auto parent = accounts.find(parent_id);
-    check(parent != accounts.end(), common::contracts::accounts.to_string() + " the parent account does not exist.");
+    check(parent != accounts.end(), common::contracts::accounts.to_string() + ": the parent account does not exist.");
 
     if (parent->num_children == 0)
     {
@@ -609,7 +607,7 @@ void accounts::add_account(const uint64_t &entity_id,
     accounts.modify(parent, _self, [&](auto &modified_account)
                     { modified_account.num_children += 1; });
 
-    if (budget_amount >= asset(0, common::currency))
+    if (budget_amount > asset(0, common::currency))
     {
         uint64_t budget_type_id = 1;
         uint64_t date = 0;

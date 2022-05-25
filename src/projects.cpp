@@ -173,7 +173,7 @@ ACTION projects::addproject(const eosio::name &actor,
 	// check_asset(total_gp_equity, common::contracts::projects);
 	// check_asset(private_equity, common::contracts::projects);
 
-	check(projected_completion_date >= eosio::current_time_point().sec_since_epoch(), common::contracts::projects.to_string() + ": the completion date can not be earlier than now.");
+	check(projected_completion_date >= eosio::current_time_point().sec_since_epoch(), common::contracts::projects.to_string() + ": the date can not be earlier than now.");
 
 	auto project_itr = project_t.begin();
 	while (project_itr != project_t.end())
