@@ -70,6 +70,15 @@ CONTRACT budgets : public contract {
                             uint64_t end_date,
                             bool modify_parents );
 
+        ACTION editbudgetv2 ( name actor,
+                              uint64_t project_id,
+                              uint64_t budget_id,
+                              asset amount,
+                              uint64_t budget_type_id,
+                              uint64_t begin_date,
+                              uint64_t end_date,
+                              bool modify_parents );
+
         ACTION deletebudget (name actor, uint64_t project_id, uint64_t budget_id, bool modify_parents);
 
         ACTION rcalcbudgets (name actor, uint64_t project_id, uint64_t account_id, uint64_t budget_period_id);
@@ -105,5 +114,14 @@ CONTRACT budgets : public contract {
                                  bool modify_parents );
 
         void remove_budget_amount (uint64_t project_id, uint64_t budget_id, asset amount);
+
+        void edit_budget_aux ( name actor,
+                              uint64_t project_id,
+                              uint64_t budget_id,
+                              asset amount,
+                              uint64_t budget_type_id,
+                              uint64_t begin_date,
+                              uint64_t end_date,
+                              bool modify_parents );
 };
 

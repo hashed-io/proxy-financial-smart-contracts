@@ -38,7 +38,7 @@ class BudgetUtil{
       modify_parents, { authorization: `${contractAccount}@active` })
   }
 
-  static async editbudget({
+  static async editbudgetv2({
     actor,
     project_id,
     budget_id,
@@ -49,7 +49,7 @@ class BudgetUtil{
     modify_parents,
     contract, 
     contractAccount}){
-    await contract.editbudget( 
+    await contract.editbudgetv2( 
       actor,
       project_id,
       budget_id,

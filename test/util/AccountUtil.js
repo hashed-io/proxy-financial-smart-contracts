@@ -270,7 +270,7 @@ class AccountFactory {
     }
 
     if (!account_name) {
-      account_name = await generate_description()
+      account_name = await generate_name()
     }
 
     if (!parent_id) {

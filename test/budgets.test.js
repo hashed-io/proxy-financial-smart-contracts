@@ -596,7 +596,7 @@ describe('Tests for budgets ', async function () {
 
   });
 
-  it("Editbudget shouldn't delete the selected budget_id", async () => {
+  it.only("Editbudget shouldn't delete the selected budget_id", async () => {
     //Arrange
     let fail
     const new_account = await AccountFactory.createWithDefaults({ actor: admin.params.account, budget_amount: "100.00 USD" });
@@ -604,14 +604,52 @@ describe('Tests for budgets ', async function () {
 
     const newBudget = await BudgetFactory.createWithDefaults({
       actor: builder.params.account,
-      budget_type_id: 0,
     });
 
+    // const newBudget3 = await BudgetFactory.createWithDefaults({
+    //   actor: builder.params.account,
+    //   budget_type_id:3
+    // });
+
+    // const newBudget4 = await BudgetFactory.createWithDefaults({
+    //   actor: builder.params.account,
+    //   budget_type_id:4
+    // });
+
+    // const newBudget5 = await BudgetFactory.createWithDefaults({
+    //   actor: builder.params.account,
+    //   budget_type_id:5
+    // });
+
+
+    // const newBudget6 = await BudgetFactory.createWithDefaults({
+    //   actor: builder.params.account,
+    //   budget_type_id:6
+    // });
+
+
+    console.log("new budget: ", newBudget)
+
+    // for(let i = 2; i < 3; i++){ 
+    //   await BudgetUtil.addbudget({
+    //     actor: budgets,
+    //     project_id: 0,
+    //     account_id: 24,
+    //     amount: "100.00 USD",
+    //     budget_type_id: 1,
+    //     begin_date: newBudget.params.begin_date,
+    //     end_date: newBudget.params.end_date,
+    //     modify_parents: newBudget.params.modify_parents,
+    //     contract: contracts.budgets,
+    //     contractAccount: budgets
+    //   })
+    // }
+
     //Act
-    await BudgetUtil.editbudget({
+    await BudgetUtil.editbudgetv2({
       actor: budgets,
       project_id: 0,
-      budget_id: 1,
+      budget_id: 24,
       amount: "20.00 USD",
       budget_type_id: newBudget.params.budget_type_id,
       begin_date: newBudget.params.begin_date,
@@ -621,7 +659,25 @@ describe('Tests for budgets ', async function () {
       contractAccount: budgets,
     })
 
-    //Assert
+    // Assert
+
+    const budgettypesTable = await rpc.get_table_rows({
+      code: budgets,
+      scope: budgets,
+      table: "budgettypes",
+      json: true,
+      limit: 100
+    });
+    console.log("\n\n budgettypes table : ", budgettypesTable.rows);
+
+    const bgtperiodTable = await rpc.get_table_rows({
+      code: budgets,
+      scope: 0,
+      table: "budgetpriods",
+      json: true,
+      limit: 100
+    });
+    console.log("\n\n budgets period table : ", bgtperiodTable.rows);
 
     const budgetsTable = await rpc.get_table_rows({
       code: budgets,

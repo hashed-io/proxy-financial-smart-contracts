@@ -378,7 +378,7 @@ ACTION budgets::editbudget ( name actor,
     auto budget_itr = budgets.find(budget_id);
     check(budget_itr != budgets.end(),common::contracts::budgets.to_string() + ": the budget does not exist.");
 
-    check_asset(amount,common::contracts::budgets);
+    check_asset(amount, common::contracts::budgets);
 
     auto accnt = accounts.find(budget_itr -> account_id);
     check(accnt != accounts.end(), common::contracts::budgets.to_string() + ": the account does not exist.");
@@ -490,4 +490,48 @@ ACTION budgets::delbdgtsacct (uint64_t project_id, uint64_t account_id) {
             budget_periods.erase(itr_date);
         }
     }
+}
+
+
+ACTION budgets::editbudgetv2(name actor,
+                              uint64_t project_id,
+                              uint64_t budget_id,
+                              asset amount,
+                              uint64_t budget_type_id,
+                              uint64_t begin_date,
+                              uint64_t end_date,
+                              bool modify_parents)
+{
+    //check(false, "we're ok");
+    require_auth(get_self());
+
+    budget_tables budgets(_self, project_id);
+    account_tables accounts(common::contracts::accounts, project_id);
+
+    auto budget_itr = budgets.find(budget_id);
+    check(budget_itr != budgets.end(),common::contracts::budgets.to_string() + ": editbudget -> the budget does not exist.");
+
+    check_asset(amount, common::contracts::budgets);
+
+    auto accnt = accounts.find(budget_itr -> account_id);
+    check(accnt != accounts.end(), common::contracts::budgets.to_string() + ": editbudget -> the account does not exist.");
+
+
+
+
+
+
+
+}
+
+void budgets::edit_budget_aux(name actor,
+                              uint64_t project_id,
+                              uint64_t account_id,
+                              asset amount,
+                              uint64_t budget_type_id,
+                              uint64_t begin_date,
+                              uint64_t end_date,
+                              bool modify_parents)
+{
+    check(false, "we're ok");
 }
