@@ -12,7 +12,7 @@ using namespace std;
 void check_asset(asset amount, name contract_name)
 {
 	check(amount.symbol == common::currency, contract_name.to_string() + ": the symbols must be the same. " + amount.to_string() + ". amount symbol:" + amount.symbol.code().to_string() + "!=" + common::currency.code().to_string());
-	check(amount > asset(0, common::currency), contract_name.to_string() + ": the amount must be greater than zero.");
+	check(amount >= asset(0, common::currency), contract_name.to_string() + ": the amount must be greater than zero.");
 }
 
 uint64_t get_valid_index(uint64_t index)
