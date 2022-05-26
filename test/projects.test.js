@@ -231,6 +231,25 @@ describe("Tests for projects smart contract", async function () {
 
   });
 
+  it.only("Cannot add an project if builder is missing", async () =>{
+    //Arrange
+    const user = await UserFactory.createWithDefaults({ role: Roles.fund });
+    await contracts.projects.adduser(projects, ...user.getCreateParams(), {
+      authorization: `${projects}@active`,
+    });
+
+    const project = await ProjectFactory.createWithDefaults({
+      actor: user.params.account,
+    });
+    
+    await contracts.projects.addproject(...project.getCreateActionParams(), {
+      authorization: `${user.params.account}@active`,
+    });
+
+
+
+  }); 
+
   it("Assign one of each type (Investor, Builder, Regional Center, Issuer)", async () => {
     //Arrange
     const project = await ProjectFactory.createWithDefaults({
@@ -1330,6 +1349,7 @@ describe("Tests for projects smart contract", async function () {
       "builderuser3",
       "Builder3",
       Roles.developer,
+      "description",
       {
         authorization: `${projects}@active`,
       }
@@ -1408,6 +1428,7 @@ describe("Tests for projects smart contract", async function () {
       "issueruser2",
       "Issuer2",
       Roles.issuer,
+      "description",
       {
         authorization: `${projects}@active`,
       }
@@ -1485,6 +1506,7 @@ describe("Tests for projects smart contract", async function () {
       "regionlcntr2",
       "RegionalCenter2",
       Roles.regional_center,
+      "description",
       {
         authorization: `${projects}@active`,
       }
@@ -1551,6 +1573,10 @@ describe("Tests for projects smart contract", async function () {
         approved_by: projectsTable.rows[0].approved_by,
       },
     ])
+  });
+
+  it("There can be many investors per project", async () => {
+    //TODO
   });
 
   it('Remove builder from project', async () =>{
