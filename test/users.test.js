@@ -47,7 +47,6 @@ const createRolesCases = (() => {
       role: Roles.regional_center,
       entity_id: 5
     }
-
   ]
 })()
 
@@ -71,6 +70,32 @@ describe('Tests for the users on projects smart contract', async function () {
     contracts = await getContracts([projects, accounts, budgets, permissions, transactions])
 
     await updatePermissions();
+
+    // clear old data
+    await contracts.projects.reset({ authorization: `${projects}@active` });
+    await contracts.accounts.reset({ authorization: `${accounts}@active` });
+    await contracts.budgets.reset({ authorization: `${budgets}@active` });
+    await contracts.permissions.reset({ authorization: `${permissions}@active` });
+    await contracts.transactions.reset({ authorization: `${transactions}@active` });
+
+    admin = await UserFactory.createWithDefaults({
+      role: Roles.fund,
+      account: "proxyadmin11",
+      user_name: "Admin",
+      entity_id: 1,
+    });
+    builder = await UserFactory.createWithDefaults({
+      role: Roles.builder,
+      account: "builderuser1",
+      user_name: "Builder",
+      entity_id: 3,
+    });
+
+    await EnvironmentUtil.createAccount("proxyadmin11");
+    await EnvironmentUtil.createAccount("builderuser1");
+
+
+
   })
 
   afterEach(async function () {
@@ -103,7 +128,7 @@ describe('Tests for the users on projects smart contract', async function () {
 
       expect(usersTable.rows).to.deep.include.members([{
         account: user.params.account,
-        description: "description",
+        description: user.params.description,
         user_name: user.params.user_name,
         entity_id: user.params.entity_id,
         related_projects: [],
@@ -127,6 +152,7 @@ describe('Tests for the users on projects smart contract', async function () {
       table: 'users',
       json: true
     });
+    //console.log(usersTable)
 
     const entitiesTable = await rpc.get_table_rows({
       code: projects,
@@ -134,9 +160,7 @@ describe('Tests for the users on projects smart contract', async function () {
       table: 'entities',
       json: true
     });
-
-    // console.table(usersTable.rows);
-    // console.table(entitiesTable.rows);
+    //console.log(entitiesTable)
 
   });
 
@@ -146,12 +170,12 @@ describe('Tests for the users on projects smart contract', async function () {
     await contracts.projects.init({ authorization: `${projects}@active` })
 
     // Act
-   try {
-    await contracts.projects.init({ authorization: `${projects}@active` })
-    fail = false;
-   } catch (err) {
-     fail = true
-   }
+    try {
+      await contracts.projects.init({ authorization: `${projects}@active` })
+      fail = false;
+    } catch (err) {
+      fail = true
+    }
 
     // Assert
     const usersTable = await rpc.get_table_rows({
@@ -168,7 +192,7 @@ describe('Tests for the users on projects smart contract', async function () {
       json: true
     });
 
-    expect(fail).to.be.true 
+    expect(fail).to.be.true
 
     // console.table(usersTable.rows);
     // console.table(entitiesTable.rows);
@@ -176,22 +200,21 @@ describe('Tests for the users on projects smart contract', async function () {
   });
 
   const addEntitiesCases = [
-    {testName: 'Add admin entity', userRole: EntityConstants.fund},
-    {testName: 'Add developer entity', userRole: EntityConstants.developer},
-    {testName: 'Add investor', userRole: EntityConstants.investor},
-    {testName: 'Add issuer entity', userRole: EntityConstants.issuer},
-    {testName: 'Add regional center entity', userRole: EntityConstants.regional},
+    { testName: 'Add admin entity', userRole: Roles.fund },
+    { testName: 'Add developer entity', userRole: Roles.developer },
+    { testName: 'Add investor', userRole: Roles.investor },
+    { testName: 'Add issuer entity', userRole: Roles.issuer },
+    { testName: 'Add regional center entity', userRole: Roles.regional_center },
   ]
 
-  addEntitiesCases.forEach(({testName, userRole}) => {
+  addEntitiesCases.forEach(({ testName, userRole }) => {
     it(testName, async () => {
       //Arrange
-      const user = await EntityFactory.createWithDefaults({ role: userRole});
-      const userParams = user.getActionParams()
-      // console.log(userParams)
+      const entity = await EntityFactory.createWithDefaults({ role: userRole });
+      const entityParams = entity.getActionParams()
 
       //Act
-      await contracts.projects.addentity(...user.getActionParams(), { authorization: `${userParams[0]}@active` })
+      await contracts.projects.addentity(...entity.getActionParams(), { authorization: `${entityParams[0]}@active` })
 
       // Assert
       const entitiesTable = await rpc.get_table_rows({
@@ -201,15 +224,145 @@ describe('Tests for the users on projects smart contract', async function () {
         json: true
       })
       // console.table(entitiesTable.rows); 
-      // console.log(userParams[0])
+      // console.log(entityParams[0])
 
       assert.deepStrictEqual(entitiesTable.rows, [{
         entity_id: 1,
-        entity_name: userParams[1],
-        description: userParams[2],
-        role: userParams[3]
+        entity_name: entityParams[1],
+        description: entityParams[2],
+        role: entityParams[3]
       }])
     });
+  });
+
+  const addUserwithRolCases = [
+    { testName: 'Add admin account', userRole: Roles.fund, entityID: 1 },
+    { testName: 'Add investor account', userRole: Roles.investor, entityID:2 },
+    { testName: 'Add developer account', userRole: Roles.developer, entityID: 3 },
+    { testName: 'Add issuer account', userRole: Roles.issuer, entityID: 4 },
+    { testName: 'Add regional center account', userRole: Roles.regional_center, entityID: 5},
+  ]
+
+  addUserwithRolCases.forEach(({ testName, userRole, entityID }) => {
+    it(testName, async () => {
+      //Arrange
+      const user = await UserFactory.createWithDefaults({ role: userRole, entity_id: entityID});
+
+      //Act
+      await contracts.projects.adduser(projects, ...user.getCreateParams(), {
+        authorization: `${projects}@active`,
+      });
+
+      // Assert
+      const usersTable = await rpc.get_table_rows({
+        code: projects,
+        scope: projects,
+        table: 'users',
+        json: true
+      });
+      //console.log("Users table is: ", usersTable.rows)
+
+      assert.deepStrictEqual(usersTable.rows, [{
+        account: user.params.account,
+        user_name: user.params.user_name,
+        entity_id: user.params.entity_id,
+        role: user.params.role,
+        related_projects: user.params.related_projects,
+        description: user.params.description
+      }])
+    });
+  });
+  
+  it("Admin cannot add a user twice", async ()=> {
+    //Arrange
+    let fail
+    const user = await UserFactory.createWithDefaults({ role: Roles.developer, entity_id: 3});
+
+    await contracts.projects.adduser(projects, ...user.getCreateParams(), {
+      authorization: `${projects}@active`,
+    });
+
+
+    //Act
+    try{
+      await contracts.projects.adduser(projects, ...user.getCreateParams(), {
+        authorization: `${projects}@active`,
+      });
+      fail = false
+    } catch (err){
+      fail = true
+      //console.error(err)
+    }
+
+    //Assert
+    const usersTable = await rpc.get_table_rows({
+      code: projects,
+      scope: projects,
+      table: 'users',
+      json: true
+    });
+    //console.log("Users table is: ", usersTable.rows)
+
+    expect(fail).to.be.true
+
+    assert.deepStrictEqual(usersTable.rows, [{
+      account: user.params.account,
+      user_name: user.params.user_name,
+      entity_id: user.params.entity_id,
+      role: user.params.role,
+      related_projects: user.params.related_projects,
+      description: user.params.description
+    }])
+
+  });
+
+  it("An user cannot have more than one role", async () => {
+    //Arrange
+    let fail
+    const user = await UserFactory.createWithDefaults({ role: Roles.developer, entity_id: 3});
+
+    await contracts.projects.adduser(projects, ...user.getCreateParams(), {
+      authorization: `${projects}@active`,
+    });
+
+    Object.assign(user.params, {
+      role: Roles.issuer
+    });
+
+    //Act
+    try{
+      await contracts.projects.adduser(projects, ...user.getCreateParams(), {
+        authorization: `${projects}@active`,
+      });
+      fail = false
+    } catch (err){
+      fail = true
+      //console.error(err)
+    }
+
+    //Assert
+    const usersTable = await rpc.get_table_rows({
+      code: projects,
+      scope: projects,
+      table: 'users',
+      json: true
+    });
+    //console.log("Users table is: ", usersTable.rows)
+
+    expect(fail).to.be.true
+
+    assert.deepStrictEqual(usersTable.rows, [{
+      account: user.params.account,
+      user_name: user.params.user_name,
+      entity_id: user.params.entity_id,
+      role: Roles.developer,
+      related_projects: user.params.related_projects,
+      description: user.params.description
+    }])
+  });
+
+  it("Only admin role can add new users", async () => {
+    //TODO, depends on requirements, if not, delete this unit test
   });
 
 
