@@ -131,7 +131,7 @@ public:
 
     ACTION changestatus(uint64_t project_id, uint64_t status);
 
-    ACTION adduser(const eosio::name &actor, const eosio::name &account, const std::string &user_name, const eosio::name &role);
+    ACTION adduser(const eosio::name &actor, const eosio::name &account, const std::string &user_name, const eosio::name &role, const std::string &description);
 
     ACTION assignuser(const eosio::name &actor, const eosio::name &account, const uint64_t &project_id);
 
