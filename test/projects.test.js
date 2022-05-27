@@ -231,8 +231,9 @@ describe("Tests for projects smart contract", async function () {
 
   });
 
-  it.only("Cannot add an project if builder is missing", async () =>{
+  it("Cannot add a project if builder is missing", async () =>{
     //Arrange
+    //TODO: update or delete this unit test, since new workflow, any role is needed to approve a given project. 
     const user = await UserFactory.createWithDefaults({ role: Roles.fund });
     await contracts.projects.adduser(projects, ...user.getCreateParams(), {
       authorization: `${projects}@active`,
@@ -245,8 +246,6 @@ describe("Tests for projects smart contract", async function () {
     await contracts.projects.addproject(...project.getCreateActionParams(), {
       authorization: `${user.params.account}@active`,
     });
-
-
 
   }); 
 
