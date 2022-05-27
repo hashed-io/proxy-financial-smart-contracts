@@ -630,7 +630,9 @@ describe('Tests for budgets ', async function () {
       json: true,
       limit: 100
     });
+
     //console.log("\n\n budgets table : ", budgetsTable.rows);
+
 
     const accountsTable = await rpc.get_table_rows({
       code: accounts,
@@ -639,7 +641,9 @@ describe('Tests for budgets ', async function () {
       json: true,
       limit: 100
     });
+
     //console.log(accountsTable.rows[accountsTable.rows.length - 1]);
+
 
     // expect(fail).to.be.true
 
