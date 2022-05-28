@@ -103,6 +103,16 @@ ACTION projects::init()
 	adduser(_self, "tlalocman.sh"_n, "Admin", common::projects::entity::fund);
 	adduser(_self, "proxybuilder"_n, "Builder", common::projects::entity::developer);
 	adduser(_self, "proxybuilder2"_n, "Builder", common::projects::entity::developer);
+
+	//hardcode some projects for testnet
+	addproject("proxyadmin11"_n, "Sky tower", "The Sky Tower is a telecommunications and observation tower in Auckland, New Zealand. Located at the corner of Victoria and Federal Streets within the city's CBD", "QmYLEYPPXnLUcFzyo4XPhzqRUCp71K7xT6iFFRcN2wbYDq:jpeg",1653886800, 1715749200);
+	addproject("proxyadmin11"_n, "Space Needle", "The Space Needle is an observation tower in Seattle, Washington, United States. Considered to be an icon of the city, it has been designated a Seattle landmark. ", "QmcFakE27Gkk2e2Gdj49EUmhaLq3TkiJEq1eSQkLqi3vyA:jpeg", 1682400175, 1714022575);
+
+	//assiguser: builder, investor, regional center, issuer
+	assignuser("proxyadmin11"_n, "builderuser1"_n, 0);
+	assignuser("proxyadmin11"_n, "investoruser"_n, 0);
+	assignuser("proxyadmin11"_n, "regionalcntr"_n, 0);
+	assignuser("proxyadmin11"_n, "issueruser11"_n, 0);
 }
 
 // who can do this?
