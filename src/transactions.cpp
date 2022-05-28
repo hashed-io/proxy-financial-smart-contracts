@@ -643,7 +643,8 @@ void transactions::generate_bulk_files(const eosio::name &actor,
 																			 const uint64_t &date,
 																			 const eosio::asset &amount,
 																			 const uint8_t &add_file)
-{
+{	
+	check(supporting_files.size() >= 1, "Cannot send bulktransaction if files are missing, number of files: " + to_string(supporting_files.size()));
 	auto project_itr = project_t.find(project_id);
 	check(project_itr != project_t.end(), "Project not found!");
 

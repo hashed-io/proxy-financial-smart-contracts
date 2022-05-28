@@ -167,7 +167,7 @@ describe("Tests for transactions smart contract", async function () {
         type: "eb5",
         total_amount: "0.00 USD",
         files: [],
-        state: 0,
+        state: TransactionConstants.drawdownState.daft,
         open_date: drawdownTable.rows[0].open_date,
         close_date: 0,
         creator: "",
@@ -179,7 +179,7 @@ describe("Tests for transactions smart contract", async function () {
         type: "constrcloan",
         total_amount: "0.00 USD",
         files: [],
-        state: 0,
+        state: TransactionConstants.drawdownState.daft,
         open_date: drawdownTable.rows[1].open_date,
         close_date: 0,
         creator: "",
@@ -191,7 +191,7 @@ describe("Tests for transactions smart contract", async function () {
         type: "devequity",
         total_amount: "0.00 USD",
         files: [],
-        state: 0,
+        state: TransactionConstants.drawdownState.daft,
         open_date: drawdownTable.rows[2].open_date,
         close_date: 0,
         creator: "",
@@ -1353,7 +1353,7 @@ describe("Tests for transactions smart contract", async function () {
         date:String(bulk.params[0].date),
         amount:bulk.params[0].amount,
       }],
-      state: 0,
+      state: TransactionConstants.drawdownState.daft,
       open_date: drawdownTable.rows[2].open_date,
       close_date: drawdownTable.rows[2].close_date,
       creator: drawdownTable.rows[2].creator
@@ -1398,7 +1398,7 @@ describe("Tests for transactions smart contract", async function () {
         date:String(bulk2.params[0].date),
         amount:bulk2.params[0].amount,
       }],
-      state: 0,
+      state: TransactionConstants.drawdownState.daft,
       open_date: drawdownTable.rows[2].open_date,
       close_date: drawdownTable.rows[2].close_date,
       creator: drawdownTable.rows[2].creator
@@ -1438,7 +1438,7 @@ describe("Tests for transactions smart contract", async function () {
       type: TransactionConstants.type.devEquity,
       total_amount: drawdownTable.rows[2].total_amount,
       files: [],
-      state: 0,
+      state: TransactionConstants.drawdownState.daft,
       open_date: drawdownTable.rows[2].open_date,
       close_date: drawdownTable.rows[2].close_date,
       creator: drawdownTable.rows[2].creator
@@ -1495,7 +1495,7 @@ describe("Tests for transactions smart contract", async function () {
           date:String(bulk.params[0].date),
           amount:bulk.params[0].amount,
         }],
-        state: 1,
+        state: TransactionConstants.drawdownState.submitted,
         open_date: drawdownTable.rows[2].open_date,
         close_date: drawdownTable.rows[2].close_date,
         creator: builder.params.account
@@ -1539,7 +1539,7 @@ describe("Tests for transactions smart contract", async function () {
         date:String(bulk.params[0].date),
         amount:bulk.params[0].amount,
       }],
-      state: 0,
+      state: TransactionConstants.drawdownState.daft,
       open_date: drawdownTable.rows[1].open_date,
       close_date: drawdownTable.rows[1].close_date,
       creator: drawdownTable.rows[1].creator
@@ -1585,7 +1585,7 @@ describe("Tests for transactions smart contract", async function () {
         date:String(bulk2.params[0].date),
         amount:bulk2.params[0].amount,
       }],
-      state: 0,
+      state: TransactionConstants.drawdownState.daft,
       open_date: drawdownTable.rows[1].open_date,
       close_date: drawdownTable.rows[1].close_date,
       creator: drawdownTable.rows[1].creator
@@ -1626,7 +1626,7 @@ describe("Tests for transactions smart contract", async function () {
       type: TransactionConstants.type.consLoan,
       total_amount: drawdownTable.rows[1].total_amount,
       files: [],
-      state: 0,
+      state: TransactionConstants.drawdownState.daft,
       open_date: drawdownTable.rows[1].open_date,
       close_date: drawdownTable.rows[1].close_date,
       creator: drawdownTable.rows[1].creator
@@ -1682,13 +1682,62 @@ describe("Tests for transactions smart contract", async function () {
           date:String(bulk.params[0].date),
           amount:bulk.params[0].amount,
         }],
-        state: 1,
+        state: TransactionConstants.drawdownState.submitted,
         open_date: drawdownTable.rows[1].open_date,
         close_date: drawdownTable.rows[1].close_date,
         creator: builder.params.account
       });
 
     });
+  });
+
+  const missingFileDrawdowns = [
+    {testName: "Cannot send bulktransaction for Construction Loan if files are missing", drawdownID: 2, type_s: TransactionConstants.type.consLoan, type_str_s: TransactionConstants.type_str.consLoan},
+    {testName: "Cannot send bulktransaction for Developer Equity if files are missing", drawdownID: 3 , type_s: TransactionConstants.type.devEquity, type_str_s: TransactionConstants.type_str.devEquity}
+  ]
+
+  missingFileDrawdowns.forEach(({testName, drawdownID, type_s, type_str_s}) => {
+    it(testName, async () =>{
+    //Arrange
+    let fail;
+    const bulk = await bulkTransactionFactory.createWithDefaults({supporting_files:[]});
+
+    //Act
+    try{
+      await contracts.transactions.bulktransact(builder.params.account, 0, drawdownID, bulk.params, { authorization: `${builder.params.account}@active` });
+      fail = false;
+    } catch (err) {
+      fail = true;
+      //console.log(err)
+    } 
+    //Assert
+    const drawdownTable = await rpc.get_table_rows({
+      code: transactions,
+      scope: project.params.id,
+      table: 'drawdowns',
+      json: true
+    });
+    //console.log('\n drawdown table is: ', JSON.stringify(drawdownTable.rows[drawdownID-1], ' ', 2));
+
+    expect(fail).to.be.true;
+
+    assert.deepStrictEqual(drawdownTable.rows[drawdownID-1], {
+      drawdown_id: drawdownID,
+      drawdown_number: drawdownTable.rows[drawdownID-1].drawdown_number,
+      type_str: type_str_s,
+      type: type_s,
+      total_amount: drawdownTable.rows[drawdownID-1].total_amount,
+      files: [],
+      state: TransactionConstants.drawdownState.daft,
+      open_date: drawdownTable.rows[drawdownID-1].open_date,
+      close_date: drawdownTable.rows[drawdownID-1].close_date,
+      creator: drawdownTable.rows[drawdownID-1].creator
+    });
+
+    });
+  });
+
+  it("Cannot send bulktransaction for Construction Loan if files are missing", async () =>{
   });
 
  });
