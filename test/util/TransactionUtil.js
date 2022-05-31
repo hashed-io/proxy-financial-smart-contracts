@@ -128,7 +128,11 @@ class TransactionFactory {
       }]
     }
 
-    if (!flag) { flag = Flag.create }
+    if (flag == 0){
+      flag = Flag.remove
+    } else if (!flag){
+      flag = Flag.create
+    }
 
     return TransactionFactory.createEntry({
       id,
