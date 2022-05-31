@@ -31,7 +31,8 @@ class User {
     return [
       this.params.account,
       this.params.user_name,
-      this.params.role
+      this.params.role,
+      this.params.description
     ]
   }
 

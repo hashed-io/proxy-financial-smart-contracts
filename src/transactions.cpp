@@ -466,9 +466,9 @@ ACTION transactions::transacts(const eosio::name &actor,
 															 std::vector<common::types::transaction_param> transactions)
 {
 	require_auth(actor);
-
+	check(transactions.size() >= 1, "Cannot send transacts action if there's no transactions");
 	for (int i = 0; i < transactions.size(); i++)
-	{
+	{	
 		if (transactions[i].flag == common::transactions::flag::create)
 		{
 			generate_transaction(actor,
@@ -514,6 +514,13 @@ void transactions::generate_transaction(const eosio::name &actor,
 																				const std::string description,
 																				vector<common::types::url_information> supporting_files)
 {
+
+	check(supporting_files.size() >= 1, " Cannot send a transaction without files, number of files: " + to_string(supporting_files.size()));
+	check(amounts.size() >= 1, " Cannot send a transaction without an amount.");
+	for(int i = 0; i < amounts.size(); i++)
+	{	
+		check(amounts[i].amount > 0, " The amount must be greater than zero.");
+	}
 
 	transaction_tables transactions_t(_self, project_id);
 	account_transaction_tables account_transacion_t(_self, project_id);
@@ -643,7 +650,8 @@ void transactions::generate_bulk_files(const eosio::name &actor,
 																			 const uint64_t &date,
 																			 const eosio::asset &amount,
 																			 const uint8_t &add_file)
-{
+{	
+	check(supporting_files.size() >= 1, "Cannot send a bulktransaction without files, number of files: " + to_string(supporting_files.size()));
 	auto project_itr = project_t.find(project_id);
 	check(project_itr != project_t.end(), "Project not found!");
 

@@ -35,6 +35,7 @@ const {
 const { func } = require("promisify");
 const assert = require("assert");
 const { Console } = require("console");
+const { captureRejectionSymbol } = require("events");
 
 const expect = require("chai").expect;
 
@@ -167,7 +168,7 @@ describe("Tests for transactions smart contract", async function () {
         type: "eb5",
         total_amount: "0.00 USD",
         files: [],
-        state: 0,
+        state: TransactionConstants.drawdownState.daft,
         open_date: drawdownTable.rows[0].open_date,
         close_date: 0,
         creator: "",
@@ -179,7 +180,7 @@ describe("Tests for transactions smart contract", async function () {
         type: "constrcloan",
         total_amount: "0.00 USD",
         files: [],
-        state: 0,
+        state: TransactionConstants.drawdownState.daft,
         open_date: drawdownTable.rows[1].open_date,
         close_date: 0,
         creator: "",
@@ -191,7 +192,7 @@ describe("Tests for transactions smart contract", async function () {
         type: "devequity",
         total_amount: "0.00 USD",
         files: [],
-        state: 0,
+        state: TransactionConstants.drawdownState.daft,
         open_date: drawdownTable.rows[2].open_date,
         close_date: 0,
         creator: "",
@@ -212,7 +213,7 @@ describe("Tests for transactions smart contract", async function () {
     it(testName, async () => {
       // Arrange
       const transaction = await TransactionFactory.createWithDefaults({});
-      // console.log(transaction.getCreateParams());
+      //console.log('transaction factory is: ', JSON.stringify(transaction.getCreateParams(), " ", 2));
 
       // Act
       await contracts.transactions.transacts(builder.params.account, project.params.id, drawdown_id, transaction.getCreateParams(), { authorization: `${builder.params.account}@active` });
@@ -224,12 +225,12 @@ describe("Tests for transactions smart contract", async function () {
         table: 'drawdowns',
         json: true
       });
+      //console.log('drawdowns table is: ', drawdownTable)
 
       expect(drawdownTable.rows[drawdown_id - 1]).to.include({
         state: DrawdownState.daft,
         total_amount: `${transaction.getCreateParams()[0].amounts[0].amount * 0.01}.00 USD`
       });
-
 
       const transactionsTable = await rpc.get_table_rows({
         code: transactions,
@@ -237,6 +238,7 @@ describe("Tests for transactions smart contract", async function () {
         table: 'transactions',
         json: true
       });
+      //console.log('transactions table is: ', transactionsTable)
 
       expect(transactionsTable.rows).to.deep.equals([
         {
@@ -259,7 +261,6 @@ describe("Tests for transactions smart contract", async function () {
         table: 'accounts',
         json: true
       });
-
       // console.table(accountsTable.rows);
 
       expect(accountsTable.rows[1]).to.include({ increase_balance: `${transaction.getCreateParams()[0].amounts[0].amount * 0.01}.00 USD` });
@@ -269,7 +270,7 @@ describe("Tests for transactions smart contract", async function () {
 
   });
 
-  const drawdownEditTransactionsCases = [
+  const drawdownEditTransactionsCases = [ 
     { testName: 'Create and edit a transaction for a EB5 drawdown', drawdown_id: 1 },
     { testName: 'Create and edit a transaction for a Construction Loan drawdown', drawdown_id: 2 },
     { testName: 'Create and edit a transaction for a Developer Equity drawdown', drawdown_id: 3 }
@@ -1353,7 +1354,7 @@ describe("Tests for transactions smart contract", async function () {
         date:String(bulk.params[0].date),
         amount:bulk.params[0].amount,
       }],
-      state: 0,
+      state: TransactionConstants.drawdownState.daft,
       open_date: drawdownTable.rows[2].open_date,
       close_date: drawdownTable.rows[2].close_date,
       creator: drawdownTable.rows[2].creator
@@ -1398,7 +1399,7 @@ describe("Tests for transactions smart contract", async function () {
         date:String(bulk2.params[0].date),
         amount:bulk2.params[0].amount,
       }],
-      state: 0,
+      state: TransactionConstants.drawdownState.daft,
       open_date: drawdownTable.rows[2].open_date,
       close_date: drawdownTable.rows[2].close_date,
       creator: drawdownTable.rows[2].creator
@@ -1438,7 +1439,7 @@ describe("Tests for transactions smart contract", async function () {
       type: TransactionConstants.type.devEquity,
       total_amount: drawdownTable.rows[2].total_amount,
       files: [],
-      state: 0,
+      state: TransactionConstants.drawdownState.daft,
       open_date: drawdownTable.rows[2].open_date,
       close_date: drawdownTable.rows[2].close_date,
       creator: drawdownTable.rows[2].creator
@@ -1495,7 +1496,7 @@ describe("Tests for transactions smart contract", async function () {
           date:String(bulk.params[0].date),
           amount:bulk.params[0].amount,
         }],
-        state: 1,
+        state: TransactionConstants.drawdownState.submitted,
         open_date: drawdownTable.rows[2].open_date,
         close_date: drawdownTable.rows[2].close_date,
         creator: builder.params.account
@@ -1539,7 +1540,7 @@ describe("Tests for transactions smart contract", async function () {
         date:String(bulk.params[0].date),
         amount:bulk.params[0].amount,
       }],
-      state: 0,
+      state: TransactionConstants.drawdownState.daft,
       open_date: drawdownTable.rows[1].open_date,
       close_date: drawdownTable.rows[1].close_date,
       creator: drawdownTable.rows[1].creator
@@ -1585,7 +1586,7 @@ describe("Tests for transactions smart contract", async function () {
         date:String(bulk2.params[0].date),
         amount:bulk2.params[0].amount,
       }],
-      state: 0,
+      state: TransactionConstants.drawdownState.daft,
       open_date: drawdownTable.rows[1].open_date,
       close_date: drawdownTable.rows[1].close_date,
       creator: drawdownTable.rows[1].creator
@@ -1626,7 +1627,7 @@ describe("Tests for transactions smart contract", async function () {
       type: TransactionConstants.type.consLoan,
       total_amount: drawdownTable.rows[1].total_amount,
       files: [],
-      state: 0,
+      state: TransactionConstants.drawdownState.daft,
       open_date: drawdownTable.rows[1].open_date,
       close_date: drawdownTable.rows[1].close_date,
       creator: drawdownTable.rows[1].creator
@@ -1682,7 +1683,7 @@ describe("Tests for transactions smart contract", async function () {
           date:String(bulk.params[0].date),
           amount:bulk.params[0].amount,
         }],
-        state: 1,
+        state: TransactionConstants.drawdownState.submitted,
         open_date: drawdownTable.rows[1].open_date,
         close_date: drawdownTable.rows[1].close_date,
         creator: builder.params.account
@@ -1690,5 +1691,449 @@ describe("Tests for transactions smart contract", async function () {
 
     });
   });
+
+  const noFilesTransactionCases = [
+    {testName: "Cannot send a transaction for EB5 without files", drawdown_id: 1},
+    {testName: "Cannot send a transaction for Construction Loan without files", drawdown_id: 2},
+    {testName: "Cannot send a transaction for Developer Equity without files", drawdown_id: 3}
+  ]
+
+  noFilesTransactionCases.forEach(({testName, drawdown_id}) =>{
+    it(testName, async () => {
+      // Arrange
+      let fail
+      const transaction = await TransactionFactory.createWithDefaults({supporting_files:[]});
+      //console.log('transaction factory is: ', JSON.stringify(transaction.getCreateParams(), " ", 2));
+
+      // Act
+      try{
+        await contracts.transactions.transacts(builder.params.account, project.params.id, drawdown_id, transaction.getCreateParams(), { authorization: `${builder.params.account}@active` });
+        fail = false;
+      } catch (err) {
+        //console.log(err);
+        fail = true;
+      }
+
+      // Assert    
+      const drawdownTable = await rpc.get_table_rows({
+        code: transactions,
+        scope: project.params.id,
+        table: 'drawdowns',
+        json: true
+      });
+      //console.log('drawdowns table is: ', drawdownTable.rows[drawdown_id - 1])
+
+      const transactionsTable = await rpc.get_table_rows({
+        code: transactions,
+        scope: project.params.id,
+        table: 'transactions',
+        json: true
+      });
+      //console.log('transactions table is: ', transactionsTable)
+
+      expect(fail).to.be.true;
+
+      expect(transactionsTable.rows).to.deep.equals([]);
+
+    });
+  });
+
+  const noAmountsTransactionCases = [
+    {testName: 'Cannot send a transaction for EB5 without an amount', drawdown_id:1},
+    {testName: 'Cannot send a transaction for Construction Loan without an amount', drawdown_id:2},
+    {testName: 'Cannot send a transaction for Developer Equity without an amount', drawdown_id:3}
+  ]
+
+  noAmountsTransactionCases.forEach(({testName, drawdown_id}) =>{
+    it(testName, async () =>{
+      // Arrange
+      let fail
+      const transaction = await TransactionFactory.createWithDefaults({amounts:[]});
+      //console.log('transaction factory is: ', JSON.stringify(transaction.getCreateParams(), " ", 2));
+
+      //Act
+      try{
+        await contracts.transactions.transacts(builder.params.account, project.params.id, drawdown_id, transaction.getCreateParams(), { authorization: `${builder.params.account}@active` });
+        fail = false;
+      } catch (err) {
+        //console.log(err);
+        fail = true;
+      }
+
+      // Assert    
+      const drawdownTable = await rpc.get_table_rows({
+        code: transactions,
+        scope: project.params.id,
+        table: 'drawdowns',
+        json: true
+      });
+      //console.log('drawdowns table is: ', drawdownTable.rows[drawdown_id - 1])
+
+      const transactionsTable = await rpc.get_table_rows({
+        code: transactions,
+        scope: project.params.id,
+        table: 'transactions',
+        json: true
+      });
+      //console.log('transactions table is: ', transactionsTable)
+
+      expect(fail).to.be.true;
+
+      expect(transactionsTable.rows).to.deep.equals([]);
+
+
+
+    });
+  });
+
+  const missingFilesDrawdowns = [
+    {testName: "Cannot send bulktransaction for Construction Loan if files are missing", drawdownID: 2, type_s: TransactionConstants.type.consLoan, type_str_s: TransactionConstants.type_str.consLoan},
+    {testName: "Cannot send bulktransaction for Developer Equity if files are missing", drawdownID: 3 , type_s: TransactionConstants.type.devEquity, type_str_s: TransactionConstants.type_str.devEquity}
+  ]
+
+  missingFilesDrawdowns.forEach(({testName, drawdownID, type_s, type_str_s}) => {
+    it(testName, async () =>{
+    //Arrange
+    let fail;
+    const bulk = await bulkTransactionFactory.createWithDefaults({supporting_files:[]});
+
+    //Act
+    try{
+      await contracts.transactions.bulktransact(builder.params.account, 0, drawdownID, bulk.params, { authorization: `${builder.params.account}@active` });
+      fail = false;
+    } catch (err) {
+      fail = true;
+      //console.log(err)
+    } 
+    //Assert
+    const drawdownTable = await rpc.get_table_rows({
+      code: transactions,
+      scope: project.params.id,
+      table: 'drawdowns',
+      json: true
+    });
+    //console.log('\n drawdown table is: ', JSON.stringify(drawdownTable.rows[drawdownID-1], ' ', 2));
+
+    expect(fail).to.be.true;
+
+    assert.deepStrictEqual(drawdownTable.rows[drawdownID-1], {
+      drawdown_id: drawdownID,
+      drawdown_number: drawdownTable.rows[drawdownID-1].drawdown_number,
+      type_str: type_str_s,
+      type: type_s,
+      total_amount: drawdownTable.rows[drawdownID-1].total_amount,
+      files: [],
+      state: TransactionConstants.drawdownState.daft,
+      open_date: drawdownTable.rows[drawdownID-1].open_date,
+      close_date: drawdownTable.rows[drawdownID-1].close_date,
+      creator: drawdownTable.rows[drawdownID-1].creator
+    });
+
+    });
+  });
+
+  const noTransactionsCases = [
+    {testName:"Cannot send transacts action if there's no transactions for EB5 drawdown", drawdown_id: 1},
+    {testName:"Cannot send transacts action if there's no transactions for Construction Loan drawdown", drawdown_id: 2},
+    {testName:"Cannot send transacts action if there's no transactions for Developer Equity drawdown", drawdown_id: 3}
+  ]
+
+  noTransactionsCases.forEach(({testName, drawdown_id}) =>{
+    it(testName, async () =>{
+      // Arrange
+      let fail
+      const transaction = []
+      //console.log('transaction factory is: ', JSON.stringify(transaction, " ", 2));
+
+      //Act 
+      try{
+        await contracts.transactions.transacts(builder.params.account, project.params.id, drawdown_id, transaction, { authorization: `${builder.params.account}@active` });
+        fail = false;
+      } catch (err) {
+        //console.log(err);
+        fail = true;
+      }
+
+      // Assert    
+      const drawdownTable = await rpc.get_table_rows({
+        code: transactions,
+        scope: project.params.id,
+        table: 'drawdowns',
+        json: true
+      });
+      //console.log('drawdowns table is: ', drawdownTable.rows[drawdown_id - 1])
+
+      const transactionsTable = await rpc.get_table_rows({
+        code: transactions,
+        scope: project.params.id,
+        table: 'transactions',
+        json: true
+      });
+      //console.log('transactions table is: ', transactionsTable)
+
+      expect(fail).to.be.true;
+
+      expect(transactionsTable.rows).to.deep.equals([]);
+
+    });
+  });
+
+  it("User can send multiple amounts in a single transaction for EB5 drawdown", async () => {
+      // Arrange
+      let drawdown_id = 1
+      let totalAmount = 0;
+      const transaction = await TransactionFactory.createWithDefaults({
+        id: 1,
+        amounts:[{
+          account_id: 3,
+          amount: 4000
+        },{
+          account_id: 4,
+          amount: 5000
+        },
+        {
+          account_id: 5,
+          amount: 6000
+        }],
+        date: new Date().now,
+        flag: 1
+      });
+
+      for( let i = 0; i < transaction.params.amounts.length; i++){
+        totalAmount += transaction.params.amounts[i].amount
+      }
+
+      // Act
+      try{
+        await contracts.transactions.transacts(builder.params.account, project.params.id, drawdown_id, transaction.getCreateParams(), { authorization: `${builder.params.account}@active` });
+      } catch (err) {
+        //console.log(err);
+      }
+
+      // Assert    
+      const drawdownTable = await rpc.get_table_rows({
+        code: transactions,
+        scope: project.params.id,
+        table: 'drawdowns',
+        json: true
+      });
+      //console.log('drawdowns table is: ', drawdownTable.rows[drawdown_id - 1])
+
+      const transactionsTable = await rpc.get_table_rows({
+        code: transactions,
+        scope: project.params.id,
+        table: 'transactions',
+        json: true
+      });
+      //console.log('transactions table is: ', transactionsTable)
+
+      const accountsTable = await rpc.get_table_rows({
+        code: accounts,
+        scope: project.params.id,
+        table: 'accounts',
+        json: true
+      });
+      //console.log(accountsTable.rows);
+
+      expect(drawdownTable.rows[drawdown_id - 1]).to.include({
+        state: DrawdownState.daft,
+        total_amount: `${totalAmount / 100}.00 USD`
+      });
+
+      expect(accountsTable.rows[0]).to.include({ increase_balance: `${totalAmount / 100}.00 USD` });
+      expect(accountsTable.rows[2]).to.include({ increase_balance: `${transaction.params.amounts[0].amount / 100}.00 USD` });
+      expect(accountsTable.rows[3]).to.include({ increase_balance: `${transaction.params.amounts[1].amount / 100}.00 USD` });
+      expect(accountsTable.rows[4]).to.include({ increase_balance: `${transaction.params.amounts[2].amount / 100}.00 USD` });
+
+  });
+
+  it("Delete transaction remove ALL balances when a transaction has received multiple amounts", async () => {
+    // Arrange
+    let drawdown_id = 1
+    let totalAmount = 0;
+    const transaction = await TransactionFactory.createWithDefaults({
+      id: 1,
+      amounts:[{
+        account_id: 3,
+        amount: 4000
+      },{
+        account_id: 4,
+        amount: 5000
+      },
+      {
+        account_id: 5,
+        amount: 6000
+      }],
+      date: new Date().now,
+      flag: 1
+    });
+
+    const transaction_to_remove = await TransactionFactory.createWithDefaults({
+      id: 1,
+      flag: 0
+    });
+
+    for( let i = 0; i < transaction.params.amounts.length; i++){
+      //console.log(transaction.params.amounts[i].amount)
+      totalAmount += transaction.params.amounts[i].amount
+    }
+
+    await contracts.transactions.transacts(builder.params.account, project.params.id, drawdown_id, transaction.getCreateParams(), { authorization: `${builder.params.account}@active` });
+
+    // Act
+    await contracts.transactions.transacts(
+      builder.params.account, 
+      project.params.id, 
+      drawdown_id, 
+      transaction_to_remove.getCreateParams(), 
+      { authorization: `${builder.params.account}@active` })
+
+    // Assert    
+    const drawdownTable = await rpc.get_table_rows({
+      code: transactions,
+      scope: project.params.id,
+      table: 'drawdowns',
+      json: true
+    });
+    //console.log('drawdowns table is: ', drawdownTable.rows[drawdown_id - 1])
+
+    const transactionsTable = await rpc.get_table_rows({
+      code: transactions,
+      scope: project.params.id,
+      table: 'transactions',
+      json: true
+    });
+    //console.log('transactions table is: ', transactionsTable)
+
+    const accountsTable = await rpc.get_table_rows({
+      code: accounts,
+      scope: project.params.id,
+      table: 'accounts',
+      json: true
+    });
+    //console.log(accountsTable.rows);
+
+    expect(drawdownTable.rows[drawdown_id - 1]).to.include({
+      state: DrawdownState.daft,
+      total_amount: `${0}.00 USD`
+    });
+
+    expect(accountsTable.rows[0]).to.include({ increase_balance: `${0}.00 USD` });
+    expect(accountsTable.rows[2]).to.include({ increase_balance: `${0}.00 USD` });
+    expect(accountsTable.rows[3]).to.include({ increase_balance: `${0}.00 USD` });
+    expect(accountsTable.rows[4]).to.include({ increase_balance: `${0}.00 USD` });
+
+  });
+
+  it("User can send multiple transactions in a single action", async () => {
+    //Arrange
+    let drawdown_id = 1
+    let totalAmount = 0;
+    const transaction = await TransactionFactory.createWithDefaults({id:1})
+    const transaction2 = await TransactionFactory.createWithDefaults({
+      id:2,
+      amounts:[{
+        account_id: 3,
+        amount: 4000
+      },{
+        account_id: 4,
+        amount: 5000
+      },
+      {
+        account_id: 5,
+        amount: 6000
+      }],
+      date: new Date().now,
+      flag:1
+    })
+
+    const bigTransact = [transaction.params, transaction2.params]
+    
+    totalAmount = transaction.params.amounts[0].amount
+    for( let i = 0; i < transaction2.params.amounts.length; i++){
+      totalAmount += transaction2.params.amounts[i].amount
+    }
+
+    // Act
+    try{
+      await contracts.transactions.transacts(builder.params.account, project.params.id, drawdown_id, bigTransact, { authorization: `${builder.params.account}@active` });
+    } catch (err) {
+      console.log(err);
+    }
+
+    // Assert    
+    const drawdownTable = await rpc.get_table_rows({
+      code: transactions,
+      scope: project.params.id,
+      table: 'drawdowns',
+      json: true
+    });
+    //console.log('drawdowns table is: ', drawdownTable.rows[drawdown_id - 1])
+
+    const transactionsTable = await rpc.get_table_rows({
+      code: transactions,
+      scope: project.params.id,
+      table: 'transactions',
+      json: true
+    });
+    //console.log('transactions table is: ', transactionsTable)
+
+    const accountsTable = await rpc.get_table_rows({
+      code: accounts,
+      scope: project.params.id,
+      table: 'accounts',
+      json: true
+    });
+    //console.log(accountsTable.rows);
+
+    expect(drawdownTable.rows[drawdown_id - 1]).to.include({
+      state: DrawdownState.daft,
+      total_amount: `${totalAmount / 100}.00 USD`
+    });
+
+    expect(accountsTable.rows[0]).to.include({ increase_balance: `${(totalAmount - transaction.params.amounts[0].amount) / 100}.00 USD` });
+    expect(accountsTable.rows[2]).to.include({ increase_balance: `${transaction2.params.amounts[0].amount / 100}.00 USD` });
+    expect(accountsTable.rows[3]).to.include({ increase_balance: `${transaction2.params.amounts[1].amount / 100}.00 USD` });
+    expect(accountsTable.rows[4]).to.include({ increase_balance: `${transaction2.params.amounts[2].amount / 100}.00 USD` });
+    expect(accountsTable.rows[5]).to.include({ increase_balance: `${transaction.params.amounts[0].amount / 100}.00 USD` });
+
+
+  });
+
+  it("Transaction amount must be greater than zero", async () => {
+    //Arrange
+    let drawdown_id = 1
+    let fail
+    const transaction = await TransactionFactory.createWithDefaults({
+      amounts:[{
+        account_id: 3,
+        amount: 0
+      }]
+    })
+
+    // Act
+    try{
+      await contracts.transactions.transacts(builder.params.account, project.params.id, drawdown_id, transaction.getCreateParams(), { authorization: `${builder.params.account}@active` });
+      fail = false
+    } catch (err) {
+      fail = true
+    }
+
+    //Assert
+    const transactionsTable = await rpc.get_table_rows({
+      code: transactions,
+      scope: project.params.id,
+      table: 'transactions',
+      json: true
+    });
+    //console.log('transactions table is: ', transactionsTable)
+
+    expect(fail).to.be.true;
+
+    expect(transactionsTable.rows).to.deep.equals([]);
+
+
+  }); 
+
 
  });
