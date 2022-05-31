@@ -213,7 +213,7 @@ describe("Tests for transactions smart contract", async function () {
     it(testName, async () => {
       // Arrange
       const transaction = await TransactionFactory.createWithDefaults({});
-      console.log('transaction factory is: ', JSON.stringify(transaction.getCreateParams(), " ", 2));
+      //console.log('transaction factory is: ', JSON.stringify(transaction.getCreateParams(), " ", 2));
 
       // Act
       await contracts.transactions.transacts(builder.params.account, project.params.id, drawdown_id, transaction.getCreateParams(), { authorization: `${builder.params.account}@active` });
@@ -2099,6 +2099,41 @@ describe("Tests for transactions smart contract", async function () {
 
 
   });
+
+  it("Transaction amount must be greater than zero", async () => {
+    //Arrange
+    let drawdown_id = 1
+    let fail
+    const transaction = await TransactionFactory.createWithDefaults({
+      amounts:[{
+        account_id: 3,
+        amount: 0
+      }]
+    })
+
+    // Act
+    try{
+      await contracts.transactions.transacts(builder.params.account, project.params.id, drawdown_id, transaction.getCreateParams(), { authorization: `${builder.params.account}@active` });
+      fail = false
+    } catch (err) {
+      fail = true
+    }
+
+    //Assert
+    const transactionsTable = await rpc.get_table_rows({
+      code: transactions,
+      scope: project.params.id,
+      table: 'transactions',
+      json: true
+    });
+    //console.log('transactions table is: ', transactionsTable)
+
+    expect(fail).to.be.true;
+
+    expect(transactionsTable.rows).to.deep.equals([]);
+
+
+  }); 
 
 
  });

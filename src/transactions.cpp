@@ -515,8 +515,12 @@ void transactions::generate_transaction(const eosio::name &actor,
 																				vector<common::types::url_information> supporting_files)
 {
 
-	check(supporting_files.size() >= 1, "Cannot send a transaction without files, number of files: " + to_string(supporting_files.size()));
-	check(amounts.size() >= 1, "Cannot send a transaction without an amount.");
+	check(supporting_files.size() >= 1, " Cannot send a transaction without files, number of files: " + to_string(supporting_files.size()));
+	check(amounts.size() >= 1, " Cannot send a transaction without an amount.");
+	for(int i = 0; i < amounts.size(); i++)
+	{	
+		check(amounts[i].amount > 0, " The amount must be greater than zero.");
+	}
 
 	transaction_tables transactions_t(_self, project_id);
 	account_transaction_tables account_transacion_t(_self, project_id);
