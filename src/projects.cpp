@@ -618,7 +618,7 @@ ACTION projects::assignuser(const eosio::name &actor, const eosio::name &account
 		require_auth(_self);
 	}
 	auto user_itr = user_t.find(account.value);
-	check(user_itr != user_t.end(), common::contracts::projects.to_string() + ": the account does not exist.");
+	check(user_itr != user_t.end(), common::contracts::projects.to_string() + ": assignuser -> the account does not exist.");
 
 	auto project_itr = project_t.find(project_id);
 	check(project_itr != project_t.end(), common::contracts::projects.to_string() + ": the project does not exist.");

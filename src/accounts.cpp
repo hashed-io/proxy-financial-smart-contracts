@@ -290,7 +290,7 @@ ACTION accounts::editaccount(const eosio::name &actor,
     account_tables accounts(_self, project_id);
 
     auto itr_account = accounts.find(account_id);
-    check(itr_account != accounts.end(), common::contracts::accounts.to_string() + ": the account does not exist.");
+    check(itr_account != accounts.end(), common::contracts::accounts.to_string() + ": editaccount -> the account does not exist.");
 
     // action(
     //     permission_level(common::contracts::permissions, "active"_n),
