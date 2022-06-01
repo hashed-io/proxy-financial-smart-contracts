@@ -43,6 +43,7 @@ void ConstructionLoanDrawdown::update_impl(const uint64_t &drawdown_id, const eo
   transactions::project_tables project_t(common::contracts::projects, common::contracts::projects.value);
   auto project_itr = project_t.find(project_id);
 
+  check(project_itr -> builder.value > 0 , "There is no assigned builder - Construction Loan ");
   if (drawdown_itr->state == DRAWDOWN_STATES.DAFT)
   {
     require_auth(project_itr->builder);
