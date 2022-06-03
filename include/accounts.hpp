@@ -25,9 +25,6 @@
 #include <common/tables/entity.hpp>
 #include <common/tables/budget.hpp>
 
-#include <vector>
-
-
 using namespace eosio;
 using namespace std;
 
