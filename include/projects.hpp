@@ -5,27 +5,6 @@
 #include <eosio/asset.hpp>
 #include <eosio/symbol.hpp>
 
-#include <util.hpp>
-
-#include <common/constants.hpp>
-#include <common/data_types.hpp>
-#include <common/action_names.hpp>
-
-#include <accounts/account_types.hpp>
-#include <accounts/account_subtypes.hpp>
-
-#include <projects/project_status.hpp>
-#include <projects/entity_types.hpp>
-#include <projects/investment_status.hpp>
-#include <projects/project_class.hpp>
-#include <projects/transfer_status.hpp>
-
-#include <common/tables/project.hpp>
-#include <common/tables/user.hpp>
-#include <common/tables/entity.hpp>
-#include <common/tables/investment.hpp>
-#include <common/tables/fund_transfer.hpp>
-
 using namespace eosio;
 using namespace std;
 

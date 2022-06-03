@@ -226,7 +226,22 @@ ACTION accounts::initaccounts(const uint64_t &project_id)
             new_account.account_symbol = common::currency; });
         itr_types++;
     }
-}
+    auto accounts_by_ledger = accounts.get_index<"byledger"_n>();
+    auto account_itr = accounts_by_ledger.find(ledger_id);
+
+    uint64_t hard_cost_parent = 0;
+    uint64_t soft_cost_parent = 0;
+
+    while (account_itr != accounts_by_ledger.end())
+    {
+        if (hard_cost_parent != 0 && soft_cost_parent != 0)
+        {
+            break;
+        }
+        if (account_itr->account_name == "Hard Cost")
+        {
+            hard_cost_parent = account_itr->account_id;
+        }
 
 ACTION accounts::addbalance(const uint64_t &project_id,
                             const uint64_t &account_id,
