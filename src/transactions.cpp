@@ -206,6 +206,32 @@ ACTION transactions::reset () {
 	}
 }
 
+ACTION transactions::clear () {
+	require_auth(_self);
+
+	for (int i = 0; i < RESET_IDS; i++) {
+		transaction_tables transactions(_self, i);
+		
+		auto itr_t = transactions.begin();
+		while (itr_t != transactions.end()) {
+			itr_t = transactions.erase(itr_t);
+		}
+
+		account_transaction_tables accnttrxns(_self, i);
+
+		auto itr_at = accnttrxns.begin();
+		while (itr_at != accnttrxns.end()) {
+			itr_at = accnttrxns.erase(itr_at);
+		}
+
+		drawdown_tables drawdowns(_self, i);
+		auto itr_d = drawdowns.begin();
+		while (itr_d != drawdowns.end()) {
+			itr_d = drawdowns.erase(itr_d);
+		}
+	}
+}
+
 ACTION transactions::transact ( name actor, 
 						  		uint64_t project_id, 
 								vector<transaction_amount> amounts,
@@ -384,4 +410,4 @@ ACTION transactions::toggledrdwn (uint64_t project_id, uint64_t drawdown_id) {
 
 
 
-EOSIO_DISPATCH(transactions, (reset)(transact)(deletetrxn)(edittrxn)(deletetrxns)(submitdrwdn)(initdrawdown)(toggledrdwn));
+EOSIO_DISPATCH(transactions, (reset)(clear)(transact)(deletetrxn)(edittrxn)(deletetrxns)(submitdrwdn)(initdrawdown)(toggledrdwn));
