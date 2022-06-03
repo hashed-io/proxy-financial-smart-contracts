@@ -67,7 +67,7 @@ void transactions::make_transaction(name actor,
 	while (itr_amounts != amounts.end())
 	{
 		auto itr_account = accounts.find(itr_amounts->account_id);
-		check(itr_account != accounts.end(), common::contracts::transactions.to_string() + ": the account does not exist.");
+		check(itr_account != accounts.end(), common::contracts::transactions.to_string() + ": make_transaction -> the account does not exist.");
 
 		if (ledger_id != itr_account->ledger_id)
 		{
@@ -548,13 +548,13 @@ void transactions::generate_transaction(const eosio::name &actor,
 	while (itr_amounts != amounts.end())
 	{
 		auto itr_account = account_t.find(itr_amounts->account_id);
-		check(itr_account != account_t.end(), common::contracts::transactions.to_string() + ": the account does not exist.");
+		check(itr_account != account_t.end(), common::contracts::transactions.to_string() + ": generate_transaction -> the account does not exist.");
 
 		// ! update this to be the global ledger
 
 		if (ledger_id != itr_account->ledger_id)
 		{
-			check(ledger_id == 0, common::contracts::transactions.to_string() + ": can not edit different ledgers in the same transaction.");
+			check(ledger_id == 0, common::contracts::transactions.to_string() + ":  generate_transaction -> can not edit different ledgers in the same transaction.");
 			ledger_id = itr_account->ledger_id;
 		}
 

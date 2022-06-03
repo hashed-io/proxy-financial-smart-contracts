@@ -23,6 +23,14 @@ const {
   ProjectUtil,
 } = require("./util/ProjectUtil");
 const { UserFactory, Roles } = require("./util/UserUtil");
+const {
+  TransactionFactory,
+  Flag,
+  DrawdownState,
+  bulkTransaction, 
+  bulkTransactionFactory,
+  TransactionConstants
+} = require("./util/TransactionUtil");
 
 const { func } = require("promisify");
 const assert = require("assert");
@@ -231,23 +239,6 @@ describe("Tests for projects smart contract", async function () {
 
   });
 
-  it("Cannot add a project if builder is missing", async () =>{
-    //Arrange
-    //TODO: update or delete this unit test, since new workflow, any role is needed to approve a given project. 
-    const user = await UserFactory.createWithDefaults({ role: Roles.fund });
-    await contracts.projects.adduser(projects, ...user.getCreateParams(), {
-      authorization: `${projects}@active`,
-    });
-
-    const project = await ProjectFactory.createWithDefaults({
-      actor: user.params.account,
-    });
-    
-    await contracts.projects.addproject(...project.getCreateActionParams(), {
-      authorization: `${user.params.account}@active`,
-    });
-
-  }); 
 
   it("Assign one of each type (Investor, Builder, Regional Center, Issuer)", async () => {
     //Arrange
@@ -1851,5 +1842,298 @@ describe("Tests for projects smart contract", async function () {
     ])
 
   });
+
+  const transactionsWithoutBuilderCases = [
+    {testName: "Cannot send a transaction for EB5 if builder is missing", drawdown_id: 1},
+    {testName: "Cannot send a transaction for Construction Loan if builder is missing", drawdown_id: 1},
+    {testName: "Cannot send a transaction for Developer Equity if builder is missing", drawdown_id: 1}
+  ]
+
+  transactionsWithoutBuilderCases.forEach(({testName, drawdown_id}) => {
+    it(testName, async () =>{
+      //Arrange
+      const transaction = await TransactionFactory.createWithDefaults({});
+
+      const project = await ProjectFactory.createWithDefaults({
+        actor: admin.params.account,
+      });
+
+      await contracts.projects.addproject(...project.getCreateActionParams(), {
+        authorization: `${admin.params.account}@active`,
+      });
+
+      // Act
+      try{
+        await contracts.transactions.transacts(issuer.params.account, 0, drawdown_id, transaction.getCreateParams(), { authorization: `${issuer.params.account}@active` });
+        fail = true
+      } catch (err) {
+        //console.error(err)
+        fail = true
+      }
+
+      //Assert
+      const usersTable = await rpc.get_table_rows({
+        code: projects,
+        scope: projects,
+        table: 'users',
+        json: true
+      });
+      //console.log(usersTable.rows); 
+
+      const transactionsTable = await rpc.get_table_rows({
+        code: transactions,
+        scope: project.params.id,
+        table: 'transactions',
+        json: true
+      });
+      //console.log('transactions table is: ', transactionsTable)
+
+      expect(transactionsTable.rows).to.deep.equals([]);
+
+      expect(fail).to.be.true
+
+    });
+  });
+
+  const userRolesTransactionsCases = [
+    {testName: "Investor role cannot send transactions for EB5 drawdowns", drawdown_id: 1, userName: "investoruser"},
+    {testName: "Issuer role cannot send transactions for EB5 drawdowns", drawdown_id: 1, userName: "issueruser11"},
+    {testName: "Regional Center role cannot send transactions for EB5 drawdowns", drawdown_id: 1, userName: "regionalcntr"},
+    {testName: "External builder cannot send transactions for EB5 drawdowns", drawdown_id: 1, userName: "builderuser2"}
+  ]
+
+  userRolesTransactionsCases.forEach(({testName, drawdown_id, userName}) => {
+    it(testName, async () =>{
+      //Arrange
+      await EnvironmentUtil.createAccount("builderuser2");
+
+      const transaction = await TransactionFactory.createWithDefaults({});
+
+      const project = await ProjectFactory.createWithDefaults({
+        actor: admin.params.account,
+      });
+
+      Object.assign(project.params, {
+        status: 1,
+        id: 0,
+      });
+
+      await contracts.projects.addproject(...project.getCreateActionParams(), {
+        authorization: `${admin.params.account}@active`,
+      });
+
+      await contracts.projects.assignuser(
+        admin.params.account,
+        builder.params.account,
+        0,
+        { authorization: `${admin.params.account}@active` }
+      );
+
+      // Act
+      try{
+        await contracts.transactions.transacts(userName, project.params.id, drawdown_id, transaction.getCreateParams(), { authorization: `${userName}@active` });
+        fail = true
+      } catch (err) {
+        //console.error(err)
+        fail = true
+      }
+
+      //Assert
+      const usersTable = await rpc.get_table_rows({
+        code: projects,
+        scope: projects,
+        table: 'users',
+        json: true
+      });
+      //console.log(usersTable.rows); 
+
+      const transactionsTable = await rpc.get_table_rows({
+        code: transactions,
+        scope: project.params.id,
+        table: 'transactions',
+        json: true
+      });
+      //console.log('transactions table is: ', transactionsTable)
+
+      expect(transactionsTable.rows).to.deep.equals([]);
+
+      expect(fail).to.be.true
+
+    });
+  });
+
+  it("A removed builder tries to do a transaction for a project where he was assigned (EB5 case)", async () =>  {
+    //Arrange
+    let drawdown_id = 1 //EB5 drawdown
+    const project = await ProjectFactory.createWithDefaults({
+      actor: admin.params.account,
+    });
+
+    await contracts.projects.addproject(...project.getCreateActionParams(), {
+      authorization: `${admin.params.account}@active`,
+    });
+
+    Object.assign(project.params, {
+      status: 1,
+      id: 0,
+      builder: builder.params.account
+    });
+
+    await contracts.projects.assignuser(
+      admin.params.account,
+      builder.params.account,
+      0,
+      { authorization: `${admin.params.account}@active` }
+    );
+
+    const transaction = await TransactionFactory.createWithDefaults({});
+    const transaction2 = await TransactionFactory.createWithDefaults({});
+    await contracts.transactions.transacts(builder.params.account, project.params.id, drawdown_id, transaction.getCreateParams(), { authorization: `${builder.params.account}@active` });
+    
+    await contracts.projects.removeuser(
+      admin.params.account,
+      'builderuser1',
+      0,
+      { authorization: `${admin.params.account}@active` }
+    );
+
+    //Act
+    try{
+      await contracts.transactions.transacts(builder.params.account, project.params.id, drawdown_id, transaction2.getCreateParams(), { authorization: `${builder.params.account}@active` });
+      fail = false
+    } catch (err) {
+      //console.error(err)
+      fail = true
+    }
+    
+    //Assert
+    const projectsTable = await rpc.get_table_rows({
+      code: projects,
+      scope: projects,
+      table: "projects",
+      json: true,
+    });
+    //console.log("\n\n Projects table : ", projectsTable);
+
+    const transactionsTable = await rpc.get_table_rows({
+      code: transactions,
+      scope: project.params.id,
+      table: 'transactions',
+      json: true
+    });
+    //console.log('transactions table is: ', transactionsTable)
+
+    expect(fail).to.be.true
+
+    expect(transactionsTable.rows).to.deep.equals([
+      {
+        accounting: [],
+        actor: builder.params.account,
+        description: transaction.params.description,
+        drawdown_id: drawdown_id,
+        supporting_files: transaction.getCreateParams()[0].supporting_files,
+        timestamp: transactionsTable.rows[0].timestamp,
+        total_amount: `${transaction.getCreateParams()[0].amounts[0].amount * 0.01}.00 USD`,
+        transaction_category: 3,
+        transaction_id: 1
+      }
+    ]);
+  });
+
+  it("A builder tries to do a transaction for a project where he is not assigned (EB5 case)", async () =>  {
+    //Arrange
+    let drawdown_id = 1 //EB5 drawdown
+    const project = await ProjectFactory.createWithDefaults({
+      actor: admin.params.account,
+    });
+
+    await contracts.projects.addproject(...project.getCreateActionParams(), {
+      authorization: `${admin.params.account}@active`,
+    });
+
+    Object.assign(project.params, {
+      status: 1,
+      id: 0,
+      builder: builder.params.account
+    });
+
+    const project2 = await ProjectFactory.createWithDefaults({
+      actor: admin.params.account,
+    });
+
+    await contracts.projects.addproject(...project2.getCreateActionParams(), {
+      authorization: `${admin.params.account}@active`,
+    });
+
+    await EnvironmentUtil.createAccount("builderuser2");
+    Object.assign(project2.params, {
+      status: 1,
+      id: 1,
+      builder: "builderuser2"
+    });
+
+    await contracts.projects.assignuser(
+      admin.params.account,
+      builder.params.account,
+      project.params.id,
+      { authorization: `${admin.params.account}@active` }
+    );
+    await contracts.projects.assignuser(
+      admin.params.account,
+      "builderuser2",
+      project2.params.id,
+      { authorization: `${admin.params.account}@active` }
+    );
+
+    const transaction = await TransactionFactory.createWithDefaults({});
+    const transaction2 = await TransactionFactory.createWithDefaults({});
+    await contracts.transactions.transacts(builder.params.account, project.params.id, drawdown_id, transaction.getCreateParams(), { authorization: `${builder.params.account}@active` });
+  
+
+    //Act
+    try{
+      await contracts.transactions.transacts(builder.params.account, project2.params.id, drawdown_id, transaction2.getCreateParams(), { authorization: `${builder.params.account}@active` });
+      fail = false
+    } catch (err) {
+      //console.error(err)
+      fail = true
+    }
+    
+    //Assert
+    const projectsTable = await rpc.get_table_rows({
+      code: projects,
+      scope: projects,
+      table: "projects",
+      json: true,
+    });
+    //console.log("\n\n Projects table : ", projectsTable);
+
+    const transactionsTable = await rpc.get_table_rows({
+      code: transactions,
+      scope: project.params.id,
+      table: 'transactions',
+      json: true
+    });
+    //console.log('transactions table is: ', transactionsTable)
+
+    expect(fail).to.be.true
+
+    expect(transactionsTable.rows).to.deep.equals([
+      {
+        accounting: [],
+        actor: builder.params.account,
+        description: transaction.params.description,
+        drawdown_id: drawdown_id,
+        supporting_files: transaction.getCreateParams()[0].supporting_files,
+        timestamp: transactionsTable.rows[0].timestamp,
+        total_amount: `${transaction.getCreateParams()[0].amounts[0].amount * 0.01}.00 USD`,
+        transaction_category: 3,
+        transaction_id: 1
+      }
+    ]);
+
+  });
+
+
 
 });

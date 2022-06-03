@@ -43,7 +43,7 @@ const { projects, accounts, budgets, permissions, transactions } =
   contractNames;
 
 describe("Tests for transactions smart contract", async function () {
-  let contracts, admin, builder, investor, project, fail;
+  let contracts, admin, builder, investor, issuer, regional, project, fail;
 
   before(async function () {
     if (!isLocalNode()) {
@@ -97,10 +97,24 @@ describe("Tests for transactions smart contract", async function () {
       user_name: "Builder",
       entity_id: 3,
     });
+    issuer = await UserFactory.createWithDefaults({
+      role: Roles.issuer,
+      account: "issueruser11",
+      user_name: "Issuer",
+      entity_id: 4,
+    });
+    regional = await UserFactory.createWithDefaults({
+      role: Roles.regional_center,
+      account: "regionalcntr",
+      user_name: "Regional Center",
+      entity_id: 5,
+    });
 
     await EnvironmentUtil.createAccount("proxyadmin11");
     await EnvironmentUtil.createAccount("investoruser");
     await EnvironmentUtil.createAccount("builderuser1");
+    await EnvironmentUtil.createAccount("issueruser11");
+    await EnvironmentUtil.createAccount("regionalcntr");
 
     project = await ProjectFactory.createWithDefaults({
       actor: admin.params.account,
@@ -1701,7 +1715,6 @@ describe("Tests for transactions smart contract", async function () {
   noFilesTransactionCases.forEach(({testName, drawdown_id}) =>{
     it(testName, async () => {
       // Arrange
-      let fail
       const transaction = await TransactionFactory.createWithDefaults({supporting_files:[]});
       //console.log('transaction factory is: ', JSON.stringify(transaction.getCreateParams(), " ", 2));
 
@@ -1747,7 +1760,6 @@ describe("Tests for transactions smart contract", async function () {
   noAmountsTransactionCases.forEach(({testName, drawdown_id}) =>{
     it(testName, async () =>{
       // Arrange
-      let fail
       const transaction = await TransactionFactory.createWithDefaults({amounts:[]});
       //console.log('transaction factory is: ', JSON.stringify(transaction.getCreateParams(), " ", 2));
 
@@ -1794,7 +1806,6 @@ describe("Tests for transactions smart contract", async function () {
   missingFilesDrawdowns.forEach(({testName, drawdownID, type_s, type_str_s}) => {
     it(testName, async () =>{
     //Arrange
-    let fail;
     const bulk = await bulkTransactionFactory.createWithDefaults({supporting_files:[]});
 
     //Act
@@ -1841,7 +1852,6 @@ describe("Tests for transactions smart contract", async function () {
   noTransactionsCases.forEach(({testName, drawdown_id}) =>{
     it(testName, async () =>{
       // Arrange
-      let fail
       const transaction = []
       //console.log('transaction factory is: ', JSON.stringify(transaction, " ", 2));
 

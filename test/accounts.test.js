@@ -369,36 +369,6 @@ describe('Tests for budget expenditures', async function () {
 
   });
 
-  it('Delete a budget expenditure of a given project', async () => {
-    //Arrange
-    const new_account = await AccountFactory.createWithDefaults({ actor: admin.params.account });
-    await contracts.accounts.addaccount(...new_account.getCreateActionParams(), { authorization: `${admin.params.account}@active` });
-
-    //Act
-    await AccountUtil.deleteaccnt({
-      actor: new_account.params.actor,
-      project_id: new_account.params.project_id,
-      account_id: 24,
-      contract: contracts.accounts,
-      contractAccount: admin.params.account
-    })
-
-    // Assert
-    const accountsTable = await rpc.get_table_rows({
-      code: accounts,
-      scope: project.params.id,
-      table: 'accounts',
-      json: true,
-      limit: 100
-    });
-    // console.table(accountsTable.rows[accountsTable.rows.length - 1]);
-
-    //account id = 23 'cause new_account was 24. 
-    expect(accountsTable.rows[accountsTable.rows.length - 1]).to.include({
-      account_id: 23,
-    })
-
-  });
 
   it('Automatically creates a budget when the new account has an initial budget.', async () => {
     // Arrange
