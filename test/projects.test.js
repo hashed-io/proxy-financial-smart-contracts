@@ -57,7 +57,7 @@ describe('Tests for projects smart contract', async function () {
     })
 
     // Assert
-    console.log(projectsTable)
+    //console.log(projectsTable)
 
   })
 
