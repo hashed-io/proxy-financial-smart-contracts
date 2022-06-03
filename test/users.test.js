@@ -365,6 +365,45 @@ describe('Tests for the users on projects smart contract', async function () {
     //TODO, depends on requirements, if not, delete this unit test
   });
 
+  it("test project harcoded", async () => {
+    // clear old data
+    await contracts.projects.reset({ authorization: `${projects}@active` });
+    await contracts.accounts.reset({ authorization: `${accounts}@active` });
+    await contracts.budgets.reset({ authorization: `${budgets}@active` });
+    await contracts.permissions.reset({ authorization: `${permissions}@active` });
+    await contracts.transactions.reset({ authorization: `${transactions}@active` });
+
+    await contracts.accounts.init({ authorization: `${accounts}@active` });
+    await contracts.projects.init({ authorization: `${projects}@active` });
+
+
+    const projectsTable = await rpc.get_table_rows({
+      code: projects,
+      scope: projects,
+      table: "projects",
+      json: true,
+    });
+    //console.log("\n\n Projects table : ", projectsTable);
+
+    const usersTable = await rpc.get_table_rows({
+      code: projects,
+      scope: projects,
+      table: 'users',
+      json: true
+    });
+    //console.table(usersTable.rows);
+
+    const accountsTable = await rpc.get_table_rows({
+      code: accounts,
+      scope: 0,
+      table: 'accounts',
+      json: true,
+      limit: 100
+    });
+    //console.log("accouns is: ", accountsTable)
+
+  });
+
 
 });
 
