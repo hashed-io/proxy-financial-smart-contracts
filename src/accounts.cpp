@@ -31,6 +31,35 @@ void accounts::change_balance(uint64_t project_id, uint64_t account_id, asset am
     }
 }
 
+ACTION accounts::clean()
+{
+    require_auth(_self);
+
+    for (int i = 0; i < RESET_IDS; i++)
+    {
+        account_tables accounts(_self, i);
+        auto itr_accounts = accounts.begin();
+        while (itr_accounts != accounts.end())
+        {
+            itr_accounts = accounts.erase(itr_accounts);
+        }
+
+        ledger_tables ledgers(_self, i);
+        auto itr_ledger = ledgers.begin();
+        while (itr_ledger != ledgers.end())
+        {
+            itr_ledger = ledgers.erase(itr_ledger);
+        }
+    }
+
+    auto itr_types = account_types.begin();
+    while (itr_types != account_types.end())
+    {
+        itr_types = account_types.erase(itr_types);
+    }
+}
+
+
 ACTION accounts::reset()
 {
     require_auth(_self);

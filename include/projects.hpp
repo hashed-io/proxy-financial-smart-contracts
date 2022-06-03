@@ -31,6 +31,8 @@ CONTRACT projects : public contract {
               {}
 
         ACTION reset ();
+
+        ACTION clean();
         
         ACTION init ();
 

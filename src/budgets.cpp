@@ -182,6 +182,30 @@ uint64_t budgets::get_id_budget_type (string budget_name) {
     return 0;
 }
 
+ACTION budgets::clean()
+{
+    require_auth(_self);
+    
+    for (int i = 0; i < RESET_IDS; i++) {
+        budget_tables budgets(_self, i);
+        auto itr_budgets = budgets.begin();
+        while (itr_budgets != budgets.end()) {
+            itr_budgets = budgets.erase(itr_budgets);
+        }
+
+        budget_period_tables budget_periods(_self, i);
+        auto itr_budget_periods = budget_periods.begin();
+        while (itr_budget_periods != budget_periods.end()) {
+            itr_budget_periods = budget_periods.erase(itr_budget_periods);
+        }
+    }
+
+    auto itr_b_types = budget_types.begin();
+    while (itr_b_types != budget_types.end()) {
+        itr_b_types = budget_types.erase(itr_b_types);
+    }
+
+}
 
 ACTION budgets::reset () {
     require_auth(_self);
