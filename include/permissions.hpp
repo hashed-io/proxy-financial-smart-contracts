@@ -26,8 +26,6 @@ CONTRACT permissions : public contract {
 
         ACTION reset();
 
-        ACTION clean();
-
         ACTION addaction(name action_name);
 
         ACTION givepermissn (name actor, uint64_t project_id, name action_name, uint64_t role_id);

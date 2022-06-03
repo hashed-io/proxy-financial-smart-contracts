@@ -35,8 +35,6 @@ CONTRACT transactions : public contract {
 
 		ACTION reset ();
 
-        ACTION clean();
-
 		ACTION transact ( name actor, 
 						  uint64_t project_id, 
 						  vector<transaction_amount> amounts,
