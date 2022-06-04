@@ -1,15 +1,14 @@
-# Commands to deploy the smart contracts into the TLOS mainnet
-echo "Clear budget contract"
-cleos -u https://api.telos.kitchen set contract --clear pxbud.sh -p pxbud.sh@active
+echo "Reseting: pxbud.sh"
+cleos -u https://api.telos.kitchen push action pxbud.sh clear '{}' -p pxbud.sh@active
 
-echo "Clear accounts contract"
-cleos -u https://api.telos.kitchen set contract --clear pxact.sh -p pxact.sh@active
+echo "Reseting: pxact.sh"
+cleos -u https://api.telos.kitchen push action pxact.sh clear '{}' -p pxact.sh@active
 
-echo "Clear permissions contract"
-cleos -u https://api.telos.kitchen set contract --clear pxperm.sh -p pxperm.sh@active
+echo "Reseting: pxperm.sh"
+cleos -u https://api.telos.kitchen push action pxperm.sh clear '{}' -p pxperm.sh@active
 
-echo "Clear transactions contract"
-cleos -u https://api.telos.kitchen set contract --clear pxtrx.sh -p pxtrx.sh@active
+echo "Reseting: pxtrx.sh"
+cleos -u https://api.telos.kitchen push action pxtrx.sh clear '{}' -p pxtrx.sh@active
 
-echo "Clear projects contract"
-cleos -u https://api.telos.kitchen set contract --clear pxprj.sh -p pxprj.sh@active
+echo "Reseting: pxprj.sh"
+cleos -u https://api.telos.kitchen push action pxprj.sh clear '{}' -p pxprj.sh@active
