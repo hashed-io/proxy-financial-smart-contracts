@@ -217,7 +217,7 @@ ACTION budgets::reset () {
 ACTION budgets::clear () {
     require_auth(_self);
     
-    for (int i = 0; i < RESET_IDS; i++) {
+    for (int i = 0; i < common::reset_ids; i++) {
         budget_tables budgets(_self, i);
         auto itr_budgets = budgets.begin();
         while (itr_budgets != budgets.end()) {

@@ -67,7 +67,7 @@ ACTION accounts::clear()
 {
     require_auth(_self);
 
-    for (int i = 0; i < RESET_IDS; i++)
+    for (int i = 0; i < common::reset_ids; i++)
     {
         account_tables accounts(_self, i);
         auto itr_accounts = accounts.begin();

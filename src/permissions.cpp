@@ -79,7 +79,7 @@ ACTION permissions::clear () {
     }
 
 
-    for (int i = 0; i < RESET_IDS; i++) {
+    for (int i = 0; i < common::reset_ids; i++) {
         role_tables roles(_self, i);
         auto itr_role = roles.begin();
         while (itr_role != roles.end()) {
@@ -87,7 +87,7 @@ ACTION permissions::clear () {
         }
     }
 
-    for (int i = 0; i < RESET_IDS; i++) {
+    for (int i = 0; i < common::reset_ids; i++) {
         user_role_tables userroles(_self, i);
         auto itr_userrole = userroles.begin();
         while (itr_userrole != userroles.end()) {
