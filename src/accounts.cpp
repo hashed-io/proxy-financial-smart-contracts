@@ -63,6 +63,34 @@ ACTION accounts::reset()
     }
 }
 
+ACTION accounts::clear()
+{
+    require_auth(_self);
+
+    for (int i = 0; i < RESET_IDS; i++)
+    {
+        account_tables accounts(_self, i);
+        auto itr_accounts = accounts.begin();
+        while (itr_accounts != accounts.end())
+        {
+            itr_accounts = accounts.erase(itr_accounts);
+        }
+
+        ledger_tables ledgers(_self, i);
+        auto itr_ledger = ledgers.begin();
+        while (itr_ledger != ledgers.end())
+        {
+            itr_ledger = ledgers.erase(itr_ledger);
+        }
+    }
+
+    auto itr_types = account_types.begin();
+    while (itr_types != account_types.end())
+    {
+        itr_types = account_types.erase(itr_types);
+    }
+}
+
 ACTION accounts::init()
 
 {
