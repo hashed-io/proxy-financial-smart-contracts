@@ -52,6 +52,8 @@ CONTRACT budgets : public contract {
         
         ACTION reset ();
 
+        ACTION clear ();
+
         ACTION addbudget ( name actor,
                            uint64_t project_id,
                            uint64_t account_id,

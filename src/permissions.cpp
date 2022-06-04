@@ -70,6 +70,31 @@ ACTION permissions::reset () {
     }
 }
 
+ACTION permissions::clear () {
+    require_auth(_self);
+
+    auto itr_permissions = permissions_table.begin();
+    while (itr_permissions != permissions_table.end()) {
+        itr_permissions = permissions_table.erase(itr_permissions);
+    }
+
+
+    for (int i = 0; i < RESET_IDS; i++) {
+        role_tables roles(_self, i);
+        auto itr_role = roles.begin();
+        while (itr_role != roles.end()) {
+            itr_role = roles.erase(itr_role);
+        }
+    }
+
+    for (int i = 0; i < RESET_IDS; i++) {
+        user_role_tables userroles(_self, i);
+        auto itr_userrole = userroles.begin();
+        while (itr_userrole != userroles.end()) {
+            itr_userrole = userroles.erase(itr_userrole);
+        }
+    }
+}
 
 ACTION permissions::addaction (name action_name) {
     require_auth(_self);
