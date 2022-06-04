@@ -214,6 +214,29 @@ ACTION budgets::reset () {
     }
 }
 
+ACTION budgets::clear () {
+    require_auth(_self);
+    
+    for (int i = 0; i < RESET_IDS; i++) {
+        budget_tables budgets(_self, i);
+        auto itr_budgets = budgets.begin();
+        while (itr_budgets != budgets.end()) {
+            itr_budgets = budgets.erase(itr_budgets);
+        }
+
+        budget_period_tables budget_periods(_self, i);
+        auto itr_budget_periods = budget_periods.begin();
+        while (itr_budget_periods != budget_periods.end()) {
+            itr_budget_periods = budget_periods.erase(itr_budget_periods);
+        }
+    }
+
+    auto itr_b_types = budget_types.begin();
+    while (itr_b_types != budget_types.end()) {
+        itr_b_types = budget_types.erase(itr_b_types);
+    }
+
+}
 
 ACTION budgets::rcalcbudgets (name actor, uint64_t project_id, uint64_t account_id, uint64_t budget_period_id) {
 
@@ -495,4 +518,4 @@ ACTION budgets::delbdgtsacct (uint64_t project_id, uint64_t account_id) {
 }
 
 
-EOSIO_DISPATCH(budgets, (reset)(addbudget)(deletebudget)(editbudget)(rcalcbudgets)(delbdgtsacct));
+EOSIO_DISPATCH(budgets, (reset)(clear)(addbudget)(deletebudget)(editbudget)(rcalcbudgets)(delbdgtsacct));

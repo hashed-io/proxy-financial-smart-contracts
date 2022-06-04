@@ -60,6 +60,36 @@ ACTION projects::reset () {
 
 }
 
+ACTION projects::clear () {
+	require_auth(_self);
+
+	auto itr_p = projects_table.begin();
+	while (itr_p != projects_table.end()) {
+		itr_p = projects_table.erase(itr_p);
+	}
+
+	auto itr_e = entities.begin();
+	while (itr_e != entities.end()) {
+		itr_e = entities.erase(itr_e);
+	}
+
+	auto itr_investment = investments.begin();
+	while (itr_investment != investments.end()) {
+		itr_investment = investments.erase(itr_investment);
+	}
+
+	auto itr_transfer = transfers.begin();
+	while (itr_transfer != transfers.end()) {
+		itr_transfer = transfers.erase(itr_transfer);
+	}
+
+	auto itr_acc = users.begin();
+	while (itr_acc != users.end()) {
+		itr_acc = users.erase(itr_acc);
+	}
+
+}
+
 ACTION projects::init () {
 
 	
@@ -734,5 +764,5 @@ ACTION projects::changestatus (uint64_t project_id, uint64_t status) {
 }
 
 
-EOSIO_DISPATCH(projects, (reset)(init)(addproject)(approveprjct)(addentity)(addtestuser)(invest)(approveinvst)(maketransfer)(editproject)(deleteprojct)(deleteinvest)(editinvest)(confrmtrnsfr)(edittransfer)(deletetrnsfr)(changestatus));
+EOSIO_DISPATCH(projects, (reset)(init)(clear)(addproject)(approveprjct)(addentity)(addtestuser)(invest)(approveinvst)(maketransfer)(editproject)(deleteprojct)(deleteinvest)(editinvest)(confrmtrnsfr)(edittransfer)(deletetrnsfr)(changestatus));
 

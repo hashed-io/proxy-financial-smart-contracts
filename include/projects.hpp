@@ -34,6 +34,8 @@ CONTRACT projects : public contract {
         
         ACTION init ();
 
+        ACTION clear ();
+
         ACTION addproject ( name actor,
                             string project_class,
                             string project_name,
