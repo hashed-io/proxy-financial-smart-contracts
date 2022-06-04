@@ -4,275 +4,149 @@
 #include <eosio/system.hpp>
 #include <eosio/asset.hpp>
 #include <eosio/symbol.hpp>
-#include <common.hpp>
-#include <account_types.hpp>
-#include <account_subtypes.hpp>
-#include <project_status.hpp>
-#include <entity_types.hpp>
-#include <investment_status.hpp>
-#include <project_class.hpp>
-#include <transfer_status.hpp>
+
+#include <util.hpp>
+
+#include <common/constants.hpp>
+#include <common/data_types.hpp>
+#include <common/action_names.hpp>
+
+#include <accounts/account_types.hpp>
+#include <accounts/account_subtypes.hpp>
+
+#include <projects/project_status.hpp>
+#include <projects/entity_types.hpp>
+#include <projects/investment_status.hpp>
+#include <projects/project_class.hpp>
+#include <projects/transfer_status.hpp>
+
+#include <common/tables/project.hpp>
+#include <common/tables/user.hpp>
+#include <common/tables/entity.hpp>
+#include <common/tables/investment.hpp>
+#include <common/tables/fund_transfer.hpp>
 
 using namespace eosio;
 using namespace std;
 
-CONTRACT projects : public contract {
+CONTRACT projects : public contract
+{
 
-    public:
+public:
+    using contract::contract;
+    projects(name receiver, name code, datastream<const char *> ds)
+        : contract(receiver, code, ds),
+          project_t(receiver, receiver.value),
+          user_t(receiver, receiver.value),
+          entity_t(receiver, receiver.value),
+          investment_t(receiver, receiver.value),
+          fund_transfer_t(receiver, receiver.value)
+    {
+    }
 
-        using contract::contract;
-        projects(name receiver, name code, datastream<const char*> ds)
-            : contract(receiver, code, ds),
-              projects_table(receiver, receiver.value),
-              users(receiver, receiver.value),
-              entities(receiver, receiver.value),
-              investments(receiver, receiver.value),
-              transfers(receiver, receiver.value)
-              {}
+    DEFINE_PROJECT_TABLE
 
-        ACTION reset ();
-        
-        ACTION init ();
+    DEFINE_PROJECT_TABLE_MULTI_INDEX
 
-        ACTION clear ();
+    DEFINE_USER_TABLE
 
-        ACTION addproject ( name actor,
-                            string project_class,
-                            string project_name,
-                            string description,
-                            asset total_project_cost,
-                            asset debt_financing,
-                            uint8_t term,
-                            uint16_t interest_rate,
-                            string loan_agreement, // url
-                            asset total_equity_financing,
-                            asset total_gp_equity,
-                            asset private_equity,
-                            uint16_t annual_return,
-                            string project_co_lp, // url
-                            uint64_t project_co_lp_date,
-                            uint64_t projected_completion_date,
-                            uint64_t projected_stabilization_date,
-                            uint64_t anticipated_year_sale_refinance );
+    DEFINE_USER_TABLE_MULTI_INDEX
 
-        ACTION editproject ( name actor,
-                             uint64_t project_id,
-                             string project_class,
-                             string project_name,
-                             string description,
-                             asset total_project_cost,
-                             asset debt_financing,
-                             uint8_t term,
-                             uint16_t interest_rate,
-                             string loan_agreement, // url
-                             asset total_equity_financing,
-                             asset total_gp_equity,
-                             asset private_equity,
-                             uint16_t annual_return,
-                             string project_co_lp, // url
-                             uint64_t project_co_lp_date,
-                             uint64_t projected_completion_date,
-                             uint64_t projected_stabilization_date,
-                             uint64_t anticipated_year_sale_refinance );
+    DEFINE_ENTITY_TABLE
 
-        ACTION deleteprojct (name actor, uint64_t project_id);
+    DEFINE_ENTITY_TABLE_MULTI_INDEX
 
-        ACTION checkuserdev (name user);
+    DEFINE_INVESTMENT_TABLE
 
-        ACTION addtestuser (name user, string user_name, uint64_t entity_id);
+    DEFINE_INVESTMENT_TABLE_MULTI_INDEX
 
-        ACTION addentity (name actor, string entity_name, string description, string type);
+    DEFINE_FUND_TRANSFER_TABLE
 
-        ACTION approveprjct ( name actor, 
-							  uint64_t project_id, 
-							  string fund_lp,
-						      asset total_fund_offering_amount,
-							  uint64_t total_number_fund_offering,
-							  asset price_per_fund_unit );
+    DEFINE_FUND_TRANSFER_TABLE_MULTI_INDEX
 
-        ACTION invest ( name actor, 
-						uint64_t project_id, 
-                        asset total_investment_amount,
-                        uint64_t quantity_units_purchased,
-                        uint16_t annual_preferred_return,
-                        uint64_t signed_agreement_date,
-                        string subscription_package );
+    ACTION reset();
 
-        ACTION editinvest ( name actor, 
-							uint64_t investment_id,
-                            asset total_investment_amount,
-                            uint64_t quantity_units_purchased,
-                            uint16_t annual_preferred_return,
-                            uint64_t signed_agreement_date,
-                            string subscription_package );
+    ACTION init();
 
-        ACTION deleteinvest (name actor, uint64_t investment_id);
+    ACTION addproject(const eosio::name &actor,
+                      const std::string &project_name,
+                      const std::string &description,
+                      const std::string &image,
+                      const uint64_t &projected_starting_date,
+                      const uint64_t &projected_completion_date);
 
-        ACTION approveinvst (name actor, uint64_t investment_id);
+    ACTION editproject(const eosio::name &actor,
+                       const uint64_t &project_id,
+                       const std::string &project_name,
+                       const std::string &description,
+                       const std::string &image,
+                       const uint64_t &projected_starting_date,
+                       const uint64_t &projected_completion_date);
 
-        ACTION maketransfer (name actor, asset amount, uint64_t investment_id, string proof_of_transfer, uint64_t transfer_date);
+    ACTION deleteprojct(name actor, uint64_t project_id);
 
-        ACTION edittransfer ( name actor, 
-						      uint64_t transfer_id,
-                              asset amount, 
-                              string proof_of_transfer, 
-                              uint64_t transfer_date );
+    ACTION checkuserdev(name user);
 
-        ACTION deletetrnsfr (name actor, uint64_t transfer_id);
+    ACTION addtestuser(name user, string user_name, uint64_t entity_id);
 
-        ACTION confrmtrnsfr (name actor, uint64_t transfer_id, string proof_of_transfer);
+    ACTION addentity(const eosio::name &actor,
+                     const std::string &entity_name,
+                     const std::string &description,
+                     const eosio::name &role);
 
-        ACTION changestatus (uint64_t project_id, uint64_t status);
+    ACTION approveprjct(name actor,
+                        uint64_t project_id);
 
+    ACTION invest(name actor,
+                  uint64_t project_id,
+                  asset total_investment_amount,
+                  uint64_t quantity_units_purchased,
+                  uint16_t annual_preferred_return,
+                  uint64_t signed_agreement_date,
+                  string subscription_package);
 
-    private:
+    ACTION editinvest(name actor,
+                      uint64_t investment_id,
+                      asset total_investment_amount,
+                      uint64_t quantity_units_purchased,
+                      uint16_t annual_preferred_return,
+                      uint64_t signed_agreement_date,
+                      string subscription_package);
 
-        TABLE project_table {
-			uint64_t project_id;
-            uint64_t developer_id;
-			name owner;
-            string project_class;
-            string project_name;
-			string description;
-            uint64_t created_date;
-            uint64_t status;
+    ACTION deleteinvest(name actor, uint64_t investment_id);
 
-            asset total_project_cost;
-            asset debt_financing;
-            uint8_t term;
-            uint16_t interest_rate; // decimal 2
-            string loan_agreement; // url
+    ACTION approveinvst(name actor, uint64_t investment_id);
 
-			asset total_equity_financing;
-            asset total_gp_equity;
-            asset private_equity;
-            uint16_t annual_return; // decimal 2
-            string project_co_lp; // url
-            uint64_t project_co_lp_date;
+    ACTION maketransfer(name actor, asset amount, uint64_t investment_id, string proof_of_transfer, uint64_t transfer_date);
 
-            uint64_t projected_completion_date;
-            uint64_t projected_stabilization_date;
-            uint64_t anticipated_year_sale_refinance;
+    ACTION edittransfer(name actor,
+                        uint64_t transfer_id,
+                        asset amount,
+                        string proof_of_transfer,
+                        uint64_t transfer_date);
 
-            string fund_lp; // url
-            asset total_fund_offering_amount;
-            uint64_t total_number_fund_offering;
-            asset price_per_fund_unit;
-            uint64_t approved_date;
-            name approved_by;
+    ACTION deletetrnsfr(name actor, uint64_t transfer_id);
 
-			uint64_t primary_key() const { return project_id; }
-            uint64_t by_owner() const { return owner.value; }
-            uint64_t by_developer() const { return developer_id; }
-            uint64_t by_status() const { return status; }
-		};
+    ACTION confrmtrnsfr(name actor, uint64_t transfer_id, string proof_of_transfer);
 
-        TABLE user_table {
-            name account;
-            string user_name;
-            uint64_t entity_id;
-            string type;
+    ACTION changestatus(uint64_t project_id, uint64_t status);
 
-            uint64_t primary_key() const { return account.value; }
-            uint64_t by_entity() const { return entity_id; }
-        };
+    ACTION adduser(const eosio::name &actor, const eosio::name &account, const std::string &user_name, const eosio::name &role);
 
-        TABLE entity_table {
-            uint64_t entity_id;
-            string entity_name;
-            string description;
-            string type;
+    ACTION assignuser(const eosio::name &actor, const eosio::name &account, const uint64_t &project_id);
 
-            uint64_t primary_key() const { return entity_id; }
-        };
+    ACTION removeuser(const eosio::name &actor, const eosio::name &account, const uint64_t &project_id);
 
-        TABLE investment_table {
-            uint64_t investment_id;
-            name user;
-            uint64_t project_id;
-            asset total_investment_amount;
-            uint64_t quantity_units_purchased; // decimal?
-            uint16_t annual_preferred_return; // decimal
-            uint64_t signed_agreement_date;
+    ACTION deleteuser(const eosio::name &actor, const eosio::name &account);
 
-            asset total_confirmed_transfered_amount;
-            asset total_unconfirmed_transfered_amount;
-            uint16_t total_confirmed_transfers;
-            uint16_t total_unconfirmed_transfers;
+private:
+    project_tables project_t;
+    user_tables user_t;
+    entity_tables entity_t;
+    investment_tables investment_t;
+    fund_transfer_tables fund_transfer_t;
 
-            string subscription_package;
-            uint64_t status;
-            name approved_by;
-            uint64_t approved_date;
-            uint64_t investment_date;
-
-            uint64_t primary_key() const { return investment_id; }
-            uint64_t by_user() const { return user.value; }
-            uint64_t by_status() const { return status; }
-            uint64_t by_projectid() const { return project_id; }
-        };
-
-        TABLE fund_transfer_table {
-            uint64_t fund_transfer_id;
-            string proof_of_transfer;
-            asset amount;
-            uint64_t investment_id;
-            name user;
-            uint64_t status;
-            uint64_t transfer_date;
-            uint64_t updated_date;
-            uint64_t confirmed_date;
-            name confirmed_by;
-
-            uint64_t primary_key() const { return fund_transfer_id; }
-            uint64_t by_investment() const { return investment_id; }
-            uint64_t by_status() const { return status; }
-        };
-
-
-
-        typedef eosio::multi_index <"projects"_n, project_table,
-            indexed_by<"byowner"_n,
-            const_mem_fun<project_table, uint64_t, &project_table::by_owner>>,
-            indexed_by<"bydeveloper"_n,
-            const_mem_fun<project_table, uint64_t, &project_table::by_developer>>,
-            indexed_by<"bystatus"_n,
-            const_mem_fun<project_table, uint64_t, &project_table::by_status>>
-        > project_tables;
-
-        typedef eosio::multi_index <"users"_n, user_table,
-            indexed_by<"byentity"_n,
-            const_mem_fun<user_table, uint64_t, &user_table::by_entity>>
-        > user_tables;
-
-        typedef eosio::multi_index <"entities"_n, entity_table> entity_tables;
-
-        typedef eosio::multi_index <"investments"_n, investment_table,
-            indexed_by<"byuser"_n,
-            const_mem_fun<investment_table, uint64_t, &investment_table::by_user>>,
-            indexed_by<"bystatus"_n,
-            const_mem_fun<investment_table, uint64_t, &investment_table::by_status>>,
-            indexed_by<"byprojectid"_n,
-            const_mem_fun<investment_table, uint64_t, &investment_table::by_projectid>>
-        > investment_tables;
-
-        typedef eosio::multi_index <"transfers"_n, fund_transfer_table,
-            indexed_by<"byinvestment"_n,
-            const_mem_fun<fund_transfer_table, uint64_t, &fund_transfer_table::by_investment>>,
-            indexed_by<"bystatus"_n,
-            const_mem_fun<fund_transfer_table, uint64_t, &fund_transfer_table::by_status>>
-        > fund_transfer_tables;
-
-
-        project_tables projects_table;
-        user_tables users;
-        entity_tables entities;
-        investment_tables investments;
-        fund_transfer_tables transfers;
-
-        void checkusrtype (name user, string type);
-        void delete_transfer_aux (uint64_t transfer_id);
-        uint64_t get_user_entity (name actor);
-
+    void check_user_role(eosio::name user, eosio::name role);
+    void delete_transfer_aux(uint64_t transfer_id);
+    uint64_t get_user_entity(name actor);
 };
-

@@ -6,10 +6,10 @@ void permissions::toggle_permission (bool add, uint64_t project_id, name action_
     role_tables roles(_self, project_id);
 
     auto itr_role = roles.find(role_id);
-    check(itr_role != roles.end(), contract_names::permissions.to_string() + ": the role with the id = " + std::to_string(role_id) + " does not exist.");
+    check(itr_role != roles.end(), common::contracts::permissions.to_string() + ": the role with the id = " + std::to_string(role_id) + " does not exist.");
 
     auto itr_action = permissions_table.find(action_name.value);
-    check(itr_action != permissions_table.end(), contract_names::permissions.to_string() + ": the action does not exist.");
+    check(itr_action != permissions_table.end(), common::contracts::permissions.to_string() + ": the action does not exist.");
 
     roles.modify(itr_role, _self, [&](auto & modified_role){
         if (
@@ -25,15 +25,15 @@ void permissions::validate_max_permissions (name user, uint64_t project_id, uint
     user_role_tables userroles(_self, project_id);
 
     auto itr_userrole = userroles.find(user.value);
-    check(itr_userrole != userroles.end(), contract_names::permissions.to_string() + ": the user does not have an entry in the roles table.");
+    check(itr_userrole != userroles.end(), common::contracts::permissions.to_string() + ": the user does not have an entry in the roles table.");
 
     role_tables roles(_self, project_id);
 
     auto itr_role = roles.find(itr_userrole -> role_id);
-    check(itr_role != roles.end(), contract_names::permissions.to_string() + ": the role does not exist.");
+    check(itr_role != roles.end(), common::contracts::permissions.to_string() + ": the role does not exist.");
 
     check((itr_role -> permissions | permissions) == itr_role -> permissions, 
-            contract_names::permissions.to_string() + ": the user " + user.to_string() + " does not have permissions to do this.");
+            common::contracts::permissions.to_string() + ": the user " + user.to_string() + " does not have permissions to do this.");
 }
 
 ACTION permissions::reset () {
@@ -53,7 +53,7 @@ ACTION permissions::reset () {
         itr_default_permissions++;
     }
 
-    for (int i = 0; i < RESET_IDS; i++) {
+    for (int i = 0; i < common::reset_ids; i++) {
         role_tables roles(_self, i);
         auto itr_role = roles.begin();
         while (itr_role != roles.end()) {
@@ -61,7 +61,7 @@ ACTION permissions::reset () {
         }
     }
 
-    for (int i = 0; i < RESET_IDS; i++) {
+    for (int i = 0; i < common::reset_ids; i++) {
         user_role_tables userroles(_self, i);
         auto itr_userrole = userroles.begin();
         while (itr_userrole != userroles.end()) {
@@ -79,7 +79,7 @@ ACTION permissions::clear () {
     }
 
 
-    for (int i = 0; i < RESET_IDS; i++) {
+    for (int i = 0; i < common::reset_ids; i++) {
         role_tables roles(_self, i);
         auto itr_role = roles.begin();
         while (itr_role != roles.end()) {
@@ -87,7 +87,7 @@ ACTION permissions::clear () {
         }
     }
 
-    for (int i = 0; i < RESET_IDS; i++) {
+    for (int i = 0; i < common::reset_ids; i++) {
         user_role_tables userroles(_self, i);
         auto itr_userrole = userroles.begin();
         while (itr_userrole != userroles.end()) {
@@ -104,7 +104,7 @@ ACTION permissions::addaction (name action_name) {
 
     while (itr_permission != permissions_table.end()) {
         check(itr_permission -> action_name != action_name, 
-            contract_names::permissions.to_string() + ": the action " + action_name.to_string() + " is already in the permissions table.");
+            common::contracts::permissions.to_string() + ": the action " + action_name.to_string() + " is already in the permissions table.");
         max_permission |= itr_permission -> permissions;
         itr_permission++;
     }
@@ -140,12 +140,12 @@ ACTION permissions::assignrole (name actor, name user, uint64_t project_id, uint
     } */
 
     auto itr_project = projects_table.find(project_id);
-    check(itr_project != projects_table.end(), contract_names::permissions.to_string() + ": the project does not exist.");
+    check(itr_project != projects_table.end(), common::contracts::permissions.to_string() + ": the project does not exist.");
 
     role_tables roles(_self, project_id);
 
     auto itr_role = roles.find(role_id);
-    check(itr_role != roles.end(), contract_names::permissions.to_string() + ": the role does not exist.");
+    check(itr_role != roles.end(), common::contracts::permissions.to_string() + ": the role does not exist.");
 
     user_role_tables userroles(_self, project_id);
 
@@ -165,13 +165,13 @@ ACTION permissions::assignrole (name actor, name user, uint64_t project_id, uint
 
 ACTION permissions::checkledger (name user, uint64_t project_id, uint64_t ledger_id) {
     auto itr_user = users.find(user.value);
-    check(itr_user != users.end(), contract_names::permissions.to_string() + ": the user does not exist.");
+    check(itr_user != users.end(), common::contracts::permissions.to_string() + ": the user does not exist.");
 
-    ledger_tables ledgers(contract_names::accounts, project_id);
+    ledger_tables ledgers(common::contracts::accounts, project_id);
     auto itr_ledger = ledgers.find(ledger_id);
-    check(itr_ledger != ledgers.end(), contract_names::permissions.to_string() + ": the ledger does not exist.");
+    check(itr_ledger != ledgers.end(), common::contracts::permissions.to_string() + ": the ledger does not exist.");
 
-    check(itr_user -> entity_id == itr_ledger -> entity_id, contract_names::permissions.to_string() + ": this user can not modify this ledger.");
+    check(itr_user -> entity_id == itr_ledger -> entity_id, common::contracts::permissions.to_string() + ": this user can not modify this ledger.");
 }
 
 
@@ -179,18 +179,18 @@ ACTION permissions::checkprmissn (name user, uint64_t project_id, name action_na
     user_role_tables userroles(_self, project_id);
 
     auto itr_userrole = userroles.find(user.value);
-    check(itr_userrole != userroles.end(), contract_names::permissions.to_string() + ": the user does not have an entry in the roles table.");
+    check(itr_userrole != userroles.end(), common::contracts::permissions.to_string() + ": the user does not have an entry in the roles table.");
 
     auto itr_permission = permissions_table.find(action_name.value);
-    check(itr_permission != permissions_table.end(), contract_names::permissions.to_string() + ": the permission does not exist.");
+    check(itr_permission != permissions_table.end(), common::contracts::permissions.to_string() + ": the permission does not exist.");
 
     role_tables roles(_self, project_id);
 
     auto itr_role = roles.find(itr_userrole -> role_id);
-    check(itr_role != roles.end(), contract_names::permissions.to_string() + ": the role does not exist.");
+    check(itr_role != roles.end(), common::contracts::permissions.to_string() + ": the role does not exist.");
 
     check((itr_role -> permissions & itr_permission -> permissions) > 0, 
-            contract_names::permissions.to_string() + ": the user " + user.to_string() + " does not have permissions to do this.");
+            common::contracts::permissions.to_string() + ": the user " + user.to_string() + " does not have permissions to do this.");
 }
 
 
@@ -202,7 +202,7 @@ ACTION permissions::givepermissn (name actor, uint64_t project_id, name action_n
         checkprmissn (actor, project_id, ACTION_NAMES.PERMISSIONS_ADD_PERMISSION);
 
         auto itr_action = permissions_table.find(action_name.value);
-        check(itr_action != permissions_table.end(), contract_names::permissions.to_string() + ": the action does not exist.");
+        check(itr_action != permissions_table.end(), common::contracts::permissions.to_string() + ": the action does not exist.");
         validate_max_permissions (actor, project_id, itr_action -> permissions);
     } */
 
@@ -213,13 +213,13 @@ ACTION permissions::givepermissn (name actor, uint64_t project_id, name action_n
 ACTION permissions::removeprmssn (name actor, uint64_t project_id, name action_name, uint64_t role_id) {
     require_auth(actor);
 
-    check(role_id != 0, contract_names::permissions.to_string() + ": can not remove permissions from owner.");
+    check(role_id != 0, common::contracts::permissions.to_string() + ": can not remove permissions from owner.");
 
     if (actor != _self) {
 /*         checkprmissn (actor, project_id, ACTION_NAMES.PERMISSIONS_REMOVE_PERMISSION);
  */
         auto itr_action = permissions_table.find(action_name.value);
-        check(itr_action != permissions_table.end(), contract_names::permissions.to_string() + ": the action does not exist.");
+        check(itr_action != permissions_table.end(), common::contracts::permissions.to_string() + ": the action does not exist.");
         validate_max_permissions (actor, project_id, itr_action -> permissions);
     }
 
@@ -237,7 +237,7 @@ ACTION permissions::addrole (name actor, uint64_t project_id, string role_name, 
 
     auto itr_role = roles.begin();
     while (itr_role != roles.end()) {
-        check(itr_role -> role_name != role_name, contract_names::permissions.to_string() + ": the role already");
+        check(itr_role -> role_name != role_name, common::contracts::permissions.to_string() + ": the role already");
         itr_role++;
     }
 
@@ -254,12 +254,12 @@ ACTION permissions::removerole (name actor, uint64_t project_id, uint64_t role_i
 
     print("Hello");
 
-    check(role_id != 0, contract_names::permissions.to_string() + ": can not remove the owner role.");
+    check(role_id != 0, common::contracts::permissions.to_string() + ": can not remove the owner role.");
 
     role_tables roles(_self, project_id);
 
     auto itr_roles = roles.find(role_id);
-    check(itr_roles != roles.end(), contract_names::permissions.to_string() + ": the role does not exist.");
+    check(itr_roles != roles.end(), common::contracts::permissions.to_string() + ": the role does not exist.");
 
     roles.erase(itr_roles);
 }
@@ -280,7 +280,3 @@ ACTION permissions::deletepmssns (uint64_t project_id) {
         itr_roles = roles.erase(itr_roles);
     }
 }
-
-
-EOSIO_DISPATCH(permissions, (reset)(clear)(assignrole)(checkledger)(checkprmissn)(givepermissn)(removeprmssn)(initroles)(addrole)(removerole)(deletepmssns)(addaction));
-

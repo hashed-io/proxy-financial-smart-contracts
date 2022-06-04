@@ -1,0 +1,1 @@
+cleos -u https://testnet.telos.caleos.io push action sellram '["proxyv1prjct", 2390000 ]' -p proxyadmin11@active

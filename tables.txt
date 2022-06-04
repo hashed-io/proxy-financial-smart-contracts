@@ -1,0 +1,673 @@
+Projects smart contract
+
+
+Projects projects table
+{
+  "rows": [{
+      "project_id": 0,
+      "developer_id": 0,
+      "owner": "proxyadmin11",
+      "builder": "",
+      "investors": [],
+      "issuer": "",
+      "regional_center": "",
+      "project_name": "Teoakyy Oklhaio",
+      "description": "This is a default project 0",
+      "image": "QmcFakE27Gkk2e2Gdj49EUmhaLq3TkiJEq1eSQkLqi3vyA:jpeg",
+      "projected_starting_date": 1682400175,
+      "projected_completion_date": 1714022575,
+      "created_date": 1654309393,
+      "updated_date": 1654309393,
+      "close_date": 0,
+      "status": 2,
+      "approved_date": 1654309393,
+      "approved_by": "proxyadmin11"
+    },{
+      "project_id": 1,
+      "developer_id": 0,
+      "owner": "proxyadmin11",
+      "builder": "",
+      "investors": [],
+      "issuer": "",
+      "regional_center": "",
+      "project_name": "Hashed office",
+      "description": "This is a default project 1",
+      "image": "QmQ2fZ7wwusUB9FDZ4WEHQELAE5K31yTwALx9E8HkwViSs:webp",
+      "projected_starting_date": 1682400175,
+      "projected_completion_date": 1714022575,
+      "created_date": 1654309395,
+      "updated_date": 1654309395,
+      "close_date": 0,
+      "status": 2,
+      "approved_date": 1654309395,
+      "approved_by": "proxyadmin11"
+    },{
+      "project_id": 2,
+      "developer_id": 0,
+      "owner": "proxyadmin11",
+      "builder": "",
+      "investors": [],
+      "issuer": "",
+      "regional_center": "",
+      "project_name": "Metro office 2033",
+      "description": "New building!",
+      "image": "QmcjYY2AGvU86dFWPfRhWDetfAxVN6fwjgudtonTqSEuJY:jpeg",
+      "projected_starting_date": 1682400175,
+      "projected_completion_date": 1714022575,
+      "created_date": 1654309396,
+      "updated_date": 1654309396,
+      "close_date": 0,
+      "status": 2,
+      "approved_date": 1654309396,
+      "approved_by": "proxyadmin11"
+    },{
+      "project_id": 3,
+      "developer_id": 0,
+      "owner": "proxyadmin11",
+      "builder": "",
+      "investors": [],
+      "issuer": "",
+      "regional_center": "",
+      "project_name": "Raskolnikov house",
+      "description": "Nice building!",
+      "image": "QmX5PrwioFH6QWEGH72xAhsCVoBznEXdSCBndg1VCgAryb:webp",
+      "projected_starting_date": 1682400175,
+      "projected_completion_date": 1714022575,
+      "created_date": 1654309397,
+      "updated_date": 1654309397,
+      "close_date": 0,
+      "status": 2,
+      "approved_date": 1654309397,
+      "approved_by": "proxyadmin11"
+    }
+  ],
+  "more": false,
+  "next_key": "",
+  "next_key_bytes": ""
+}
+Projects user table
+{
+  "rows": [{
+      "account": "builderuser1",
+      "user_name": "Builder",
+      "entity_id": 3,
+      "role": "developer",
+      "related_projects": [],
+      "description": "description"
+    },{
+      "account": "builderuser2",
+      "user_name": "Builder",
+      "entity_id": 3,
+      "role": "developer",
+      "related_projects": [],
+      "description": "description"
+    },{
+      "account": "investoruser",
+      "user_name": "Investor 1",
+      "entity_id": 2,
+      "role": "investor",
+      "related_projects": [],
+      "description": "description"
+    },{
+      "account": "investorusr2",
+      "user_name": "Investor 2",
+      "entity_id": 2,
+      "role": "investor",
+      "related_projects": [],
+      "description": "description"
+    },{
+      "account": "issueruser11",
+      "user_name": "Issuer",
+      "entity_id": 4,
+      "role": "issuer",
+      "related_projects": [],
+      "description": "description"
+    },{
+      "account": "proxy.gm",
+      "user_name": "Admin",
+      "entity_id": 1,
+      "role": "fund",
+      "related_projects": [],
+      "description": "description"
+    },{
+      "account": "proxyadmin11",
+      "user_name": "Admin",
+      "entity_id": 1,
+      "role": "fund",
+      "related_projects": [],
+      "description": "description"
+    },{
+      "account": "proxybuilder",
+      "user_name": "Builder",
+      "entity_id": 3,
+      "role": "developer",
+      "related_projects": [],
+      "description": "description"
+    },{
+      "account": "proxybuilder2",
+      "user_name": "Builder",
+      "entity_id": 3,
+      "role": "developer",
+      "related_projects": [],
+      "description": "description"
+    },{
+      "account": "regionalcntr",
+      "user_name": "RegionalCenter",
+      "entity_id": 5,
+      "role": "regionalcrt",
+      "related_projects": [],
+      "description": "description"
+    }
+  ],
+  "more": true,
+  "next_key": "14721451491459608784",
+  "next_key_bytes": ""
+}
+Projects entities table
+{
+  "rows": [{
+      "entity_id": 1,
+      "entity_name": "Proxy Capital",
+      "description": "Entity for Proxy Capital",
+      "role": "fund"
+    },{
+      "entity_id": 2,
+      "entity_name": "Investor Entity 1",
+      "description": "Entity for investors",
+      "role": "investor"
+    },{
+      "entity_id": 3,
+      "entity_name": "Developer Entity 1",
+      "description": "Entity for developer",
+      "role": "developer"
+    },{
+      "entity_id": 4,
+      "entity_name": "Issuer Entity 1",
+      "description": "Entity for issuer",
+      "role": "issuer"
+    },{
+      "entity_id": 5,
+      "entity_name": "Regional Center Entity 1",
+      "description": "Entity for regional center",
+      "role": "regionalcrt"
+    }
+  ],
+  "more": false,
+  "next_key": "",
+  "next_key_bytes": ""
+}
+Projects transfers table
+{
+  "rows": [],
+  "more": false,
+  "next_key": "",
+  "next_key_bytes": ""
+}
+Projects investments table
+{
+  "rows": [],
+  "more": false,
+  "next_key": "",
+  "next_key_bytes": ""
+}
+
+Transfers smart contract
+
+
+Transfers accnttrx table
+{
+  "rows": [],
+  "more": false,
+  "next_key": "",
+  "next_key_bytes": ""
+}
+Transfers accnttypes table
+{
+  "rows": [],
+  "more": false,
+  "next_key": "",
+  "next_key_bytes": ""
+}
+Transfers accounts table
+{
+  "rows": [],
+  "more": false,
+  "next_key": "",
+  "next_key_bytes": ""
+}
+Transfers drawdowns table
+{
+  "rows": [{
+      "drawdown_id": 1,
+      "drawdown_number": 1,
+      "type_str": "EB-5",
+      "type": "eb5",
+      "total_amount": "0.00 USD",
+      "files": [],
+      "state": 0,
+      "open_date": 1654309393,
+      "close_date": 0,
+      "creator": ""
+    },{
+      "drawdown_id": 2,
+      "drawdown_number": 1,
+      "type_str": "Construction Loan",
+      "type": "constrcloan",
+      "total_amount": "0.00 USD",
+      "files": [],
+      "state": 0,
+      "open_date": 1654309393,
+      "close_date": 0,
+      "creator": ""
+    },{
+      "drawdown_id": 3,
+      "drawdown_number": 1,
+      "type_str": "Developer Equity",
+      "type": "devequity",
+      "total_amount": "0.00 USD",
+      "files": [],
+      "state": 0,
+      "open_date": 1654309393,
+      "close_date": 0,
+      "creator": ""
+    }
+  ],
+  "more": false,
+  "next_key": "",
+  "next_key_bytes": ""
+}
+
+Budgets smart contract
+
+
+Budget budgettypes table
+{
+  "rows": [{
+      "budget_type_id": 1,
+      "type_name": "Total",
+      "description": "Total budget of the account"
+    },{
+      "budget_type_id": 2,
+      "type_name": "Annually",
+      "description": "Anual budget of the account"
+    },{
+      "budget_type_id": 3,
+      "type_name": "Monthly",
+      "description": "Budget for the month"
+    },{
+      "budget_type_id": 4,
+      "type_name": "Weekly",
+      "description": "Budget for the week"
+    },{
+      "budget_type_id": 5,
+      "type_name": "Daily",
+      "description": "Budget for the day"
+    },{
+      "budget_type_id": 6,
+      "type_name": "Custom",
+      "description": "Budget for a given period of time"
+    }
+  ],
+  "more": false,
+  "next_key": "",
+  "next_key_bytes": ""
+}
+Budget budgets table
+{
+  "rows": [{
+      "budget_id": 1,
+      "account_id": 3,
+      "amount": "0.00 USD",
+      "budget_creation_date": 1654309393,
+      "budget_update_date": 1654309393,
+      "budget_period_id": 1,
+      "budget_type_id": 1
+    },{
+      "budget_id": 2,
+      "account_id": 1,
+      "amount": "0.00 USD",
+      "budget_creation_date": 1654309393,
+      "budget_update_date": 1654309393,
+      "budget_period_id": 1,
+      "budget_type_id": 1
+    },{
+      "budget_id": 3,
+      "account_id": 4,
+      "amount": "0.00 USD",
+      "budget_creation_date": 1654309393,
+      "budget_update_date": 1654309393,
+      "budget_period_id": 1,
+      "budget_type_id": 1
+    },{
+      "budget_id": 4,
+      "account_id": 5,
+      "amount": "0.00 USD",
+      "budget_creation_date": 1654309393,
+      "budget_update_date": 1654309393,
+      "budget_period_id": 1,
+      "budget_type_id": 1
+    },{
+      "budget_id": 5,
+      "account_id": 6,
+      "amount": "0.00 USD",
+      "budget_creation_date": 1654309393,
+      "budget_update_date": 1654309393,
+      "budget_period_id": 1,
+      "budget_type_id": 1
+    },{
+      "budget_id": 6,
+      "account_id": 2,
+      "amount": "0.00 USD",
+      "budget_creation_date": 1654309393,
+      "budget_update_date": 1654309393,
+      "budget_period_id": 1,
+      "budget_type_id": 1
+    },{
+      "budget_id": 7,
+      "account_id": 7,
+      "amount": "0.00 USD",
+      "budget_creation_date": 1654309393,
+      "budget_update_date": 1654309393,
+      "budget_period_id": 1,
+      "budget_type_id": 1
+    },{
+      "budget_id": 8,
+      "account_id": 8,
+      "amount": "0.00 USD",
+      "budget_creation_date": 1654309393,
+      "budget_update_date": 1654309393,
+      "budget_period_id": 1,
+      "budget_type_id": 1
+    },{
+      "budget_id": 9,
+      "account_id": 9,
+      "amount": "0.00 USD",
+      "budget_creation_date": 1654309393,
+      "budget_update_date": 1654309393,
+      "budget_period_id": 1,
+      "budget_type_id": 1
+    },{
+      "budget_id": 10,
+      "account_id": 10,
+      "amount": "0.00 USD",
+      "budget_creation_date": 1654309393,
+      "budget_update_date": 1654309393,
+      "budget_period_id": 1,
+      "budget_type_id": 1
+    }
+  ],
+  "more": true,
+  "next_key": "11",
+  "next_key_bytes": ""
+}
+Budget budgetpriods table
+{
+  "rows": [{
+      "budget_period_id": 1,
+      "begin_date": 0,
+      "end_date": 0,
+      "budget_type_id": 1
+    }
+  ],
+  "more": false,
+  "next_key": "",
+  "next_key_bytes": ""
+}
+
+Accouts smart contract
+
+
+Accouts accounts table
+{
+  "rows": [{
+      "type_id": 1,
+      "type_name": "Hard Cost",
+      "account_class": "Credit",
+      "category": 2
+    },{
+      "type_id": 2,
+      "type_name": "Soft Cost",
+      "account_class": "Credit",
+      "category": 3
+    }
+  ],
+  "more": false,
+  "next_key": "",
+  "next_key_bytes": ""
+}
+Accouts ledgers table
+{
+  "rows": [{
+      "ledger_id": 1,
+      "entity_id": 1,
+      "description": "Ledger for the fund Proxy Capital"
+    }
+  ],
+  "more": false,
+  "next_key": "",
+  "next_key_bytes": ""
+}
+Accouts accounts table
+{
+  "rows": [{
+      "account_id": 1,
+      "parent_id": 0,
+      "num_children": 3,
+      "account_name": "Hard Cost",
+      "account_subtype": "Hard Cost",
+      "increase_balance": "0.00 USD",
+      "decrease_balance": "0.00 USD",
+      "account_symbol": "2,USD",
+      "ledger_id": 1,
+      "description": "Hard Cost",
+      "naics_code": 0,
+      "jobs_multiplier": 0,
+      "account_category": 2
+    },{
+      "account_id": 2,
+      "parent_id": 0,
+      "num_children": 18,
+      "account_name": "Soft Cost",
+      "account_subtype": "Soft Cost",
+      "increase_balance": "0.00 USD",
+      "decrease_balance": "0.00 USD",
+      "account_symbol": "2,USD",
+      "ledger_id": 1,
+      "description": "Soft Cost",
+      "naics_code": 0,
+      "jobs_multiplier": 0,
+      "account_category": 3
+    },{
+      "account_id": 3,
+      "parent_id": 1,
+      "num_children": 0,
+      "account_name": "Construction",
+      "account_subtype": "Hard Cost",
+      "increase_balance": "0.00 USD",
+      "decrease_balance": "0.00 USD",
+      "account_symbol": "2,USD",
+      "ledger_id": 1,
+      "description": "Children account",
+      "naics_code": 0,
+      "jobs_multiplier": 0,
+      "account_category": 2
+    },{
+      "account_id": 4,
+      "parent_id": 1,
+      "num_children": 0,
+      "account_name": "Furniture, Fixtures & Allowance",
+      "account_subtype": "Hard Cost",
+      "increase_balance": "0.00 USD",
+      "decrease_balance": "0.00 USD",
+      "account_symbol": "2,USD",
+      "ledger_id": 1,
+      "description": "Children account",
+      "naics_code": 0,
+      "jobs_multiplier": 0,
+      "account_category": 2
+    },{
+      "account_id": 5,
+      "parent_id": 1,
+      "num_children": 0,
+      "account_name": "Hard Cost contingency & Allowance",
+      "account_subtype": "Hard Cost",
+      "increase_balance": "0.00 USD",
+      "decrease_balance": "0.00 USD",
+      "account_symbol": "2,USD",
+      "ledger_id": 1,
+      "description": "Children account",
+      "naics_code": 0,
+      "jobs_multiplier": 0,
+      "account_category": 2
+    },{
+      "account_id": 6,
+      "parent_id": 2,
+      "num_children": 0,
+      "account_name": "Architect & Design",
+      "account_subtype": "Soft Cost",
+      "increase_balance": "0.00 USD",
+      "decrease_balance": "0.00 USD",
+      "account_symbol": "2,USD",
+      "ledger_id": 1,
+      "description": "Children account",
+      "naics_code": 0,
+      "jobs_multiplier": 0,
+      "account_category": 3
+    },{
+      "account_id": 7,
+      "parent_id": 2,
+      "num_children": 0,
+      "account_name": "Building Permits & Impact Fees",
+      "account_subtype": "Soft Cost",
+      "increase_balance": "0.00 USD",
+      "decrease_balance": "0.00 USD",
+      "account_symbol": "2,USD",
+      "ledger_id": 1,
+      "description": "Children account",
+      "naics_code": 0,
+      "jobs_multiplier": 0,
+      "account_category": 3
+    },{
+      "account_id": 8,
+      "parent_id": 2,
+      "num_children": 0,
+      "account_name": "Developer Reimbursable",
+      "account_subtype": "Soft Cost",
+      "increase_balance": "0.00 USD",
+      "decrease_balance": "0.00 USD",
+      "account_symbol": "2,USD",
+      "ledger_id": 1,
+      "description": "Children account",
+      "naics_code": 0,
+      "jobs_multiplier": 0,
+      "account_category": 3
+    },{
+      "account_id": 9,
+      "parent_id": 2,
+      "num_children": 0,
+      "account_name": "Builder Risk Insurance",
+      "account_subtype": "Soft Cost",
+      "increase_balance": "0.00 USD",
+      "decrease_balance": "0.00 USD",
+      "account_symbol": "2,USD",
+      "ledger_id": 1,
+      "description": "Children account",
+      "naics_code": 0,
+      "jobs_multiplier": 0,
+      "account_category": 3
+    },{
+      "account_id": 10,
+      "parent_id": 2,
+      "num_children": 0,
+      "account_name": "Environment / Soils / Survey",
+      "account_subtype": "Soft Cost",
+      "increase_balance": "0.00 USD",
+      "decrease_balance": "0.00 USD",
+      "account_symbol": "2,USD",
+      "ledger_id": 1,
+      "description": "Children account",
+      "naics_code": 0,
+      "jobs_multiplier": 0,
+      "account_category": 3
+    }
+  ],
+  "more": true,
+  "next_key": "11",
+  "next_key_bytes": ""
+}
+
+Permissions smart contract
+
+
+Permissions permissions table
+{
+  "rows": [{
+      "action_name": "addaccount",
+      "permissions": 1
+    },{
+      "action_name": "addbudget",
+      "permissions": 8192
+    },{
+      "action_name": "addrole",
+      "permissions": 512
+    },{
+      "action_name": "assignrole",
+      "permissions": 1024
+    },{
+      "action_name": "deleteaccnt",
+      "permissions": 2
+    },{
+      "action_name": "deletebudget",
+      "permissions": 32768
+    },{
+      "action_name": "deleteprojct",
+      "permissions": 64
+    },{
+      "action_name": "deletetrxn",
+      "permissions": 16
+    },{
+      "action_name": "editaccount",
+      "permissions": 4
+    },{
+      "action_name": "editbudget",
+      "permissions": 16384
+    }
+  ],
+  "more": true,
+  "next_key": "5935070164622127616",
+  "next_key_bytes": ""
+}
+Permissions roles table
+{
+  "rows": [{
+      "role_id": 0,
+      "role_name": "Owner",
+      "permissions": 131071
+    },{
+      "role_id": 1,
+      "role_name": "Manager",
+      "permissions": 130879
+    },{
+      "role_id": 2,
+      "role_name": "Accountant",
+      "permissions": 122943
+    }
+  ],
+  "more": false,
+  "next_key": "",
+  "next_key_bytes": ""
+}
+Permissions entities table
+{
+  "rows": [{
+      "user": "",
+      "role_id": 0
+    },{
+      "user": "proxyadmin11",
+      "role_id": 0
+    }
+  ],
+  "more": false,
+  "next_key": "",
+  "next_key_bytes": ""
+}

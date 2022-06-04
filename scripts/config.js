@@ -95,8 +95,6 @@ const contractsConfig = {
 
 const chain = process.env.CHAIN_NAME
 
-const manager = "proxyadmin11"
-
 const owner = ownerByChain[chain]
 const ownerPublicKeys = ownerPublicKeysByChain[chain]
 const publicKeys = publicKeysByChain[chain]
@@ -127,10 +125,6 @@ const permissionsConfig = [
     target: `${contractNames.accounts}@active`,
     actor: `${owner}@active`
   },
-  {
-    target: `${contractNames.accounts}@active`,
-    actor: `${manager}@active`
-  },
   { // permissions for budgets
     target: `${contractNames.budgets}@active`,
     actor: `${contractNames.budgets}@eosio.code`
@@ -140,12 +134,8 @@ const permissionsConfig = [
     actor: `${contractNames.accounts}@active`
   },
   {
-    target: `${contractNames.budgets}@active`,
+    target: `${contractNames.accounts}@active`,
     actor: `${owner}@active`
-  },
-  {
-    target: `${contractNames.budgets}@active`,
-    actor: `${manager}@active`
   },
   { // for permissions
     target: `${contractNames.permissions}@active`,
@@ -164,24 +154,16 @@ const permissionsConfig = [
     actor: `${contractNames.transactions}@active`
   },
   {
-    target: `${contractNames.permissions}@active`,
+    target: `${contractNames.accounts}@active`,
     actor: `${owner}@active`
-  },
-  {
-    target: `${contractNames.permissions}@active`,
-    actor: `${manager}@active`
   },
   { // permissions for projects
     target: `${contractNames.projects}@active`,
     actor: `${contractNames.projects}@eosio.code`
   },
   {
-    target: `${contractNames.projects}@active`,
+    target: `${contractNames.accounts}@active`,
     actor: `${owner}@active`
-  },
-  {
-    target: `${contractNames.projects}@active`,
-    actor: `${manager}@active`
   },
   { // permissions for transactions
     target: `${contractNames.transactions}@active`,
@@ -192,12 +174,8 @@ const permissionsConfig = [
     actor: `${contractNames.projects}@active`
   },
   {
-    target: `${contractNames.transactions}@active`,
+    target: `${contractNames.accounts}@active`,
     actor: `${owner}@active`
-  },
-  {
-    target: `${contractNames.transactions}@active`,
-    actor: `${manager}@active`
   }
 ]
 

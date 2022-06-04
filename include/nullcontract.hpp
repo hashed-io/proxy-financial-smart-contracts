@@ -1,4 +1,3 @@
-
 #include <eosio/asset.hpp>
 #include <eosio/eosio.hpp>
 

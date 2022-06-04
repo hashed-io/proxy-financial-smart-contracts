@@ -1,3 +1,4 @@
+//NOT USED FOR PROXY
 const { transact, rpc } = require('./eos')
 let params = require('./config/params.json')
 const testparams = require('./config/testparams.json')
