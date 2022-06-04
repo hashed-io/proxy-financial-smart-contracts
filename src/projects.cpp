@@ -90,19 +90,19 @@ ACTION projects::init()
 	addentity(_self, "Regional Center Entity 1", "Entity for regional center", ENTITY_TYPES.REGIONALCENTER);
 
 	// hardcoding some entity_t and user_t for testnet
-	adduser(_self, "proxyadmin11"_n, "Admin", common::projects::entity::fund, "description");
-	adduser(_self, "investoruser"_n, "Investor 1", common::projects::entity::investor, "description");
-	adduser(_self, "investorusr2"_n, "Investor 2", common::projects::entity::investor, "description");
-	adduser(_self, "builderuser1"_n, "Builder", common::projects::entity::developer, "description");
-	adduser(_self, "builderuser2"_n, "Builder", common::projects::entity::developer, "description");
-	adduser(_self, "issueruser11"_n, "Issuer", common::projects::entity::issuer, "description");
-	adduser(_self, "regionalcntr"_n, "RegionalCenter", common::projects::entity::regional_center, "description");
+	adduser(_self, "proxyadmin11"_n, "Admin", common::projects::entity::fund);
+	adduser(_self, "investoruser"_n, "Investor 1", common::projects::entity::investor);
+	adduser(_self, "investorusr2"_n, "Investor 2", common::projects::entity::investor);
+	adduser(_self, "builderuser1"_n, "Builder", common::projects::entity::developer);
+	adduser(_self, "builderuser2"_n, "Builder", common::projects::entity::developer);
+	adduser(_self, "issueruser11"_n, "Issuer", common::projects::entity::issuer);
+	adduser(_self, "regionalcntr"_n, "RegionalCenter", common::projects::entity::regional_center);
 
 	// hardcoding some entity_t and user_t for mainnet
-	adduser(_self, "proxy.gm"_n, "Admin", common::projects::entity::fund, "description");
-	adduser(_self, "tlalocman.sh"_n, "Admin", common::projects::entity::fund, "description");
-	adduser(_self, "proxybuilder"_n, "Builder", common::projects::entity::developer, "description");
-	adduser(_self, "proxybuilder2"_n, "Builder", common::projects::entity::developer, "description");
+	adduser(_self, "proxy.gm"_n, "Admin", common::projects::entity::fund);
+	adduser(_self, "tlalocman.sh"_n, "Admin", common::projects::entity::fund);
+	adduser(_self, "proxybuilder"_n, "Builder", common::projects::entity::developer);
+	adduser(_self, "proxybuilder2"_n, "Builder", common::projects::entity::developer);
 }
 
 // who can do this?
@@ -578,7 +578,7 @@ ACTION projects::changestatus(uint64_t project_id, uint64_t status)
 
 // Users
 
-ACTION projects::adduser(const eosio::name &actor, const eosio::name &account, const std::string &user_name, const eosio::name &role, const std::string &description)
+ACTION projects::adduser(const eosio::name &actor, const eosio::name &account, const std::string &user_name, const eosio::name &role)
 {	
 	auto actor_itr = user_t.find(actor.value);
 	/*TODO:
@@ -601,7 +601,7 @@ ACTION projects::adduser(const eosio::name &actor, const eosio::name &account, c
 	check(user_itr == user_t.end(), common::contracts::projects.to_string() + ": the account " + account.to_string() + " already exist.");
 
 	std::unique_ptr<User> user = std::unique_ptr<User>(UserFactory::Factory(*this, role));
-	user->create(account, user_name, role, description);
+	user->create(account, user_name, role, "description");
 }
 
 ACTION projects::assignuser(const eosio::name &actor, const eosio::name &account, const uint64_t &project_id)
