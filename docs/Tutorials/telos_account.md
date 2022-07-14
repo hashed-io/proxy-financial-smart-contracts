@@ -153,7 +153,7 @@ Once the download is complete, click on the executable and follow the provided s
 </br>
 
 
-11. Nest you should see something like this: Select `Telos` chain.
+11. Next you should see something like this: Select `Telos` chain.
 
 </br>
 
