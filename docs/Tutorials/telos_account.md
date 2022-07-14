@@ -15,7 +15,7 @@ First we need to access the official Telos [site](https://www.telos.net/signup) 
 
 </br>
 
-<img src="./images/image2.png" alt="MarineGEO circle logo" style="height: 450px; width:520px;"/>
+<img src="./images/image2.png" alt="image2.png" style="height: 450px; width:520px;"/>
 
 </br>
 
@@ -34,7 +34,7 @@ First we need to access the official Telos [site](https://www.telos.net/signup) 
 
 </br>
 
-<img src="./images/image3.png" alt="MarineGEO circle logo" style="height: 150px; width:300px;"/>
+<img src="./images/image3.png" alt="image3.png" style="height: 150px; width:300px;"/>
 
 </br>
 
@@ -42,7 +42,7 @@ First we need to access the official Telos [site](https://www.telos.net/signup) 
 
 </br>
 
-<img src="./images/image4.png" alt="MarineGEO circle logo" style="height: 150px; width:300px;"/>
+<img src="./images/image4.png" alt="image4.png" style="height: 150px; width:300px;"/>
 
 </br>
 
@@ -51,7 +51,7 @@ Click on `Continue`.
 
 </br>
 
-<img src="./images/image5.png" alt="MarineGEO circle logo" style="height: 100px; width:500px;"/>
+<img src="./images/image5.png" alt="image5.png" style="height: 100px; width:500px;"/>
 
 </br>
 
@@ -59,7 +59,7 @@ Click on `Continue`.
 
 </br>
 
-<img src="./images/image6.png" alt="MarineGEO circle logo" style="height: 600px; width:500px;"/>
+<img src="./images/image6.png" alt="image6.png" style="height: 600px; width:500px;"/>
 
 </br>
 
@@ -81,7 +81,7 @@ We need a `Wallet` with the intention of saving our keys and being able to sign 
 
 1. First, we need to download Anchor fromAnchor its Official site, [here](https://greymass.com/en/anchor/download). You'll see the next window: 
 Anchor
-<img src="./images/image9.png" alt="MarineGEO circle logo" style="height: 500px; width:750px;"/>
+<img src="./images/image9.png" alt="image9.png" style="height: 500px; width:750px;"/>
 
 **Note:** You can manage your wallet from your personal computer or with your smartphone.
 
@@ -92,17 +92,17 @@ Anchor is available for the follow Operating Systems:
 
 2. Click on `Download for Windows` if you're using a computer with Windows, if not, click on the icons below to select your operating system:
 
-<img src="./images/image10.png" alt="MarineGEO circle logo" style="height: 100px; width:350px;"/>
+<img src="./images/image10.png" alt="image10.png" style="height: 100px; width:350px;"/>
 
 Once the download is complete, click on the executable and follow the provided steps.
 
-<img src="./images/image11.png" alt="MarineGEO circle logo" style="height: 100px; width:450px;"/>
+<img src="./images/image11.png" alt="image11.png" style="height: 100px; width:450px;"/>
 
 </br>
 
 4. Select the destination folder, then click on `install`.
 
-<img src="./images/image12.png" alt="MarineGEO circle logo" style="height: 400px; width:450px;"/>
+<img src="./images/image12.png" alt="image12.png" style="height: 400px; width:450px;"/>
 
 </br>
 
@@ -110,13 +110,13 @@ Once the download is complete, click on the executable and follow the provided s
 
 </br>
 
-<img src="./images/image13.png" alt="MarineGEO circle logo" style="height: 400px; width:450px;"/>
+<img src="./images/image13.png" alt="image13.png" style="height: 400px; width:450px;"/>
 
 </br>
 
 6. Check the box `Run Anchor Wallet`.
 
-<img src="./images/image14.png" alt="MarineGEO circle logo" style="height: 400px; width:450px;"/>
+<img src="./images/image14.png" alt="image14.png" style="height: 400px; width:450px;"/>
 
 </br>
 
@@ -124,7 +124,7 @@ Once the download is complete, click on the executable and follow the provided s
 
 </br>
 
-<img src="./images/image15.png" alt="MarineGEO circle logo" style="height: 500px; width:750px;"/>
+<img src="./images/image15.png" alt="image15.png" style="height: 500px; width:750px;"/>
 
 </br>
 
@@ -132,7 +132,7 @@ Once the download is complete, click on the executable and follow the provided s
 
 </br>
 
-<img src="./images/image16.png" alt="MarineGEO circle logo" style="height: 100px; width:250px;"/>
+<img src="./images/image16.png" alt="image16.png" style="height: 100px; width:250px;"/>
 
 </br>
 
@@ -140,7 +140,7 @@ Once the download is complete, click on the executable and follow the provided s
 
 </br>
 
-<img src="./images/image17.png" alt="MarineGEO circle logo" style="height: 500px; width:750px;"/>
+<img src="./images/image17.png" alt="image17.png" style="height: 500px; width:750px;"/>
 
 </br>
 
@@ -148,7 +148,7 @@ Once the download is complete, click on the executable and follow the provided s
 
 </br>
 
-<img src="./images/image18.png" alt="MarineGEO circle logo" style="height: 400px; width:650px;"/>
+<img src="./images/image18.png" alt="image18.png" style="height: 400px; width:650px;"/>
 
 </br>
 
@@ -157,7 +157,7 @@ Once the download is complete, click on the executable and follow the provided s
 
 </br>
 
-<img src="./images/image19.png" alt="MarineGEO circle logo" style="height: 450px; width:750px;"/>
+<img src="./images/image19.png" alt="image19.png" style="height: 450px; width:750px;"/>
 
 </br>
 
@@ -166,7 +166,7 @@ Once the download is complete, click on the executable and follow the provided s
 
 </br>
 
-<img src="./images/image20.png" alt="MarineGEO circle logo" style="height: 500px; width:750px;"/>
+<img src="./images/image20.png" alt="image20.png" style="height: 500px; width:750px;"/>
 
 </br>
 
@@ -174,7 +174,7 @@ Once the download is complete, click on the executable and follow the provided s
 
 </br>
 
-<img src="./images/image21.png" alt="MarineGEO circle logo" style="height: 500px; width:750px;"/>
+<img src="./images/image21.png" alt="image21.png" style="height: 500px; width:750px;"/>
 
 </br>
 
@@ -182,7 +182,7 @@ Once the download is complete, click on the executable and follow the provided s
 
 </br>
 
-<img src="./images/image22.png" alt="MarineGEO circle logo" style="height: 500px; width:750px;"/>
+<img src="./images/image22.png" alt="image22.png" style="height: 500px; width:750px;"/>
 
 </br>
 
@@ -192,7 +192,7 @@ Once the download is complete, click on the executable and follow the provided s
 
 </br>
 
-<img src="./images/image23.png" alt="MarineGEO circle logo" style="height: 500px; width:750px;"/>
+<img src="./images/image23.png" alt="image23.pngo" style="height: 500px; width:750px;"/>
 
 </br>
 
@@ -200,7 +200,7 @@ Once the download is complete, click on the executable and follow the provided s
 
 </br>
 
-<img src="./images/image24.png" alt="MarineGEO circle logo" style="height: 100px; width:250px;"/>
+<img src="./images/image24.png" alt="image24.png" style="height: 100px; width:250px;"/>
 
 </br>
 
@@ -208,7 +208,7 @@ Once the download is complete, click on the executable and follow the provided s
 
 </br>
 
-<img src="./images/image25.png" alt="MarineGEO circle logo" style="height: 350px; width:600px;"/>
+<img src="./images/image25.png" alt="image25.png" style="height: 350px; width:600px;"/>
 
 </br>
 
@@ -217,7 +217,7 @@ Once the download is complete, click on the executable and follow the provided s
 
 </br>
 
-<img src="./images/image26.png" alt="MarineGEO circle logo" style="height: 350px; width:600px;"/>
+<img src="./images/image26.png" alt="image26.png" style="height: 350px; width:600px;"/>
 
 </br>
 
