@@ -397,6 +397,22 @@ Click on the `lock` button.
 
 </br>
 
+17. Finally, to log out just click on the red button `LOGOUT`. It's in the top right corner.
+
+</br>
+
+<img src="./images/image44.png" alt="image44.png" style="height:250px; width:250px;"/>
+
+</br>
+
+18. You will back to this view:
+
+</br>
+
+<img src="./images/image27.png" alt="image27.png" style="height:600; width:350px;"/>
+
+</br>
+
 
 --- 
 
