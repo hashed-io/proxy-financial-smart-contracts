@@ -1,12 +1,17 @@
+<div id="reference4"></div>
+
 # **How to create a Telos account**
 
 In this tutorial we're going to explore how to create a Telos account to begin our journey!
+Throughout the next tutorials, you will see some words [highlighted in blue](#reference4). If you click on them, they will take you to an external page if that is the case, or they will redirect you to some section of this document.
 
-You need to have installed one of the follow browsers:
+To begin, you need to have installed one of the follow browsers:
 - Firefox -> Download [here](https://www.mozilla.org/en-US/firefox/new/).
 - Google chrome -> Download [here](https://www.google.com/chrome/).
 
 **Note:** This tutorial is intended for Windows, macOS & Linux users.
+
+**Note2:** If you aren't familiar with any of the concepts, we suggest reading the [last section](#reference3) first.
 
 ---
 
@@ -29,6 +34,10 @@ First we need to access the official Telos [site](https://www.telos.net/signup) 
 
 - **IMPORTANT:**  Save your keys somewhere safe. They will not be stored for you. Once you exit this window, you'll **NEVER** be able to recover these keys. 
 -  Keep in mind that if you lose your keys, you lose your account. *Make as many backup copies as you think necessary*.
+
+</br>
+
+**Note:** See this [tutorial](#reference3) for more information related to backups. 
 
 3. Check the box: `I have copied my keys somewhere safe`.
 
@@ -79,8 +88,15 @@ We need a `Wallet` with the intention of saving our keys and being able to sign 
 
     "Anchor is a security and privacy focused open-source digital wallet for all EOSIO-based networks."
 
+**Note:** Due to different versions and updates of `Anchor Wallet`, the interface you see may vary slightly.
+
+</br>
+
 1. First, we need to download Anchor fromAnchor its Official site, [here](https://greymass.com/en/anchor/download). You'll see the next window: 
 Anchor
+
+</br>
+
 <img src="./images/image9.png" alt="image9.png" style="height: 500px; width:750px;"/>
 
 **Note:** You can manage your wallet from your personal computer or with your smartphone.
@@ -137,6 +153,10 @@ Once the download is complete, click on the executable and follow the provided s
 </br>
 
 9. Then you'll see the next window. Here you need to define a password for your wallet. **Save it!** As the warning says, if you forget or lose your wallet's password, you won't be able to recover your wallet in the future. *Make as many backup copies as you think necessary.*
+
+</br>
+
+**Note:** See this [tutorial](#reference3) for more information related to backups. 
 
 </br>
 
@@ -225,9 +245,6 @@ Once the download is complete, click on the executable and follow the provided s
 
 20. Finally we need to login on Proxy [site](). Follow the next [tutorial](#reference2): `"How to login in Proxy website"`.
 
-<!---
-TODO:ADD PROXY LINK
---->
 
 </br>
 
@@ -239,24 +256,183 @@ TODO:ADD PROXY LINK
 
 --- 
 
+1. First, we need to access the official PROXY [site](https://prxfi.com/). You should see something like this:
+
+</br>
+
+<img src="./images/image27.png" alt="image27.png" style="height: 420px; width:250px;"/>
+
+</br>
+
+2. Click on the  `LOGIN WITH PROXY FINANCIAL`
+
+</br>
+
+<img src="./images/image28.png" alt="image28.png" style="height: 100px; width:300px;"/>
+
+</br>
+
+3. The next window will pop-up. 
+
+</br>
+
+<img src="./images/image29.png" alt="image29.png" style="height: 400px; width:250px;"/>
+
+</br>
+
+4. Click on the `Anchor`button.
+
+</br>
+
+<img src="./images/image30.png" alt="image30.png" style="height: 90px; width:300px;"/>
+
+</br>
+
+5. Next you should see this window:
+- **Remember:** You could login from your personal computer or using an smartphone. 
 
 
-<!---
-TODO: Recommendations for How to Safely Store Your Wallet
---->
+</br>
+
+<img src="./images/image31.png" alt="image31.png" style="height: 500px; width:300px;"/>
+
+</br>
+
+6. Click on `Launch Anchor` button.
+
+</br>
+
+<img src="./images/image32.png" alt="image32.png" style="height: 100px; width:300px;"/>
+
+</br>
+
+7. `Anchor Wallet` will pop-up a window like this:
+
+</br>
+
+<img src="./images/image33.png" alt="image33.png" style="height: 450px; width:650px;"/>
+
+</br>
+
+8. Select your `active/hot` account. 
+
+**Note:** There's a slightly difference between `active` & `owner` accounts, we don't need to know that for now. 
+
+9. Then click on the green button to sign the transaction.
+
+</br>
+
+<img src="./images/image34.png" alt="image34.png" style="height: 100px; width:350px;"/>
+
+</br>
+
+**Note:** If you see the nex view, it means you doesn't have unlocked your wallet, don't worry. You just need an extra step:
+
+</br>
+
+<img src="./images/image35.png" alt="image35.png" style="height: 500px; width:700px;"/>
+
+</br>
+
+Click on the `lock` button.
+
+</br>
+
+<img src="./images/image36.png" alt="image36.png" style="height: 100px; width:300px;"/>
+
+</br>
+
+11. Ok, we can continue. After click the green or blue button, `Anchor Wallet` will require your password. **Remember:** It's your Wallet's password.
+
+</br>
+
+<img src="./images/image36.png" alt="image36.png" style="height: 100px; width:300px;"/>
+
+</br>
+
+12. Then next section should appear: `Authorize Wallet Action`.
+
+
+</br>
+
+<img src="./images/image37.png" alt="image37.png" style="height: 400px; width:550px;"/>
+
+</br>
+
+13. In this case just enter the wallet password to continue. 
+
+</br>
+
+<img src="./images/image38.png" alt="image38.png" style="height: 400px; width:550px;"/>
+
+</br>
+
+14. Then click on the `Authorize` button. 
+
+</br>
+
+<img src="./images/image39.png" alt="image39.png" style="height: 100px; width:300px;"/>
+
+</br>
+
+15. **Congratulations!** Now you've been login in Proxy website. 
+
+- Note: You should see something like next if this is your first time and you don't have any project assigned to you. Talk with an `Admin` to solve this. 
+
+</br>
+
+<img src="./images/image40.png" alt="image40.png" style="height:300px; width:700px;"/>
+
+</br>
+
+
+16. For example, if I'm a builder with a project, I should see this view:
+
+</br>
+
+<img src="./images/image41.png" alt="image41.png" style="height:350px; width:700px;"/>
+
+</br>
+
+
+--- 
 
 <div id="reference3"></div>
 
-# How to Safely Store Your Wallet
+# **How to Safely Store Your Wallet**
 
+--- 
+In the next tutorial, we're going to talk about some concepts related to wallets & keys so you can be familiar with these concepts.
 
+- ### **About Keys**
 
+You will be given two kinds of keys: a public key, which functions similar to an email address (you may safely share it with others, enabling you to send and receive payments), and a private key, which is often a string of letters and numbers (and which is not to be shared with anyone). 
 
+- ### **What is a private key?**
 
+A `private key` is a secret string of letters and numbers that allows you to access and manage your cryptocurrency funds. It is like a password that proves your ownership of your cryptocurrency.
 
+-  ### **About Wallets**
 
+Just like your bank PIN, it’s important to keep your private keys safe! Store them offline somewhere safe. Some investors choose to keep their private keys on a computer that isn’t connected to the internet, written on pieces of paper, or even just memorized.
 
+A common misconception in cryptocurrency regarding wallets is that they store tokens. However, in reality, a wallet is used to store private keys in an encrypted file to sign transactions. Wallets do not serve as a storage medium for tokens.
 
+A user builds a transaction object, usually through an interface (`Proxy website`), sends that object to the wallet to be signed (`Anchor Wallet`), the wallet then returns that transaction object with a signature which is then broadcast to the network. When/if the network confirms that the transaction is valid, it is included into a block on the blockchain.
+
+- ### **Where To Store Private Keys?**
+
+1. **Hardware Wallets:**  Use hardware wallets to keep your private keys safe. A hardware wallet is a flash drive-like device, designed specifically for storing your private keys.
+
+2. **Online? AT YOUR OWN RISK!:** Is not recommended keep private keys online, in the mail, or in the cloud because they are most susceptible to getting hacked there. A lot of users take screenshots of the private keys, and their photo album is usually synced online. This creates a security risk and is something you should at your own risk.
+
+3. **Offline Flash drive:** If you don’t have a hardware wallet, you can temporarily keep your private keys or seed in an offline flash drive or HDD. But these options are only safe as long as they aren’t in the hands of an attacker. 
+
+4. **Paper wallet:** A paper wallet is free and is just a piece of paper that prints the pair of private and public keys on it. 
+
+5. **Memorize it:** It is pretty much hard to memorize your private key. 
+
+Having said that, we hope these insights will help you in making the best decision for yourself and also help you secure your private keys. 
 
 
 
