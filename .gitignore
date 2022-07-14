@@ -32,7 +32,7 @@ media/image/
 media/img*
 
 *.jpg
-*.png
+#*.png
 
 #Other stuff 
 .vscode
