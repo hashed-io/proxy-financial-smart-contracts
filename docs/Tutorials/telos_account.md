@@ -75,7 +75,7 @@ Click on `Continue`.
 
 </br>
 
-7. Next step is to login with your new account. Before doing so, please refer to the following [tutorial](#reference1): `"How to install Anchor"`. You can close the current tab, we won't modify any aspect of our account. 
+7. Next step is to log in with your new account. Before doing so, please refer to the following [tutorial](#reference1): `"How to install Anchor"`. You can close the current tab, we won't modify any aspect of our account. 
 
 <br/>
 
@@ -155,7 +155,7 @@ Once the download is complete, click on the executable and follow the provided s
 
 </br>
 
-9. Then you'll see the next window. Here you need to define a password for your wallet. **Save it!** As the warning says, if you forget or lose your wallet's password, you won't be able to recover your wallet in the future. *Make as many backup copies as you think necessary.*
+9. Then you'll see the next window. Here you need to define a password for your wallet. **Save it!** As the warning says, if you forget or lose your wallet password, you won't be able to recover your wallet in the future. *Make as many backup copies as you think necessary.*
 
 </br>
 
@@ -227,7 +227,7 @@ Once the download is complete, click on the executable and follow the provided s
 
 </br>
 
-17. `Anchor` will pop-up a new window `Authorization Required`, type your Wallet's password and then click on `Authorize`.
+17. `Anchor` will pop-up a new window `Authorization Required`, type your Wallet password and then click on `Authorize`.
 
 </br>
 
@@ -246,7 +246,7 @@ Once the download is complete, click on the executable and follow the provided s
 
 19. **Congratulations!**, now you have Anchor installed, and a `Anchor Wallet` with the `public & private keys` associated to your account.
 
-20. Finally we need to login on Proxy [site](). Follow the next [tutorial](#reference2): `"How to login in Proxy website"`.
+20. Finally we need to log in the official Proxy [website]() is. Follow the next [tutorial](#reference2): `"How to log in the Proxy website"`.
 
 
 </br>
@@ -255,7 +255,7 @@ Once the download is complete, click on the executable and follow the provided s
 
 <div id="reference2"></div>
 
-# How to login in Proxy website
+# How to log in the Proxy website
 
 --- 
 
@@ -291,8 +291,8 @@ Once the download is complete, click on the executable and follow the provided s
 
 </br>
 
-5. Next you should see this window:
-- **Remember:** You could login from your personal computer or using an smartphone. 
+5. Next you should then see this window:
+- **Remember:** You can log in from your personal computer or using a smartphone. 
 
 
 </br>
@@ -329,7 +329,7 @@ Once the download is complete, click on the executable and follow the provided s
 
 </br>
 
-**Note:** If you see the nex view, it means you doesn't have unlocked your wallet, don't worry. You just need an extra step:
+**Note:** If you see the following view, it means you haven't unlocked your wallet, don't worry. You just need one extra step:
 
 </br>
 
@@ -345,7 +345,7 @@ Click on the `lock` button.
 
 </br>
 
-11. Ok, we can continue. After click the green or blue button, `Anchor Wallet` will require your password. **Remember:** It's your Wallet's password.
+11. Ok, we can continue. After click the green or blue button, `Anchor Wallet` will require your password. **Remember:** It's the password of your wallet.
 
 </br>
 
@@ -378,9 +378,9 @@ Click on the `lock` button.
 
 </br>
 
-15. **Congratulations!** Now you've been login in Proxy website. 
+15. **Congratulations!** You are now logged in to the Proxy website.
 
-- Note: You should see something like next if this is your first time and you don't have any project assigned to you. Talk with an `Admin` to solve this. 
+Note: You should see something like the following if this is your first time and you don't have any projects assigned. Talk to an 'Administrator' to resolve this.
 
 </br>
 

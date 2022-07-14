@@ -16,7 +16,7 @@ Keep in mind that the following roles exist:
 * Issuer
 * Regional Center
 
-**Note:** If this is your first time you login, we recommend reading the tutorial: [How to login on the Proxy website](../Tutorials/telos_account.md).
+**Note:** If this is your first time you log in, we recommend reading the tutorial: [How to log in the Proxy website](../Tutorials/telos_account.md).
 
 **Note2:** If you don't assign a role to a new user, they won't be able to see any project or perform actions within the website. 
 
