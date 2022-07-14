@@ -63,7 +63,7 @@ Click on `Continue`.
 
 </br>
 
-7. Next step is to sign in with your new account. Before doing so, please refer to the following [tutorial](#reference1): `"How to install Anchor"`. You can close the current tab, we won't modify any aspect of our account. 
+7. Next step is to login with your new account. Before doing so, please refer to the following [tutorial](#reference1): `"How to install Anchor"`. You can close the current tab, we won't modify any aspect of our account. 
 
 <br/>
 
