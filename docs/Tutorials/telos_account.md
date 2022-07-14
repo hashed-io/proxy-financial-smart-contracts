@@ -15,7 +15,10 @@ To begin, you need to have installed one of the follow browsers:
 
 ---
 
-## **Create Telos account**
+# **How to create Telos account**
+
+---
+
 First we need to access the official Telos [site](https://www.telos.net/signup) to get this view:
 
 </br>
