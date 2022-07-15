@@ -2,24 +2,24 @@
 
 # **How to create a Telos account**
 
-In this tutorial we're going to explore how to create a Telos account to begin our journey!
-Throughout the next tutorials, you will see some words [highlighted in blue](#reference4). If you click on them, they will take you to an external page if that is the case, or they will redirect you to some section of this document.
+This tutorial will explore how to create a Telos account to begin our journey!
+The following tutorials will show some words [highlighted in blue](#reference4). If you click on them, they will take you to an external page if that is the case, or they will redirect you to some section of this document.
 
-To begin, you need to have installed one of the follow browsers:
+To begin, you need to have installed one of the following browsers:
 - Firefox -> Download [here](https://www.mozilla.org/en-US/firefox/new/).
 - Google chrome -> Download [here](https://www.google.com/chrome/).
 
 **Note:** This tutorial is intended for Windows, macOS & Linux users.
 
-**Note2:** If you aren't familiar with any of the concepts, we suggest reading the [last section](#reference3) first.
+**Note2:** If you aren't familiar with any concepts, we suggest reading the [last section](#reference3) first.
 
 ---
 
-# **How to create Telos account**
+# **How to create a Telos account**
 
 ---
 
-First we need to access the official Telos [site](https://www.telos.net/signup) to get this view:
+First, we need to access the official Telos [site](https://www.telos.net/signup) to get this view:
 
 </br>
 
@@ -28,21 +28,21 @@ First we need to access the official Telos [site](https://www.telos.net/signup) 
 </br>
 
 1. Select an account name:
-- The account name must contain 12 lowercase characters only and number from 1 to 5.
-- If you see a message like: `The account "usertest1212" already exists`, please change the name of the account.
+- The account name must contain 12 lowercase characters only and numbers from 1 to 5.
+- If you see a message like: `The account "usertest1212" already exists, please change the account's name.
 
-2. Copy and save **both** keys (public & private): For example in a blocnotes file.
+2. Copy and save **both** keys (public & private): For example, in a bloc notes file.
 
-- These keys ensure that only you can access and perform actions with your account. Your public key is visible by everyone using the network. The private key, however, will never be shown. You must store your private key in a safe location as it should not be shared with anyone.
+- These keys ensure that only you can access and perform actions with your account. Your public key is visible to everyone using the network. The private key, however, will never be shown. Therefore, you must store your private key in a safe location as it should not be shared with anyone.
 
 - **IMPORTANT:**  Save your keys somewhere safe. They will not be stored for you. Once you exit this window, you'll **NEVER** be able to recover these keys. 
--  Keep in mind that if you lose your keys, you lose your account. *Make as many backup copies as you think necessary*.
+-  Keep in mind that losing your keys means losing your account. *Make as many backup copies as you think necessary*.
 
 </br>
 
 **Note:** See this [tutorial](#reference3) for more information related to backups. 
 
-3. Check the box: `I have copied my keys somewhere safe`.
+3. Check the box: `I have copied my keys somewhere safe.`
 
 </br>
 
@@ -50,7 +50,7 @@ First we need to access the official Telos [site](https://www.telos.net/signup) 
 
 </br>
 
-4. Check the next box: `I'm not a robot`.
+4. Check the following box: `I'm not a robot.
 
 </br>
 
@@ -75,7 +75,7 @@ Click on `Continue`.
 
 </br>
 
-7. Next step is to log in with your new account. Before doing so, please refer to the following [tutorial](#reference1): `"How to install Anchor"`. You can close the current tab, we won't modify any aspect of our account. 
+7. Next step is to log in with your new account. Before doing so, please refer to the following [tutorial](#reference1): `"How to install Anchor" `. After that, you can close the current tab; we won't modify any aspect of our account. 
 
 <br/>
 
@@ -87,15 +87,15 @@ Click on `Continue`.
 
 ---
 
-We need a `Wallet` with the intention of saving our keys and being able to sign and perform transactions. We recommend `Anchor Wallet`.
+We need a `Wallet` to save our keys and be able to sign and perform transactions. Therefore, we recommend `Anchor Wallet`.
 
-    "Anchor is a security and privacy focused open-source digital wallet for all EOSIO-based networks."
+    "Anchor is a security and privacy-focused open-source digital wallet for all EOSIO-based networks."
 
 **Note:** Due to different versions and updates of `Anchor Wallet`, the interface you see may vary slightly.
 
 </br>
 
-1. First, we need to download Anchor fromAnchor its Official site, [here](https://greymass.com/en/anchor/download). You'll see the next window: 
+1. First, we need to download Anchor from its Official site, [here](https://greymass.com/en/anchor/download). You'll see the following window: 
 Anchor
 
 </br>
@@ -104,7 +104,7 @@ Anchor
 
 **Note:** You can manage your wallet from your personal computer or with your smartphone.
 
-Anchor is available for the follow Operating Systems:
+Anchor is available for the following Operating Systems:
 - macOS
 - Windows
 - Linux
@@ -113,7 +113,7 @@ Anchor is available for the follow Operating Systems:
 
 <img src="./images/image10.png" alt="image10.png" style="height: 100px; width:350px;"/>
 
-Once the download is complete, click on the executable and follow the provided steps.
+Once the download is complete, click on the executable and follow the steps.
 
 <img src="./images/image11.png" alt="image11.png" style="height: 100px; width:450px;"/>
 
@@ -155,7 +155,7 @@ Once the download is complete, click on the executable and follow the provided s
 
 </br>
 
-9. Then you'll see the next window. Here you need to define a password for your wallet. **Save it!** As the warning says, if you forget or lose your wallet password, you won't be able to recover your wallet in the future. *Make as many backup copies as you think necessary.*
+9. Then you'll see the following window. Here you need to define a password for your wallet. **Save it!** As the warning says, if you forget or lose your wallet password, you won't be able to recover your wallet in the future. *Make as many backup copies as you think necessary.*
 
 </br>
 
@@ -176,7 +176,7 @@ Once the download is complete, click on the executable and follow the provided s
 </br>
 
 
-11. Next you should see something like this: Select `Telos` chain.
+11. Next, you should see something like this: Select `Telos` chain.
 
 </br>
 
@@ -185,7 +185,7 @@ Once the download is complete, click on the executable and follow the provided s
 </br>
 
 
-12. Next step if to import your previous `Telos account` to your `Anchor Wallet`. After select the `Telos chain`, you'll see the next, click on `Import an existing Account`. 
+12. The next step is to import your previous `Telos account` to your `Anchor Wallet`. After select the `Telos chain`, you'll see the next, click on `Import an existing Account`. 
 
 </br>
 
@@ -201,7 +201,7 @@ Once the download is complete, click on the executable and follow the provided s
 
 </br>
 
-14. Now we need to copy/paste our previous `private key`. Make sure to paste the `private key`, if you try to paste the `public key`, Anchor won't be able to find your account. 
+14. We need to copy/paste our previous private key. Make sure to paste the `private key`, if you try to paste the `public key`, Anchor won't be able to find your account. 
 
 </br>
 
@@ -209,7 +209,7 @@ Once the download is complete, click on the executable and follow the provided s
 
 </br>
 
-15. `Anchor` may take a while to find your account, be patient. After a while, you'll see a new section called `Accounts found to match key` and below the public key associated to your `private key`. Select both accounts:
+15. `Anchor` may take a while to find your account, be patient. After a while, you'll see a new section called `Accounts found to match key` below the public key associated with your `private key`. Select both accounts:
  - `youraccountname@active` 
  - `youraccountname@owner`
 
@@ -244,9 +244,9 @@ Once the download is complete, click on the executable and follow the provided s
 
 </br>
 
-19. **Congratulations!**, now you have Anchor installed, and a `Anchor Wallet` with the `public & private keys` associated to your account.
+19. **Congratulations!**, now you have Anchor installed and a `Anchor Wallet` with the `public & private keys` associated to your account.
 
-20. Finally we need to log in the official Proxy [website]() is. Follow the next [tutorial](#reference2): `"How to log in the Proxy website"`.
+20. Finally we need to log in to the official Proxy [website]() is. Follow the next [tutorial](#reference2): `"How to log in the Proxy website"`.
 
 
 </br>
@@ -259,7 +259,7 @@ Once the download is complete, click on the executable and follow the provided s
 
 --- 
 
-1. First, we need to access the official PROXY [site](https://prxfi.com/). You should see something like this:
+1. First, we must access the official PROXY [site](https://prxfi.com/). You should see something like this:
 
 </br>
 
@@ -275,7 +275,7 @@ Once the download is complete, click on the executable and follow the provided s
 
 </br>
 
-3. The next window will pop-up. 
+3. The following window will pop up. 
 
 </br>
 
@@ -283,7 +283,7 @@ Once the download is complete, click on the executable and follow the provided s
 
 </br>
 
-4. Click on the `Anchor`button.
+4. Click on the `Anchor'button.
 
 </br>
 
@@ -309,7 +309,7 @@ Once the download is complete, click on the executable and follow the provided s
 
 </br>
 
-7. `Anchor Wallet` will pop-up a window like this:
+7. `Anchor Wallet` will pop up a window like this:
 
 </br>
 
@@ -319,7 +319,7 @@ Once the download is complete, click on the executable and follow the provided s
 
 8. Select your `active/hot` account. 
 
-**Note:** There's a slightly difference between `active` & `owner` accounts, we don't need to know that for now. 
+**Note:** There's a slight difference between `active` & `owner` accounts, we don't need to know that for now. 
 
 9. Then click on the green button to sign the transaction.
 
@@ -329,7 +329,7 @@ Once the download is complete, click on the executable and follow the provided s
 
 </br>
 
-**Note:** If you see the following view, it means you haven't unlocked your wallet, don't worry. You just need one extra step:
+**Note:** If you see the following view, it means you haven't unlocked your wallet, don't worry. You need one extra step:
 
 </br>
 
@@ -362,7 +362,7 @@ Click on the `lock` button.
 
 </br>
 
-13. In this case just enter the wallet password to continue. 
+13. In this case enter the wallet password to continue. 
 
 </br>
 
@@ -397,7 +397,7 @@ Note: You should see something like the following if this is your first time and
 
 </br>
 
-17. Finally, to log out just click on the red button `LOGOUT`. It's in the top right corner.
+17. Finally, to log out click on the red button `LOGOUT`. It's in the top right corner.
 
 </br>
 
@@ -433,7 +433,7 @@ A `private key` is a secret string of letters and numbers that allows you to acc
 
 -  ### **About Wallets**
 
-Just like your bank PIN, it’s important to keep your private keys safe! Store them offline somewhere safe. Some investors choose to keep their private keys on a computer that isn’t connected to the internet, written on pieces of paper, or even just memorized.
+Just like your bank PIN, it's important to keep your private keys safe! Store them offline somewhere safe. Some investors choose to keep their private keys on a computer that isn't connected to the internet, written on pieces of paper, or even just memorized.
 
 A common misconception in cryptocurrency regarding wallets is that they store tokens. However, in reality, a wallet is used to store private keys in an encrypted file to sign transactions. Wallets do not serve as a storage medium for tokens.
 
@@ -443,42 +443,15 @@ A user builds a transaction object, usually through an interface (`Proxy website
 
 1. **Hardware Wallets:**  Use hardware wallets to keep your private keys safe. A hardware wallet is a flash drive-like device, designed specifically for storing your private keys.
 
-2. **Online? AT YOUR OWN RISK!:** Is not recommended keep private keys online, in the mail, or in the cloud because they are most susceptible to getting hacked there. A lot of users take screenshots of the private keys, and their photo album is usually synced online. This creates a security risk and is something you should at your own risk.
+2. **Online? AT YOUR OWN RISK!:** Is not recommended to keep private keys online, in the mail, or in the cloud because they are most susceptible to getting hacked there. A lot of users take screenshots of the private keys, and their photo album is usually synced online. This creates a security risk and is something you should at your own risk.
 
-3. **Offline Flash drive:** If you don’t have a hardware wallet, you can temporarily keep your private keys or seed in an offline flash drive or HDD. But these options are only safe as long as they aren’t in the hands of an attacker. 
+3. **Offline Flash drive:** If you don't have a hardware wallet, you can temporarily keep your private keys or seed in an offline flash drive or HDD. But these options are only safe as long as they aren't in the hands of an attacker. 
 
 4. **Paper wallet:** A paper wallet is free and is just a piece of paper that prints the pair of private and public keys on it. 
 
 5. **Memorize it:** It is pretty much hard to memorize your private key. 
 
 Having said that, we hope these insights will help you in making the best decision for yourself and also help you secure your private keys. 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
