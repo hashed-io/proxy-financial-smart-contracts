@@ -421,7 +421,7 @@ Click on the `lock` button.
 # **How to Safely Store Your Wallet**
 
 --- 
-In the following tutorial, we'll talk about some concepts related to wallets & keys so you can be familiar with these concepts.
+In the following tutorial, we'll talk about some concepts related to wallets & keys so you can be familiar with them.
 
 - ### **About Keys**
 
