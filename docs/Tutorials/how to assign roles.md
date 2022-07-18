@@ -4,7 +4,7 @@
 
 ---
 This tutorial is intended for users with an Administrator role (aka `admin`).
-We are going to explain how can you assign a specific role to a user.
+We will explain how you can assign a specific role to a user.
 
 Keep in mind that the following roles exist:
 
@@ -16,11 +16,11 @@ Keep in mind that the following roles exist:
 * Issuer
 * Regional Center
 
-**Note:** If this is your first time you log in, we recommend reading the tutorial: [How to log in the Proxy website](../Tutorials/telos_account.md).
+**Note:** If this is the first time you log in, we recommend reading the tutorial: [How to log in to the Proxy website](../Tutorials/telos_account.md).
 
 **Note2:** If you don't assign a role to a new user, they won't be able to see any project or perform actions within the website. 
 
-1. First, we need to access the official PROXY [site](https://prxfi.com/). You should see something like this:
+1. First, we must access the official PROXY [site](https://prxfi.com/). You should see something like this:
 
 </br>
 
@@ -28,7 +28,7 @@ Keep in mind that the following roles exist:
 
 </br>
 
-2. Click on the  `LOGIN WITH PROXY FINANCIAL`
+2. Click on the  `LOGIN WITH PROXY FINANCIAL.`
 
 </br>
 
@@ -36,7 +36,7 @@ Keep in mind that the following roles exist:
 
 </br>
 
-3. Log in with`Anchor Wallet` and sign the transaction:
+3. Login with 'Anchor Wallet` and sign the transaction:
 
 </br>
 
@@ -46,7 +46,7 @@ Keep in mind that the following roles exist:
 
 4. Once you've logged in, you should see a window like this:
 
-- All available projects will be displayed here.
+- The previous action will display all available projects here.
 
 </br>
 
@@ -54,7 +54,7 @@ Keep in mind that the following roles exist:
 
 </br>
 
-5.  If we click on the three lines (it's in the top left corner), a new menu will be displayed.
+5. A new menu will be displayed if we click on the three lines (it's in the top left corner).
 
 Here we have two options: 
 
@@ -67,7 +67,7 @@ Here we have two options:
 
 </br>
 
-6. By this time, we're going to focus on how to assign a role to a new user. Please click on `Add role to account` button.
+6. By this time, we'll focus on how to assign a role to a new user. Please click on the `Add role to account` button.
 
 </br>
 
@@ -75,7 +75,7 @@ Here we have two options:
 
 </br>
 
-7. Next a new window will appear.
+7. Next, a new window will appear.
 
 </br>
 
@@ -83,20 +83,20 @@ Here we have two options:
 
 </br>
 
-8. Here we can see a new section `Assign Role to Account`. There's two available fields:
+8. Here, we can see a new section, `Assign Role to Account`. There are two available fields:
 
-- `Write the account name`: Here you need to type the account name of the user that you want to register on the Proxy website.
+- `Write the account name`: Here, you need to type the account name of the user you want to register on the Proxy website.
 
 
 
-    **Remember:** Telos accounts are always lower-case, don't worry if you capitalize the first letter, our amazing team will automatically fix it for you.
+    **Remember:** Telos accounts are always lowercase, don't worry if you capitalize the first letter; our incredible team will automatically fix it for you.
     
     
 - `Choose the role to assign`: Choose one of the displayed roles.
 
 </br>
 
-9. First type the new account name:
+9. First, type the new account name:
 
 </br>
 
@@ -104,7 +104,7 @@ Here we have two options:
 
 </br>
 
-10. Then choose one of the displayed roles.
+10. Then, choose one of the displayed roles.
 
 </br>
 
@@ -112,7 +112,7 @@ Here we have two options:
 
 </br>
 
-11. For this example, we'll select `Investor` role. Click on the `Investor role`.
+11. We'll select the `Investor` role for this example. Click on the `Investor role.`
 
 </br>
 
@@ -120,7 +120,7 @@ Here we have two options:
 
 </br>
 
-12. The click on the `ASSIGN ROLE` button. 
+12. Then click on the `ASSIGN ROLE` button. 
 
 
 </br>
@@ -129,7 +129,7 @@ Here we have two options:
 
 </br>
 
-13. `Anchor wallet` will pop-up, so you should see something like this.
+13. `Anchor wallet` will pop up, so you should see something like this.
 
 </br>
 
@@ -137,7 +137,7 @@ Here we have two options:
 
 </br>
 
-There are a couple of considerations to keep in mind, let's analyze this `Anchor Wallet` window:
+There are a couple of considerations to keep in mind. First, let's analyze this `Anchor Wallet` window:
 
 * You only have 0:30 seconds to complete the transaction. 
 
@@ -159,7 +159,7 @@ There are a couple of considerations to keep in mind, let's analyze this `Anchor
     | Field | Value | Description |
     | -- | -- | -- |
     | account | proxyinvestor12 | New account we want to register |
-    | actor | proxyadmin11 | Administrator who perfom the transaction | 
+    | actor | proxyadmin11 | Administrator who performs the transaction | 
     | role | investor | Role we assigned to the new user |
     | username |  proxyinvestor12 | Arbitrary name to identify the user inside Proxy database |
 
@@ -171,7 +171,7 @@ There are a couple of considerations to keep in mind, let's analyze this `Anchor
 
 * It also displays the `SIGNATURES REQUIRED` to perform this transaction, in this case: `proxyadmin11@active`.
 
-14. Next step if to sign the transaction, click on the green button.
+14. Next step is to sign the transaction. Click on the green button.
 
 </br>
 
@@ -179,7 +179,7 @@ There are a couple of considerations to keep in mind, let's analyze this `Anchor
 
 </br>
 
-15. Congratulations! You've registered a new user! You should a confirmation message like this:
+15. Congratulations! You've registered a new user! You should see a confirmation message like this:
 
 
 </br>
