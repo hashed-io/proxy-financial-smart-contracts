@@ -457,7 +457,7 @@ ACTION accounts::deleteaccnt(const eosio::name &actor,
                     { modified_account.num_children -= 1; });
 
     action(
-        permission_level(_self, "active"_n),
+        permission_level(actor, "active"_n),
         _self,
         "helpdelete"_n,
         std::make_tuple(actor, project_id, account_id))
