@@ -124,6 +124,11 @@ public:
 
     ACTION deleteaccnts(const uint64_t &project_id);
 
+    ACTION helpdelete(const eosio::name &actor,
+                               const uint64_t &project_id,
+                               const uint64_t &account_id);
+                             
+
 private:
     const vector<std::string> hard_cost_accounts = {
         common::accouts::subtypes::hardcost::construction,
