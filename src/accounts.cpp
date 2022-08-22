@@ -35,6 +35,27 @@ void accounts::change_balance(const uint64_t &project_id,
     }
 }
 
+ACTION accounts::helpdelete(const eosio::name &actor,
+                                     const uint64_t &project_id,
+                                     const uint64_t &account_id)
+{
+    require_auth(actor);
+    auto admin_itr = users.find(actor.value);
+    check(admin_itr->role == common::projects::entity::fund , actor.to_string() + ": helpdelete, is not an admin!");
+
+    auto project = projects_table.find(project_id);
+    check(project != projects_table.end(), common::contracts::accounts.to_string() + ": helpdelete, the project where the account is trying to be deleted does not exist.");
+
+    account_tables accounts(_self, project_id);
+    auto account = accounts.find(account_id);
+
+    check(account != accounts.end(), common::contracts::accounts.to_string() + ": helpdelete, the account does not exist.");
+
+    accounts.erase(account);
+
+}
+
+
 ACTION accounts::reset()
 {
     require_auth(_self);
@@ -319,6 +340,9 @@ ACTION accounts::editaccount(const eosio::name &actor,
 
     auto itr_account = accounts.find(account_id);
     check(itr_account != accounts.end(), common::contracts::accounts.to_string() + ": editaccount -> the account does not exist.");
+    check(itr_account->parent_id != 0, common::contracts::accounts.to_string() + ": editaccount -> parent account can not be edited.");
+    
+    check(budget_amount >= asset(0, common::currency), _self.to_string() + ": addaccount -> the amount cannot be negative.");
 
     // action(
     //     permission_level(common::contracts::permissions, "active"_n),
@@ -350,6 +374,7 @@ ACTION accounts::editaccount(const eosio::name &actor,
     budget_tables budgets(common::contracts::budgets, project_id);
     auto budgets_by_account = budgets.get_index<"byaccount"_n>();
     auto itr_budget = budgets_by_account.find(account_id);
+
     uint64_t budget_id = 0;
 
     while (itr_budget != budgets_by_account.end() && itr_budget->account_id == account_id)
@@ -362,64 +387,46 @@ ACTION accounts::editaccount(const eosio::name &actor,
         itr_budget++;
     }
 
+    //TODO: send timestamp corresponding to the updating date
     uint64_t date = 0;
+    //uint64_t begind_date = itr_budget->begin_date;
     uint64_t budget_type_id = 1;
 
-    if (budget_amount > asset(0, common::currency))
+    if (budget_id > 0)
     {
-        if (budget_id > 0)
-        {
-            action(
-                permission_level(common::contracts::budgets, "active"_n),
-                common::contracts::budgets,
-                "editbudget"_n,
-                std::make_tuple(common::contracts::budgets, project_id, budget_id, budget_amount, budget_type_id, date, date, true))
-                .send();
-        }
-        else
-        {
-            action(
-                permission_level(common::contracts::budgets, "active"_n),
-                common::contracts::budgets,
-                "addbudget"_n,
-                std::make_tuple(common::contracts::budgets, project_id, account_id, budget_amount, budget_type_id, date, date, true))
-                .send();
-        }
+        action(
+            permission_level(common::contracts::budgets, "active"_n),
+            common::contracts::budgets,
+            "editbudget"_n,
+            std::make_tuple(common::contracts::budgets, project_id, budget_id, budget_amount, budget_type_id, date, date, true))
+            .send();
     }
     else
     {
-        if (budget_id > 0)
-        {
-            action(
-                permission_level(common::contracts::budgets, "active"_n),
-                common::contracts::budgets,
-                "deletebudget"_n,
-                std::make_tuple(common::contracts::budgets, project_id, budget_id, true))
-                .send();
-        }
+        action(
+            permission_level(common::contracts::budgets, "active"_n),
+            common::contracts::budgets,
+            "addbudget"_n,
+            std::make_tuple(common::contracts::budgets, project_id, account_id, budget_amount, budget_type_id, date, date, true))
+            .send();
     }
+    
 }
 
 ACTION accounts::deleteaccnt(const eosio::name &actor,
                              const uint64_t &project_id,
                              const uint64_t &account_id)
-{
+{   
     require_auth(actor);
 
-    /* action (
-        permission_level(common::contracts::permissions, "active"_n),
-        common::contracts::permissions,
-        "checkprmissn"_n,
-        std::make_tuple(actor, project_id, ACTION_NAMES.ACCOUNTS_REMOVE)
-    ).send(); */
-
     auto project = projects_table.find(project_id);
-    check(project != projects_table.end(), common::contracts::accounts.to_string() + ": the project where the account is trying to be created does not exist.");
+    check(project != projects_table.end(), common::contracts::accounts.to_string() + ": the project where the account is trying to be deleted does not exist.");
 
     account_tables accounts(_self, project_id);
 
     auto account = accounts.find(account_id);
-    check(account != accounts.end(), common::contracts::accounts.to_string() + ": the account does not exist.");
+    check(account != accounts.end(), common::contracts::accounts.to_string() + ": deleteaccnt, the account does not exist.");
+    check(account->parent_id != 0, common::contracts::accounts.to_string() + ": deleteaccnt -> parent account can not be deleted.");
 
     // action(
     //     permission_level(common::contracts::permissions, "active"_n),
@@ -435,17 +442,27 @@ ACTION accounts::deleteaccnt(const eosio::name &actor,
     auto parent = accounts.find(account->parent_id);
     check(parent != accounts.end(), common::contracts::accounts.to_string() + ": the parent account does not exist.");
 
-    accounts.modify(parent, _self, [&](auto &modified_account)
-                    { modified_account.num_children -= 1; });
+    budget_tables budgets(common::contracts::budgets, project_id);
+    auto budgets_by_account = budgets.get_index<"byaccount"_n>();
+    auto itr_budgets_by_account = budgets_by_account.find(account_id);
 
     action(
         permission_level(common::contracts::budgets, "active"_n),
         common::contracts::budgets,
-        "delbdgtsacct"_n,
-        std::make_tuple(project_id, account_id))
+        "deletebudget"_n,
+        std::make_tuple(actor, project_id, itr_budgets_by_account->budget_id, true))
         .send();
 
-    accounts.erase(account);
+    accounts.modify(parent, _self, [&](auto &modified_account)
+                    { modified_account.num_children -= 1; });
+
+    action(
+        permission_level(_self, "active"_n),
+        _self,
+        "helpdelete"_n,
+        std::make_tuple(actor, project_id, account_id))
+        .send();
+
 }
 
 ACTION accounts::addaccount(const eosio::name &actor,
