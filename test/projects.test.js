@@ -1339,7 +1339,6 @@ describe("Tests for projects smart contract", async function () {
       "builderuser3",
       "Builder3",
       Roles.developer,
-      "description",
       {
         authorization: `${projects}@active`,
       }
@@ -1418,7 +1417,6 @@ describe("Tests for projects smart contract", async function () {
       "issueruser2",
       "Issuer2",
       Roles.issuer,
-      "description",
       {
         authorization: `${projects}@active`,
       }
@@ -1496,7 +1494,6 @@ describe("Tests for projects smart contract", async function () {
       "regionlcntr2",
       "RegionalCenter2",
       Roles.regional_center,
-      "description",
       {
         authorization: `${projects}@active`,
       }
