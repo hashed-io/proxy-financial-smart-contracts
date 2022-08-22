@@ -20,6 +20,11 @@ namespace common
     {
       std::string filename;
       std::string address;
+      eosio::name sender;
+      eosio::name reciever;
+      std::string iv;
+      std::string ephem_key;
+      eosio::checksum256 mac;
     };
 
     struct extended_url_information
