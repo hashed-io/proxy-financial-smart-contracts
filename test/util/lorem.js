@@ -1,5 +1,8 @@
 const { LoremIpsum } = require('lorem-ipsum');
 
+const { createRandomAccount, createRandomName } = require('../../scripts/eosio-util')
+
+
 const lorem = new LoremIpsum({
   sentencesPerParagraph: {
     max: 8,
@@ -47,6 +50,23 @@ async function generate_cid() {
   return result
 }
 
+async function generate_public_key() {
+  return 'EOS' + Math.random().toString(36).substring(7);
+}
+
+async function generate_supporting_file(sender = '', receiver = '') {
+
+  if (!sender ) sender = await createRandomAccount();
+  if (!receiver) receiver = await createRandomAccount();
+  
+  return {
+    filename: await generate_title(3),
+    address: await generate_cid(),
+    sender: sender,
+    receiver: receiver,
+  }
+}
+
 async function generate_name() {
   var first_name = ["James", "Robert", "John", "Michael", "David", "William", "Richard", "Joseph", "Thomas", "Charles", "Charles", "Daniel", "Matthew", "Anthony", "Mac"];
   var last_name = ["smith", "johnson", "williams", "brown", "jones", "garcia", "miller", "Davis", "Rodriguez", "Taylor", "Darwin", "DeMarco", "Jackson", "Lee", "Lehmann"];
@@ -59,5 +79,7 @@ module.exports = {
   generate_description,
   generate_long_text,
   generate_cid,
-  generate_name
+  generate_name,
+  generate_supporting_file,
+  generate_public_key
 }

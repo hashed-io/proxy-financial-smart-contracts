@@ -12,9 +12,17 @@ namespace common
   namespace types
   {
 
-    typedef std::variant<std::monostate, int64_t, double, eosio::name, eosio::asset, std::string, bool, eosio::time_point> variant_value;
     // typedef vector<uint64_t> projects_vector;
     // typedef vector<uint64_t> projects_users;
+
+    struct encrypted_url_information
+    {
+      std::string filename;
+      std::string address;
+      eosio::name sender;
+      eosio::name receiver;
+    };
+
 
     struct url_information
     {
@@ -22,9 +30,11 @@ namespace common
       std::string address;
     };
 
+
+
     struct extended_url_information
     { // ! store budget expenditures
-      std::vector<url_information> supporting_files;
+      std::vector<encrypted_url_information> supporting_files;
       std::string description;
       uint64_t date;
       eosio::asset amount;
@@ -32,7 +42,7 @@ namespace common
 
     struct extended_url_information_param
     { // ! store budget expenditures
-      std::vector<url_information> supporting_files;
+      std::vector<encrypted_url_information> supporting_files;
       std::string description;
       uint64_t date;
       eosio::asset amount;
@@ -65,7 +75,7 @@ namespace common
       uint64_t date; // ! user
       std::vector<transaction_amount> amounts;  // ! user
       std::string description;
-      std::vector<url_information> supporting_files; // ! user
+      std::vector<encrypted_url_information> supporting_files; // ! user
       uint64_t flag;
     };
 

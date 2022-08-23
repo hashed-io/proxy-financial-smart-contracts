@@ -11,11 +11,11 @@ namespace common
   namespace contracts
   {
     // MAINNET CONTRACTS
-    // constexpr eosio::name projects = "pxprj.sh"_n;
-    // constexpr eosio::name accounts = "pxact.sh"_n;
-    // constexpr eosio::name transactions = "pxtrx.sh"_n;
-    // constexpr eosio::name permissions = "pxperm.sh"_n;
-    // constexpr eosio::name budgets = "pxbud.sh"_n;
+    constexpr eosio::name projects = "pxprj.sh"_n;
+    constexpr eosio::name accounts = "pxact.sh"_n;
+    constexpr eosio::name transactions = "pxtrx.sh"_n;
+    constexpr eosio::name permissions = "pxperm.sh"_n;
+    constexpr eosio::name budgets = "pxbud.sh"_n;
 
     // LOCAL CONTRACTS
     // constexpr eosio::name projects = "proxyprj"_n;
@@ -32,11 +32,11 @@ namespace common
     // constexpr eosio::name budgets = "proxycapbdg1"_n;
 
     // TESTNET CONTRACTS (NEW)
-    constexpr eosio::name projects = "proxyv3prjct"_n;
-    constexpr eosio::name accounts = "proxyv2accnt"_n;
-    constexpr eosio::name transactions = "proxyv3trnsc"_n;
-    constexpr eosio::name permissions = "proxyv2prmss"_n;
-    constexpr eosio::name budgets = "proxyv2bdgts"_n;
+    // constexpr eosio::name projects = "proxyv3prjct"_n;
+    // constexpr eosio::name accounts = "proxyv2accnt"_n;
+    // constexpr eosio::name transactions = "proxyv3trnsc"_n;
+    // constexpr eosio::name permissions = "proxyv2prmss"_n;
+    // constexpr eosio::name budgets = "proxyv2bdgts"_n;
     //
   } // namespace contracts
 

@@ -58,14 +58,21 @@ const publicKeysByChain = {
 }
 
 const contractsConfig = {
+  // [supportedChains.local]: [
+  //   contract('nullcontract', 'm1nulldaos'),
+  //   contract('accounts', 'proxyv2accnt'),
+  //   contract('budgets', 'proxyv2bdgts'),
+  //   contract('permissions', 'proxyv2prmss'),
+  //   contract('projects', 'proxyv3prjct'),
+  //   contract('transactions', 'proxyv3trnsc')
+  // ],
   [supportedChains.local]: [
     contract('nullcontract', 'm1nulldaos'),
-    contract('accounts', 'proxyv2accnt'),
-    contract('budgets', 'proxyv2bdgts'),
-    contract('permissions', 'proxyv2prmss'),
-    contract('projects', 'proxyv3prjct'),
-    contract('transactions', 'proxyv3trnsc')
-
+    contract('accounts', 'pxact.sh'),
+    contract('budgets', 'pxbud.sh'),
+    contract('permissions', 'pxperm.sh'),
+    contract('projects', 'pxprj.sh'),
+    contract('transactions', 'pxtrx.sh')
   ],
   // THIS CONTRACTS ARE THE ONES ON THE GITLAB
   // [supportedChains.telosTestnet]: [

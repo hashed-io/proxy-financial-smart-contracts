@@ -67,7 +67,7 @@ void Drawdown::reject(const uint64_t &drawdown_id)
 }
 
 void Drawdown::edit(const uint64_t &drawdown_id,
-                    vector<common::types::url_information> supporting_files,
+                    vector<common::types::encrypted_url_information> supporting_files,
                     const std::string &description,
                     const uint64_t &date,
                     const eosio::asset &amount,

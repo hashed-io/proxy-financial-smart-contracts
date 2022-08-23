@@ -21,7 +21,7 @@ public:
   virtual void approve(const uint64_t &drawdown_id);
   virtual void reject(const uint64_t &drawdown_id);
   virtual void edit(const uint64_t &drawdown_id,
-                    vector<common::types::url_information> supporting_files,
+                    vector<common::types::encrypted_url_information> supporting_files,
                     const std::string &description,
                     const uint64_t &date,
                     const eosio::asset &amount,
@@ -31,7 +31,7 @@ protected:
   virtual void create_impl(const eosio::name &drawdown_type, const uint64_t &drawdown_number) = 0;
   virtual void update_impl(const uint64_t &drawdown_id, const eosio::asset &total_amount, const bool &is_add_balance) = 0;
   virtual void edit_impl(const uint64_t &drawdown_id,
-                         vector<common::types::url_information> supporting_files, 
+                         vector<common::types::encrypted_url_information> supporting_files, 
                          const std::string &description,
                          const uint64_t &date,
                          const eosio::asset &amount,
