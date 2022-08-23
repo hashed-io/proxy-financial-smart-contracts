@@ -71,7 +71,7 @@ void ConstructionLoanDrawdown::update_impl(const uint64_t &drawdown_id, const eo
 }
 
 void ConstructionLoanDrawdown::edit_impl(const uint64_t &drawdown_id,
-                                         vector<common::types::url_information> supporting_files,
+                                         vector<common::types::encrypted_url_information> supporting_files,
                                          const std::string &description,
                                          const uint64_t &date,
                                          const eosio::asset &amount,

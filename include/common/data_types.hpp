@@ -16,20 +16,26 @@ namespace common
     // typedef vector<uint64_t> projects_vector;
     // typedef vector<uint64_t> projects_users;
 
-    struct url_information
+    struct encrypted_url_information
     {
       std::string filename;
       std::string address;
       eosio::name sender;
-      eosio::name reciever;
-      std::string iv;
-      std::string ephem_key;
-      eosio::checksum256 mac;
+      eosio::name receiver;
     };
+
+
+    struct url_information
+    {
+      std::string filename;
+      std::string address;
+    };
+
+
 
     struct extended_url_information
     { // ! store budget expenditures
-      std::vector<url_information> supporting_files;
+      std::vector<encrypted_url_information> supporting_files;
       std::string description;
       uint64_t date;
       eosio::asset amount;
@@ -37,7 +43,7 @@ namespace common
 
     struct extended_url_information_param
     { // ! store budget expenditures
-      std::vector<url_information> supporting_files;
+      std::vector<encrypted_url_information> supporting_files;
       std::string description;
       uint64_t date;
       eosio::asset amount;
@@ -70,7 +76,7 @@ namespace common
       uint64_t date; // ! user
       std::vector<transaction_amount> amounts;  // ! user
       std::string description;
-      std::vector<url_information> supporting_files; // ! user
+      std::vector<encrypted_url_information> supporting_files; // ! user
       uint64_t flag;
     };
 

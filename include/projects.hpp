@@ -68,6 +68,9 @@ public:
 
     ACTION init();
 
+
+    //! Action to update user pkh
+
     ACTION addproject(const eosio::name &actor,
                       const std::string &project_name,
                       const std::string &description,

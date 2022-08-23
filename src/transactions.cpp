@@ -38,7 +38,7 @@ void transactions::make_transaction(name actor,
 																		string &description,
 																		std::string &drawdown_type,
 																		vector<common::types::transaction_subtypes> &accounting,
-																		vector<common::types::url_information> &supporting_files)
+																		vector<common::types::encrypted_url_information> &supporting_files)
 {
 
 	transaction_tables transactions(_self, project_id);
@@ -254,7 +254,7 @@ ACTION transactions::transact(name actor,
 															string &description,
 															std::string &drawdown_type,
 															vector<common::types::transaction_subtypes> &accounting,
-															vector<common::types::url_information> &supporting_files)
+															vector<common::types::encrypted_url_information> &supporting_files)
 {
 
 	require_auth(actor);
@@ -280,7 +280,7 @@ ACTION transactions::edittrxn(name actor,
 															string description,
 															std::string &drawdown_type,
 															vector<common::types::transaction_subtypes> &accounting,
-															vector<common::types::url_information> &supporting_files)
+															vector<common::types::encrypted_url_information> &supporting_files)
 {
 
 	require_auth(actor);
@@ -330,7 +330,7 @@ ACTION transactions::deletetrxns(uint64_t project_id)
 ACTION transactions::submitdrwdn(name actor,
 																 uint64_t project_id,
 																 vector<common::types::transaction_subtypes> &accounting,
-																 vector<common::types::url_information> files
+																 vector<common::types::encrypted_url_information> files
 																 /*vector<common::types::url_information> files*/)
 {
 	require_auth(actor);
@@ -512,7 +512,7 @@ void transactions::generate_transaction(const eosio::name &actor,
 																				const uint64_t &date,
 																				vector<common::types::transaction_amount> amounts,
 																				const std::string description,
-																				vector<common::types::url_information> supporting_files)
+																				vector<common::types::encrypted_url_information> supporting_files)
 {
 
 	check(supporting_files.size() >= 1, " Cannot send a transaction without files, number of files: " + to_string(supporting_files.size()));
@@ -645,7 +645,7 @@ ACTION transactions::bulktransact(const eosio::name &actor,
 void transactions::generate_bulk_files(const eosio::name &actor,
 																			 const uint64_t &project_id,
 																			 const uint64_t &drawdown_id,
-																			 vector<common::types::url_information> supporting_files,
+																			 vector<common::types::encrypted_url_information> supporting_files,
 																			 const std::string &description,
 																			 const uint64_t &date,
 																			 const eosio::asset &amount,
