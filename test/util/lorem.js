@@ -50,6 +50,10 @@ async function generate_cid() {
   return result
 }
 
+async function generate_public_key() {
+  return 'EOS' + Math.random().toString(36).substring(7);
+}
+
 async function generate_supporting_file(sender = '', receiver = '') {
 
   if (!sender ) sender = await createRandomAccount();
@@ -76,5 +80,6 @@ module.exports = {
   generate_long_text,
   generate_cid,
   generate_name,
-  generate_supporting_file
+  generate_supporting_file,
+  generate_public_key
 }

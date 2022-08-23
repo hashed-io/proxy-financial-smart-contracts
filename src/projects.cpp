@@ -152,6 +152,18 @@ ACTION projects::checkuserdev(name user)
 	check_user_role(user, ENTITY_TYPES.DEVELOPER);
 }
 
+ACTION projects::signup(const eosio::name &user,
+												const std::string &public_key)
+{
+	require_auth(user);
+
+	auto user_itr = user_t.find(user.value);
+	check(user_itr != user_t.end(), common::contracts::projects.to_string() + ": the account " + user.to_string() + " does not exist.");
+
+	user_t.modify(user_itr, _self, [&](auto &item)
+								{ item.public_key = public_key; });
+}
+
 ACTION projects::addproject(const eosio::name &actor,
 														const std::string &project_name,
 														const std::string &description,
@@ -579,7 +591,7 @@ ACTION projects::changestatus(uint64_t project_id, uint64_t status)
 // Users
 
 ACTION projects::adduser(const eosio::name &actor, const eosio::name &account, const std::string &user_name, const eosio::name &role)
-{	
+{
 	auto actor_itr = user_t.find(actor.value);
 	/*TODO:
 	Limit user cration, only admin -> it will require an first admin account harcoded
@@ -589,7 +601,6 @@ ACTION projects::adduser(const eosio::name &actor, const eosio::name &account, c
 	*/
 	if (actor_itr != user_t.end())
 	{
-
 		require_auth(actor);
 		check(actor_itr->role == common::projects::entity::fund, actor.to_string() + " has not permissions to do that!");
 	}
