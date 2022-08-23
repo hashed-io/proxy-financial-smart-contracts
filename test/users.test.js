@@ -25,27 +25,27 @@ const createRolesCases = (() => {
     {
       testName: 'Create an Admin account',
       role: Roles.fund,
-      entity_id: 1
+      entityID: 1
     },
     {
       testName: 'Create an Investor account',
       role: Roles.investor,
-      entity_id: 2
+      entityID: 2
     },
     {
       testName: 'Create a Builder account',
       role: Roles.developer,
-      entity_id: 3
+      entityID: 3
     },
     {
       testName: 'Create an Issuer account',
       role: Roles.issuer,
-      entity_id: 4
+      entityID: 4
     },
     {
       testName: 'Create a Regional center account',
       role: Roles.regional_center,
-      entity_id: 5
+      entityID: 5
     }
   ]
 })()
@@ -103,14 +103,20 @@ describe('Tests for the users on projects smart contract', async function () {
 
   });
 
-  createRolesCases.forEach(({ testName, role, entity_id }) => {
+  createRolesCases.forEach(({ testName, role, entityID }) => {
     it(testName, async () => {
 
       // Arrange
       const user = await UserFactory.createWithDefaults({ role: role });
 
-      user.params.entity_id = entity_id;
-      // console.log('user params is: ', user.params)
+
+      Object.assign(user.params, {
+        entity_id: entityID,
+        description: 'description',
+        related_projects: []
+      });
+
+      //console.log('user params is: ', user.params)
       // console.table(user);
 
       // Act
@@ -124,15 +130,15 @@ describe('Tests for the users on projects smart contract', async function () {
         json: true
       });
 
-      // console.table(usersTable.rows);
+      //console.log(usersTable.rows);
 
       expect(usersTable.rows).to.deep.include.members([{
         account: user.params.account,
-        description: user.params.description,
         user_name: user.params.user_name,
         entity_id: user.params.entity_id,
-        related_projects: [],
-        role: role
+        related_projects: user.params.related_projects,
+        role: role,
+        description: user.params.description
       }]);
 
     });
@@ -202,7 +208,7 @@ describe('Tests for the users on projects smart contract', async function () {
   const addEntitiesCases = [
     { testName: 'Add admin entity', userRole: Roles.fund },
     { testName: 'Add developer entity', userRole: Roles.developer },
-    { testName: 'Add investor', userRole: Roles.investor },
+    { testName: 'Add investor entity', userRole: Roles.investor },
     { testName: 'Add issuer entity', userRole: Roles.issuer },
     { testName: 'Add regional center entity', userRole: Roles.regional_center },
   ]
@@ -244,9 +250,14 @@ describe('Tests for the users on projects smart contract', async function () {
   ]
 
   addUserwithRolCases.forEach(({ testName, userRole, entityID }) => {
-    it(testName, async () => {
+    itly(testName, async () => {
       //Arrange
-      const user = await UserFactory.createWithDefaults({ role: userRole, entity_id: entityID});
+      const user = await UserFactory.createWithDefaults({ role: userRole});
+      Object.assign(user.params, {
+        description: 'description',
+        entity_id: entityID,
+        related_projects: []
+      });
 
       //Act
       await contracts.projects.adduser(projects, ...user.getCreateParams(), {
@@ -277,6 +288,12 @@ describe('Tests for the users on projects smart contract', async function () {
     //Arrange
     let fail
     const user = await UserFactory.createWithDefaults({ role: Roles.developer, entity_id: 3});
+    
+    Object.assign(user.params, {
+      description: 'description',
+      entity_id: 3,
+      related_projects: []
+    });
 
     await contracts.projects.adduser(projects, ...user.getCreateParams(), {
       authorization: `${projects}@active`,
@@ -320,6 +337,11 @@ describe('Tests for the users on projects smart contract', async function () {
     //Arrange
     let fail
     const user = await UserFactory.createWithDefaults({ role: Roles.developer, entity_id: 3});
+    Object.assign(user.params, {
+      description: 'description',
+      entity_id: 3,
+      related_projects: []
+    });
 
     await contracts.projects.adduser(projects, ...user.getCreateParams(), {
       authorization: `${projects}@active`,
