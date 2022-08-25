@@ -37,9 +37,9 @@ void accounts::change_balance(const uint64_t &project_id,
 
 ACTION accounts::helpdelete(const eosio::name &actor,
                                      const uint64_t &project_id,
-                                     const uint64_t &account_id)
+                                      const uint64_t &account_id)
 {
-    require_auth(actor);
+    require_auth(_self);
     auto admin_itr = users.find(actor.value);
     check(admin_itr->role == common::projects::entity::fund , actor.to_string() + ": helpdelete, is not an admin!");
 
@@ -457,7 +457,7 @@ ACTION accounts::deleteaccnt(const eosio::name &actor,
                     { modified_account.num_children -= 1; });
 
     action(
-        permission_level(actor, "active"_n),
+        permission_level(_self, "active"_n),
         _self,
         "helpdelete"_n,
         std::make_tuple(actor, project_id, account_id))
