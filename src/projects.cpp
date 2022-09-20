@@ -105,6 +105,12 @@ ACTION projects::init()
 	adduser(_self, "proxybuilder2"_n, "Builder", common::projects::entity::developer);
 }
 
+ACTION projects::migration()
+{
+	require_auth(_self);
+	
+
+}
 // who can do this?
 ACTION projects::addentity(const eosio::name &actor,
 													 const std::string &entity_name,
