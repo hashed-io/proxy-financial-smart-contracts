@@ -80,6 +80,8 @@ public:
 
 	ACTION reset();
 
+	ACTION migration();
+
 	ACTION transact(name actor,
 									uint64_t transaction_id,
 									uint64_t project_id,

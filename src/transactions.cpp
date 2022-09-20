@@ -244,6 +244,11 @@ ACTION transactions::reset()
 		}
 	}
 }
+
+ACTION transactions::migration() {
+	require_auth(_self);
+
+}
 // TODO change this thing or is this the onlyone than handles the transaction?
 
 ACTION transactions::transact(name actor,

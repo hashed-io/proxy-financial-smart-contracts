@@ -108,9 +108,39 @@ ACTION projects::init()
 ACTION projects::migration()
 {
 	require_auth(_self);
-	
+
+	addproject("proxy.gm"_n,
+						 "Manhattan 11th Avenue Marriott Hotel Project",
+						 "The Project is an upscale hotel tower currently under construction in Manhattan, New York. Located at 450 11th Avenue, the Project is being built on a 9,785 square foot parcel directly across the street from the Jacob Javits Convention Center and a few blocks from the Hudson Yards development project, a 28-acre mixed-use development featuring residences, hotels, office space, and retail establishments.", 
+						 "QmVDTRdJX3omWhHYeWpk6yPBh7yxc8UnLNdfKxG2FCBmjZ:jpeg",
+						 1556683200,
+						 1743480000);
+
+	adduser(_self, "awongmrc2123"_n, "awongmrc2123", common::projects::entity::regional_center);
+	adduser(_self, "mrcolemel212"_n, "mrcolemel212", common::projects::entity::developer);
+
+	auto project_itr = project_t.begin();
+	while (project_itr != project_t.end())
+	{
+		if (project_itr->project_name == "Manhattan 11th Avenue Marriott Hotel Project")
+		{
+			assignuser(_self, "awongmrc2123"_n, project_itr->project_id);
+			assignuser(_self, "mrcolemel212"_n, project_itr->project_id);
+			break;
+		}
+		project_itr++;
+	}
+
+	// action next_execution(
+	// 	permission_level{_self, "active"_n},
+	// 	common::contracts::transactions,
+	// 	"migration"_n,
+	// 	std::make_tuple()
+	// );
 
 }
+
+
 // who can do this?
 ACTION projects::addentity(const eosio::name &actor,
 													 const std::string &entity_name,
