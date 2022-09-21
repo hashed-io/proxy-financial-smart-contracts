@@ -45,12 +45,12 @@ void DeveloperEquityDrawdown::update_impl(const uint64_t &drawdown_id, const eos
   check(project_itr -> builder.value > 0 , "There is no assigned builder - Developer Equity ");
   if (drawdown_itr->state == DRAWDOWN_STATES.DAFT)
   {
-    require_auth(project_itr->builder);
+    require_auth(has_auth(project_itr->builder) ? project_itr->builder : contract_name);
   }
 
   else if (drawdown_itr->state == DRAWDOWN_STATES.SUBMITTED)
   {
-    require_auth(project_itr->owner);
+    require_auth(has_auth(project_itr->owner) ? project_itr->owner : contract_name);
   }
   else
   {

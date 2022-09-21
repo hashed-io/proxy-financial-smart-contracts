@@ -95,33 +95,76 @@ describe.only("Tests for migrations of the smart contract", async function () {
 
     //Arrange
     const admin = "proxy.gm"
+    const builder = "mrcolemel212"
     await EnvironmentUtil.createAccount(admin);
-    await EnvironmentUtil.createAccount("mrcolemel212");
+    await EnvironmentUtil.createAccount(builder);
     await EnvironmentUtil.createAccount("awongmrc2123");
 
     //Act
     await contracts.projects.migration({ authorization: `${projects}@active` });
 
     await contracts.accounts.editaccount(
-      admin, 0 , 4,
+      admin, 0, 4,
       "Furniture, Fixtures & Equipment Purchases", "Children account",
-      2, "16002474.00 USD", 4232, 59169 , { authorization: `${accounts}@active` }
+      2, "16002474.00 USD", 4232, 59169, { authorization: `${accounts}@active` }
     );
     await contracts.accounts.editaccount(
-      admin, 0 , 3,
+      admin, 0, 3,
       "Construction", "Children account",
-      2, "136210049.00 USD", 2362, 138432 , { authorization: `${accounts}@active` }
+      2, "136210049.00 USD", 2362, 138432, { authorization: `${accounts}@active` }
     );
     await contracts.accounts.editaccount(
-      admin, 0 , 6,
+      admin, 0, 6,
       "Architectural, Engineering and Related Services", "Children account",
-      3, "16002474.00 USD", 5413, 133179 , { authorization: `${accounts}@active` }
+      3, "16002474.00 USD", 5413, 133179, { authorization: `${accounts}@active` }
     );
 
     await contracts.accounts.deleteaccnt(admin, 0, 16, { authorization: `${accounts}@active` });
     await contracts.accounts.deleteaccnt(admin, 0, 21, { authorization: `${accounts}@active` });
     await contracts.accounts.deleteaccnt(admin, 0, 9, { authorization: `${accounts}@active` });
     await contracts.accounts.deleteaccnt(admin, 0, 17, { authorization: `${accounts}@active` });
+
+    const transaction_1 = await TransactionFactory.createWithDefaults({
+      date: 1663106400,
+      amounts: [{
+        account_id: 3,
+        amount: 80000000
+      }],
+      description: "Transaction without files",
+      supporting_files: [{
+        filename: "",
+        address: "",
+        sender: "",
+        receiver: ""
+      }],
+      flag: 1
+    });
+
+    await contracts.transactions.transacts(builder, 0, 1, transaction_1.getCreateParams(), { authorization: `${transactions}@active` });
+    await contracts.transactions.movedrawdown(builder, 0, 1, { authorization: `${transactions}@active` })
+
+    await contracts.transactions.acptdrawdown(admin, 0, 1, { authorization: `${transactions}@active` })
+
+    const transaction_2 = await TransactionFactory.createWithDefaults({
+      date: 1663106400,
+      amounts: [{
+        account_id: 3,
+        amount: 80000000
+      }],
+      description: "Transaction without files",
+      supporting_files: [{
+        filename: "",
+        address: "",
+        sender: "",
+        receiver: ""
+      }],
+      flag: 1
+    });
+
+    await contracts.transactions.transacts(builder, 0, 4, transaction_2.getCreateParams(), { authorization: `${transactions}@active` });
+    await contracts.transactions.movedrawdown(builder, 0, 4, { authorization: `${transactions}@active` })
+
+    await contracts.transactions.acptdrawdown(admin, 0, 4, { authorization: `${transactions}@active` })
     //Assert
     const projectsTable = await rpc.get_table_rows({
       code: projects,

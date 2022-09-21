@@ -15,7 +15,6 @@ cleos -u https://api.telos.kitchen/ push action pxprj.sh migration '{}' -p pxprj
 
 echo 'Updating accounts'
 
-
 cleos -u https://api.telos.kitchen/ push action pxact.sh editaccount '{
   "actor" : "proxy.gm",
   "project_id" : "0",
@@ -75,3 +74,81 @@ cleos -u https://api.telos.kitchen/ push action pxact.sh deleteaccnt '{
   "project_id" : "0",
   "account_id" : "17"
 }' -p pxact.sh@active
+
+echo 'Updating transactions and drawdowns'
+
+cleos -u https://api.telos.kitchen/ push action pxtrx.sh transacts '{
+  "actor": "mrcolemel212",
+  "project_id": 0,
+  "drawdown_id": 1,
+  "transactions": [
+    {
+      "id": 0,
+      "date": 1663106400,
+      "amounts": [
+        {
+          "account_id": 3,
+          "amount": 80000000
+        }
+      ],
+      "description": "lorem",
+      "supporting_files": [{
+        "filename" : "",
+        "address" : "",
+        "sender" : "",
+        "receiver" : ""
+      }],
+      "flag": 1
+    }
+  ]
+}' -p pxtrx.sh@active
+
+cleos -u https://api.telos.kitchen/ push action pxtrx.sh movedrawdown '{
+  "actor": "mrcolemel212",
+  "project_id": 0,
+  "drawdown_id": 1,
+}' -p pxtrx.sh@active
+
+cleos -u https://api.telos.kitchen/ push action pxtrx.sh acptdrawdown '{
+  "actor": "proxy.gm",
+  "project_id": 0,
+  "drawdown_id": 1,
+}' -p pxtrx.sh@active
+
+cleos -u https://api.telos.kitchen/ push action pxtrx.sh transacts '{
+  "actor": "mrcolemel212",
+  "project_id": 0,
+  "drawdown_id": 4,
+  "transactions": [
+    {
+      "id": 0,
+      "date": 1663106400,
+      "amounts": [
+        {
+          "account_id": 3,
+          "amount": 80000000
+        }
+      ],
+      "description": "lorem",
+      "supporting_files": [{
+        "filename" : "",
+        "address" : "",
+        "sender" : "",
+        "receiver" : ""
+      }],
+      "flag": 1
+    }
+  ]
+}' -p pxtrx.sh@active
+
+cleos -u https://api.telos.kitchen/ push action pxtrx.sh movedrawdown '{
+  "actor": "mrcolemel212",
+  "project_id": 0,
+  "drawdown_id": 4,
+}' -p pxtrx.sh@active
+
+cleos -u https://api.telos.kitchen/ push action pxtrx.sh acptdrawdown '{
+  "actor": "proxy.gm",
+  "project_id": 0,
+  "drawdown_id": 4,
+}' -p pxtrx.sh@active

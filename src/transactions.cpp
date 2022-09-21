@@ -408,6 +408,8 @@ ACTION transactions::movedrawdown(const eosio::name &actor,
 																	const uint64_t &drawdown_id)
 {
 
+	
+
 	drawdown_tables drawdown_t(_self, project_id);
 
 	auto drawdown_itr = drawdown_t.find(drawdown_id);
@@ -415,7 +417,8 @@ ACTION transactions::movedrawdown(const eosio::name &actor,
 	check(drawdown_itr != drawdown_t.end(), "Drawdown not found");
 
 	auto project_itr = project_t.find(project_id);
-
+	
+	require_auth(has_auth(project_itr->builder) ? project_itr->builder : _self);
 	check(project_itr != project_t.end(), "Project not found!");
 	check(project_itr->builder == actor, actor.to_string() + " is not the project's builder!");
 
