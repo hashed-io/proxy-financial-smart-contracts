@@ -44,7 +44,7 @@ cleos -u https://api.telos.kitchen/ push action pxact.sh editaccount '{
   "actor" : "proxy.gm",
   "project_id" : "0",
   "account_id" : "6",
-  "account_name" : "Architectural, Engineering and Related Services"",
+  "account_name" : "Architectural, Engineering and Related Services",
   "description" : "Children account",
   "account_category" : "3",
   "budget_amount" : "16002474.00 USD",
