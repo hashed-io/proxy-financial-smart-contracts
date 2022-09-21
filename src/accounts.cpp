@@ -36,12 +36,12 @@ void accounts::change_balance(const uint64_t &project_id,
 }
 
 ACTION accounts::helpdelete(const eosio::name &actor,
-                                     const uint64_t &project_id,
-                                     const uint64_t &account_id)
+                            const uint64_t &project_id,
+                            const uint64_t &account_id)
 {
-    require_auth(actor);
+    require_auth(has_auth(actor) ? actor : _self);
     auto admin_itr = users.find(actor.value);
-    check(admin_itr->role == common::projects::entity::fund , actor.to_string() + ": helpdelete, is not an admin!");
+    check(admin_itr->role == common::projects::entity::fund, actor.to_string() + ": helpdelete, is not an admin!");
 
     auto project = projects_table.find(project_id);
     check(project != projects_table.end(), common::contracts::accounts.to_string() + ": helpdelete, the project where the account is trying to be deleted does not exist.");
@@ -52,9 +52,7 @@ ACTION accounts::helpdelete(const eosio::name &actor,
     check(account != accounts.end(), common::contracts::accounts.to_string() + ": helpdelete, the account does not exist.");
 
     accounts.erase(account);
-
 }
-
 
 ACTION accounts::reset()
 {
@@ -132,13 +130,113 @@ ACTION accounts::init()
             item.category = account_types_vv[i].category; });
     }
 }
+ACTION accounts::migration(const uint64_t &project_id)
+{
+    require_auth(_self);
+    eosio::transaction tx;
+
+    auto project_itr = projects_table.find(project_id);
+
+    action call_1(
+        permission_level{_self, "active"_n},
+        common::contracts::accounts,
+        "editaccount"_n,
+        std::make_tuple(project_itr->owner,
+                        project_id,
+                        6,
+                        "Architectural, Engineering and Related Services",
+                        "Children account",
+                        3,
+                        eosio::asset(1661879500, common::currency),
+                        5413,
+                        133179));
+    tx.actions.emplace_back(call_1);
+
+    action call_2(
+        permission_level{_self, "active"_n},
+        common::contracts::accounts,
+        "editaccount"_n,
+        std::make_tuple(project_itr->owner,
+                project_id,
+                4,
+                "Furniture, Fixtures & Equipment Purchases",
+                "Children account",
+                3,
+                eosio::asset(1600247400, common::currency),
+                42316423364236,
+                59169));
+    tx.actions.emplace_back(call_2);
+    
+    action call_3(
+        permission_level{_self, "active"_n},
+        common::contracts::accounts,
+        "editaccount"_n,
+        std::make_tuple(project_itr->owner,
+                        project_id,
+                        4,
+                        "Furniture, Fixtures & Equipment Purchases",
+                        "Children account",
+                        2,
+                        eosio::asset(1600247400, common::currency),
+                        4232,
+                        59169));
+    tx.actions.emplace_back(call_3);
+
+
+    action call_4(
+        permission_level{_self, "active"_n},
+        common::contracts::accounts,
+        "editaccount"_n,
+        std::make_tuple(project_itr->owner,
+                        project_id,
+                        3,
+                        "Construction",
+                        "Children account",
+                        2,
+                        eosio::asset(13621004900, common::currency),
+                        2362,
+                        138432));
+    tx.actions.emplace_back(call_4);
+
+    action call_5(
+        permission_level{_self, "active"_n},
+        common::contracts::accounts,
+        "deleteaccnt"_n,
+        std::make_tuple(project_itr->owner, project_id, 16));
+    tx.actions.emplace_back(call_5);
+
+    action call_6(
+        permission_level{_self, "active"_n},
+        common::contracts::accounts,
+        "deleteaccnt"_n,
+        std::make_tuple(project_itr->owner, project_id, 9));
+    tx.actions.emplace_back(call_6);
+
+    action call_7(
+        permission_level{_self, "active"_n},
+        common::contracts::accounts,
+        "deleteaccnt"_n,
+        std::make_tuple(project_itr->owner, project_id, 21));
+    tx.actions.emplace_back(call_7);
+
+
+    action call_9(
+        permission_level{_self, "active"_n},
+        common::contracts::accounts,
+        "deleteaccnt"_n,
+        std::make_tuple(project_itr->owner, project_id, 17));
+    tx.actions.emplace_back(call_9);
+    
+    tx.delay_sec = 1;
+    tx.send(project_itr->owner.value, _self);
+}
 
 ACTION accounts::addledger(const uint64_t &project_id,
                            const uint64_t &entity_id)
 {
 
     // ! ledger is now for project
-    
+
     require_auth(_self);
 
     auto project = projects_table.find(project_id);
@@ -153,7 +251,7 @@ ACTION accounts::addledger(const uint64_t &project_id,
     // TODO check if exists a ledger for the project
     // TODO make the ledger global for builder and admin
     // ! only admin can modify it ( the accounts )
-    
+
     // auto itr_ledger = ledger_t.begin();
     // while (itr_ledger != ledger_t.end())
     // {
@@ -166,11 +264,10 @@ ACTION accounts::addledger(const uint64_t &project_id,
     ledger_id = (ledger_id > 0) ? ledger_id : 1;
 
     ledger_t.emplace(_self, [&](auto &new_ledger)
-                    {
+                     {
         new_ledger.ledger_id = ledger_id;
         new_ledger.entity_id = entity_id;
         new_ledger.description = "Ledger for the " + (itr_entity -> role.to_string()) + " " + itr_entity -> entity_name; });
-
 
     auto account_types_itr = account_types.begin();
     while (account_types_itr != account_types.end())
@@ -328,7 +425,7 @@ ACTION accounts::editaccount(const eosio::name &actor,
                              const uint64_t &jobs_multiplier)
 {
 
-    require_auth(actor);
+    require_auth(has_auth(actor) ? actor : _self);
 
     check(account_name.length() > 0, common::contracts::accounts.to_string() + ": the account name can not be an empty string.");
     check(ACCOUNT_CATEGORIES.is_valid_constant(account_category), common::contracts::accounts.to_string() + ": the account category is invalid.");
@@ -341,7 +438,7 @@ ACTION accounts::editaccount(const eosio::name &actor,
     auto itr_account = accounts.find(account_id);
     check(itr_account != accounts.end(), common::contracts::accounts.to_string() + ": editaccount -> the account does not exist.");
     check(itr_account->parent_id != 0, common::contracts::accounts.to_string() + ": editaccount -> parent account can not be edited.");
-    
+
     check(budget_amount >= asset(0, common::currency), _self.to_string() + ": addaccount -> the amount cannot be negative.");
 
     // action(
@@ -368,8 +465,7 @@ ACTION accounts::editaccount(const eosio::name &actor,
         modified_account.description = description;
         modified_account.account_category = account_category; 
         modified_account.naics_code = naics_code;
-        modified_account.jobs_multiplier = jobs_multiplier;
-        });
+        modified_account.jobs_multiplier = jobs_multiplier; });
 
     budget_tables budgets(common::contracts::budgets, project_id);
     auto budgets_by_account = budgets.get_index<"byaccount"_n>();
@@ -387,9 +483,9 @@ ACTION accounts::editaccount(const eosio::name &actor,
         itr_budget++;
     }
 
-    //TODO: send timestamp corresponding to the updating date
+    // TODO: send timestamp corresponding to the updating date
     uint64_t date = 0;
-    //uint64_t begind_date = itr_budget->begin_date;
+    // uint64_t begind_date = itr_budget->begin_date;
     uint64_t budget_type_id = 1;
 
     if (budget_id > 0)
@@ -410,14 +506,14 @@ ACTION accounts::editaccount(const eosio::name &actor,
             std::make_tuple(common::contracts::budgets, project_id, account_id, budget_amount, budget_type_id, date, date, true))
             .send();
     }
-    
 }
 
 ACTION accounts::deleteaccnt(const eosio::name &actor,
                              const uint64_t &project_id,
                              const uint64_t &account_id)
-{   
-    require_auth(actor);
+{
+    const eosio::name contract_caller = has_auth(actor) ? actor : _self;
+    require_auth(contract_caller);
 
     auto project = projects_table.find(project_id);
     check(project != projects_table.end(), common::contracts::accounts.to_string() + ": the project where the account is trying to be deleted does not exist.");
@@ -457,12 +553,11 @@ ACTION accounts::deleteaccnt(const eosio::name &actor,
                     { modified_account.num_children -= 1; });
 
     action(
-        permission_level(actor, "active"_n),
+        permission_level(contract_caller, "active"_n),
         _self,
         "helpdelete"_n,
         std::make_tuple(actor, project_id, account_id))
         .send();
-
 }
 
 ACTION accounts::addaccount(const eosio::name &actor,
@@ -477,10 +572,10 @@ ACTION accounts::addaccount(const eosio::name &actor,
                             const uint64_t &jobs_multiplier)
 {
 
-    require_auth(actor);
+    require_auth(has_auth(actor) ? actor : _self);
 
     auto admin_itr = users.find(actor.value);
-    check(admin_itr->role == common::projects::entity::fund , actor.to_string() + " is not an admin!");
+    check(admin_itr->role == common::projects::entity::fund, actor.to_string() + " is not an admin!");
 
     auto project_itr = projects_table.find(project_id);
     check(project_itr != projects_table.end(), "The project does not exists");
@@ -491,7 +586,7 @@ ACTION accounts::addaccount(const eosio::name &actor,
     ledger_tables ledger_t(_self, project_id);
     auto ledger_t_by_entity = ledger_t.get_index<"byentity"_n>();
     auto itr_ledger = ledger_t_by_entity.find(admin_itr->entity_id);
-    
+
     check(itr_ledger != ledger_t_by_entity.end(), common::contracts::accounts.to_string() + ": there is no ledger associated with that entity.");
 
     auto project_exists = projects_table.find(project_id);

@@ -4,6 +4,7 @@
 #include <eosio/system.hpp>
 #include <eosio/asset.hpp>
 #include <eosio/symbol.hpp>
+#include <eosio/transaction.hpp>
 
 #include <common/constants.hpp>
 #include <common/data_types.hpp>
@@ -75,6 +76,8 @@ public:
     ACTION clear();
 
     ACTION init();
+
+    ACTION migration(const uint64_t &project_id);
 
     ACTION addledger(const uint64_t &project_id,
                      const uint64_t &entity_id);

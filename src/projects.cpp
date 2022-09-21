@@ -131,12 +131,20 @@ ACTION projects::migration()
 		project_itr++;
 	}
 
-	// action next_execution(
-	// 	permission_level{_self, "active"_n},
+
+	// action(
+	// 	permission_level{common::contracts::accounts, "active"_n},
+	// 	common::contracts::accounts,
+	// 	"migration"_n,
+	// 	std::make_tuple(project_itr->project_id)
+	// ).send();
+
+	// action(
+	// 	permission_level{common::contracts::transactions, "active"_n},
 	// 	common::contracts::transactions,
 	// 	"migration"_n,
-	// 	std::make_tuple()
-	// );
+	// 	std::make_tuple(project_itr->project_id)
+	// ).send();
 
 }
 

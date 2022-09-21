@@ -338,7 +338,7 @@ describe('Tests for budget expenditures', async function () {
 
   });
 
-  it.only('Delete a budget expenditure of a given project', async () => {
+  it('Delete a budget expenditure of a given project', async () => {
     //Arrange
     const new_account = await AccountFactory.createWithDefaults({ actor: admin.params.account });
     await contracts.accounts.addaccount(...new_account.getCreateActionParams(), { authorization: `${admin.params.account}@active` });
@@ -507,7 +507,7 @@ describe('Tests for budget expenditures', async function () {
   });
 
 
-  it.only("Deleting a hard cost budget expenditure, also deletes the associated budget", async () => {
+  it("Deleting a hard cost budget expenditure, also deletes the associated budget", async () => {
     // Arrange
     const new_account = await AccountFactory.createWithDefaults({ 
       actor: admin.params.account, 
@@ -781,7 +781,7 @@ describe('Tests for budget expenditures', async function () {
 
   });
 
-  it.only('Add balance to a budget expenditure of a given project', async () => {
+  it('Add balance to a budget expenditure of a given project', async () => {
     // Arrange
     const new_account = await AccountFactory.createWithDefaults({ actor: admin.params.account, budget_amount: "100.00 USD" });
     await contracts.accounts.addaccount(...new_account.getCreateActionParams(), { authorization: `${admin.params.account}@active` });

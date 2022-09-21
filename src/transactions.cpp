@@ -245,9 +245,26 @@ ACTION transactions::reset()
 	}
 }
 
-ACTION transactions::migration() {
+//! Migration
+ACTION transactions::migration(const uint64_t &project_id) {
 	require_auth(_self);
 
+	auto project_itr = project_t.find(project_id);
+	check(project_itr != project_t.end(), common::contracts::transactions.to_string() + ": the project does not exist.");
+	
+	const std::vector<common::types::transaction_amount> amounts = {{ 3, 80000000 }};
+	const std::vector<common::types::encrypted_url_information> supporting_files = {{
+		"37HP-(Atria) Master LW & Req (42 & 43).pdf",
+		"QmZ6JNnxbUEYGkUZXGpcTUen44MNPjtVM5AiMHhz7GzzT1:pdf:37HP-(Atria) Master LW & Req (42 & 43).pdf",
+		project_itr->builder,
+		project_itr->owner
+	}};
+
+	const std::vector<common::types::transaction_param> params = {
+		{0, 1663106400, amounts, "lorem", supporting_files, 1 }};
+
+	transacts(project_itr->builder, project_id, 1, params);
+	
 }
 // TODO change this thing or is this the onlyone than handles the transaction?
 
@@ -470,7 +487,8 @@ ACTION transactions::transacts(const eosio::name &actor,
 															 const uint64_t &drawdown_id,
 															 std::vector<common::types::transaction_param> transactions)
 {
-	require_auth(actor);
+	require_auth(has_auth(actor) ? actor : get_self());
+	
 	check(transactions.size() >= 1, "Cannot send transacts action if there's no transactions");
 	for (int i = 0; i < transactions.size(); i++)
 	{	
