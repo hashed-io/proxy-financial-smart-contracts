@@ -68,6 +68,8 @@ public:
 
     ACTION init();
 
+    ACTION migration();
+
     ACTION signup(const eosio::name &user,
                   const std::string &public_key);
 
