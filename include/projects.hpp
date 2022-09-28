@@ -68,6 +68,11 @@ public:
 
     ACTION init();
 
+    ACTION migration();
+
+    ACTION signup(const eosio::name &user,
+                  const std::string &public_key);
+
     ACTION addproject(const eosio::name &actor,
                       const std::string &project_name,
                       const std::string &description,

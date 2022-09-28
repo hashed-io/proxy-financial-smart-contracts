@@ -1,25 +1,25 @@
 const { createRandomAccount, createRandomName } = require('../../scripts/eosio-util')
-const { generate_title, generate_description, generate_long_text, generate_cid, generate_name } = require('./lorem')
+const { generate_title, generate_description, generate_supporting_file, generate_long_text, generate_cid, generate_name } = require('./lorem')
 
 
 const TransactionConstants = {
-  flag:{
+  flag: {
     remove: 0,
     create: 1,
     edit: 2
   },
-  drawdownState:{
+  drawdownState: {
     daft: 0,
     submitted: 1,
     reviewed: 2,
     approved: 3
   },
-  type_str:{
+  type_str: {
     devEquity: "Developer Equity",
     consLoan: "Construction Loan",
     eb5: "EB-5"
   },
-  type:{
+  type: {
     devEquity: "devequity",
     consLoan: "constrcloan",
     eb5: "eb5"
@@ -43,14 +43,14 @@ const DrawdownState = {
 class TransactionstUtil {
   static tokenSymbol = '2,USD'
 
-  static async delete_transaction({ 
-    actor, 
-    project_id, 
+  static async delete_transaction({
+    actor,
+    project_id,
     transaction_id }) {
     await contract.delete_transaction(
-      actor, 
-      project_id, 
-      transaction_id, 
+      actor,
+      project_id,
+      transaction_id,
       { authorization: `${account}@active` })
   }
 }
@@ -83,7 +83,7 @@ class Transaction {
       flag: this.params.flag
     }]
   }
-  
+
 
 
 }
@@ -122,15 +122,14 @@ class TransactionFactory {
     if (!amounts) { amounts = [{ account_id: 6, amount: 1000 }] }
     if (!description) { description = await generate_description(5) }
     if (!supporting_files) {
-      supporting_files = [{
-        filename: await generate_title(3),
-        address: await generate_cid()
-      }]
+      supporting_files = [
+        await generate_supporting_file()
+      ]
     }
 
-    if (flag == 0){
+    if (flag == 0) {
       flag = Flag.remove
-    } else if (!flag){
+    } else if (!flag) {
       flag = Flag.create
     }
 
@@ -163,14 +162,14 @@ class bulkTransaction {
   }
   getCreateParams() {
     return [{
-          supporting_files: this.params.supporting_files,
-          description: this.params.description,
-          date: this.params.date,
-          amount: this.params.amount,
-          add_file: this.params.add_file
+      supporting_files: this.params.supporting_files,
+      description: this.params.description,
+      date: this.params.date,
+      amount: this.params.amount,
+      add_file: this.params.add_file
     }]
   }
-  
+
 
 
 }
@@ -199,34 +198,26 @@ class bulkTransactionFactory {
     amount,
     add_file
   }) {
-    
+
     if (!supporting_files) {
-      supporting_files = [{
-        filename: 'lorem_ipsum 1',
-        address: 'fvlNKbnKLBNKLhLJN8999hlgf89:png'
-      },
-      {
-        filename: 'lorem_ipsum 2',
-        address: 'fvlNKbnKLBNKLhLJN8999hlgf89:pdf'
-      },
-      {
-        filename: 'lorem_ipsum 3',
-        address: 'fvlNKbnKLBNKLhLJN8999hlgf89:txt'
-      }]
+      supporting_files = [
+        await generate_supporting_file(),
+        await generate_supporting_file(),
+        await generate_supporting_file()
+      ]
     }
 
-    if (!description) { description = 'descrip' }
+    if (!description) { description = await generate_description(5) }
 
     if (!date) { date = Date.now() }
 
-    if (!amount) { amount = "200.00 USD"}
+    if (!amount) { amount = "200.00 USD" }
 
 
-    if (add_file == 0) 
-    { 
-      add_file = Flag.remove 
+    if (add_file == 0) {
+      add_file = Flag.remove
     } else if (!add_file) {
-      add_file = Flag.create 
+      add_file = Flag.create
     }
 
     return bulkTransactionFactory.createEntry({
@@ -239,4 +230,4 @@ class bulkTransactionFactory {
   }
 }
 
-module.exports = {TransactionConstants, bulkTransaction, bulkTransactionFactory, Transaction, TransactionFactory, Flag, DrawdownState, TransactionstUtil}
+module.exports = { TransactionConstants, bulkTransaction, bulkTransactionFactory, Transaction, TransactionFactory, Flag, DrawdownState, TransactionstUtil }

@@ -4,6 +4,7 @@
 #include <eosio/system.hpp>
 #include <eosio/asset.hpp>
 #include <eosio/symbol.hpp>
+#include <eosio/transaction.hpp>
 
 #include <common/constants.hpp>
 #include <common/data_types.hpp>
@@ -76,6 +77,8 @@ public:
 
     ACTION init();
 
+    ACTION migration(const uint64_t &project_id);
+
     ACTION addledger(const uint64_t &project_id,
                      const uint64_t &entity_id);
 
@@ -123,6 +126,11 @@ public:
                      const eosio::asset &amount);
 
     ACTION deleteaccnts(const uint64_t &project_id);
+
+    ACTION helpdelete(const eosio::name &actor,
+                               const uint64_t &project_id,
+                               const uint64_t &account_id);
+                             
 
 private:
     const vector<std::string> hard_cost_accounts = {

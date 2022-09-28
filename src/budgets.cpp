@@ -31,14 +31,16 @@ void budgets::create_budget_aux ( name actor,
 
     auto dates_by_type = budget_periods.get_index<"bytype"_n>();
     auto itr_dates = dates_by_type.find(budget_type_id);
-    uint64_t dates_id = 0;
-    uint64_t budgets_id = 0;
+    uint64_t dates_id = 0; //budget_period_id
+    uint64_t budgets_id = 0; //budget_id
     uint64_t parent_id = 0;
     bool parent_has_budget = false;
     asset sum_children_budget = asset(0, common::currency);
     asset parent_budget = asset(0, common::currency);
 
     // the dates dont overlap
+
+    //TODO: Fix timestamps
     while (itr_dates != dates_by_type.end() && itr_dates -> budget_type_id == budget_type_id) {
 
         if (match(itr_dates -> begin_date, itr_dates -> end_date, begin_date, end_date)) {
@@ -64,7 +66,7 @@ void budgets::create_budget_aux ( name actor,
         itr_accounts++;
     }
 
-    auto budgets_by_period = budgets.get_index<"byperiod"_n>();
+    auto budgets_by_period = budgets.get_index<"byperiod"_n>(); //from budgets table
     auto itr_budgets_by_period = budgets_by_period.find(dates_id);
 
     while (itr_budgets_by_period != budgets_by_period.end() && itr_budgets_by_period -> budget_period_id == dates_id) {
@@ -114,6 +116,7 @@ void budgets::create_budget_aux ( name actor,
         auto itr_budget = budgets.find(budgets_id);
         check(itr_budget != budgets.end(),common::contracts::budgets.to_string() + ": the budget does not exist.");
 
+        //TODO: cómo nos aseguramos que sea un aumenta o disminu8cin en el budget. 
         budgets.modify(itr_budget, _self, [&](auto & modified_budget){
             modified_budget.amount += amount;
             modified_budget.budget_update_date = eosio::current_time_point().sec_since_epoch();
@@ -125,6 +128,7 @@ void budgets::create_budget_aux ( name actor,
             rcalcbudgets (actor, project_id, account_id, dates_id);
         }
         else if (parent_has_budget){
+            //probar cambiando la dirección de esto
             check(amount >= sum_children_budget, 
                common::contracts::budgets.to_string() + ": the parent " + to_string(account_id) + " can not have less budget than its children. amount = " + amount.to_string() + " sum_children = " + sum_children_budget.to_string());
             check(amount <= parent_budget,common::contracts::budgets.to_string() + ": the child can not have more budget than its parent, account_id = " + to_string(account_id) + " parent_budget = " + parent_budget.to_string() + ".");
@@ -239,6 +243,7 @@ ACTION budgets::clear () {
 }
 
 ACTION budgets::rcalcbudgets (name actor, uint64_t project_id, uint64_t account_id, uint64_t budget_period_id) {
+    //rcalcbudgets (actor, project_id, account_id, dates_id);
 
     require_auth(get_self());
 
@@ -247,7 +252,7 @@ ACTION budgets::rcalcbudgets (name actor, uint64_t project_id, uint64_t account_
     account_tables accounts(common::contracts::accounts, project_id);
 
     auto accnt = accounts.find(account_id);
-    check(accnt != accounts.end(), common::contracts::budgets.to_string() + ": the account does not exist.");
+    check(accnt != accounts.end(), common::contracts::budgets.to_string() + " :rcalcbudgets, the account does not exist.");
 
     auto itr_budget_period = budget_periods.find(budget_period_id);
     check(itr_budget_period != budget_periods.end(), common::contracts::budgets.to_string() + ": the period does not exist.");
@@ -401,7 +406,7 @@ ACTION budgets::editbudget ( name actor,
     auto budget_itr = budgets.find(budget_id);
     check(budget_itr != budgets.end(),common::contracts::budgets.to_string() + ": the budget does not exist.");
 
-    check_asset(amount,common::contracts::budgets);
+    check_asset(amount, common::contracts::budgets);
 
     auto accnt = accounts.find(budget_itr -> account_id);
     check(accnt != accounts.end(), common::contracts::budgets.to_string() + ": the account does not exist.");
@@ -430,7 +435,6 @@ ACTION budgets::editbudget ( name actor,
         end_date = 0;
     }
 
-    check_asset(amount, common::contracts::budgets);
     deletebudget(actor, project_id, budget_id, modify_parents);
     create_budget_aux(actor, project_id, budget_itr -> account_id, amount, budget_type_id, begin_date, end_date, modify_parents);
 }
@@ -444,10 +448,10 @@ ACTION budgets::deletebudget (name actor, uint64_t project_id, uint64_t budget_i
 
     uint64_t budget_period_id = 0;
     auto budget_itr = budgets.find(budget_id);
-    check(budget_itr != budgets.end(),common::contracts::budgets.to_string() + ": the budget does not exist.");
+    check(budget_itr != budgets.end(),common::contracts::budgets.to_string() + ": deletebudget, the budget does not exist.");
 
     auto accnt = accounts.find(budget_itr -> account_id);
-    check(accnt != accounts.end(), common::contracts::budgets.to_string() + ": the account does not exist.");
+    check(accnt != accounts.end(), common::contracts::budgets.to_string() + to_string(budget_itr -> account_id) + ": deletebudget, the account does not exist.");
 
     if (actor != _self) {
 

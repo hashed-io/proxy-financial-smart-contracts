@@ -25,19 +25,12 @@ namespace common
     // constexpr eosio::name budgets = "proxybud"_n;
 
     // TESTNET CONTRACTS
-    // constexpr eosio::name projects = "proxycappro1"_n;
-    // constexpr eosio::name accounts = "proxycapacc1"_n;
-    // constexpr eosio::name transactions = "proxycaptrx1"_n;
-    // constexpr eosio::name permissions = "proxycapper1"_n;
-    // constexpr eosio::name budgets = "proxycapbdg1"_n;
-
-    // TESTNET CONTRACTS (NEW)
     // constexpr eosio::name projects = "proxyv3prjct"_n;
     // constexpr eosio::name accounts = "proxyv2accnt"_n;
     // constexpr eosio::name transactions = "proxyv3trnsc"_n;
     // constexpr eosio::name permissions = "proxyv2prmss"_n;
     // constexpr eosio::name budgets = "proxyv2bdgts"_n;
-    //
+    
   } // namespace contracts
 
   namespace transactions

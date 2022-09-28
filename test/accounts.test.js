@@ -373,7 +373,6 @@ describe('Tests for budget expenditures', async function () {
   it('Automatically creates a budget when the new account has an initial budget.', async () => {
     // Arrange
     const new_account = await AccountFactory.createWithDefaults({ actor: admin.params.account, budget_amount: "100.00 USD" });
-
     //Act
     await contracts.accounts.addaccount(...new_account.getCreateActionParams(), { authorization: `${admin.params.account}@active` });
 
@@ -385,7 +384,7 @@ describe('Tests for budget expenditures', async function () {
       json: true,
       limit: 100
     });
-    // console.table(accountsTable.rows[accountsTable.rows.length - 1]);
+    //console.log(accountsTable.rows[accountsTable.rows.length - 1]);
 
     const budgetsTable = await rpc.get_table_rows({
       code: budgets,
@@ -394,7 +393,7 @@ describe('Tests for budget expenditures', async function () {
       json: true,
       limit: 100
     });
-    // console.log("\n\n budgets table : ", budgetsTable.rows);
+    //console.log("\n\n budgets table : ", budgetsTable.rows);
 
     expect(budgetsTable.rows[budgetsTable.rows.length - 1]).to.include({
       budget_id: 24,
@@ -415,6 +414,370 @@ describe('Tests for budget expenditures', async function () {
       budget_period_id: 1,
       budget_type_id: 1,
     });
+
+  });
+
+
+
+
+  it("Edit the budget amount for a budget expenditure, should update the parent amount", async () => {
+    // Arrange
+    let modified_amount = "5000.00 USD";
+
+    const new_account = await AccountFactory.createWithDefaults({ 
+      actor: admin.params.account, 
+      project_id: 0,
+      account_name: "Hardcost test1 budget expenditure",
+      parent_id: 1,
+      description: "Hardcost test1 description",
+      account_category: "2",
+      budget_amount: "2000.00 USD",
+      naics_code: "0",
+      jobs_multiplier: "0", 
+    });
+
+    const new_account2 = await AccountFactory.createWithDefaults({ 
+      actor: admin.params.account, 
+      project_id: 0,
+      account_name: "Hardcost test2 budget expenditure",
+      parent_id: 1,
+      description: "Hardcost test2 description",
+      account_category: "2",
+      budget_amount: "500.00 USD",
+      naics_code: "0",
+      jobs_multiplier: "0", 
+    });
+
+    await contracts.accounts.addaccount(...new_account.getCreateActionParams(), { authorization: `${admin.params.account}@active` });
+    await contracts.accounts.addaccount(...new_account2.getCreateActionParams(), { authorization: `${admin.params.account}@active` });
+    
+    //Act
+    await AccountUtil.editaccount({
+      actor: new_account.params.actor,
+      project_id: new_account.params.project_id,
+      account_id: 24,
+      account_name: new_account.params.account_name,
+      description: new_account.params.description,
+      account_category: new_account.params.account_category,
+      budget_amount: modified_amount,
+      naics_code: "0",
+      jobs_multiplier: "0", 
+      contract: contracts.accounts,
+      contractAccount: admin.params.account
+    })
+
+    // Assert
+    const accountsTable = await rpc.get_table_rows({
+      code: accounts,
+      scope: project.params.id,
+      table: 'accounts',
+      json: true,
+      limit: 100
+    });
+    //console.log(accountsTable.rows, "\n\n");
+
+
+    const budgetsTable = await rpc.get_table_rows({
+      code: budgets,
+      scope: 0,
+      table: "budgets",
+      json: true,
+      limit: 100
+    });
+    //console.log("\n\n budgets table : ", budgetsTable.rows);
+
+    budgetsTable.rows.forEach((budget) => {
+      
+      //paren account (hard cost)
+      if (budget.account_id == 1) {
+        expect(budget.amount).to.equal("5500.00 USD");
+      }
+
+      //child account new_account (hard cost)
+      if (budget.account_id == 24) {
+        expect(budget.amount).to.equal("5000.00 USD");
+      }
+
+      //child account new_account2 (hard cost)
+      if (budget.account_id == 25) {
+        expect(budget.amount).to.equal("500.00 USD");
+      }
+    })
+
+  });
+
+
+  it("Deleting a hard cost budget expenditure, also deletes the associated budget", async () => {
+    // Arrange
+    const new_account = await AccountFactory.createWithDefaults({ 
+      actor: admin.params.account, 
+      project_id: 0,
+      account_name: "Hardcost test1 budget expenditure",
+      parent_id: 1,
+      //account_currency: "2,USD",
+      description: "Hardcost test1 description",
+      account_category: "2",
+      budget_amount: "2000.00 USD",
+      naics_code: "0",
+      jobs_multiplier: "0", 
+    });
+
+    await contracts.accounts.addaccount(...new_account.getCreateActionParams(), { authorization: `${admin.params.account}@active` });
+
+
+    //Act
+    await AccountUtil.deleteaccnt({
+      actor: new_account.params.actor,
+      project_id: new_account.params.project_id,
+      account_id: 24,
+      contract: contracts.accounts,
+      contractAccount: admin.params.account
+    })
+          
+
+    // Assert
+    const accountsTable = await rpc.get_table_rows({
+      code: accounts,
+      scope: project.params.id,
+      table: 'accounts',
+      json: true,
+      limit: 100
+    });
+    //console.log(accountsTable.rows, "\n\n");
+
+    accountsTable.rows.forEach((account) => {
+      //console.log(budget)
+      if (account.account_id == 24) {
+        expect.fail('Account 24 should not exist');
+      }
+    })
+
+    const budgetsTable = await rpc.get_table_rows({
+      code: budgets,
+      scope: 0,
+      table: "budgets",
+      json: true,
+      limit: 100
+    });
+    //console.log("\n\n budgets table : ", budgetsTable.rows);
+
+    budgetsTable.rows.forEach((budget) => {
+      //console.log(budget)
+      if (budget.account_id == 1) {
+        expect(budget.amount).to.equal("0.00 USD");
+      }
+
+      if (budget.account_id == 24) {
+        expect.fail('Account 24 should not exist');
+      }
+
+    })
+
+
+  });
+
+  it("No one can edit Hard cost (parent account)", async () => {
+    // Arrange
+    const new_account = await AccountFactory.createWithDefaults({ actor: admin.params.account, budget_amount: "500.00 USD" });
+    await contracts.accounts.addaccount(...new_account.getCreateActionParams(), { authorization: `${admin.params.account}@active` });
+    let new_amount = "2000.00 USD";
+    let fail;
+
+    //Act
+    try{
+      await AccountUtil.editaccount({
+        actor: new_account.params.actor,
+        project_id: new_account.params.project_id,
+        account_id: 1,
+        account_name: "Hard Cost test1 budget expenditure",
+        description: new_account.params.description,
+        account_category: new_account.params.account_category,
+        budget_amount: new_amount,
+        naics_code: 6665166,
+        jobs_multiplier: new_account.params.jobs_multiplier,
+        contract: contracts.accounts,
+        contractAccount: admin.params.account
+      })
+      fail = false;
+    } catch (err) {
+      fail = true;
+    }
+
+    // Assert
+    const accountsTable = await rpc.get_table_rows({
+      code: accounts,
+      scope: project.params.id,
+      table: 'accounts',
+      json: true,
+      limit: 100
+    });
+
+    //console.log(accountsTable.rows);
+    //console.log(accountsTable.rows[0]);
+
+    const budgetsTable = await rpc.get_table_rows({
+      code: budgets,
+      scope: 0,
+      table: "budgets",
+      json: true,
+      limit: 100
+    });
+    //console.log("\n\n budgets table : ", budgetsTable.rows);
+    //console.log("\n\n budgets table : ", budgetsTable.rows[budgetsTable.rows.length - 1]);
+
+    budgetsTable.rows.forEach((budget) => {
+      //console.log(budget)
+      if (budget.account_id == 1) {
+        expect(budget.amount).to.equal(new_account.params.budget_amount);
+      }
+    })
+
+    expect(accountsTable.rows[0]).to.include({
+      account_id: 1,
+      parent_id: 0,
+      account_name: "Hard Cost",
+      description: "Hard Cost",
+      naics_code: 0,
+      jobs_multiplier: 0,
+      account_category: 2,
+    })
+
+    expect(fail).to.be.true
+
+  });
+
+  it("No one can edit Soft cost (parent account)", async () => {
+    // Arrange
+    const new_account = await AccountFactory.createWithDefaults({ 
+      actor: admin.params.account, 
+      budget_amount: "500.00 USD",
+      parent_id: 2,
+      account_category: 2,
+    });
+
+    await contracts.accounts.addaccount(...new_account.getCreateActionParams(), { authorization: `${admin.params.account}@active` });
+    let new_amount = "2000.00 USD";
+    let fail;
+
+    //Act
+    try{
+      await AccountUtil.editaccount({
+        actor: new_account.params.actor,
+        project_id: new_account.params.project_id,
+        account_id: 2,
+        account_name: "Soft Cost test1 budget expenditure",
+        description: new_account.params.description,
+        account_category: new_account.params.account_category,
+        budget_amount: new_amount,
+        naics_code: 6665166,
+        jobs_multiplier: new_account.params.jobs_multiplier,
+        contract: contracts.accounts,
+        contractAccount: admin.params.account
+      })
+      fail = false;
+    } catch (err) {
+      fail = true;
+    }
+
+    // Assert
+    const accountsTable = await rpc.get_table_rows({
+      code: accounts,
+      scope: project.params.id,
+      table: 'accounts',
+      json: true,
+      limit: 100
+    });
+
+    //console.log(accountsTable.rows);
+    //console.log(accountsTable.rows[1]);
+
+    const budgetsTable = await rpc.get_table_rows({
+      code: budgets,
+      scope: 0,
+      table: "budgets",
+      json: true,
+      limit: 100
+    });
+    //console.log("\n\n budgets table : ", budgetsTable.rows);
+    //console.log("\n\n budgets table : ", budgetsTable.rows[budgetsTable.rows.length - 1]);
+
+    budgetsTable.rows.forEach((budget) => {
+      //console.log(budget)
+      if (budget.account_id == 2) {
+        expect(budget.amount).to.equal(new_account.params.budget_amount);
+      }
+    })
+
+    expect(accountsTable.rows[1]).to.include({
+      account_id: 2,
+      parent_id: 0,
+      account_name: "Soft Cost",
+      description: "Soft Cost",
+      naics_code: 0,
+      jobs_multiplier: 0,
+      account_category: 3,
+    })
+
+    expect(fail).to.be.true
+
+  });
+
+  it("Send editbudget with zero amount, should not delete the budget", async () => {
+    // Arrange
+    const new_account = await AccountFactory.createWithDefaults({ actor: admin.params.account, budget_amount: "500.00 USD" });
+    await contracts.accounts.addaccount(...new_account.getCreateActionParams(), { authorization: `${admin.params.account}@active` });
+    let new_amount = "0.00 USD";
+    let budget_account_exist;
+
+    //Act
+    await AccountUtil.editaccount({
+      actor: new_account.params.actor,
+      project_id: new_account.params.project_id,
+      account_id: 24,
+      account_name: new_account.params.account_name,
+      description: new_account.params.description,
+      account_category: new_account.params.account_category,
+      budget_amount: new_amount,
+      naics_code: "0",
+      jobs_multiplier: "0", 
+      contract: contracts.accounts,
+      contractAccount: admin.params.account
+    })
+
+    // Assert
+    const accountsTable = await rpc.get_table_rows({
+      code: accounts,
+      scope: project.params.id,
+      table: 'accounts',
+      json: true,
+      limit: 100
+    });
+
+    //console.log(accountsTable.rows);
+    //console.log(accountsTable.rows[accountsTable.rows.length - 1]);
+
+    const budgetsTable = await rpc.get_table_rows({
+      code: budgets,
+      scope: 0,
+      table: "budgets",
+      json: true,
+      limit: 100
+    });
+    //console.log("\n\n budgets table : ", budgetsTable.rows);
+    //console.log("\n\n budgets table : ", budgetsTable.rows[budgetsTable.rows.length - 1]);
+    
+    budgetsTable.rows.forEach((budget) => {
+      //console.log(budget.account_id)
+      if (budget.account_id === 24) {
+        budget_account_exist = true;
+        expect(budget.amount).to.equal(new_amount);
+      } else {
+        budget_account_exist = false;
+      }
+    })
+
+    expect(budget_account_exist).to.be.true;
+
 
   });
 

@@ -14,7 +14,7 @@ using namespace eosio;
     eosio::asset total_amount;                                    \
     uint64_t transaction_category;                                \
     vector<common::types::transaction_subtypes> accounting;       \
-    vector<common::types::url_information> supporting_files;      \
+    vector<common::types::encrypted_url_information> supporting_files;      \
                                                                   \
     uint64_t primary_key() const { return transaction_id; }       \
     uint64_t by_drawdown() const { return drawdown_id; }          \

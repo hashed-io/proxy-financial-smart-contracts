@@ -10,6 +10,8 @@ const { EntityFactory, EntityConstants } = require('./util/EntityUtil');
 const { ProjectFactory, ProjectConstants, ProjectUtil } = require('./util/ProjectUtil');
 const { UserFactory, Roles } = require('./util/UserUtil');
 
+const { generate_public_key } = require('./util/lorem');
+
 const { func } = require('promisify');
 const assert = require('assert');
 const { Console } = require('console');
@@ -25,27 +27,27 @@ const createRolesCases = (() => {
     {
       testName: 'Create an Admin account',
       role: Roles.fund,
-      entity_id: 1
+      entityID: 1
     },
     {
       testName: 'Create an Investor account',
       role: Roles.investor,
-      entity_id: 2
+      entityID: 2
     },
     {
       testName: 'Create a Builder account',
       role: Roles.developer,
-      entity_id: 3
+      entityID: 3
     },
     {
       testName: 'Create an Issuer account',
       role: Roles.issuer,
-      entity_id: 4
+      entityID: 4
     },
     {
       testName: 'Create a Regional center account',
       role: Roles.regional_center,
-      entity_id: 5
+      entityID: 5
     }
   ]
 })()
@@ -103,14 +105,21 @@ describe('Tests for the users on projects smart contract', async function () {
 
   });
 
-  createRolesCases.forEach(({ testName, role, entity_id }) => {
+  createRolesCases.forEach(({ testName, role, entityID }) => {
     it(testName, async () => {
 
       // Arrange
       const user = await UserFactory.createWithDefaults({ role: role });
 
-      user.params.entity_id = entity_id;
-      // console.log('user params is: ', user.params)
+
+      Object.assign(user.params, {
+        entity_id: entityID,
+        description: 'description',
+        related_projects: [],
+        public_key: ''
+      });
+
+      //console.log('user params is: ', user.params)
       // console.table(user);
 
       // Act
@@ -124,15 +133,16 @@ describe('Tests for the users on projects smart contract', async function () {
         json: true
       });
 
-      // console.table(usersTable.rows);
+      //console.log(usersTable.rows);
 
       expect(usersTable.rows).to.deep.include.members([{
         account: user.params.account,
-        description: user.params.description,
         user_name: user.params.user_name,
         entity_id: user.params.entity_id,
-        related_projects: [],
-        role: role
+        related_projects: user.params.related_projects,
+        role: role,
+        description: user.params.description,
+        public_key: user.params.public_key
       }]);
 
     });
@@ -202,7 +212,7 @@ describe('Tests for the users on projects smart contract', async function () {
   const addEntitiesCases = [
     { testName: 'Add admin entity', userRole: Roles.fund },
     { testName: 'Add developer entity', userRole: Roles.developer },
-    { testName: 'Add investor', userRole: Roles.investor },
+    { testName: 'Add investor entity', userRole: Roles.investor },
     { testName: 'Add issuer entity', userRole: Roles.issuer },
     { testName: 'Add regional center entity', userRole: Roles.regional_center },
   ]
@@ -237,16 +247,22 @@ describe('Tests for the users on projects smart contract', async function () {
 
   const addUserwithRolCases = [
     { testName: 'Add admin account', userRole: Roles.fund, entityID: 1 },
-    { testName: 'Add investor account', userRole: Roles.investor, entityID:2 },
+    { testName: 'Add investor account', userRole: Roles.investor, entityID: 2 },
     { testName: 'Add developer account', userRole: Roles.developer, entityID: 3 },
     { testName: 'Add issuer account', userRole: Roles.issuer, entityID: 4 },
-    { testName: 'Add regional center account', userRole: Roles.regional_center, entityID: 5},
+    { testName: 'Add regional center account', userRole: Roles.regional_center, entityID: 5 },
   ]
 
   addUserwithRolCases.forEach(({ testName, userRole, entityID }) => {
-    it(testName, async () => {
+    itly(testName, async () => {
       //Arrange
-      const user = await UserFactory.createWithDefaults({ role: userRole, entity_id: entityID});
+      const user = await UserFactory.createWithDefaults({ role: userRole });
+      Object.assign(user.params, {
+        description: 'description',
+        entity_id: entityID,
+        related_projects: [],
+        public_key: ''
+      });
 
       //Act
       await contracts.projects.adduser(projects, ...user.getCreateParams(), {
@@ -268,15 +284,23 @@ describe('Tests for the users on projects smart contract', async function () {
         entity_id: user.params.entity_id,
         role: user.params.role,
         related_projects: user.params.related_projects,
-        description: user.params.description
+        description: user.params.description,
+        public_key: user.params.public_key
       }])
     });
   });
-  
-  it("Admin cannot add a user twice", async ()=> {
+
+  it("Admin cannot add a user twice", async () => {
     //Arrange
     let fail
-    const user = await UserFactory.createWithDefaults({ role: Roles.developer, entity_id: 3});
+    const user = await UserFactory.createWithDefaults({ role: Roles.developer, entity_id: 3 });
+
+    Object.assign(user.params, {
+      description: 'description',
+      entity_id: 3,
+      related_projects: [],
+      public_key: ''
+    });
 
     await contracts.projects.adduser(projects, ...user.getCreateParams(), {
       authorization: `${projects}@active`,
@@ -284,12 +308,12 @@ describe('Tests for the users on projects smart contract', async function () {
 
 
     //Act
-    try{
+    try {
       await contracts.projects.adduser(projects, ...user.getCreateParams(), {
         authorization: `${projects}@active`,
       });
       fail = false
-    } catch (err){
+    } catch (err) {
       fail = true
       //console.error(err)
     }
@@ -311,7 +335,8 @@ describe('Tests for the users on projects smart contract', async function () {
       entity_id: user.params.entity_id,
       role: user.params.role,
       related_projects: user.params.related_projects,
-      description: user.params.description
+      description: user.params.description,
+      public_key: user.params.public_key,
     }])
 
   });
@@ -319,7 +344,13 @@ describe('Tests for the users on projects smart contract', async function () {
   it("An user cannot have more than one role", async () => {
     //Arrange
     let fail
-    const user = await UserFactory.createWithDefaults({ role: Roles.developer, entity_id: 3});
+    const user = await UserFactory.createWithDefaults({ role: Roles.developer, entity_id: 3 });
+    Object.assign(user.params, {
+      description: 'description',
+      entity_id: 3,
+      related_projects: [],
+      public_key: ''
+    });
 
     await contracts.projects.adduser(projects, ...user.getCreateParams(), {
       authorization: `${projects}@active`,
@@ -330,12 +361,12 @@ describe('Tests for the users on projects smart contract', async function () {
     });
 
     //Act
-    try{
+    try {
       await contracts.projects.adduser(projects, ...user.getCreateParams(), {
         authorization: `${projects}@active`,
       });
       fail = false
-    } catch (err){
+    } catch (err) {
       fail = true
       //console.error(err)
     }
@@ -357,13 +388,86 @@ describe('Tests for the users on projects smart contract', async function () {
       entity_id: user.params.entity_id,
       role: Roles.developer,
       related_projects: user.params.related_projects,
-      description: user.params.description
+      description: user.params.description,
+      public_key: user.params.public_key,
     }])
   });
+
+
 
   it("Only admin role can add new users", async () => {
     //TODO, depends on requirements, if not, delete this unit test
   });
+
+  const createUserAndAddPublicKey = [
+    {
+      testName: 'Create an Admin account and public key',
+      role: Roles.fund,
+      entityID: 1
+    },
+    {
+      testName: 'Create an Investor account and public key',
+      role: Roles.investor,
+      entityID: 2
+    },
+    {
+      testName: 'Create a Builder account and public key',
+      role: Roles.developer,
+      entityID: 3
+    },
+    {
+      testName: 'Create an Issuer account and public key',
+      role: Roles.issuer,
+      entityID: 4
+    },
+    {
+      testName: 'Create a Regional center account and public key',
+      role: Roles.regional_center,
+      entityID: 5
+    }
+  ]
+
+  createUserAndAddPublicKey.forEach(({ testName, role, entityID }) => {
+    it(testName, async () => {
+
+      // Arrange
+      const user = await UserFactory.createWithDefaults({ role: role });
+
+      const public_key = await generate_public_key();
+
+      Object.assign(user.params, {
+        entity_id: entityID,
+        description: 'description',
+        related_projects: [],
+        public_key: public_key
+
+      });
+
+      await contracts.projects.adduser(projects, ...user.getCreateParams(), { authorization: `${projects}@active` })
+
+      await contracts.projects.signup(user.params.account, public_key)
+      // Assert
+      const usersTable = await rpc.get_table_rows({
+        code: projects,
+        scope: projects,
+        table: 'users',
+        json: true
+      });
+
+      //console.log(usersTable.rows);
+      expect(usersTable.rows).to.deep.include.members([{
+        account: user.params.account,
+        user_name: user.params.user_name,
+        entity_id: user.params.entity_id,
+        related_projects: user.params.related_projects,
+        role: role,
+        description: user.params.description,
+        public_key: user.params.public_key
+      }]);
+
+    });
+
+  })
 
 
 });

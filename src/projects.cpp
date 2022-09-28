@@ -105,6 +105,50 @@ ACTION projects::init()
 	adduser(_self, "proxybuilder2"_n, "Builder", common::projects::entity::developer);
 }
 
+ACTION projects::migration()
+{
+	require_auth(_self);
+
+	addproject("proxy.gm"_n,
+						 "Manhattan 11th Avenue Marriott Hotel Project",
+						 "The Project is an upscale hotel tower currently under construction in Manhattan, New York. Located at 450 11th Avenue, the Project is being built on a 9,785 square foot parcel directly across the street from the Jacob Javits Convention Center and a few blocks from the Hudson Yards development project, a 28-acre mixed-use development featuring residences, hotels, office space, and retail establishments.", 
+						 "QmVDTRdJX3omWhHYeWpk6yPBh7yxc8UnLNdfKxG2FCBmjZ:jpeg",
+						 1556683200,
+						 1743480000);
+
+	adduser(_self, "awongmrc2123"_n, "awongmrc2123", common::projects::entity::regional_center);
+	adduser(_self, "mrcolemel212"_n, "mrcolemel212", common::projects::entity::developer);
+
+	auto project_itr = project_t.begin();
+	while (project_itr != project_t.end())
+	{
+		if (project_itr->project_name == "Manhattan 11th Avenue Marriott Hotel Project")
+		{
+			assignuser(_self, "awongmrc2123"_n, project_itr->project_id);
+			assignuser(_self, "mrcolemel212"_n, project_itr->project_id);
+			break;
+		}
+		project_itr++;
+	}
+
+
+	// action(
+	// 	permission_level{common::contracts::accounts, "active"_n},
+	// 	common::contracts::accounts,
+	// 	"migration"_n,
+	// 	std::make_tuple(project_itr->project_id)
+	// ).send();
+
+	// action(
+	// 	permission_level{common::contracts::transactions, "active"_n},
+	// 	common::contracts::transactions,
+	// 	"migration"_n,
+	// 	std::make_tuple(project_itr->project_id)
+	// ).send();
+
+}
+
+
 // who can do this?
 ACTION projects::addentity(const eosio::name &actor,
 													 const std::string &entity_name,
@@ -150,6 +194,18 @@ ACTION projects::addtestuser(name user, string user_name, uint64_t entity_id)
 ACTION projects::checkuserdev(name user)
 {
 	check_user_role(user, ENTITY_TYPES.DEVELOPER);
+}
+
+ACTION projects::signup(const eosio::name &user,
+												const std::string &public_key)
+{
+	require_auth(user);
+
+	auto user_itr = user_t.find(user.value);
+	check(user_itr != user_t.end(), common::contracts::projects.to_string() + ": the account " + user.to_string() + " does not exist.");
+
+	user_t.modify(user_itr, _self, [&](auto &item)
+								{ item.public_key = public_key; });
 }
 
 ACTION projects::addproject(const eosio::name &actor,
@@ -579,7 +635,7 @@ ACTION projects::changestatus(uint64_t project_id, uint64_t status)
 // Users
 
 ACTION projects::adduser(const eosio::name &actor, const eosio::name &account, const std::string &user_name, const eosio::name &role)
-{	
+{
 	auto actor_itr = user_t.find(actor.value);
 	/*TODO:
 	Limit user cration, only admin -> it will require an first admin account harcoded
@@ -589,7 +645,6 @@ ACTION projects::adduser(const eosio::name &actor, const eosio::name &account, c
 	*/
 	if (actor_itr != user_t.end())
 	{
-
 		require_auth(actor);
 		check(actor_itr->role == common::projects::entity::fund, actor.to_string() + " has not permissions to do that!");
 	}

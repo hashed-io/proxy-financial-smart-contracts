@@ -11,7 +11,7 @@ using namespace eosio;
     std::string type_str;                                                                      \
     eosio::name type;                                                                          \
     eosio::asset total_amount;                                                                 \
-    vector<common::types::extended_url_information> files;                                              \
+    vector<common::types::extended_url_information> files;                                     \
     uint64_t state; /* Add signed transactions */                                              \
     uint64_t open_date;                                                                        \
     uint64_t close_date;                                                                       \

@@ -38,7 +38,7 @@ void transactions::make_transaction(name actor,
 																		string &description,
 																		std::string &drawdown_type,
 																		vector<common::types::transaction_subtypes> &accounting,
-																		vector<common::types::url_information> &supporting_files)
+																		vector<common::types::encrypted_url_information> &supporting_files)
 {
 
 	transaction_tables transactions(_self, project_id);
@@ -244,6 +244,28 @@ ACTION transactions::reset()
 		}
 	}
 }
+
+//! Migration
+ACTION transactions::migration(const uint64_t &project_id) {
+	require_auth(_self);
+
+	auto project_itr = project_t.find(project_id);
+	check(project_itr != project_t.end(), common::contracts::transactions.to_string() + ": the project does not exist.");
+	
+	const std::vector<common::types::transaction_amount> amounts = {{ 3, 80000000 }};
+	const std::vector<common::types::encrypted_url_information> supporting_files = {{
+		"37HP-(Atria) Master LW & Req (42 & 43).pdf",
+		"QmZ6JNnxbUEYGkUZXGpcTUen44MNPjtVM5AiMHhz7GzzT1:pdf:37HP-(Atria) Master LW & Req (42 & 43).pdf",
+		project_itr->builder,
+		project_itr->owner
+	}};
+
+	const std::vector<common::types::transaction_param> params = {
+		{0, 1663106400, amounts, "lorem", supporting_files, 1 }};
+
+	transacts(project_itr->builder, project_id, 1, params);
+	
+}
 // TODO change this thing or is this the onlyone than handles the transaction?
 
 ACTION transactions::transact(name actor,
@@ -254,7 +276,7 @@ ACTION transactions::transact(name actor,
 															string &description,
 															std::string &drawdown_type,
 															vector<common::types::transaction_subtypes> &accounting,
-															vector<common::types::url_information> &supporting_files)
+															vector<common::types::encrypted_url_information> &supporting_files)
 {
 
 	require_auth(actor);
@@ -280,7 +302,7 @@ ACTION transactions::edittrxn(name actor,
 															string description,
 															std::string &drawdown_type,
 															vector<common::types::transaction_subtypes> &accounting,
-															vector<common::types::url_information> &supporting_files)
+															vector<common::types::encrypted_url_information> &supporting_files)
 {
 
 	require_auth(actor);
@@ -330,7 +352,7 @@ ACTION transactions::deletetrxns(uint64_t project_id)
 ACTION transactions::submitdrwdn(name actor,
 																 uint64_t project_id,
 																 vector<common::types::transaction_subtypes> &accounting,
-																 vector<common::types::url_information> files
+																 vector<common::types::encrypted_url_information> files
 																 /*vector<common::types::url_information> files*/)
 {
 	require_auth(actor);
@@ -386,6 +408,8 @@ ACTION transactions::movedrawdown(const eosio::name &actor,
 																	const uint64_t &drawdown_id)
 {
 
+	
+
 	drawdown_tables drawdown_t(_self, project_id);
 
 	auto drawdown_itr = drawdown_t.find(drawdown_id);
@@ -393,7 +417,8 @@ ACTION transactions::movedrawdown(const eosio::name &actor,
 	check(drawdown_itr != drawdown_t.end(), "Drawdown not found");
 
 	auto project_itr = project_t.find(project_id);
-
+	
+	require_auth(has_auth(project_itr->builder) ? project_itr->builder : _self);
 	check(project_itr != project_t.end(), "Project not found!");
 	check(project_itr->builder == actor, actor.to_string() + " is not the project's builder!");
 
@@ -465,7 +490,8 @@ ACTION transactions::transacts(const eosio::name &actor,
 															 const uint64_t &drawdown_id,
 															 std::vector<common::types::transaction_param> transactions)
 {
-	require_auth(actor);
+	require_auth(has_auth(actor) ? actor : get_self());
+	
 	check(transactions.size() >= 1, "Cannot send transacts action if there's no transactions");
 	for (int i = 0; i < transactions.size(); i++)
 	{	
@@ -512,7 +538,7 @@ void transactions::generate_transaction(const eosio::name &actor,
 																				const uint64_t &date,
 																				vector<common::types::transaction_amount> amounts,
 																				const std::string description,
-																				vector<common::types::url_information> supporting_files)
+																				vector<common::types::encrypted_url_information> supporting_files)
 {
 
 	check(supporting_files.size() >= 1, " Cannot send a transaction without files, number of files: " + to_string(supporting_files.size()));
@@ -645,7 +671,7 @@ ACTION transactions::bulktransact(const eosio::name &actor,
 void transactions::generate_bulk_files(const eosio::name &actor,
 																			 const uint64_t &project_id,
 																			 const uint64_t &drawdown_id,
-																			 vector<common::types::url_information> supporting_files,
+																			 vector<common::types::encrypted_url_information> supporting_files,
 																			 const std::string &description,
 																			 const uint64_t &date,
 																			 const eosio::asset &amount,

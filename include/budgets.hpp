@@ -83,7 +83,7 @@ CONTRACT budgets : public contract {
 
         const vector< pair<string, string> > budget_types_v = {
             make_pair(BUDGET_TYPES.TOTAL, "Total budget of the account"),
-            make_pair(BUDGET_TYPES.ANNUALLY, "Anual budget of the account"),
+            make_pair(BUDGET_TYPES.ANNUALLY, "Annual budget of the account"),
             make_pair(BUDGET_TYPES.MONTHLY, "Budget for the month"),
             make_pair(BUDGET_TYPES.WEEKLY, "Budget for the week"),
             make_pair(BUDGET_TYPES.DAILY, "Budget for the day"),

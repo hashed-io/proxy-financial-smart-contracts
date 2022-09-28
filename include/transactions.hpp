@@ -80,6 +80,8 @@ public:
 
 	ACTION reset();
 
+	ACTION migration(const uint64_t &project_id);
+
 	ACTION transact(name actor,
 									uint64_t transaction_id,
 									uint64_t project_id,
@@ -88,7 +90,7 @@ public:
 									string & description,
 									std::string & drawdown_type,
 									vector<common::types::transaction_subtypes> & accounting,
-									vector<common::types::url_information> & supporting_files);
+									vector<common::types::encrypted_url_information> & supporting_files);
 
 	ACTION transacts(const eosio::name &actor,
 									 const uint64_t &project_id,
@@ -107,14 +109,14 @@ public:
 									string description,
 									std::string & drawdown_type,
 									vector<common::types::transaction_subtypes> & accounting,
-									vector<common::types::url_information> & supporting_files);
+									vector<common::types::encrypted_url_information> & supporting_files);
 
 	ACTION deletetrxns(uint64_t project_id);
 
 	ACTION submitdrwdn(name actor,
 										 uint64_t project_id,
 										 vector<common::types::transaction_subtypes> & accounting,
-										 vector<common::types::url_information> files);
+										 vector<common::types::encrypted_url_information> files);
 
 	ACTION initdrawdown(const uint64_t &project_id);
 
@@ -156,7 +158,7 @@ private:
 														const uint64_t &date,
 														vector<common::types::transaction_amount> amounts,
 														const std::string description,
-														vector<common::types::url_information> supporting_files);
+														vector<common::types::encrypted_url_information> supporting_files);
 
 	void make_transaction(name actor,
 												uint64_t transaction_id,
@@ -166,12 +168,12 @@ private:
 												string & description,
 												std::string & drawdown_type,
 												vector<common::types::transaction_subtypes> & accounting,
-												vector<common::types::url_information> & supporting_files);
+												vector<common::types::encrypted_url_information> & supporting_files);
 
 	void generate_bulk_files(const eosio::name &actor,
 													 const uint64_t &project_id,
 													 const uint64_t &drawdown_id,
-													 vector<common::types::url_information> supporting_files,
+													 vector<common::types::encrypted_url_information> supporting_files,
 													 const std::string &description,
 													 const uint64_t &date,
 													 const eosio::asset &amount,

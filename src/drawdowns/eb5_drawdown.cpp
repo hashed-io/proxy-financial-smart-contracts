@@ -46,7 +46,7 @@ void EB5Drawdown::update_impl(const uint64_t &drawdown_id, const eosio::asset &t
   auto project_itr = project_t.find(project_id);
 
   check(project_itr -> builder.value > 0 , "There is no assigned builder - EB5 ");
-  require_auth(project_itr -> builder);
+  require_auth(has_auth(project_itr->builder) ? project_itr->builder : contract_name);
 
   if (is_add_balance)
   {
@@ -61,7 +61,7 @@ void EB5Drawdown::update_impl(const uint64_t &drawdown_id, const eosio::asset &t
 }
 
 void EB5Drawdown::edit_impl(const uint64_t &drawdown_id,
-                            vector<common::types::url_information> supporting_files,
+                            vector<common::types::encrypted_url_information> supporting_files,
                             const std::string &description,
                             const uint64_t &date,
                             const eosio::asset &amount,
